@@ -1,0 +1,59 @@
+name: Scan Dependencies Microservices
+
+on:
+  push:
+    paths: 
+      - 'src/Microservices/**'
+      - '.github/workflows/scan-dependencies-microservices.yml'
+  pull_request:
+    paths: 
+      - 'src/Microservices/**'
+      - '.github/workflows/scan-dependencies-microservices.yml'
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    defaults: 
+      run:
+        working-directory: src/Microservices
+        
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 10.0.100
+
+    - name: dotnet restore
+      run: dotnet restore
+
+    - name: dotnet list package --vulnerable
+      run: dotnet list package --vulnerable
+
+    # Setup .NET 8 for CheckNugetPackages tool
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+
+    # Install CheckNugetPackages tool
+    - name: Install CheckNugetPackages tool
+      run: dotnet tool install --global CheckNugetPackages.DotNetCliTool --version 2.2.0
+
+    # Run CheckNugetPackages
+    - name: Run CheckNugetPackages
+      run: |
+        export PATH="$PATH:$HOME/.dotnet/tools"
+        CheckNugetPackages ./ --report-directory packages
+
+    # Upload the CSV report as a workflow artifact
+    - name: Upload NuGet packages report
+      uses: actions/upload-artifact@v4
+      with:
+        name: packages
+        path: src/Microservices/packages

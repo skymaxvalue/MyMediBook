@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+	<UserSecretsId>c0d90214-b332-43c7-baa7-9a7ebf96ae71</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\Contracts\AuditLog\Protos\auditlog.proto" GrpcServices="Server" Link="Protos\auditlog.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\ClassifiedAds.Application\ClassifiedAds.Application.csproj" />
+    <ProjectReference Include="..\..\Common\ClassifiedAds.CrossCuttingConcerns\ClassifiedAds.CrossCuttingConcerns.csproj" />
+    <ProjectReference Include="..\..\Common\ClassifiedAds.Domain\ClassifiedAds.Domain.csproj" />
+    <ProjectReference Include="..\..\Common\ClassifiedAds.Infrastructure\ClassifiedAds.Infrastructure.csproj" />
+    <ProjectReference Include="..\ClassifiedAds.Services.AuditLog\ClassifiedAds.Services.AuditLog.csproj" />
+  </ItemGroup>
+  
+</Project>

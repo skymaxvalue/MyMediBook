@@ -1,0 +1,56 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+exporters:
+  prometheus:
+    endpoint: '0.0.0.0:8889'
+    const_labels:
+      label1: value1
+  zipkin:
+    endpoint: 'http://zipkin:9411/api/v2/spans'
+    format: proto
+  otlp/jaeger:
+    endpoint: 'jaeger-all-in-one:4317'
+    tls:
+      insecure: true
+  elasticsearch:
+    endpoints:
+      - 'http://elk:9200'
+processors:
+  batch: null
+extensions:
+  health_check: null
+  pprof:
+    endpoint: ':1888'
+  zpages:
+    endpoint: ':55679'
+service:
+  extensions:
+    - pprof
+    - zpages
+    - health_check
+  pipelines:
+    traces:
+      receivers:
+        - otlp
+      processors:
+        - batch
+      exporters:
+        - zipkin
+        - otlp/jaeger
+    metrics:
+      receivers:
+        - otlp
+      processors:
+        - batch
+      exporters:
+        - prometheus
+    logs:
+      receivers:
+        - otlp
+      processors:
+        - batch
+      exporters:
+        - elasticsearch

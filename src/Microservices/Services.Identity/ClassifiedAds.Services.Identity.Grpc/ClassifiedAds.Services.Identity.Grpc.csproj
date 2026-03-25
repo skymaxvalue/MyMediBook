@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\Contracts\Identity\Protos\user.proto" GrpcServices="Server" Link="Protos\user.proto" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\ClassifiedAds.Application\ClassifiedAds.Application.csproj" />
+    <ProjectReference Include="..\..\Common\ClassifiedAds.CrossCuttingConcerns\ClassifiedAds.CrossCuttingConcerns.csproj" />
+    <ProjectReference Include="..\..\Common\ClassifiedAds.Domain\ClassifiedAds.Domain.csproj" />
+    <ProjectReference Include="..\..\Common\ClassifiedAds.Infrastructure\ClassifiedAds.Infrastructure.csproj" />
+    <ProjectReference Include="..\ClassifiedAds.Services.Identity\ClassifiedAds.Services.Identity.csproj" />
+  </ItemGroup>
+
+</Project>

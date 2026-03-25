@@ -1,0 +1,28 @@
+name: Scan Dependencies UI ReactJs
+
+on:
+  push:
+    paths:
+      - "src/UIs/reactjs/**"
+      - ".github/workflows/scan-dependencies-ui-reactjs.yml"
+  pull_request:
+    paths:
+      - "src/UIs/reactjs/**"
+      - ".github/workflows/scan-dependencies-ui-reactjs.yml"
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+env:
+  WORKING_DIRECTORY: ./src/UIs/reactjs/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+      - run: npm audit --audit-level=critical
+        working-directory: ./src/UIs/reactjs/

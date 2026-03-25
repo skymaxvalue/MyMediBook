@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<UserSecretsId>f2e298d9-f756-4769-92a2-d920b7e1a422</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <Protobuf Include="..\..\Contracts\AuditLog\Protos\auditlog.proto" GrpcServices="Client" Link="Protos\auditlog.proto" />
+    <Protobuf Include="..\..\Contracts\Identity\Protos\user.proto" GrpcServices="Client" Link="Protos\user.proto" />
+		<PackageReference Include="Grpc.Tools" Version="2.78.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Polly" Version="8.6.6" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Common\ClassifiedAds.Application\ClassifiedAds.Application.csproj" />
+		<ProjectReference Include="..\..\Common\ClassifiedAds.CrossCuttingConcerns\ClassifiedAds.CrossCuttingConcerns.csproj" />
+		<ProjectReference Include="..\..\Common\ClassifiedAds.Domain\ClassifiedAds.Domain.csproj" />
+		<ProjectReference Include="..\..\Common\ClassifiedAds.Infrastructure\ClassifiedAds.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\Common\ClassifiedAds.Persistence.SqlServer\ClassifiedAds.Persistence.SqlServer.csproj" />
+	</ItemGroup>
+
+</Project>

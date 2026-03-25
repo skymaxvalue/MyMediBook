@@ -1,0 +1,13 @@
+@if (copyStatus) {
+  <span class="copy-icon">{{ copyStatus }}</span>
+}
+@if (!copyStatus) {
+  <i
+    [class]="className"
+    [title]="title"
+    (click)="handleCopy()"
+    (keydown.enter)="handleCopy()"
+    role="button"
+    tabindex="0"
+  ></i>
+}
