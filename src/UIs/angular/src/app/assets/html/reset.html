@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="otp-wrapper">
+
+    <div class="otp-card">
+
+        <h1>RESET PASSWORD</h1>
+
+        <p class="otp-subtext">
+            Enter your new password and confirm it to reset your account.
+        </p>
+
+        <!-- NEW PASSWORD -->
+        <div class="input-group">
+            <input type="password" id="newPassword" placeholder="New Password">
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="input-group">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        </div>
+
+        <!-- BUTTONS -->
+        <button class="btn-primary" id="resetBtn">Reset Password</button>
+
+        <button class="btn-outline" onclick="window.location.href='login.html'">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<script src="js/reset.js"></script>
+</body>
+</html>
