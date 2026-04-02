@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - My Medi Book</title>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- SAME CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+       #userText {
+    margin: 15px 0;
+    font-size: 16px;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <h2>Work in Progress 🚧</h2>
+
+    <p id="userText"></p>
+
+    <button onclick="logout()" class="login-btn">Logout</button>
+
+</div>
+<script>
+const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+if (isLoggedIn !== "true") {
+    window.location.href = "login.html";
+}
+
+const user = localStorage.getItem("username") || "User";
+document.getElementById("userText").innerText = 'Logged in as "' + user + '"';
+
+function logout() {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("username");
+
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
