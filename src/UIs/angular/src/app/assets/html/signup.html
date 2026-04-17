@@ -6,28 +6,34 @@
 <title>Patient Registration</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="css/style.css">
 <style>
 
-/* RESET */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+
 
 body {
-    font-family: 'Source Sans Pro', sans-serif;
     background: #f5f6fa;
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
-/* MAIN CARD */
+input, select, textarea, button {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+::placeholder {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.iti, 
+.iti * {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
 .container {
     width: 900px;
     margin: 60px auto;
 }
 
-/* TABS */
 .tabs {
     display: flex;
     gap: 10px;
@@ -53,7 +59,6 @@ body {
     color: #000;
 }
 
-/* CARD */
 .card {
     background: #fff;
     padding: 40px 60px;
@@ -61,13 +66,11 @@ body {
     border: 1px solid #dcdcff;
 }
 
-/* TITLE */
 h1 {
     text-align: center;
     margin-bottom: 40px;
 }
 
-/* FORM GRID */
 .form-row {
     display: flex;
     align-items: center;
@@ -82,14 +85,13 @@ h1 {
 .form-row input,
 .form-row select {
     width: 60%;
-    height: 46px; /* ✅ SAME HEIGHT */
+    height: 46px;
     padding: 0 12px;
     border-radius: 8px;
     border: 1px solid #ccc;
     font-size: 15px;
 }
 
-/* BUTTONS */
 .buttons {
     display: flex;
     justify-content: space-between;
@@ -102,7 +104,6 @@ h1 {
     border: none;
     padding: 12px 30px;
     border-radius: 10px;
-    cursor: pointer;
 }
 
 .btn-outline {
@@ -110,10 +111,8 @@ h1 {
     background: transparent;
     padding: 12px 30px;
     border-radius: 10px;
-    cursor: pointer;
 }
 
-/* STEPS */
 .step {
     display: none;
 }
@@ -125,32 +124,25 @@ h1 {
 .optional {
     font-size: 13px;
     color: #777;
-    display: block; /* ✅ moves (optional) to next line */
+    display: block;
 }
 
-/* ================= PHONE FIELD FIX ================= */
-
-/* container width match */
 .iti {
     width: 60%;
 }
 
-/* input */
 #phone {
-    width: 100%;
+    width: fit-content;
     height: 46px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    padding-left: 70px; /* space for flag */
-    font-size: 15px;
+    padding-left: 70px;
 }
 
-/* align with form */
 .form-row .iti {
     margin-left: 0;
 }
 
-/* flag box alignment */
 .iti__selected-flag {
     height: 46px;
     display: flex;
@@ -159,24 +151,18 @@ h1 {
     border-radius: 8px 0 0 8px;
 }
 
-/* dropdown */
 .iti__country-list {
     max-height: 200px;
     overflow-y: auto;
-    font-family: 'Source Sans Pro', sans-serif;
     font-size: 14px;
 }
 
-/* country text */
 .iti__country {
     color: #000;
 }
 
-/* FORCE consistency everywhere */
-.iti,
-.iti * {
-    font-family: 'Source Sans Pro', sans-serif !important;
-    font-size: 15px;
+#dob {
+    width: fit-content;
 }
 
 </style>
@@ -187,7 +173,7 @@ h1 {
 
 <div class="container">
 
-    <!-- TABS -->
+   
     <div class="tabs">
         <div class="tab active">PERSONAL INFORMATION</div>
         <div class="tab">ADDRESS</div>
@@ -222,7 +208,7 @@ h1 {
 
             <div class="form-row">
                 <label>Date Of Birth</label>
-                <input type="date" placeholder="Select your date of birth" required>
+                <input type="date" id="dob" placeholder="Select your date of birth" required>
             </div>
 
          
@@ -238,7 +224,7 @@ h1 {
             <div class="form-row">
                 <label>Gender <br>
                 <span class="optional">(optional)</span></label>
-                <select>
+                <select id="dob">
                     <option>Select gender</option>
                     <option>Male</option>
                     <option>Female</option>
@@ -275,27 +261,28 @@ h1 {
                 <label>Country</label>
     
                 <select id="country" required>
-    <option value="" disabled selected>Select country</option>
 
-    <option value="India">India</option>
-    <option value="USA">USA</option>
-    <option value="UK">UK</option>
-    <option value="Australia">Australia</option>
-    <option value="Canada">Canada</option>
-    <option value="Germany">Germany</option>
-    <option value="France">France</option>
-    <option value="Italy">Italy</option>
-    <option value="Spain">Spain</option>
-    <option value="Netherlands">Netherlands</option>
-    <option value="Singapore">Singapore</option>
-    <option value="UAE">UAE</option>
-    <option value="Saudi Arabia">Saudi Arabia</option>
-    <option value="Japan">Japan</option>
-    <option value="South Korea">South Korea</option>
-    <option value="China">China</option>
-    <option value="Brazil">Brazil</option>
-    <option value="South Africa">South Africa</option>
-</select>
+                    <option value="" disabled selected>Select country</option>
+
+                    <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UK">UK</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="UAE">UAE</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Japan">Japan</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="China">China</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="South Africa">South Africa</option>
+                </select>
             </div>
 
             <div class="form-row">
@@ -328,13 +315,13 @@ h1 {
             <div class="form-row">
                 <label>Security Question</label>
                 <select id="securityQuestion" required>
-    <option value="" disabled selected>Select question</option>
-    <option value="pet">What is your pet's name?</option>
-    <option value="school">What was your first school?</option>
-    <option value="city">Which city were you born in?</option>
-    <option value="mother">What is your mother's maiden name?</option>
-    <option value="food">What is your favorite food?</option>
-</select>
+                <option value="" disabled selected>Select question</option>
+                <option value="pet">What is your pet's name?</option>
+                <option value="school">What was your first school?</option>
+                <option value="city">Which city were you born in?</option>
+                <option value="mother">What is your mother's maiden name?</option>
+                <option value="food">What is your favorite food?</option>
+            </select>
             </div>
 
             <div class="form-row">
@@ -345,7 +332,7 @@ h1 {
         </div>
         </form>
 
-        <!-- BUTTONS -->
+      
                 <div class="buttons">
                 <button class="btn-outline" onclick="prevStep()">Back</button>
                 <button id="nextBtn" class="btn-primary" onclick="nextStep()">Save and Next</button>
@@ -378,7 +365,7 @@ function showStep(index) {
 
     currentStep = index;
 
-    // 🔥 BUTTON TEXT CHANGE
+    
     const nextBtn = document.getElementById("nextBtn");
 
     if (currentStep === steps.length - 1) {
@@ -388,7 +375,7 @@ function showStep(index) {
     }
 }
 
-/* NEXT */
+
 function nextStep() {
     const currentStepElement = steps[currentStep];
 
@@ -401,11 +388,10 @@ function nextStep() {
         }
     }
 
-    // 🔥 IF LAST STEP → SUBMIT
+   
     if (currentStep === steps.length - 1) {
         alert("Form Submitted Successfully!");
 
-        // redirect to login
         window.location.href = "login.html";
         return;
     }
@@ -413,7 +399,7 @@ function nextStep() {
     showStep(currentStep + 1);
 }
 
-/* BACK */
+
 function prevStep() {
     if (currentStep === 0) {
         window.location.href = "login.html";
@@ -423,15 +409,15 @@ function prevStep() {
 }
 </script>
 
-<!-- PHONE LIBRARY -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
 
 <script>
-// ✅ GET ELEMENTS
+
 const input = document.querySelector("#phone");
 const countrySelect = document.getElementById("country");
 
-// ✅ MAP ISO → YOUR DROPDOWN VALUES
+
 const countryMap = {
     in: "India",
     us: "USA",
@@ -486,14 +472,13 @@ countrySelect.addEventListener("change", function () {
     updateStates(this.value);
 });
 
-// ✅ INIT PHONE INPUT
 const iti = window.intlTelInput(input, {
     initialCountry: "in",
     separateDialCode: true,
     preferredCountries: ["in", "us", "gb"]
 });
 
-// ✅ FUNCTION TO SET COUNTRY SAFELY
+
 
 function setCountryDropdown(mappedCountry) {
     const options = countrySelect.options;
@@ -510,7 +495,7 @@ function setCountryDropdown(mappedCountry) {
     }
 }
 
-// ✅ ON COUNTRY CHANGE
+
 input.addEventListener("countrychange", function () {
     const countryData = iti.getSelectedCountryData();
     const countryCode = countryData.iso2;
@@ -522,7 +507,7 @@ input.addEventListener("countrychange", function () {
     }
 });
 
-// ✅ ON PAGE LOAD
+
 window.addEventListener("load", () => {
     const countryData = iti.getSelectedCountryData();
     const mappedCountry = countryMap[countryData.iso2];

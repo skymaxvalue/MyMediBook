@@ -10,12 +10,202 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
+   <style>
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.left-panel {
+    flex: 0 0 45%;
+    background: linear-gradient(135deg, #4A6CF7, #3B5BDB);
+    color: #ffffff;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+
+    padding: 60px 40px;
+}
+
+.left-title {
+    max-width: 300px;
+    line-height: 1.2;
+    font-size: 38px;
+    font-weight: 300;
+}
+
+.doctor-img {
+    width: 80%;
+    max-width: 420px;
+}
+
+.left-footer {
+    font-size: 18px;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+.right-panel {
+    flex: 0 0 55%;
+    background-color: #f5f6fa;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    width: 380px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    width: 35px;
+}
+
+.logo span {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.logo span strong {
+    color: #4A6CF7;
+}
+
+h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 28px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #ffffff;
+}
+
+.input-group input:focus {
+    border-color: #4A6CF7;
+    outline: none;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 42px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    cursor: pointer;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.remember input {
+    width: 16px;
+    height: 16px;
+}
+
+.forgot {
+    color: #4A6CF7;
+    font-size: 16px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, #4A6CF7, #3B5BDB);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.google-btn img {
+    width: 18px;
+}
+
+.signup-text {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-text a {
+    color: #4A6CF7;
+    font-weight: 600;
+}
+
+</style>
 </head>
 <body>
 
     <div class="container">
 
-        <!-- LEFT PANEL -->
+  
         <div class="left-panel">
             <h1 class="left-title">Doctors Just a Click Away.</h1>
 
@@ -24,32 +214,31 @@
             <p class="left-footer">Welcome to My Medi Book</p>
         </div>
 
-        <!-- RIGHT PANEL -->
+    
         <div class="right-panel">
 
             <div class="form-container">
 
-                <!-- LOGO -->
+           
                 <div class="logo">
                     <img src="images/logo.png" alt="Logo">
                     <span>My <strong>Medi</strong> Book</span>
                 </div>
 
-                <!-- HEADING -->
+             
                 <h2>WELCOME BACK</h2>
                 <p class="subtitle">Please login to your account</p>
 
 
-                <!-- FORM -->
                 <form id="loginForm">
 
-                    <!-- Username -->
+                    
                     <div class="input-group">
                         <label>Username</label>
                         <input type="text" id="username" placeholder="Enter your username"  required>
                     </div>
 
-                    <!-- Password -->
+                   
                     <div class="input-group">
                         <label>Password</label>
                         <div class="password-wrapper">
@@ -64,7 +253,7 @@
                   
 
                     
-                    <!-- OPTIONS -->
+                
                      <div class="options">
 
                   <div class="remember">
@@ -81,16 +270,16 @@
 
                       
 
-                    <!-- LOGIN BUTTON -->
+                    
                     <button type="submit" class="login-btn">Login</button>
 
-                    <!-- GOOGLE SIGN IN -->
+                    
                     <button type="button" class="google-btn">
                         <img src="images/google.png" alt="Google">
                         Sign in with Google
                     </button>
 
-                    <!-- SIGN UP -->
+                    
                     <p class="signup-text">
                         Don’t have an account? <a href="signup.html">Sign Up</a>
                     </p>
@@ -103,8 +292,10 @@
 
     </div>
 
-    <!-- JS -->
+    
     <script src="js/login.js"></script>
+
+    
 
 </body>
 </html>

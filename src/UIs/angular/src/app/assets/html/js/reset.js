@@ -21,8 +21,6 @@ resetBtn.addEventListener("click", function () {
         return;
     }
 
-   alert("Password reset successful! Please login again.");
-
-// redirect after user clicks OK
-window.location.href = "login.html";
+    alert("Password reset successful! Please login again.");
+    window.location.href = "login.html";
 });

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Specialities</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+.speciality-container {
+    padding: 30px;
+    background: #f5f7fb;
+}
+
+.title2 {
+    text-align: center;
+    margin-bottom: 20px;
+    background: #e2e7ef;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 50%;
+    padding: 12px;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.search-bar button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    background: linear-gradient(135deg, #4A6CF7, #3B5BDB);
+    color: white;
+    cursor: pointer;
+}
+
+.search-bar button img {
+    width: 16px;
+}
+
+.category {
+    background: #3b5bdb;
+    color: white;
+    padding: 10px;
+    margin: 25px 0 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.doctor-card {
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.doctor-card:hover {
+    transform: scale(1.01);
+}
+
+.doc-left {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.doc-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.doc-info p {
+    margin: 4px 0;
+}
+
+.badge {
+    background: #3b5bdb;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.doc-right {
+    text-align: right;
+}
+
+.doc-right h3 {
+    margin-top: 8px;
+}
+
+.arrow {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.speciality-container {
+    padding: 10px 30px 30px;
+}
+</style>
+</head>
+<body>
+
+
+<div id="navbar-container"></div>
+
+
+<div class="speciality-container">
+
+    <h2 class="title2">Our Specialities</h2>
+
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search by Doctor Name, Speciality, or Symptoms.. (e.g., Dr. Kumar)">
+    
+    <button>
+        <img src="images/search.png" alt="search">
+        <span>Search</span>
+    </button>
+</div>
+
+
+    <div class="category">General Physician</div>
+
+   
+    <div class="doctor-card" onclick="goToAvailability()">
+        <div class="doc-left">
+            <div class="doc-img-container">
+                        <img src="images/doc.jpg" class="doc-img">
+                    </div>
+
+            <div class="doc-info">
+                <p>Doctor Name : <b>Dr. Kumar</b></p>
+                <p>Degree : <b>MBBS</b></p>
+                <p>Department : <span class="badge">GENERAL</span></p>
+            </div>
+        </div>
+
+        <div class="doc-right">
+            <p>[Visiting Hours / Out Of Station]</p>
+            <h3>11:00 AM - 04:30PM</h3>
+            <span class="arrow">➤</span>
+        </div>
+    </div>
+
+    <div class="doctor-card" onclick="goToAvailability()">
+        <div class="doc-left">
+            <img src="images/doc.jpg" class="doc-img">
+
+            <div class="doc-info">
+                <p>Doctor Name : <b>Dr. Bose</b></p>
+                <p>Degree : <b>MBBS</b></p>
+                <p>Department : <span class="badge">INTERNAL MEDICINE</span></p>
+            </div>
+        </div>
+
+        <div class="doc-right">
+            <p>[Visiting Hours / Out Of Station]</p>
+            <h3>12:00 PM - 05:30PM</h3>
+            <span class="arrow">➤</span>
+        </div>
+    </div>
+
+
+    <div class="category">Cardiology</div>
+
+    <div class="doctor-card" onclick="goToAvailability()">
+        <div class="doc-left">
+            <img src="images/doc.jpg" class="doc-img">
+
+            <div class="doc-info">
+                <p>Doctor Name : <b>Dr. Raman</b></p>
+                <p>Degree : <b>MBBS, MD</b></p>
+                <p>Department : <span class="badge">DND (CARDIOLOGY)</span></p>
+            </div>
+        </div>
+
+        <div class="doc-right">
+            <p>[Visiting Hours / Out Of Station]</p>
+            <h3>09:00 AM - 12:30PM</h3>
+            <span class="arrow">➤</span>
+        </div>
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<script src="js/navbar.js"></script>
+<script src="js/specialities.js"></script>
+
+</body>
+</html>

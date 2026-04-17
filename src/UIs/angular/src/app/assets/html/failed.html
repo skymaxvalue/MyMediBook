@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Appointment Confirmation Failed</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f3f5f9;
+}
+
+.container {
+    width: 1150px;
+    margin: 24px auto 0;
+    padding: 22px 16px 28px;
+    border: 1px solid #c6d7fb;
+    border-radius: 22px;
+    background: #f7f9fe;
+}
+
+.failed-title {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 34px;
+    padding: 8px 22px;
+    border-radius: 8px;
+    background: #e52521;
+    color: #fff;
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 600;
+    text-align: center;
+}
+
+
+
+.top-section {
+    display: grid;
+    grid-template-columns: 150px 1fr 170px;
+    column-gap: 38px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.doctor-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 10px 12px 14px;
+    text-align: center;
+    box-shadow: 0 1px 6px rgba(25, 45, 89, 0.08);
+}
+
+.doctor-card img {
+    width: 112px;
+    height: 118px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+
+
+
+.doctor-card h3 {
+    margin: 10px 0 3px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.doctor-card p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.tag {
+    margin-top: 8px;
+    display: inline-block;
+    background: #cfd8f3;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    row-gap: 13px;
+    column-gap: 22px;
+    align-items: center;
+}
+
+.details label {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.details input {
+    height: 38px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #cfcfcf;
+    background: #f3f5f9;
+    font-size: 14px;
+}
+
+
+.status-image {
+    display: flex;
+    justify-content: center;
+}
+
+.status-image-box {
+    width: 136px;
+    height: 152px;
+    border-radius: 16px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 6px rgba(25, 45, 89, 0.08);
+}
+
+.status-image img {
+    width: 116px;
+    height: 116px;
+    object-fit: contain;
+}
+
+.info-box {
+    margin-top: 30px;
+    padding: 22px;
+    background: #f1f3f7;
+    border-radius: 14px;
+    line-height: 1.7;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+
+
+.footer-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.back-btn {
+    border: none;
+    border-radius: 8px;
+    background: #4677ef;
+    color: #fff;
+    padding: 8px 14px;
+    font-size: 17px;
+    line-height: 1;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<div class="container">
+
+    <div class="failed-title">Doctor's Appointment Confirmation Failed</div>
+
+
+    <div class="top-section">
+        <div class="doctor-card">
+            <img src="images/doc.jpg" alt="Doctor">
+            <h3>Dr. Kumar</h3>
+            <p>MBBS</p>
+            <span class="tag">GENERAL</span>
+        </div>
+
+        <div class="details">
+            <label>Patient Name</label>
+            <input id="patientName" readonly>
+
+            <label>Date</label>
+            <input id="date" readonly>
+
+            <label>Time</label>
+            <input id="time" readonly>
+        </div>
+
+        <div class="status-image">
+            <div class="status-image-box">
+                <img src="images/cancel.png" alt="Appointment failed">
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        OTP verification incomplete. We are unable to confirm your appointment without successful
+        authentication. Please try the verification process again. If you continue to have trouble,
+        you can attempt the booking again later.
+    </div>
+
+    <div class="footer-actions">
+        <button class="back-btn" onclick="goBack()">📅 Back to My Appointments</button>
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<script>
+function populateFailedDetails() {
+    const latestAppointment = JSON.parse(localStorage.getItem("latestAppointment") || "null");
+
+    const fallbackName = latestAppointment
+        ? `${latestAppointment.firstName || ""} ${latestAppointment.lastName || ""}`.trim()
+        : "Mr. Edizo Dey";
+
+    document.getElementById("patientName").value = fallbackName || "Mr. Edizo Dey";
+    document.getElementById("date").value = localStorage.getItem("selectedDate") || latestAppointment?.date || "13 Apr 2026 (MONDAY)";
+    document.getElementById("time").value = localStorage.getItem("selectedTime") || latestAppointment?.time || "2:00 PM";
+}
+
+function goBack() {
+    window.location.href = "dashboard.html";
+}
+
+window.addEventListener("load", populateFailedDetails);
+</script>
+
+<script src="js/navbar.js"></script>
+
+</body>
+</html>

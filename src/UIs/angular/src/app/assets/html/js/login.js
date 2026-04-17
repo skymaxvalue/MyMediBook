@@ -5,7 +5,7 @@ if (localStorage.getItem("isLoggedIn")) {
 
 
 
-// FORM
+
 const form = document.getElementById("loginForm");
 const username = document.getElementById("username");
 const password = document.getElementById("password");
@@ -23,7 +23,7 @@ toggle.addEventListener("click", function () {
     }
 });
 
-// LOGIN
+
 form.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -35,7 +35,7 @@ form.addEventListener("submit", function (e) {
         return;
     }
 
-    // ✅ FAKE AUTH (you can customize)
+    
     if (user === "admin" && pass === "1234") {
 
         // 🔥 SAVE SESSION
