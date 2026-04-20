@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+.otp-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.otp-card {
+    width: 520px;
+    background: #fff;
+    padding: 50px;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid #dcdcff;
+}
+
+.otp-card h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.otp-subtext {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.forgot-input {
+    margin-bottom: 25px;
+}
+
+.forgot-input input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    text-align: center;
+}
+
+.forgot-input input:focus {
+    border-color: #4A6CF7;
+    outline: none;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #4A6CF7, #3B5BDB);
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.back-text {
+    font-size: 14px;
+}
+
+.back-text a {
+    color: #4A6CF7;
+    text-decoration: underline;
+}
+
+
+
+</style>
+   
+</head>
+
+<body>
+
+<div class="otp-wrapper">
+
+    <div class="otp-card">
+
+        <h1>FORGOT PASSWORD</h1>
+
+        <p class="otp-subtext">
+            Enter your registered email or mobile number<br>
+            to receive OTP.
+        </p>
+
+  
+       <div class="forgot-input">
+            <input type="text" id="userInput" placeholder="Enter your registered Email / Mobile Number">
+        </div>
+
+    
+        <button class="btn-primary" id="sendOtpBtn">Send OTP</button>
+
+       
+        <p class="back-text">
+            Back to <a href="login.html">Login</a>
+        </p>
+
+    </div>
+
+</div>
+
+<script src="js/forgot.js"></script>
+
+</body>
+</html>

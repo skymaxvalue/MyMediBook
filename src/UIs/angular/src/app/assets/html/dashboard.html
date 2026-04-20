@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+ <style>
+
+.dashboard-container {
+    padding: 30px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+.dashboard-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #cfd8ff;
+}
+
+.appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.appointment-table thead {
+    background: #f0f2f8;
+}
+
+.appointment-table th {
+    text-align: left;
+    padding: 14px;
+    font-weight: 600;
+}
+
+.appointment-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.appointment-table tbody tr:hover {
+    background: #f9fbff;
+}
+
+.highlight {
+    background: #f3f4f7;
+}
+
+.status {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+}
+
+.completed {
+    background: #25a87a;
+}
+
+.upcoming {
+    background: #3b5bdb;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.new-btn {
+    background: #3b5bdb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.new-btn:hover {
+    background: #2f4acb;
+}
+
+.sort-icon {
+    font-size: 12px;
+    margin-left: 6px;
+    color: #999;
+}
+
+th.active {
+    color: #3b5bdb;
+}
+
+</style>
+</head>
+<body>
+
+
+<div id="navbar-container"></div>
+
+
+<div class="dashboard-container">
+
+    <div class="dashboard-card">
+
+        <table class="appointment-table">
+            <thead>
+                <tr>
+                        <th onclick="sortTable(0)">
+                            Visit Purpose <span class="sort-icon">▼</span>
+                        </th>
+
+                        <th onclick="sortTable(1)">
+                            Patient Name <span class="sort-icon">▼</span>
+                        </th>
+
+                        <th onclick="sortTable(2)">
+                            Appointment Date <span class="sort-icon">▼</span>
+                        </th>
+
+                        <th>Appointment Time</th>
+
+                        <th onclick="sortTable(4)">
+                            Dr. Name <span class="sort-icon">▼</span>
+                        </th>
+
+                        <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>ENT</td>
+                    <td>Ramesh</td>
+                    <td>Mar 31 2026</td>
+                    <td>11:00 AM - 11:30AM</td>
+                    <td>Dr. Vaishali</td>
+                    <td><span class="status completed">Completed</span></td>
+                </tr>
+
+                <tr class="highlight">
+                    <td>Fever</td>
+                    <td>Self</td>
+                    <td>Apr 08 2026</td>
+                    <td>03:00 PM - 03:30PM</td>
+                    <td>Dr. Arun</td>
+                    <td><span class="status upcoming">Upcoming</span></td>
+                </tr>
+
+                <tr>
+                    <td>Visitation</td>
+                    <td>Lakshmi</td>
+                    <td>May 21 2026</td>
+                    <td>04:00 PM - 04:30PM</td>
+                    <td>Dr. Ross</td>
+                    <td><span class="status upcoming">Upcoming</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="btn-container">
+            <button class="new-btn" onclick="goToSpecialities()">
+                📅 New Appointment
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<!-- JS -->
+<script src="js/navbar.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>
