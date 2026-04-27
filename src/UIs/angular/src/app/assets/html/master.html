@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Care Associate</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/master.css">
+
+
+
+</head>
+<body>
+
+<!-- <div id="navbar-container"></div> -->
+
+<main class="master-page">
+    <header class="master-header">
+        <h1>Health Care Associate</h1>
+    </header>
+
+<div class="stepper">
+    <button class="step-chip step-first active" data-step="0">
+        <span class="step-meta">Step 1</span>
+        <strong>Personal Info</strong>
+        <span class="step-status">In Progress</span>
+    </button>
+    <button class="step-chip step-middle" data-step="1">
+        <span class="step-meta">Step 2</span>
+        <strong>Qualification</strong>
+        <span class="step-status">Pending</span>
+    </button>
+    <button class="step-chip step-middle" data-step="2">
+        <span class="step-meta">Step 3</span>
+        <strong>Experience</strong>
+        <span class="step-status">Pending</span>
+    </button>
+    <button class="step-chip step-last" data-step="3">
+        <span class="step-meta">Step 4</span>
+        <strong>Employment Details</strong>
+        <span class="step-status">Pending</span>
+    </button>
+</div>
+
+    <section class="wizard-card">
+        <div class="shape shape-left shape-top"></div>
+        <!-- <div class="shape shape-right shape-mid"></div>
+        <div class="shape shape-left shape-bottom"></div> -->
+        <div class="shape shape-right shape-end"></div>
+
+        <form id="masterForm">
+            <section class="form-step active" data-step="0">
+                <h2>Personal Information</h2>
+
+                <div class="form-layout">
+                    	<label for="firstName">First Name<span class="star">*</span></label>
+                            <input id="firstName" name="firstName" type="text" placeholder="Enter your first name" required>
+                
+
+                    <label for="middleName">Middle Name </label>
+                    <input id="middleName" name="middleName" type="text" placeholder="Enter your middle name">
+
+                    <label for="lastName">Last Name<span class="star">*</span></label>
+                    <input id="lastName" name="lastName" type="text" placeholder="Enter your last name" required>
+
+                    <label for="dateOfBirth">Date Of Birth<span class="star">*</span></label>
+                    <div class="compact-field">
+                        <div class="field-with-icon">
+                            <input id="dateOfBirth" name="dateOfBirth" type="date" required>
+                        </div>
+                    </div>
+
+                    <label for="employeeId">Employee ID<span class="star">*</span></label>
+                    <div class="compact-field">
+                        <input id="employeeId" name="employeeId" type="text" placeholder="Enter your employee id" required>
+                    </div>
+
+                    <label for="phoneNumber">Phone Number<span class="star">*</span></label>
+                    <div class="split-field phone-number-group">
+                        <select id="phoneCountryCode" name="phoneCountryCode" class="code-select">
+                            <option value="+91">IN</option>
+                            <option value="+1">US</option>
+                            <option value="+44">UK</option>
+                        </select>
+                        <input id="phoneNumber" name="phoneNumber" type="tel" placeholder="Enter phone number" required>
+                    </div>
+
+                    <label for="emailId">Email ID<span class="star">*</span></label>
+                    <input id="emailId" name="emailId" type="email" placeholder="Enter your email id" required>
+
+                    <!-- Gender shortened -->
+                    <label for="gender">Gender<span class="star">*</span></label>
+                    <div class="field-with-action compact-field">
+                        <select id="gender" name="gender" required>
+                            <option value="">Select your gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                        <span class="field-action">⌄</span>
+                    </div>
+
+                    <label for="residentialAddress">Residential Address<span class="star">*</span></label>
+                    <textarea id="residentialAddress" name="residentialAddress" placeholder="Enter your address" rows="3" required></textarea>
+
+                    <label for="permanentAddress">Permanent Address</label>
+                    <div class="stacked-field">
+                        <textarea id="permanentAddress" name="permanentAddress" placeholder="Enter your address" rows="3" required></textarea>
+                        <label class="check-row">
+                            <input id="sameAddress" type="checkbox">
+                            <span>Same as Residential Address</span>
+                        </label>
+                    </div>
+
+                    <!-- City shortened -->
+                    <label for="city">City<span class="star">*</span></label>
+                    <div class="compact-field">
+                        <input id="city" name="city" type="text" placeholder="Enter your city" required>
+                    </div>
+
+                    <!-- Zip Code shortened -->
+                    <label for="zipCode">Zip Code<span class="star">*</span></label>
+                    <div class="compact-field">
+                        <input id="zipCode" name="zipCode" type="text" placeholder="Enter your zip code" required>
+                    </div>
+
+                    <!-- Country shortened -->
+                    <label for="country">Country<span class="star">*</span></label>
+                    <div class="field-with-action compact-field">
+                        <select id="country" name="country" required>
+                            <option value="">Enter your country</option>
+                            <option>India</option>
+                            <option>United States</option>
+                            <option>United Kingdom</option>
+                            <option>Australia</option>
+                        </select>
+                        <span class="field-action">⌄</span>
+                    </div>
+
+                    <label for="state">State<span class="star">*</span></label>
+                    <div class="field-with-action compact-field">
+                        <select id="state" name="state" required>
+                            <option value="">Enter your State</option>
+                            <option>West Bengal</option>
+                            <option>Maharashtra</option>
+                            <option>California</option>
+                            <option>Texas</option>
+                        </select>
+                        <span class="field-action">⌄</span>
+                    </div>
+
+                    <label for="identityDocument">Identity Document<span class="star">*</span></label>
+                    <div class="stacked-field">
+                        <div class="field-with-action">
+                            <select id="identityDocument" name="identityDocument" required>
+                                <option value="">Select identity document type</option>
+                                <option>Aadhaar Card</option>
+                                <option>PAN Card</option>
+                                <option>Passport</option>
+                                <option>Driving License</option>
+                            </select>
+                            <span class="field-action">⌄</span>
+                        </div>
+                        <div class="upload-row">
+                            <input id="identityFile" name="identityFile" type="file" hidden>
+                            <button type="button" class="file-button" data-file-trigger="identityFile" data-file-label="identityFileName">
+                                <span class="file-button-text" id="identityFileName">choose file</span>
+                                <span class="file-button-hint">preview after selection</span>
+                            </button>
+                            <button type="button" class="secondary-action upload-trigger" data-upload-target="identityFile">upload</button>
+                        </div>
+                        <div class="upload-preview-hint" style="font-size: 14px; font-weight: 500;">Click to Preview available after Choosing File</div>
+                    </div>
+
+                    <!-- Languages Spoken with dynamic addition (max 3 extra) -->
+                    <label>Languages Spoken<span class="star">*</span></label>
+                    <div class="multi-select" id="languagesContainer">
+                        <label class="check-item">
+                            <input type="checkbox" name="languagesSpoken" value="English">
+                            <span>English</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" name="languagesSpoken" value="Hindi">
+                            <span>Hindi</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" name="languagesSpoken" value="Bengali">
+                            <span>Bengali</span>
+                        </label>
+                        <label class="check-item">
+                            <input type="checkbox" name="languagesSpoken" value="Tamil">
+                            <span>Tamil</span>
+                        </label>
+                    </div>
+
+                    <div class="language-addition-row" id="languageAdditionRow">
+                        <button type="button" id="showLanguageInputBtn" class="add-language-trigger-btn">+ Add Language</button>
+                    </div>
+
+                    <div class="section-label emergency-heading">
+                        <strong>Emergency Contact Details</strong>
+                        <span>(who we should notify incase of emergency)</span>
+                    </div>
+                    <div></div>
+
+                    <label for="emergencyName">Name<span class="star">*</span></label>
+                    <input id="emergencyName" name="emergencyName" type="text" placeholder="Name of Emergency contact" required>
+
+                    <label for="emergencyRelationship">Relationship<span class="star">*</span></label>
+                    <input id="emergencyRelationship" name="emergencyRelationship" type="text" placeholder="Relationship with emergency contact" required>
+
+                    <label for="emergencyPhone">Phone Number<span class="star">*</span></label>
+                    <div class="split-field phone-number-group">
+                        <select id="emergencyCode" name="emergencyCode" class="code-select">
+                            <option value="+91">IN</option>
+                            <option value="+1">US</option>
+                            <option value="+44">UK</option>
+                        </select>
+                        <input id="emergencyPhone" name="emergencyPhone" type="tel" placeholder="Enter phone number" required>
+                    </div>
+
+                 <div class="wizard-actions end">
+                    <button type="button" class="primary-action" data-next>Save and Next</button>
+                </div>
+            </section>
+
+            <section class="form-step" data-step="1">
+                <h2>Qualification</h2>
+
+                <div class="form-layout compact">
+                    <label for="highestDegree">Highest Degree<span class="star">*</span></label>
+                    <input id="highestDegree" name="highestDegree" type="text" placeholder="(e.g., MBBS, B.Sc Nursing, MD)" required>
+
+                    <label for="specialization">Specialization<span class="star">*</span></label>
+                    <input id="specialization" name="specialization" type="text" placeholder="(e.g., Pediatrics, Cardiology, General Surgery)" required>
+
+                    <label for="institutionName">Institution/University Name<span class="star">*</span></label>
+                    <input id="institutionName" name="institutionName" type="text" placeholder="Enter your Institution/University Name" required>
+
+                    <label for="yearOfPassing">Year of Passing<span class="star">*</span></label>
+                    <div class="field-with-icon compact-field">
+                        <input id="yearOfPassing" name="yearOfPassing" type="date" required>
+                    </div>
+
+                    <label for="registrationNumber">Registration/License Number<span class="star">*</span></label>
+                    <input id="registrationNumber" name="registrationNumber" type="text" placeholder="Enter your Registration/License Number" required>
+
+                    <label for="licenseExpiry">License Expiry Date<span class="star">*</span></label>
+                    <div class="field-with-icon compact-field">
+                        <input id="licenseExpiry" name="licenseExpiry" type="date" required>
+                    </div>
+
+                    <label for="additionalCertifications">Additional Certifications</label>
+                    <input id="additionalCertifications" name="additionalCertifications" type="text">
+
+                    <label for="qualificationDocuments">Upload Documents<span class="star">*</span></label>
+                    <div class="upload-row">
+                        <input id="qualificationDocuments" name="qualificationDocuments" type="file" hidden>
+                        <button type="button" class="file-button" data-file-trigger="qualificationDocuments" data-file-label="qualificationFileName">
+                            <span class="file-button-text" id="qualificationFileName">choose file</span>
+                            <span class="file-button-hint">preview after selection</span>
+                        </button>
+                        <button type="button" class="secondary-action upload-trigger" data-upload-target="qualificationDocuments">upload</button>
+                    </div>
+                </div>
+
+                <div class="wizard-actions between">
+                    <button type="button" class="secondary-action wide" data-prev>Back</button>
+                    <button type="button" class="primary-action" data-next>Save and Next</button>
+                </div>
+            </section>
+
+            <section class="form-step" data-step="2">
+                <h2>Experience</h2>
+
+                <div class="form-layout compact">
+                    <label for="experienceYears">Total Years of Experience<span class="star">*</span></label>
+                    <div class="field-with-action compact-field medium-field">
+                        <select id="experienceYears" name="experienceYears" required>
+                            <option value="">Select total experience</option>
+                            <option>0-1 Years</option>
+                            <option>1-3 Years</option>
+                            <option>3-5 Years</option>
+                            <option>5+ Years</option>
+                        </select>
+                        <span class="field-action">⌄</span>
+                    </div>
+
+                    <label for="organizationName">Current/Last Organization Name<span class="star">*</span></label>
+                    <input id="organizationName" name="organizationName" type="text" required>
+
+                    <label for="designationRole">Designation/Role<span class="star">*</span></label>
+                    <input id="designationRole" name="designationRole" type="text" placeholder="(e.g., Senior Resident, Staff Nurse)" required>
+
+                    <label for="departmentWorked">Department Worked In<span class="star">*</span></label>
+                    <input id="departmentWorked" name="departmentWorked" type="text" placeholder="(e.g., ICU, Emergency, OPD)" required>
+
+                    <label for="keySkills">Key Skills/Competencies<span class="star">*</span></label>
+                    <input id="keySkills" name="keySkills" type="text" placeholder="(e.g., Ventilator Management, Patient Triage)" required>
+                </div>
+
+                <div class="wizard-actions between">
+                    <button type="button" class="secondary-action wide" data-prev>Back</button>
+                    <button type="button" class="primary-action" data-next>Save and Next</button>
+                </div>
+            </section>
+
+            <section class="form-step" data-step="3">
+                <h2>Employment Details</h2>
+
+                <div class="form-layout compact">
+                    <label for="joiningDate">Date of Joining<span class="star">*</span></label>
+                    <div class="field-with-icon compact-field">
+                        <input id="joiningDate" name="joiningDate" type="date" required>
+                    </div>
+
+                    <label for="employeeType">Employee Type<span class="star">*</span></label>
+                    <div class="field-with-action medium-field">
+                        <select id="employeeType" name="employeeType" required>
+                            <option value="">(e.g., Part Time / Full Time)</option>
+                            <option>Part Time</option>
+                            <option>Full Time</option>
+                            <option>Contract</option>
+                        </select>
+                        <span class="field-action">⌄</span>
+                    </div>
+
+                    <label for="departmentName">Department<span class="star">*</span></label>
+                    <input id="departmentName" name="departmentName" type="text" required>
+
+                    <label for="designation">Designation<span class="star">*</span></label>
+                    <input id="designation" name="designation" type="text" required>
+                </div>
+
+                <div class="wizard-actions between">
+                    <button type="button" class="secondary-action wide" data-prev>Back</button>
+                    <button type="submit" class="primary-action">Submit</button>
+                </div>
+            </section>
+        </form>
+    </section>
+</main>
+
+<div id="footer-container"></div>
+
+<div class="master-modal" id="submitModal" aria-hidden="true">
+    <div class="master-modal-card">
+        <button class="modal-close" type="button" id="closeSubmitModal">×</button>
+        <h3>Profile Submitted</h3>
+        <p>Your Health Care Associate details have been captured successfully.</p>
+        <div class="modal-summary" id="summaryList"></div>
+        <button type="button" class="primary-action modal-done" id="confirmSubmit">Done</button>
+    </div>
+</div>
+
+<div class="master-modal" id="filePreviewModal" aria-hidden="true">
+    <div class="master-modal-card preview-modal-card">
+        <button class="modal-close" type="button" id="closePreviewModal">×</button>
+        <h3 id="previewTitle">File Preview</h3>
+        <p id="previewMeta">Selected file preview</p>
+        <div class="file-preview-surface" id="filePreviewSurface"></div>
+        <div class="wizard-actions end modal-actions">
+            <button type="button" class="secondary-action upload-trigger" id="changePreviewFile">Choose Another File</button>
+            <button type="button" class="primary-action modal-done" id="donePreview">Done</button>
+        </div>
+    </div>
+</div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<script src="js/navbar.js"></script>
+<script src="js/master.js"></script>
+
+<script>
+// Languages addition logic (max 3 extra languages)
+document.addEventListener('DOMContentLoaded', function() {
+    const languagesContainer = document.getElementById('languagesContainer');
+    const additionRow = document.getElementById('languageAdditionRow');
+    let addedCount = 0; // number of extra languages added (max 3)
+    let tempControls = null; // to hold temporary input + buttons
+
+    // Function to create a new language checkbox
+    function addLanguageCheckbox(langName) {
+        if (!langName.trim()) return false;
+        // Check for duplicate (case insensitive)
+        const existing = Array.from(languagesContainer.querySelectorAll('.check-item span')).some(span => span.innerText.toLowerCase() === langName.trim().toLowerCase());
+        if (existing) {
+            alert('This language already exists.');
+            return false;
+        }
+        const newItem = document.createElement('label');
+        newItem.className = 'check-item';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = 'languagesSpoken';
+        cb.value = langName.trim();
+        const span = document.createElement('span');
+        span.innerText = langName.trim();
+        newItem.appendChild(cb);
+        newItem.appendChild(span);
+        languagesContainer.appendChild(newItem);
+        addedCount++;
+        return true;
+    }
+
+    // Show temporary input for adding a new language
+    function showTempInput() {
+        if (tempControls) return; // already showing
+
+        const tempDiv = document.createElement('div');
+        tempDiv.className = 'temp-language-control';
+        tempDiv.innerHTML = `
+            <input type="text" class="temp-language-input" id="tempLangInput" placeholder="Enter language name">
+            <button type="button" class="temp-add-btn" id="tempAddBtn">Add</button>
+            <button type="button" class="temp-cancel-btn" id="tempCancelBtn">Cancel</button>
+        `;
+        additionRow.innerHTML = '';
+        additionRow.appendChild(tempDiv);
+        tempControls = tempDiv;
+
+        const input = tempDiv.querySelector('#tempLangInput');
+        const addBtn = tempDiv.querySelector('#tempAddBtn');
+        const cancelBtn = tempDiv.querySelector('#tempCancelBtn');
+
+        addBtn.addEventListener('click', function() {
+            const lang = input.value.trim();
+            if (lang === '') {
+                alert('Please enter a language name.');
+                return;
+            }
+            if (addLanguageCheckbox(lang)) {
+                // success: remove temp controls, restore main button if more additions allowed
+                removeTempControls();
+                if (addedCount < 3) {
+                    restoreMainButton();
+                } else {
+                    // max reached, remove button row entirely or show disabled message
+                    additionRow.innerHTML = '<span style="font-size:13px; color:#2b59ea;">Maximum 3 additional languages added</span>';
+                }
+            }
+        });
+
+        cancelBtn.addEventListener('click', function() {
+            removeTempControls();
+            restoreMainButton();
+        });
+
+        input.focus();
+    }
+
+    function removeTempControls() {
+        if (tempControls) {
+            tempControls.remove();
+            tempControls = null;
+        }
+    }
+
+    function restoreMainButton() {
+        if (addedCount >= 3) return;
+        additionRow.innerHTML = '';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'showLanguageInputBtn';
+        btn.className = 'add-language-trigger-btn';
+        btn.textContent = '+ Add Language';
+        btn.addEventListener('click', showTempInput);
+        additionRow.appendChild(btn);
+    }
+
+    // Initial setup: attach event to existing button (if any) or create it
+    const existingBtn = document.getElementById('showLanguageInputBtn');
+    if (existingBtn) {
+        existingBtn.addEventListener('click', showTempInput);
+    } else {
+        restoreMainButton();
+    }
+
+    // Also ensure that after adding languages, the checkboxes don't cause size change (handled by CSS)
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Care Associate List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/healthcare.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    
+</head>
+<body>
+
+  
+
+    <div class="page-container">
+        <h1 class="page-title">Health Care Associate List</h1>
+
+        <div class="table-card">
+            <table class="associate-table">
+                <thead>
+                    <tr>
+                        <th>First Name <span>▾</span></th>
+                        <th>Last Name <span>▾</span></th>
+                        <th>Date Of Birth <span>▾</span></th>
+                        <th>Role <span>▾</span></th>
+                        <th>Speciality <span>▾</span></th>
+                        <th>Date Of Joining <span>▾</span></th>
+                        <th class="actions-head">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Kumar</td>
+                        <td>Sekhar</td>
+                        <td>1980-10-12</td>
+                        <td>Doctor</td>
+                        <td>Cardiology</td>
+                        <td>2026-04-24</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit"><i>✎</i> Edit</button>
+                                <button class="btn-delete"><i>✕</i> Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Julia</td>
+                        <td>Doe</td>
+                        <td>1999-05-12</td>
+                        <td>Nurse</td>
+                        <td>General</td>
+                        <td>2026-05-22</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit"><i>✎</i> Edit</button>
+                                <button class="btn-delete"><i>✕</i> Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sunny</td>
+                        <td>Side</td>
+                        <td>1996-01-12</td>
+                        <td>Doctor</td>
+                        <td>Pediatrician</td>
+                        <td>2025-12-24</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit"><i>✎</i> Edit</button>
+                                <button class="btn-delete"><i>✕</i> Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rohit</td>
+                        <td>Sans</td>
+                        <td>1980-10-12</td>
+                        <td>Surgeon</td>
+                        <td>Orthopedics</td>
+                        <td>2026-01-12</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit"><i>✎</i> Edit</button>
+                                <button class="btn-delete"><i>✕</i> Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+
+
+
+</body>
+</html>

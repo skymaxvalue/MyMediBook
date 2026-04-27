@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Associate Schedule</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/associate-schedule.css">
+
+
+</head>
+<body>
+
+<!-- <div id="navbar-container"></div> -->
+
+<main class="schedule-page">
+    <header class="schedule-header">
+        <h1>Associate Schedule</h1>
+    </header>
+
+    <section class="schedule-stepper" aria-label="Associate schedule progress">
+        <div class="progress-line">
+            <span class="progress-line-fill"></span>
+        </div>
+        <button type="button" class="schedule-step active" data-step-target="0">
+            <span class="step-circle"></span>
+            <span class="step-label">Step 1:</span>
+            <strong>Select Associate</strong>
+        </button>
+        <button type="button" class="schedule-step" data-step-target="1">
+            <span class="step-circle"></span>
+            <span class="step-label">Step 2:</span>
+            <strong>Availability</strong>
+        </button>
+        <button type="button" class="schedule-step" data-step-target="2">
+            <span class="step-circle"></span>
+            <span class="step-label">Step 3:</span>
+            <strong>Consultation</strong>
+        </button>
+    </section>
+
+    <section class="schedule-card">
+        <div class="shape shape-left shape-top"></div>
+        <div class="shape shape-right shape-mid"></div>
+       
+
+        <form id="scheduleForm" novalidate>
+            <section class="schedule-panel active" data-step="0">
+                <h2>Select Associate</h2>
+
+                <div class="schedule-grid schedule-grid-compact">
+                    <label for="associateDepartment">Department<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select id="associateDepartment" required>
+                            <option value="">Select Department</option>
+                            <option value="GENERAL">GENERAL</option>
+                            <option value="CARDIOLOGY">CARDIOLOGY</option>
+                            <option value="ORTHOPEDICS">ORTHOPEDICS</option>
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                    </div>
+
+                    <label for="associateName">Full Name<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select id="associateName" required>
+                            <option value="">Select Full Name</option>
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                    </div>
+
+                    <label for="associateRole">Role<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select id="associateRole" required>
+                            <option value="">Select Role</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="Consultant">Consultant</option>
+                            <option value="Specialist">Specialist</option>
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                    </div>
+
+                    <label for="associateSpeciality">Speciality</label>
+                    <input id="associateSpeciality" type="text" value="Auto Displayed" readonly>
+                </div>
+
+                <div class="schedule-actions between">
+                    <button type="button" class="action-btn secondary" id="stepOneBack">Back</button>
+                    <button type="button" class="action-btn primary" id="openAssociatePopup">Save and Next</button>
+                </div>
+            </section>
+
+            <section class="schedule-panel" data-step="1">
+                <h2>Availability</h2>
+
+                <div class="subsection-label">Availability Period</div>
+                <div class="availability-two-col">
+                    <div class="availability-block">
+                        <label for="fromDate">From Date<span class="star">*</span></label>
+                        <div class="date-shell">
+                            <input id="fromDate" type="date" required>
+                            
+                        </div>
+                    </div>
+                    <div class="availability-block">
+                        <label for="toDate">To Date<span class="star">*</span></label>
+                        <div class="date-shell">
+                            <input id="toDate" type="date" required>
+                           
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-label top-gap">Availability Time</div>
+                <div class="availability-two-col">
+                    <div class="availability-block">
+                        <label for="fromTime">From Time<span class="star">*</span></label>
+                        <div class="select-shell time-shell">
+                            <select id="fromTime" required>
+                                <option value="10:00 AM">10:00 AM</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="12:00 PM">12:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                    <div class="availability-block">
+                        <label for="toTime">To Time<span class="star">*</span></label>
+                        <div class="select-shell time-shell">
+                            <select id="toTime" required>
+                                <option value="10:00 PM">10:00 PM</option>
+                                <option value="09:00 PM">09:00 PM</option>
+                                <option value="08:00 PM">08:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-label top-gap">Availability Days</div>
+                <div class="day-pills" id="dayPills">
+                    <button type="button" class="day-pill active" data-day="Mon">Mon</button>
+                    <button type="button" class="day-pill active" data-day="Tue">Tue</button>
+                    <button type="button" class="day-pill" data-day="Wed">Wed</button>
+                    <button type="button" class="day-pill active" data-day="Thu">Thu</button>
+                    <button type="button" class="day-pill active" data-day="Fri">Fri</button>
+                    <button type="button" class="day-pill" data-day="Sat">Sat</button>
+                    <button type="button" class="day-pill" data-day="Sun">Sun</button>
+                </div>
+
+                <div class="subsection-label top-gap">Breaks</div>
+                <div class="availability-two-col">
+                    <div class="availability-block">
+                        <label for="breakFrom">From Time</label>
+                        <div class="select-shell time-shell">
+                            <select id="breakFrom" required>
+                                <option value="02:00 PM">02:00 PM</option>
+                                <option value="01:00 PM">01:00 PM</option>
+                                <option value="03:00 PM">03:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                    <div class="availability-block">
+                        <label for="breakTo">To Time</label>
+                        <div class="select-shell time-shell">
+                            <select id="breakTo" required>
+                                <option value="06:00 PM">06:00 PM</option>
+                                <option value="05:00 PM">05:00 PM</option>
+                                <option value="07:00 PM">07:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-actions between">
+                    <button type="button" class="action-btn secondary" data-prev>Back</button>
+                    <button type="button" class="action-btn primary" data-next>Save and Next</button>
+                </div>
+            </section>
+
+            <section class="schedule-panel" data-step="2">
+                <h2>Consultation</h2>
+
+                <div class="consult-layout">
+                    <div class="consult-block">
+                        <label for="consultDuration">Consultation Duration</label>
+                        <div class="select-shell consult-shell">
+                            <select id="consultDuration" required>
+                                <option value="30 Minutes">30 Minutes</option>
+                                <option value="45 Minutes">45 Minutes</option>
+                                <option value="60 Minutes">60 Minutes</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+
+                    <div class="consult-block">
+                        <label for="averageCharge">Average Charge Per Visit</label>
+                        <input id="averageCharge" type="text" value="Rs. 600" required>
+                    </div>
+                </div>
+
+                <div class="schedule-actions between">
+                    <button type="button" class="action-btn secondary" data-prev>Back</button>
+                    <button type="submit" class="action-btn primary">Confirm</button>
+                </div>
+            </section>
+        </form>
+    </section>
+</main>
+
+<div class="schedule-modal" id="associateModal" aria-hidden="true">
+    <div class="schedule-modal-card">
+        <button type="button" class="modal-close" id="closeAssociateModal">×</button>
+        <h3>Matching Record Found</h3>
+        <div class="associate-preview">
+            <div class="associate-photo">
+                <img src="images/doc.jpg" alt="Associate">
+            </div>
+            <div class="associate-data">
+                <div><span>Department:</span> <strong id="modalDepartment">GENERAL</strong></div>
+                <div><span>Full Name:</span> <strong id="modalName">Dr. Kumar</strong></div>
+                <div><span>Role:</span> <strong id="modalRole">Doctor</strong></div>
+                <div><span>Speciality:</span> <strong id="modalSpeciality">Cardiology</strong></div>
+            </div>
+        </div>
+        <div class="schedule-actions between modal-actions">
+            <button type="button" class="action-btn secondary" id="cancelAssociateModal">Back</button>
+            <button type="button" class="action-btn primary" id="confirmAssociateModal">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="schedule-modal" id="successModal" aria-hidden="true">
+    <div class="schedule-modal-card success-card">
+        <button type="button" class="modal-close" id="closeSuccessModal">×</button>
+        <h3>Schedule Confirmed</h3>
+        <p>The associate schedule has been saved successfully.</p>
+        <div class="summary-grid" id="scheduleSummary"></div>
+        <button type="button" class="action-btn primary full" id="doneScheduleModal">Done</button>
+    </div>
+</div>
+
+
+<div id="footer-container"></div>
+
+    <script>
+    fetch("footer.html")
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("footer-container").innerHTML = data;
+    });
+    </script>
+
+
+<script src="js/navbar.js"></script>
+<script src="js/associate-schedule.js"></script>
+</body>
+</html>
