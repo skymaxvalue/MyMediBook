@@ -1,0 +1,86 @@
+.dashboard-container {
+    padding: 30px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+.dashboard-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #cfd8ff;
+}
+
+.appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.appointment-table thead {
+    background: #f0f2f8;
+}
+
+.appointment-table th {
+    text-align: left;
+    padding: 14px;
+    font-weight: 600;
+}
+
+.appointment-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.appointment-table tbody tr:hover {
+    background: #f9fbff;
+}
+
+.highlight {
+    background: #f3f4f7;
+}
+
+.status {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+}
+
+.completed {
+    background: #25a87a;
+}
+
+.upcoming {
+    background: #3b5bdb;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.new-btn {
+    background: #3b5bdb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.new-btn:hover {
+    background: #2f4acb;
+}
+
+.sort-icon {
+    font-size: 12px;
+    margin-left: 6px;
+    color: #999;
+}
+
+th.active {
+    color: #3b5bdb;
+}

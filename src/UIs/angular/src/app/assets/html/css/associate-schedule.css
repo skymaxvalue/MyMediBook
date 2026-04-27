@@ -1,4 +1,4 @@
-/* ===== ASSOCIATE SCHEDULE - FULL CSS WITH GLASS MORPHISM ===== */
+
 
 .schedule-page {
       max-width: 1160px;
@@ -20,7 +20,6 @@
     color: #2f63c9;
 }
 
-/* ===== STEPPER (unchanged) ===== */
 .schedule-stepper {
     position: relative;
     max-width: 900px;
@@ -105,7 +104,7 @@
     font-weight: 700;
 }
 
-/* ===== GLASS MORPHISM CARD ===== */
+
 .schedule-card {
     position: relative;
     max-width: 1000px;
@@ -127,8 +126,6 @@
 }
 
 
-
-/* ===== PANELS ===== */
 .schedule-panel {
     display: none;
     position: relative;
@@ -148,7 +145,6 @@
     color: #3f3f3f;
 }
 
-/* ===== FORM GRIDS ===== */
 .schedule-grid {
     display: grid;
     grid-template-columns: 220px minmax(0, 1fr);
@@ -195,7 +191,7 @@
     color: #b4b4b4;
 }
 
-/* ===== SELECT & DATE SHELLS ===== */
+
 .select-shell,
 .date-shell {
     position: relative;
@@ -230,7 +226,7 @@
     border-left: 0;
 }
 
-/* ===== AVAILABILITY TWO-COLUMN ===== */
+
 .availability-two-col {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -258,7 +254,7 @@
     max-width: 220px;
 }
 
-/* ===== DAY PILLS ===== */
+
 .day-pills {
     max-width: 720px;
     margin: 0 auto;
@@ -285,7 +281,6 @@
     border-color: #9ed8cf;
 }
 
-/* ===== CONSULTATION LAYOUT ===== */
 .consult-layout {
     max-width: 470px;
     margin: 0 auto;
@@ -298,7 +293,7 @@
     gap: 16px;
 }
 
-/* ===== BUTTONS & ACTIONS ===== */
+
 .schedule-actions {
     max-width: 800px;
     margin: 56px auto 0;
@@ -336,7 +331,7 @@
     width: 100%;
 }
 
-/* ===== MODALS ===== */
+
 .schedule-modal {
     position: fixed;
     inset: 0;
@@ -505,10 +500,10 @@
     color: #e74c3c;
     font-size: 18px;
     font-weight: bold;
-    vertical-align: middle; /* Added to ensure it aligns nicely with text */
+    vertical-align: middle; 
 }
 
-/* ===== FIX: fit-content date input + bring icon closer ===== */
+
 
 .date-shell {
     max-width: fit-content !important;
@@ -516,12 +511,12 @@
 
 .date-shell input {
     width: fit-content !important;
-    min-width: 180px; /* keeps it usable */
-    padding: 0 10px !important; /* reduce side spacing */
+    min-width: 180px; 
+    padding: 0 10px !important; 
     height: 44px !important;
 }
 
-/* reduce gap between text and native calendar icon */
+
 input[type="date"]::-webkit-calendar-picker-indicator {
     margin-left: 4px;
 }

@@ -1,4 +1,4 @@
-/* --- Global Reset & Variables --- */
+
 * {
     margin: 0;
     padding: 0;
@@ -8,7 +8,7 @@
 :root {
     --primary-blue: #2e66ff;
     --hover-blue: #1a51e6;
-    --bg-light: #f4f7fc; /* Subtle blue tint as seen in Desktop-105 */
+    --bg-light: #f4f7fc;
     --text-header: #2c467a;
     --text-main: #334155;
     --border-color: #e2e8f0;
@@ -41,7 +41,7 @@ body {
     letter-spacing: -0.5px;
 }
 
-/* --- Table Card --- */
+
 .table-card {
     background: #ffffff;
     border-radius: 20px;
@@ -57,7 +57,6 @@ body {
     text-align: left;
 }
 
-/* Header Styles */
 .associate-table th {
     background-color: #f8fafc;
     padding: 18px 14px;
@@ -74,7 +73,6 @@ body {
     margin-left: 4px;
 }
 
-/* Row & Cell Styles */
 .associate-table td {
     padding: 20px 14px;
     font-size: 15px;
@@ -91,7 +89,6 @@ body {
     background-color: #fcfdfe;
 }
 
-/* --- Action Buttons --- */
 .action-buttons {
     display: flex;
     gap: 10px;

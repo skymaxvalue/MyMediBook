@@ -357,3 +357,111 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+
+// Lang addition
+document.addEventListener('DOMContentLoaded', function() {
+    const languagesContainer = document.getElementById('languagesContainer');
+    const additionRow = document.getElementById('languageAdditionRow');
+    let addedCount = 0; 
+    let tempControls = null; 
+
+  
+    function addLanguageCheckbox(langName) {
+        if (!langName.trim()) return false;
+      
+        const existing = Array.from(languagesContainer.querySelectorAll('.check-item span')).some(span => span.innerText.toLowerCase() === langName.trim().toLowerCase());
+        if (existing) {
+            alert('This language already exists.');
+            return false;
+        }
+        const newItem = document.createElement('label');
+        newItem.className = 'check-item';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = 'languagesSpoken';
+        cb.value = langName.trim();
+        const span = document.createElement('span');
+        span.innerText = langName.trim();
+        newItem.appendChild(cb);
+        newItem.appendChild(span);
+        languagesContainer.appendChild(newItem);
+        addedCount++;
+        return true;
+    }
+
+ 
+    function showTempInput() {
+        if (tempControls) return;
+
+        const tempDiv = document.createElement('div');
+        tempDiv.className = 'temp-language-control';
+        tempDiv.innerHTML = `
+            <input type="text" class="temp-language-input" id="tempLangInput" placeholder="Enter language name">
+            <button type="button" class="temp-add-btn" id="tempAddBtn">Add</button>
+            <button type="button" class="temp-cancel-btn" id="tempCancelBtn">Cancel</button>
+        `;
+        additionRow.innerHTML = '';
+        additionRow.appendChild(tempDiv);
+        tempControls = tempDiv;
+
+        const input = tempDiv.querySelector('#tempLangInput');
+        const addBtn = tempDiv.querySelector('#tempAddBtn');
+        const cancelBtn = tempDiv.querySelector('#tempCancelBtn');
+
+        addBtn.addEventListener('click', function() {
+            const lang = input.value.trim();
+            if (lang === '') {
+                alert('Please enter a language name.');
+                return;
+            }
+            if (addLanguageCheckbox(lang)) {
+  
+                removeTempControls();
+                if (addedCount < 3) {
+                    restoreMainButton();
+                } else {
+        
+                    additionRow.innerHTML = '<span style="font-size:13px; color:#2b59ea;">Maximum 3 additional languages added</span>';
+                }
+            }
+        });
+
+        cancelBtn.addEventListener('click', function() {
+            removeTempControls();
+            restoreMainButton();
+        });
+
+        input.focus();
+    }
+
+    function removeTempControls() {
+        if (tempControls) {
+            tempControls.remove();
+            tempControls = null;
+        }
+    }
+
+    function restoreMainButton() {
+        if (addedCount >= 3) return;
+        additionRow.innerHTML = '';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'showLanguageInputBtn';
+        btn.className = 'add-language-trigger-btn';
+        btn.textContent = '+ Add Language';
+        btn.addEventListener('click', showTempInput);
+        additionRow.appendChild(btn);
+    }
+
+
+    const existingBtn = document.getElementById('showLanguageInputBtn');
+    if (existingBtn) {
+        existingBtn.addEventListener('click', showTempInput);
+    } else {
+        restoreMainButton();
+    }
+
+   
+});

@@ -516,7 +516,7 @@ select {
     padding-right: 50px;
 }
 
-/* CUSTOM BLUE BLOCK */
+
 .field-action {
     position: absolute;
     right: 0;
@@ -593,7 +593,7 @@ select {
     border-radius: 6px;
 }
 
-/* hover */
+
 .check-item:hover {
     border-color: #2f63c9;
 }
@@ -619,9 +619,7 @@ select {
     color: #2f63c9;
     letter-spacing: 0.2px;
 }
-/* =====================================
-   MASTER LAYOUT
-===================================== */
+
 .master-page {
     max-width: 1160px;
     margin: 0 auto;
@@ -815,7 +813,7 @@ select {
     box-shadow: 0 10px 22px rgba(43, 89, 234, 0.18);
 }
 
-/* Upload controls sized consistently and easier to use */
+
 .upload-row {
     display: inline-flex;
     align-items: stretch;
@@ -863,9 +861,6 @@ select {
 
 
 
-/* =====================================
-   FIGMA PERFECT STEPPER
-===================================== */
 
 .stepper {
     display: flex;
@@ -873,7 +868,7 @@ select {
     margin: 0 auto 30px;
 }
 
-/* STEP BASE */
+
 .step-chip {
     position: relative;
     flex: 1;
@@ -916,14 +911,12 @@ clip-path: polygon(
 .step-chip:nth-child(3){z-index:2;}
 .step-chip:nth-child(4){z-index:1;}
 
-/* =====================================
-   MAIN SHAPE LAYER (KEY FIX)
-===================================== */
+
 .step-chip::before {
     content: "";
     position: absolute;
 
-    inset: 1px;   /* 🔥 THIS FIXES BORDER VISIBILITY */
+    inset: 1px;  
 
     background: #f8f9fc;
     
@@ -932,9 +925,7 @@ clip-path: polygon(
     z-index: 1;
 }
 
-/* =====================================
-   TEXT
-===================================== */
+
 .step-chip > * {
     position: relative;
     z-index: 2;
@@ -958,9 +949,7 @@ clip-path: polygon(
     color: #6c6c6c;
 }
 
-/* =====================================
-   COMPLETED
-===================================== */
+
 .step-chip.completed::before {
     background: linear-gradient(135deg,#1f49df,#2e68f2);
    
@@ -970,14 +959,12 @@ clip-path: polygon(
     color: #fff;
 }
 
-/* =====================================
-   ACTIVE (FIGMA STYLE)
-===================================== */
+
 .step-chip.active::before {
     background: #fff;
     
 
-    inset: 0;   /* 🔥 IMPORTANT → ensures full arrow border */
+    inset: 0;  
 }
 
 
@@ -990,7 +977,7 @@ clip-path: polygon(
 }
 
 .split-field input {
-    border-left: none;          /* 🔥 removes gap */
+    border-left: none;   
     border-radius: 0 10px 10px 0;
 }
 
@@ -998,19 +985,19 @@ clip-path: polygon(
     border-radius: 10px 0 0 10px;
 }
 
-/* Shorten Date of Birth, Employee ID, and Phone Number fields */
+
 #dateOfBirth,
 #employeeId {
     max-width: 280px;
     width: 100%;
 }
 
-/* Shorten phone number container and make it seamless */
+
 .phone-number-group {
     max-width: 380px;
 }
 
-/* Seamless blue country code box - remove border radius on left side of number input */
+
 .split-field .code-select {
     background: linear-gradient(135deg, #2b59ea, #3570f6);
     color: #fff;
@@ -1025,7 +1012,7 @@ clip-path: polygon(
     border-left: none;
 }
 
-/* Preview hint text styling */
+
 .upload-preview-hint {
     font-size: 12px;
     color: #6a8bbf;
@@ -1034,7 +1021,7 @@ clip-path: polygon(
     display: block;
 }
 
-/* Add language control styling */
+
 .add-language-control {
     grid-column: 2 / 3;
     display: flex;
@@ -1070,7 +1057,7 @@ clip-path: polygon(
     transform: translateY(-1px);
 }
 
-/* Keep existing check-item styles but ensure new items match */
+
 .multi-select {
     display: flex;
     flex-wrap: wrap;
@@ -1085,7 +1072,7 @@ clip-path: polygon(
 
 
 
-/* Emergency heading spans both columns */
+
 .emergency-full-row {
     grid-column: 1 / -1;
     margin-bottom: -10px;
@@ -1117,7 +1104,7 @@ clip-path: polygon(
     border-left: none;
 }
 
-/* Prevent checkbox items from growing when checked */
+
 .check-item {
     transition: none !important;
     min-height: 48px;
@@ -1142,7 +1129,7 @@ clip-path: polygon(
     background: transparent;
 }
 
-/* Language addition row */
+
 .language-addition-row {
     grid-column: 2 / 3;
     display: flex;
@@ -1228,7 +1215,6 @@ clip-path: polygon(
     background: #fff;
 }
 
-/* Remove all animations/effects from choose file button */
 .file-button,
 .file-button:hover {
     transition: none !important;
