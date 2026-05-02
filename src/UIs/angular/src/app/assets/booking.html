@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Patient Information</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/booking.css">
+
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<div class="availability-container">
+
+<h2>Patient Information</h2>
+
+<div class="schedule-box">
+
+
+<form id="bookingForm">
+
+<div class="form-grid">
+
+<label>First Name</label>
+<input type="text" id="firstName" placeholder="Enter patient first name" required>
+
+<label>Last Name</label>
+<input type="text" id="lastName" placeholder="Enter patient last name" required>
+
+<label>Date Of Birth</label>
+<input type="date" id="dateOfBirth" required>
+
+<label>Age</label>
+<div class="inline-group age-type-group">
+    <input type="number" id="age" placeholder="Enter age" required style="width: 120px;">
+
+    <label class="age-option">
+        <input type="radio" name="ageType" value="years" required>
+        <span>Year(s)</span>
+    </label>
+
+    <label class="age-option">
+        <input type="radio" name="ageType" value="months" required>
+        <span>Month(s)</span>
+    </label>
+</div>
+
+<label>Gender</label>
+<select required>
+<option value="" disabled selected>Select patient gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+
+
+  <label>Do you have insurance?</label>
+<div class="mobile-radio-group">
+
+    <label class="radio-item">
+        <input type="radio" name="insurance" value="yes" required>
+        <span>Yes</span>
+    </label>
+
+    <label class="radio-item">
+        <input type="radio" name="insurance" value="no" required>
+        <span>No</span>
+    </label>
+
+</div>
+
+<label>Primary Address</label>
+<textarea placeholder="Enter patient address" required></textarea>
+
+<label>Contact Number</label>
+<input type="tel" id="phone" placeholder="Enter contact number" required>
+
+<label>Email Address</label>
+<input type="email" placeholder="Enter email address" required>
+
+<label>Dr. Visit Purpose</label>
+<textarea placeholder="Enter visit purpose / symptoms" required></textarea>
+
+<label>Type Of Visit</label>
+<select required>
+<option value="" disabled selected>Select type of visit</option>
+<option>Consultation</option>
+<option>Follow-up</option>
+</select>
+
+<label>OTP Verification</label>
+
+<div class="mobile-radio-group otp-method-group">
+
+    <label class="otp-option">
+        <input type="radio" name="otp" value="mobile" required>
+        <span>Mobile Number</span>
+    </label>
+
+    <label class="otp-option">
+        <input type="radio" name="otp" value="email" required>
+        <span>Email Address</span>
+    </label>
+
+</div>
+
+</div>
+
+<div class="form-actions">
+<button type="submit" class="book-btn">Confirm</button>
+<button type="reset" class="clear-btn">Clear</button>
+</div>
+
+</form>
+
+
+</div>
+</div>
+
+
+<div id="insuranceModal" class="modal">
+<div class="modal-content">
+<div class="close-icon" onclick="closeInsuranceModal()">âœ–</div>
+
+<h2>Insurance Details</h2>
+
+<div class="form-grid">
+
+    <label>Provider Name</label>
+    <input id="provider" placeholder="Enter Value" required>
+
+    <label>Insurance Policy Id</label>
+   <input id="policy" placeholder="Enter Value" required>
+
+    <label>Insurance Group Id</label>
+    <input id="groupId" placeholder="Enter Value" required>
+
+
+    <label>Primary Holder Name</label>
+    <input id="holderName" placeholder="Enter Value" required>
+
+    <label>Primary Address</label>
+    <input id="insuranceAddress" placeholder="Enter Value" required>
+
+
+</div>
+<div class="form-actions">
+<button class="book-btn" onclick="confirmInsurance()">Confirm</button>
+<button class="cancel-btn" onclick="closeInsuranceModal()">Cancel</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="paymentModal" class="modal">
+  <div class="modal-content">
+
+    <div class="close-icon" onclick="closePaymentModal()">âœ–</div>
+
+    <h2 class="modal-title">Payment Details</h2>
+
+    <div class="form-grid">
+
+        <label>Payment Type</label>
+        <input id="paymentType" placeholder="Enter Value" required>
+
+        <label>Card Holder Name</label>
+        <input id="cardHolder" placeholder="Enter Value" required>
+
+        <label>Card Number</label>
+        <input id="cardNumber" placeholder="Enter Value" required>
+
+        <label>Expiry Date</label>
+        <div class="inline-row">
+            <input id="expiry" placeholder="MM/YY" required>
+            <span class="cvv-label">CVV</span>
+            <input id="cvv" placeholder="XXX" required>
+
+            
+
+        </div>
+
+    </div>
+
+  
+    <div class="form-actions">
+        <button onclick="confirmPayment()">Confirm</button>
+        <button class="cancel-btn" onclick="closePaymentModal()">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+<div id="otpModal" class="modal">
+
+  <div class="modal-content otp-wrapper">
+
+
+    <div class="close-icon" onclick="closeOtp()">âœ–</div>
+
+    <div class="otp-container">
+
+      <div class="otp-left">
+        <div class="doctor-card">
+          <div class="doctor-img-box">
+            <img src="images/doc.jpg">
+          </div>
+          <h3>Dr. Kumar</h3>
+          <p>MBBS</p>
+          <span class="tag">GENERAL</span>
+        </div>
+      </div>
+
+     
+      <div class="otp-right">
+
+        <h2>OTP VERIFICATION</h2>
+
+        <p class="otp-text">
+          Please enter the OTP send to your mobile number /
+          e-mail account to confirm your appointment.
+        </p>
+
+        
+        <div class="otp-input-group">
+          <input maxlength="1" class="otp-input">
+          <input maxlength="1" class="otp-input">
+          <input maxlength="1" class="otp-input">
+          <input maxlength="1" class="otp-input">
+        </div>
+
+      
+        <div class="otp-bottom">
+          <span>Remaining time: <b id="timer">00:59s</b></span>
+          <span>Didn't get the code? <a href="#">Resend</a></span>
+        </div>
+
+        <div class="otp-actions">
+          <button class="verify-btn" onclick="verifyOtp()">Verify</button>
+          <button class="cancel-btn" onclick="cancelOtp()">Cancel</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<script src="js/navbar.js"></script>
+<script src="js/booking.js"></script>
+
+</body>
+</html>

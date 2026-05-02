@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Associate Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/associate-schedule-database-edit.css">
+</head>
+<body>
+<div class="master-page">
+   
+
+        <h1 class="page-title">Edit Associate Schedule</h1>
+        <p class="page-subtitle">Click on the Pencil Icon to Edit Entries</p>
+        <div class="form-center">
+        <div class="glass-card edit-card">
+            <div class="shape shape-left shape-top" aria-hidden="true"></div>
+<div class="shape shape-right shape-end" aria-hidden="true"></div>
+            <form id="editForm" novalidate>
+                <div class="edit-grid">
+                    <label>Name</label>
+                    <div class="static-value" id="nameDisplay"></div>
+                    <div></div>
+
+                    <label>Department</label>
+                    <div class="field-inline">
+                        <input id="department" type="text" value="" readonly>
+                        <button class="icon-pencil" type="button" data-open-modal="departmentModal" aria-label="Edit department">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+
+                    <label>Role</label>
+                    <div class="field-inline">
+                        <input id="role" type="text" value="" readonly>
+                        <button class="icon-pencil" type="button" data-open-modal="roleModal" aria-label="Edit role">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+
+                    <label>Speciality</label>
+                    <div class="field-inline field-inline-small">
+                        <input id="speciality" type="text" value="" disabled>
+                        <button class="icon-pencil" type="button" data-focus-target="speciality" aria-label="Edit speciality">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+                </div>
+
+                <section class="section-block">
+                    <h2>Availability Period</h2>
+                    <div class="two-col">
+                        <div class="stack">
+                            <label>From Date</label>
+                            <div class="field-inline date-field">
+                                <input id="fromDate" type="date" value="" disabled>
+                                <button class="icon-pencil" type="button" data-focus-target="fromDate" aria-label="Edit from date">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="stack">
+                            <label>To Date</label>
+                            <div class="field-inline date-field">
+                                <input id="toDate" type="date" value="" disabled>
+                                <button class="icon-pencil" type="button" data-focus-target="toDate" aria-label="Edit to date">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section-block">
+                    <h2>Availability Time</h2>
+                    <div class="two-col">
+                        <div class="stack">
+                            <label>From Time</label>
+                            <div class="field-inline time-field">
+                                <select id="fromTime" disabled>
+                                    <option>10:00 AM</option>
+                                    <option>09:00 AM</option>
+                                    <option>11:00 AM</option>
+                                    <option>02:00 PM</option>
+                                </select>
+                                <button class="icon-pencil" type="button" data-focus-target="fromTime" aria-label="Edit from time">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="stack">
+                            <label>To Time</label>
+                            <div class="field-inline time-field">
+                                <select id="toTime" disabled>
+                                    <option>10:00 PM</option>
+                                    <option>06:00 PM</option>
+                                    <option>08:00 PM</option>
+                                </select>
+                                <button class="icon-pencil" type="button" data-focus-target="toTime" aria-label="Edit to time">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section-block">
+                    <h2>Availability Days</h2>
+                    <div class="days-row">
+                        <label class="day-pill active locked"><input type="checkbox" checked disabled><span>Mon</span></label>
+                        <label class="day-pill active locked"><input type="checkbox" checked disabled><span>Tue</span></label>
+                        <label class="day-pill locked"><input type="checkbox" disabled><span>Wed</span></label>
+                        <label class="day-pill active locked"><input type="checkbox" checked disabled><span>Thu</span></label>
+                        <label class="day-pill active locked"><input type="checkbox" checked disabled><span>Fri</span></label>
+                        <label class="day-pill locked"><input type="checkbox" disabled><span>Sat</span></label>
+                        <label class="day-pill locked"><input type="checkbox" disabled><span>Sun</span></label>
+                        <button class="icon-pencil inline-pencil" id="daysEditBtn" type="button" aria-label="Edit days">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="section-block">
+                    <h2>Breaks</h2>
+                    <div class="two-col">
+                        <div class="stack">
+                            <label>From Time</label>
+                            <div class="field-inline time-field">
+                                <select id="breakFrom" disabled>
+                                    <option>02:00 PM</option>
+                                    <option>01:00 PM</option>
+                                    <option>03:00 PM</option>
+                                </select>
+                                <button class="icon-pencil" type="button" data-focus-target="breakFrom" aria-label="Edit break from time">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="stack">
+                            <label>To Time</label>
+                            <div class="field-inline time-field">
+                                <select id="breakTo" disabled>
+                                    <option>06:00 PM</option>
+                                    <option>05:00 PM</option>
+                                    <option>07:00 PM</option>
+                                </select>
+                                <button class="icon-pencil" type="button" data-focus-target="breakTo" aria-label="Edit break to time">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section-block">
+                    <h2>Consultation Duration</h2>
+                    <div class="single-field">
+                        <input id="consultationDuration" type="text" value="30 Minutes" disabled>
+                        <button class="icon-pencil" type="button" data-focus-target="consultationDuration" aria-label="Edit consultation duration">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="section-block">
+                    <h2>Average Charge Per Visit</h2>
+                    <div class="single-field single-field-small">
+                        <input id="charge" type="text" value="600Rs" disabled>
+                        <button class="icon-pencil" type="button" data-focus-target="charge" aria-label="Edit charge">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <div class="actions-row">
+                    <button type="button" class="secondary-btn" id="backBtn">Back</button>
+                    <button type="button" class="primary-btn" id="saveBtn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </section>
+</div>
+
+<!-- Department Modal -->
+<div class="modal-overlay" id="departmentModal" aria-hidden="true">
+    <div class="modal-card">
+        <button class="modal-close" data-close-modal="departmentModal">✕</button>
+        <h3>Department Assignment</h3>
+        <div class="modal-grid">
+            <label>Dept ID</label>
+            <select id="deptIdDropdown">
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+            </select>
+            <label>Department</label>
+            <input type="text" id="deptNameField" readonly>
+        </div>
+        <div class="modal-actions">
+            <button class="secondary-btn" data-close-modal="departmentModal">Back</button>
+            <button class="primary-btn" id="deptConfirmBtn">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Role Modal -->
+<div class="modal-overlay" id="roleModal" aria-hidden="true">
+    <div class="modal-card">
+        <button class="modal-close" data-close-modal="roleModal">✕</button>
+        <h3>Role Assignment</h3>
+        <div class="modal-grid">
+            <label>Dept ID</label>
+            <select id="roleDeptIdSelect">
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+            </select>
+            <label>Role ID</label>
+            <select id="roleIdDropdown"></select>
+            <label>Role Name</label>
+            <input type="text" id="roleNameField" readonly>
+        </div>
+        <div class="modal-actions">
+            <button class="secondary-btn" data-close-modal="roleModal">Back</button>
+            <button class="primary-btn" id="roleConfirmBtn">Confirm</button>
+        </div>
+    </div>
+</div>
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+<script src="js/associate-schedule-database-edit.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Care Associate List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/associate-database.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+      
+
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <div class="shape shape--left" aria-hidden="true"></div>
+        <div class="shape shape--right" aria-hidden="true"></div>
+
+        <div class="page-container">
+            <h1 class="gradient-title">Health Care Associate List</h1>
+
+            <div class="glass-card">
+                <table class="data-table" id="associateTable">
+                    <thead>
+                        <tr>
+                            <th data-sort="0">First Name <span class="sort-icon">▼</span></th>
+                            <th data-sort="1">Last Name <span class="sort-icon">▼</span></th>
+                            <th data-sort="2">Date Of Birth <span class="sort-icon">▼</span></th>
+                            <th data-sort="3">Role <span class="sort-icon">▼</span></th>
+                            <th data-sort="4">Speciality <span class="sort-icon">▼</span></th>
+                            <th data-sort="5">Date Of Joining <span class="sort-icon">▼</span></th>
+                            <th class="actions-head">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal modal--hidden">
+        <div class="modal__box">
+            <p id="deleteText" class="modal__text">Delete this associate?</p>
+            <div class="modal__actions">
+                <button id="confirmDelete" class="btn btn--delete">Yes, Delete</button>
+                <button id="cancelDelete" class="btn btn--cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+<script src="js/associate-database.js"></script>
+</body>
+</html>

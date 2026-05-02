@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Appointment Confirmation Failed</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/failed.css">
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<div class="container">
+
+    <div class="failed-title">Doctor's Appointment Confirmation Failed</div>
+
+
+    <div class="top-section">
+        <div class="doctor-card">
+            <img src="images/doc.jpg" alt="Doctor">
+            <h3>Dr. Kumar</h3>
+            <p>MBBS</p>
+            <span class="tag">GENERAL</span>
+        </div>
+
+        <div class="details">
+            <label>Patient Name</label>
+            <input id="patientName" readonly>
+
+            <label>Date</label>
+            <input id="date" readonly>
+
+            <label>Time</label>
+            <input id="time" readonly>
+        </div>
+
+        <div class="status-image">
+            <div class="status-image-box">
+                <img src="images/cancel.png" alt="Appointment failed">
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        OTP verification incomplete. We are unable to confirm your appointment without successful
+        authentication. Please try the verification process again. If you continue to have trouble,
+        you can attempt the booking again later.
+    </div>
+
+    <div class="footer-actions">
+        <button class="back-btn" onclick="goBack()">📅 Back to My Appointments</button>
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<script src="js/navbar.js"></script>
+<script src="js/failed.js"></script>
+
+</body>
+</html>
