@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Specialities</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/specialities.css">
+
+</head>
+<body>
+
+
+<div id="navbar-container"></div>
+
+
+<div class="speciality-container">
+
+    <h2 class="title2">Our Specialities</h2>
+
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search by Doctor Name, Speciality, or Symptoms.. (e.g., Dr. Kumar)">
+    
+    <button>
+        <img src="images/search.png" alt="search">
+        <span>Search</span>
+    </button>
+</div>
+
+
+    <div class="category">General Physician</div>
+
+   
+    <div class="doctor-card" onclick="goToAvailability()">
+        <div class="doc-left">
+            <div class="doc-img-container">
+                        <img src="images/doc.jpg" class="doc-img">
+                    </div>
+
+            <div class="doc-info">
+                <p>Doctor Name : <b>Dr. Kumar</b></p>
+                <p>Degree : <b>MBBS</b></p>
+                <p>Department : <span class="badge">GENERAL</span></p>
+            </div>
+        </div>
+
+        <div class="doc-right">
+            <p>[Visiting Hours / Out Of Station]</p>
+            <h3>11:00 AM - 04:30PM</h3>
+            <span class="arrow">➤</span>
+        </div>
+    </div>
+
+    <div class="doctor-card" onclick="goToAvailability()">
+        <div class="doc-left">
+            <img src="images/doc.jpg" class="doc-img">
+
+            <div class="doc-info">
+                <p>Doctor Name : <b>Dr. Bose</b></p>
+                <p>Degree : <b>MBBS</b></p>
+                <p>Department : <span class="badge">INTERNAL MEDICINE</span></p>
+            </div>
+        </div>
+
+        <div class="doc-right">
+            <p>[Visiting Hours / Out Of Station]</p>
+            <h3>12:00 PM - 05:30PM</h3>
+            <span class="arrow">➤</span>
+        </div>
+    </div>
+
+
+    <div class="category">Cardiology</div>
+
+    <div class="doctor-card" onclick="goToAvailability()">
+        <div class="doc-left">
+            <img src="images/doc.jpg" class="doc-img">
+
+            <div class="doc-info">
+                <p>Doctor Name : <b>Dr. Raman</b></p>
+                <p>Degree : <b>MBBS, MD</b></p>
+                <p>Department : <span class="badge">DND (CARDIOLOGY)</span></p>
+            </div>
+        </div>
+
+        <div class="doc-right">
+            <p>[Visiting Hours / Out Of Station]</p>
+            <h3>09:00 AM - 12:30PM</h3>
+            <span class="arrow">➤</span>
+        </div>
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+</script>
+
+<script src="js/navbar.js"></script>
+<script src="js/specialities.js"></script>
+
+</body>
+</html>

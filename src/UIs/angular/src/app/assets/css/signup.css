@@ -1,0 +1,164 @@
+
+
+body {
+    background: #f5f6fa;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+input, select, textarea, button {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+::placeholder {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.iti, 
+.iti * {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.container {
+    width: 900px;
+    margin: 60px auto;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.tab {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px 20px 0 0;
+    font-weight: 600;
+    background: #eee;
+    color: #777;
+}
+
+.tab.active {
+    background: #9db6d9;
+    color: #000;
+}
+
+.tab.completed {
+    background: #9ed9b6;
+    color: #000;
+}
+
+.card {
+    background: #fff;
+    padding: 40px 60px;
+    border-radius: 0 0 20px 20px;
+    border: 1px solid #dcdcff;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-row label {
+    width: 40%;
+    font-size: 18px;
+}
+
+.form-row input,
+.form-row select {
+    width: 60%;
+    height: 46px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #4A6CF7, #3B5BDB);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+}
+
+.btn-outline {
+    border: 1px solid #4A6CF7;
+    background: transparent;
+    padding: 12px 30px;
+    border-radius: 10px;
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+.optional {
+    font-size: 13px;
+    color: #777;
+    display: block;
+}
+
+.iti {
+    width: 60%;
+}
+
+#phone {
+    width: fit-content;
+    height: 46px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding-left: 70px;
+}
+
+.form-row .iti {
+    margin-left: 0;
+}
+
+.iti__selected-flag {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-radius: 8px 0 0 8px;
+}
+
+.iti__country-list {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+.iti__country {
+    color: #000;
+}
+
+#dob {
+    width: fit-content;
+}
+
+
+.star {
+    display: inline !important;
+    margin-left: 2px;
+    color: #e74c3c;
+    font-size: 18px;
+    font-weight: bold;
+}

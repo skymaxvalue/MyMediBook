@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+</head>
+
+<body>
+
+<div class="top-header">
+
+ 
+    <div class="left">
+        <div class="logo">
+            <img src="images/skylogo2.png">
+            <span>SkyMaxValue Solutions</span>
+        </div>
+        <p class="date">Date: <span id="current-date"></span></p>
+    </div>
+
+    
+    <div class="center">
+        <div class="hospital">
+            <img src="images/hospital.png">
+            HEALTH HEAVEN MEDICAL CENTER
+        </div>
+        <div class="title">Patient Activity Center</div>
+    </div>
+
+   
+    <div class="right">
+        <div class="user-box" id="userBox">
+
+            <div class="user-top">
+                <span>User</span>
+                <button type="button" class="profile-toggle" id="profileToggle" aria-label="Open account menu">
+                    <img src="images/user.png" alt="User profile">
+                </button>
+            </div>
+
+            <div class="user-bottom">
+                Logged In As <b id="username">User Name</b>
+            </div>
+
+            <div class="dropdown" id="userDropdown">
+                <button id="logoutBtn">Logout</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<div class="navbar">
+    <div class="nav-item" data-page="appointments">My Appointments</div>
+    <div class="nav-item" data-page="specialities">Specialities</div>
+    <div class="nav-item" data-page="medicine">Medicine Orders</div>
+    <div class="nav-item" data-page="support">Support & Help</div>
+</div>
+
+</body>
+</html>
