@@ -15,6 +15,7 @@ export const environment = {
     //Endpoint: "http://host.docker.internal:9002/api/",
     //Endpoint: "http://webapi/api/",
     NotificationEndpoint: "https://localhost:44312/hubs/notification",
+    GoogleClientID: "1079667598840-j2p9duji9qkann88e9j55r6dai3mifa8.apps.googleusercontent.com",
   },
   CurrentUrl: "http://localhost:4200/",
 };
