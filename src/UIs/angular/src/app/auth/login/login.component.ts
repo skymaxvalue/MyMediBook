@@ -64,7 +64,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
     }
   }
   handleCredentialResponse(response: any) {
-    console.log("Token:", response.credential);
+    // Handle the token response here
   }
 
   togglePassword() {
@@ -73,7 +73,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
+      // Process login form value here
     } else {
       this.loginForm.markAllAsTouched();
     }
@@ -85,11 +85,10 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
 
   async loginWithGoogle() {
-    console.log(google, "----->");
     try {
       await google.accounts.id.prompt();
     } catch (err) {
-      console.log(err, "===>"); // opens popup
+      console.error("Google sign in error", err);
     }
   }
 }
