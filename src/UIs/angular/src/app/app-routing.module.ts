@@ -26,75 +26,61 @@ import { ConfigurationEntryListComponent } from "./settings/configuration-entry-
 
 // Audit Logs
 import { AuditLogListComponent } from "./auditlogs/audit-log-list.component";
-import { LoginComponent } from "./auth/login/login.component";
-import { MainLayoutComponent } from "./main-layout/main-layout.component";
-import { SignUpComponent } from "./auth/sign-up/sign-up.component";
 
 export const routes: Routes = [
-  // Display with Navbar using Child Represtation
-  {
-    path: "",
-    component: MainLayoutComponent,
-    children: [
-      // Welcome
-      { path: "", redirectTo: "welcome", pathMatch: "full" },
-      { path: "welcome", component: WelcomeComponent },
-      { path: "oidc-login-redirect", component: OidcLoginRedirect },
-      // Products routes
-      { path: "products", component: ListProductsComponent },
-      {
-        path: "products/add",
-        component: AddProductComponent,
-        canDeactivate: [AddProductGuard],
-      },
-      {
-        path: "products/edit/:id",
-        component: EditProductComponent,
-        canDeactivate: [EditProductGuard],
-      },
-      {
-        path: "products/:id",
-        component: ProductDetailComponent,
-        canActivate: [ProductDetailGuard],
-      },
-      // Users routes
-      { path: "users", component: ListUsersComponent },
-      {
-        path: "users/add",
-        component: AddEditUserComponent,
-      },
-      {
-        path: "users/edit/:id",
-        component: AddEditUserComponent,
-      },
-      {
-        path: "users/:id",
-        component: ViewUserDetailsComponent,
-      },
-      // Files routes
-      { path: "files", component: ListFilesComponent },
-      {
-        path: "files/upload",
-        component: UploadFileComponent,
-      },
-      {
-        path: "files/edit/:id",
-        component: EditFileComponent,
-      },
-      // Settings route
-      { path: "settings", component: ConfigurationEntryListComponent },
+  { path: "welcome", component: WelcomeComponent },
+  { path: "oidc-login-redirect", component: OidcLoginRedirect },
 
-      // Audit logs route
-      { path: "auditlogs", component: AuditLogListComponent },
-    ],
+  // Products routes
+  { path: "products", component: ListProductsComponent },
+  {
+    path: "products/add",
+    component: AddProductComponent,
+    canDeactivate: [AddProductGuard],
+  },
+  {
+    path: "products/edit/:id",
+    component: EditProductComponent,
+    canDeactivate: [EditProductGuard],
+  },
+  {
+    path: "products/:id",
+    component: ProductDetailComponent,
+    canActivate: [ProductDetailGuard],
   },
 
-  // Authentication Flow routs
-  { path: "login", component: LoginComponent },
+  // Users routes
+  { path: "users", component: ListUsersComponent },
   {
-    path: "sign-up",
-    component: SignUpComponent,
+    path: "users/add",
+    component: AddEditUserComponent,
+  },
+  {
+    path: "users/edit/:id",
+    component: AddEditUserComponent,
+  },
+  {
+    path: "users/:id",
+    component: ViewUserDetailsComponent,
   },
 
+  // Files routes
+  { path: "files", component: ListFilesComponent },
+  {
+    path: "files/upload",
+    component: UploadFileComponent,
+  },
+  {
+    path: "files/edit/:id",
+    component: EditFileComponent,
+  },
+
+  // Settings route
+  { path: "settings", component: ConfigurationEntryListComponent },
+
+  // Audit logs route
+  { path: "auditlogs", component: AuditLogListComponent },
+
+  { path: "", redirectTo: "welcome", pathMatch: "full" },
   { path: "**", redirectTo: "welcome", pathMatch: "full" },
 ];

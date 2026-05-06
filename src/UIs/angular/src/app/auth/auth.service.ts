@@ -56,7 +56,6 @@ export class AuthService {
   signoutRedirectCallback(): Promise<any> {
     return this._userManager.signoutRedirectCallback();
   }
-  // Sign in with Google
 
   getCurrentUser(): IUser {
     return {
