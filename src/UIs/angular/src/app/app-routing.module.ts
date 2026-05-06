@@ -26,6 +26,7 @@ import { ConfigurationEntryListComponent } from "./settings/configuration-entry-
 
 // Audit Logs
 import { AuditLogListComponent } from "./auditlogs/audit-log-list.component";
+import { SelfRegistrationComponent } from "./auth/self-registration/self-registration.component";
 
 export const routes: Routes = [
   { path: "welcome", component: WelcomeComponent },
@@ -73,6 +74,10 @@ export const routes: Routes = [
   {
     path: "files/edit/:id",
     component: EditFileComponent,
+  },
+  {
+    path: "sign-up",
+    component: SelfRegistrationComponent,
   },
 
   // Settings route

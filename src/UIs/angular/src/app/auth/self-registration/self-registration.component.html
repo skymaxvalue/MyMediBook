@@ -1,0 +1,164 @@
+<div class="container">
+  <div class="tabs">
+    <div class="tab" [class.active]="currentStep === 0" [class.completed]="currentStep > 0">
+      PERSONAL INFORMATION
+    </div>
+    <div class="tab" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+      ADDRESS
+    </div>
+    <div class="tab" [class.active]="currentStep === 2">CREDENTIALS</div>
+  </div>
+
+  <div class="card">
+    <h1>PATIENT SELF-REGISTRATION</h1>
+
+    <form [formGroup]="signupForm">
+      <!-- STEP 1 -->
+      @if (currentStep === 0) {
+        <div>
+          <!-- <div class="form-row">
+            <label>First Name</label>
+            <input type="text" formControlName="firstName" placeholder="Enter your first name" />
+          </div>
+
+          <div class="form-row">
+            <label>Middel Name</label>
+            <input #phoneInput type="tel" />
+          </div> -->
+          <div class="form-row">
+            <label>First Name<span class="star">*</span></label>
+            <input type="text" formControlName="firstName" placeholder="Enter your first name" required />
+          </div>
+
+          <div class="form-row">
+            <label>Middle Name</label>
+            <input type="text" formControlName="firstName" placeholder="Enter your middle name" />
+          </div>
+
+          <div class="form-row">
+            <label>Last Name<span class="star">*</span></label>
+            <input type="text" formControlName="lastName" placeholder="Enter your last name" required />
+          </div>
+
+          <div class="form-row">
+            <label>Date Of Birth<span class="star">*</span></label>
+            <input type="date" formControlName="dob" id="dob" placeholder="Select your date of birth" required />
+          </div>
+
+            <div class="form-row">
+  <label>Phone Number<span class="star">*</span></label>
+
+  <div class="phone-wrapper">
+    <input #phoneInput type="tel"  class="phone-input" />
+  </div>
+</div>  
+          <div class="form-row">
+            <label>Email ID<span class="star">*</span></label>
+            <input type="email" formControlName="email" placeholder="Enter your email address" required />
+          </div>
+
+          <div class="form-row">
+            <label>Gender<br /></label>
+           <select id="dob" formControlName="gender">
+              <option selected>Select gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      }
+
+      <!-- STEP 2 -->
+      @if (currentStep === 1) {
+        <div>
+          <div class="form-row">
+                <label>Address Line 1<span class="star">*</span></label>
+                <input type="text" placeholder="Enter address line 1" required>
+            </div>
+
+            <div class="form-row">
+                <label>Address Line 2</label>
+                <input type="text" placeholder="Enter address line 2">
+            </div>
+
+            <div class="form-row">
+                <label>City<span class="star">*</span></label>
+                <input type="text" placeholder="Enter your city" required>
+            </div>
+
+            <div class="form-row">
+                <label>Zip Code<span class="star">*</span></label>
+                <input type="text" placeholder="Enter your zip code" required>
+            </div>
+
+          <div class="form-row">
+            <label>Country</label>
+            <select formControlName="country" (change)="onCountryChange($event)">
+              <option value="">Select</option>
+              @for (c of countries; track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>State</label>
+            <select formControlName="state">
+              @for (s of states; track s) {
+                <option>{{ s }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      }
+
+      <!-- STEP 3 -->
+      @if (currentStep === 2) {
+        <div>
+          <div class="form-row">
+                <label>User ID<span class="star">*</span></label>
+                <input type="text" placeholder="Enter your user ID  (eg: john_doe123)"  required>
+            </div>
+
+            <div class="form-row">
+                <label>Password<span class="star">*</span></label>
+                <input type="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="form-row">
+                <label>Re-enter Password<span class="star">*</span></label>
+                <input type="password" placeholder="Re-enter your password" required>
+            </div>
+
+            <div class="form-row">
+                <label>Security Question<span class="star">*</span></label>
+                <select id="securityQuestion" required>
+                <option value="" disabled selected>Select question</option>
+                <option value="pet">What is your pet's name?</option>
+                <option value="school">What was your first school?</option>
+                <option value="city">Which city were you born in?</option>
+                <option value="mother">What is your mother's maiden name?</option>
+                <option value="food">What is your favorite food?</option>
+            </select>
+            </div>
+
+            <div class="form-row">
+                <label>Answer<span class="star">*</span></label>
+                <input type="text" placeholder="Enter answer for security question" required>
+            </div>
+        </div>
+      }
+    </form>
+
+    <div class="buttons">
+     
+
+        <button class="btn-outline" (click)="prevStep()">Back</button>
+    
+      <button class="btn-primary" (click)="nextStep()">
+        {{ currentStep === 2 ? "Submit" : "Save and Next" }}
+      </button>
+    </div>
+  </div>
+</div>
