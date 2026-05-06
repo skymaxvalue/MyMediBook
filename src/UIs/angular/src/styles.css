@@ -4,11 +4,11 @@
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "ngx-toastr/toastr";
 
- *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Source Sans Pro', sans-serif !important;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Source Sans Pro", sans-serif !important;
 }
 
 div.card-header {
@@ -21,91 +21,4 @@ div.card {
 
 .table {
   margin-top: 10px;
-}
-
-
-
-/* wrapper takes input space */
-.phone-wrapper {
-  width: 60%;
-}
-
-/* phone input styling */
-.phone-wrapper .iti input {
-  width: 80% !important;
-  height: 46px !important;
-  padding-left: 85px !important; /* space for flag */
-  border-radius: 8px;
-  border: 1px solid #fcfafa;
-  font-size: 15px;
-  box-sizing: border-box;
-  outline: none;
-}
-
-/* flag alignment */
-.phone-wrapper .iti__flag-container {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  position: absolute;
-    z-index: 14;
-    background: transparent;
-    outline: none;
-}
-
-/* selected flag */
-.phone-wrapper .iti__selected-flag {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-}
-.phone-wrapper .iti__country-container{
-  border-radius: 8px 0 0 8px;
-  border: 1px solid #ccc;
-  position: absolute;
-  z-index: 15;
-  background: rgba(0, 0, 0, 0.05);
-  width: 30%;
-  box-sizing: border-box;
-  border-right: 1px solid #fcfafa;
-  
-
-}
-.phone-wrapper .iti__country-container .iti__selected-country{
-        padding: 10px;
-    display: flex;
-    align-items: center;
-    border: none;
-    background: transparent;
-    /* border-right: 1px solid #ccc; */
-}
-
-/* dropdown scroll */
-.iti__country-list {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-/* ===== FORM LAYOUT ===== */
-.form-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.form-row label {
-  width: 40%;
-  font-size: 18px;
-}
-
-/* apply width only to normal inputs */
-.form-row input:not(.phone-input),
-.form-row select {
-  width: 60%;
-  height: 46px;
-  padding: 0 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 15px;
 }

@@ -19,8 +19,17 @@
             "index": "src/index.html",
             "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets", "src/api"],
-            "styles": ["src/styles.css"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/api",
+              {
+                "glob": "**/*",
+                "input": "node_modules/intl-tel-input/build/img",
+                "output": "assets/intl-tel-input/img"
+              }
+            ],
+            "styles": ["node_modules/intl-tel-input/build/css/intlTelInput.css", "src/styles.css"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
