@@ -79,6 +79,13 @@
             </button>
           </div>
 
+          <div class="otp-login-link">
+            <a [routerLink]="['/otp-login']" class="otp-btn">
+              <img src="assets/images/phone.png" alt="OTP" *ngIf="false" />
+              Login with OTP
+            </a>
+          </div>
+
           <p class="signup-text">
             Don’t have an account?
             <a [routerLink]="['/sign-up']">Sign Up</a>

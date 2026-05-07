@@ -184,3 +184,25 @@ h2 {
   cursor: pointer;
   text-decoration: none;
 }
+
+.otp-login-link {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.otp-btn {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #4a6cf7;
+  border-radius: 8px;
+  color: #4a6cf7;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.otp-btn:hover {
+  background: #4a6cf7;
+  color: white;
+}

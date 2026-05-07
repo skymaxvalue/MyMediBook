@@ -29,6 +29,7 @@ import { AuditLogListComponent } from "./auditlogs/audit-log-list.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { MainLayoutComponent } from "./main-layout/main-layout.component";
 import { SignUpComponent } from "./auth/sign-up/sign-up.component";
+import { OtpLoginComponent } from "./users/otp-login/otp-login.component";
 
 export const routes: Routes = [
   // Display with Navbar using Child Represtation
@@ -91,6 +92,7 @@ export const routes: Routes = [
 
   // Authentication Flow routs
   { path: "login", component: LoginComponent },
+  { path: "otp-login", component: OtpLoginComponent },
   {
     path: "sign-up",
     component: SignUpComponent,
