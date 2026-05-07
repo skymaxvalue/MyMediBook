@@ -32,9 +32,9 @@
             />
             <div *ngIf="f.username.touched && f.username.invalid" class="text-danger">
               <small *ngIf="f.username.errors?.['required']"> Username is required </small>
-              <small *ngIf="f.username.errors?.['minlength']">
+              <!-- <small *ngIf="f.username.errors?.['minlength']">
                 Minimum 3 characters required
-              </small>
+              </small> -->
             </div>
           </div>
 
@@ -56,9 +56,9 @@
             </div>
             <div *ngIf="f.password.touched && f.password.invalid" class="text-danger">
               <small *ngIf="f.password.errors?.['required']"> Password is required </small>
-              <small *ngIf="f.password.errors?.['minlength']">
+              <!-- <small *ngIf="f.password.errors?.['minlength']">
                 Minimum 6 characters required
-              </small>
+              </small> -->
             </div>
           </div>
 

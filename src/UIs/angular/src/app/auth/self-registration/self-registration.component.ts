@@ -20,7 +20,6 @@ export class SelfRegistrationComponent implements OnInit {
     noCountrySelected: "No country selected",
   };
 
-  // Optional: only override the names you care about
   enCountries: CountryMap = {
     US: "United States",
     GB: "United Kingdom",
@@ -135,7 +134,7 @@ export class SelfRegistrationComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.signupForm.value);
+    // console.log(this.signupForm.value);
     alert("Form Submitted Successfully");
     this.router.navigate(["/login"]);
   }

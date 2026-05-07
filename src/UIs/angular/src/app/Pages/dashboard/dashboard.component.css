@@ -1,0 +1,118 @@
+.main {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #f3f5f9;
+  padding: 18px 0;
+  border-bottom: 1px solid #dcdcff;
+}
+.custom-tabs .nav-link {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  border: none;
+  color: #222;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  padding-bottom: 6px;
+  background: #f3f5f9;
+  transition: color 0.2s ease;
+}
+
+/* Bottom Border Animation */
+.custom-tabs .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 3px;
+  background: #3b5bdb;
+  transition: 0.3s;
+}
+
+/* Hover Effect */
+.custom-tabs .nav-link:hover {
+  color: #3f5bd8;
+}
+
+.custom-tabs .nav-link:hover::after {
+  width: 100%;
+}
+
+/* Active Tab */
+.custom-tabs .nav-link.active::after,
+.custom-tabs .nav-link.active-tab::after {
+  width: 100%;
+}
+
+.custom-tabs .nav-link.active,
+.custom-tabs .nav-link.active-tab {
+  color: #3f5bd8;
+}
+
+/* Card */
+
+.appointment-card {
+  border-radius: 24px;
+  background: #fff;
+}
+
+/* Table */
+
+.custom-table thead {
+  background: #f1f2f6;
+}
+
+.custom-table thead th {
+  border-bottom: none;
+  padding: 22px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.custom-table tbody td {
+  padding: 22px 20px;
+  font-size: 17px;
+  vertical-align: middle;
+  border-top: 1px solid #ececec;
+}
+
+/* Status Badges */
+
+.completed-badge {
+  background: #21b57a;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.upcoming-badge {
+  background: #3f5bd8;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Button */
+
+.appointment-btn {
+  background: #3f5bd8;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  padding: 18px 34px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.appointment-btn:hover {
+  background: #3149b8;
+  color: white;
+}

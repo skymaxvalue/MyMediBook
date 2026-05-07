@@ -1,0 +1,41 @@
+<div class="top-header">
+  <div class="left">
+    <div class="logo">
+      <img src="assets/images/skylogo2.png" />
+      <span>SkyMaxValue Technology Solutions</span>
+    </div>
+    <p class="date">
+      Date: <span id="current-date"> {{ formattedDate }}</span>
+    </p>
+  </div>
+
+  <div class="center">
+    <div class="hospital">
+      <img src="assets/images/hospital.png" />
+      HEALTH HEAVEN MEDICAL CENTER
+    </div>
+    <div class="title">Patient Activity Center</div>
+  </div>
+
+  <div class="right">
+    <div class="user-box" id="userBox">
+      <div class="user-top">
+        <span>User</span>
+        <button
+          type="button"
+          class="profile-toggle"
+          id="profileToggle"
+          aria-label="Open account menu"
+        >
+          <img src="assets/images/user.png" alt="User profile" (click)="showLogout = !showLogout" />
+        </button>
+      </div>
+
+      <div class="dropdown" id="userDropdown" *ngIf="showLogout">
+        <button id="logoutBtn" (click)="logout()">Logout</button>
+      </div>
+
+      <div class="user-bottom">Logged In As <b id="username">User Name</b></div>
+    </div>
+  </div>
+</div>
