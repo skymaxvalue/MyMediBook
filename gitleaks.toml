@@ -6,6 +6,7 @@ useDefault = true
 [allowlist]
 description = "global allow lists"
 paths = ['''gitleaks.toml''']
+regexes = ['''1079667598840-j2p9duji9qkann88e9j55r6dai3mifa8\.apps\.googleusercontent\.com''']
 commits = []
 
 [[rules]]

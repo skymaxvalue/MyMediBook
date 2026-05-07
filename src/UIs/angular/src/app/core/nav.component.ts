@@ -17,7 +17,7 @@ export class NavComponent implements OnInit {
   constructor(public auth: AuthService) {}
 
   login() {
-    this.auth.login("");
+    this.auth.login("/login");
   }
 
   logout() {
