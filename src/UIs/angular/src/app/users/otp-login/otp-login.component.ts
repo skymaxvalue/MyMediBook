@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { RouterModule, Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-otp-login",
@@ -19,7 +20,8 @@ export class OtpLoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -37,23 +39,32 @@ export class OtpLoginComponent implements OnInit, OnDestroy {
   }
 
   sendOtp(): void {
-    if (this.otpForm.controls['identifier'].valid) {
+    if (this.otpForm.controls["identifier"].valid) {
       this.otpSent = true;
       this.startTimer();
-      // TODO: Call backend to send OTP
-      console.log("OTP Sent to:", this.otpForm.value.identifier);
+      // SIMULATION: In a real app, this would call a backend API
+      this.toastr.success(`OTP sent to ${this.otpForm.value.identifier}`, "Success");
+      console.log("SIMULATION: Your OTP is 1234");
+      this.toastr.info("For testing, please use OTP: 1234", "Simulation Mode", {
+        timeOut: 10000,
+      });
     } else {
-      this.otpForm.controls['identifier'].markAsTouched();
+      this.otpForm.controls["identifier"].markAsTouched();
+      this.toastr.error("Please enter a valid email or phone number", "Error");
     }
   }
 
   verifyOtp(): void {
     if (this.otpForm.valid) {
       const otp = `${this.otpForm.value.otp1}${this.otpForm.value.otp2}${this.otpForm.value.otp3}${this.otpForm.value.otp4}`;
-      console.log("Verifying OTP:", otp);
-      // TODO: Call backend to verify OTP
-      // If success:
-      // this.router.navigate(['/welcome']);
+      
+      // SIMULATION: Validating against our hardcoded test OTP
+      if (otp === "1234") {
+        this.toastr.success("Login Successful!", "Welcome");
+        this.router.navigate(["/welcome"]);
+      } else {
+        this.toastr.error("Invalid OTP. Please try again.", "Error");
+      }
     } else {
       this.otpForm.markAllAsTouched();
     }
