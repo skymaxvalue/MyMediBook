@@ -1,0 +1,68 @@
+<!-- appointments.component.html -->
+
+<div class="container-fluid bg-light min-vh-100">
+  <!-- Top Tabs -->
+  <div class="main row mb-4">
+    <div class="col-12">
+      <ul class="nav nav-tabs border-0 custom-tabs justify-content-between px-5">
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'appointments'"
+            (click)="activeTab = 'appointments'"
+          >
+            My Appointments
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'specialities'"
+            (click)="activeTab = 'specialities'"
+          >
+            Specialities
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'medicine'"
+            (click)="activeTab = 'medicine'"
+          >
+            Medicine Orders
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'support'"
+            (click)="activeTab = 'support'"
+          >
+            Support & Help
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!--Tab containt Representation -->
+  <div class="dashboard-container">
+    @if (activeTab === "appointments") {
+      <app-my-appointment [tableData]="appointments"></app-my-appointment>
+    } @else if (activeTab === "specialities") {
+      <app-specialities></app-specialities>
+    } @else if (activeTab === "medicine") {
+      <app-medicine-orders></app-medicine-orders>
+    } @else if (activeTab === "support") {
+      <div class="text-center mt-5">
+        <h3>Support & Help</h3>
+        <p class="mt-3">For assistance, please contact our support team:</p>
+        <p>Email: support@healthheaven.com</p>
+        <p>Phone: +1 (555) 123-4567</p>
+      </div>
+    }
+  </div>
+</div>

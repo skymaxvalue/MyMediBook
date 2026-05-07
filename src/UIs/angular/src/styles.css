@@ -79,6 +79,18 @@ button {
 .iti * {
   font-family: "Source Sans Pro", sans-serif !important;
 }
+.iti__country-container .iti__selected-country {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  padding-right: 6px !important;
+}
+.iti__search-input-wrapper {
+  padding: 2px;
+}
+.iti__search-input-wrapper .iti__search-input {
+  padding: 10px;
+
+  outline: none;
+}
 
 .footer {
   width: 100%;
