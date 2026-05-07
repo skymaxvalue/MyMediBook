@@ -26,6 +26,7 @@ import { ConfigurationEntryListComponent } from "./settings/configuration-entry-
 
 // Audit Logs
 import { AuditLogListComponent } from "./auditlogs/audit-log-list.component";
+import { SelfRegistrationComponent } from "./auth/self-registration/self-registration.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { MainLayoutComponent } from "./main-layout/main-layout.component";
 import { SignUpComponent } from "./auth/sign-up/sign-up.component";
@@ -95,6 +96,20 @@ export const routes: Routes = [
     path: "sign-up",
     component: SignUpComponent,
   },
+  {
+    path: "files/edit/:id",
+    component: EditFileComponent,
+  },
+  {
+    path: "sign-up",
+    component: SelfRegistrationComponent,
+  },
+
+  // Settings route
+  { path: "settings", component: ConfigurationEntryListComponent },
+
+  // Audit logs route
+  { path: "auditlogs", component: AuditLogListComponent },
 
   { path: "**", redirectTo: "welcome", pathMatch: "full" },
 ];
