@@ -30,15 +30,15 @@ import { SelfRegistrationComponent } from "./auth/self-registration/self-registr
 import { LoginComponent } from "./auth/login/login.component";
 import { MainLayoutComponent } from "./main-layout/main-layout.component";
 import { DashboardComponent } from "./Pages/dashboard/dashboard.component";
-
+import { authGuard } from "./auth/guards/auth.guard";
 export const routes: Routes = [
   // Display with Navbar using Child Represtation
   {
     path: "",
-    component: MainLayoutComponent,
+    component: MainLayoutComponent, canActivate: [authGuard],
     children: [
       // Welcome
-      { path: "", redirectTo: "welcome", pathMatch: "full" },
+      { path: "", redirectTo: "dashboard", pathMatch: "full" },
       // authentication
       {
         path: "dashboard",
@@ -92,6 +92,8 @@ export const routes: Routes = [
 
       // Audit logs route
       { path: "auditlogs", component: AuditLogListComponent },
+
+
     ],
   },
 

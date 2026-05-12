@@ -1,1 +1,89 @@
-<p>specialities works!</p>
+<div class="speciality-container">
+
+    <h2 class="title2 py-1">Our Specialities</h2>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="input-container">
+            <input type="text" id="myInput"
+                placeholder="Search by Doctor Name, Speciality, or Symptoms.. (e.g., Dr. Kumar)"
+                [(ngModel)]="searchText">
+            @if (searchText) {
+            <span class="close-icon" (click)="clearSearch()">×</span>
+
+            }
+        </div>
+
+
+
+        <button type="button" (click)="onSearch()">
+
+            <img src="assets/images/search.png" alt="search">
+
+            <span>Search</span>
+
+        </button>
+
+    </div>
+
+    <!-- Categories -->
+    @if(filteredSpecialities.length === 0) {
+    <p class="no-results">No results found for "{{ searchText }}"</p>
+    }
+    @for (speciality of filteredSpecialities; track speciality.category) {
+
+    <div class="category">
+        {{ speciality.category }}
+    </div>
+
+    <!-- Doctor Cards -->
+    @for (doctor of speciality.doctors; track $index) {
+
+    <div class="doctor-card" (click)="goToAvailability(doctor,$index)">
+
+        <div class="doc-left">
+
+            <img src="assets/images/doc.jpg" class="doc-img" alt="doctor">
+
+            <div class="doc-info">
+
+                <p>
+                    Doctor Name :
+                    <b>{{ doctor.name }}</b>
+                </p>
+
+                <p>
+                    Degree :
+                    <b>{{ doctor.degree }}</b>
+                </p>
+
+                <p>
+                    Department :
+
+                    <span class="badge">
+                        {{ doctor.department }}
+                    </span>
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="doc-right">
+
+            <p>[Visiting Hours / Out Of Station]</p>
+
+            <h3>{{ doctor.time }}</h3>
+
+            <span class="arrow">➤</span>
+
+        </div>
+
+    </div>
+
+    }
+
+    }
+
+</div>
