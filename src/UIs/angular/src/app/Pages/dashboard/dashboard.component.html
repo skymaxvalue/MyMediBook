@@ -35,7 +35,7 @@
   <!--Tab containt Representation -->
   <div class="dashboard-container">
     @if (activeTab === "appointments") {
-    <app-my-appointment [tableData]="appointments"></app-my-appointment>
+    <app-my-appointment [tableData]="appointments" (goToSpecialitie)="goToSpecialities()"></app-my-appointment>
     } @else if (activeTab === "specialities") {
     @if(selectedDoctor){
     <app-check-doc-available (backToSpecialities)="backToSpecialities()"

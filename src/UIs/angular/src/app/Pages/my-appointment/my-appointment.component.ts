@@ -2,7 +2,9 @@ import { CommonModule } from "@angular/common";
 import {
   Component,
   computed,
+  EventEmitter,
   Input,
+  Output,
   signal
 } from "@angular/core";
 
@@ -16,7 +18,7 @@ import {
 export class MyAppointmentComponent {
 
   @Input() tableData: any[] = [];
-
+  @Output() goToSpecialitie = new EventEmitter<void>();
   sortColumn = signal('');
   sortDirection = signal<'asc' | 'desc'>('asc');
 
@@ -83,6 +85,10 @@ export class MyAppointmentComponent {
       ? '▲'
       : '▼';
 
+  }
+  goToSpecialities() {
+    // Implement navigation to the specialities page
+    this.goToSpecialitie.emit();
   }
 
 }

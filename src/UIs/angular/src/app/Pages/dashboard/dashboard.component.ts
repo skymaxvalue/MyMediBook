@@ -84,4 +84,7 @@ export class DashboardComponent {
   backToSpecialities() {
     this.selectedDoctor = null;
   }
+  goToSpecialities() {
+    this.activeTab = "specialities";
+  }
 }
