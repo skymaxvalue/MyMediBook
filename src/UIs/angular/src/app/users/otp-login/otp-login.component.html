@@ -1,0 +1,107 @@
+<div class="otp-wrapper">
+  <div class="otp-card">
+    <div class="logo">
+      <img src="assets/images/logo1.png" alt="Logo" />
+      <span>My <strong>Medi</strong> Book</span>
+    </div>
+
+    <h1>OTP VERIFICATION</h1>
+
+    <form [formGroup]="otpForm">
+      <!-- Step 1: Enter Identifier -->
+      <div *ngIf="!otpSent" class="identifier-section">
+        <p class="otp-subtext">
+          Enter your registered mobile number or email address to receive an OTP.
+        </p>
+        <div class="input-group">
+          <input
+            type="text"
+            formControlName="identifier"
+            placeholder="Mobile number or Email"
+            class="identifier-input"
+          />
+          <div
+            *ngIf="otpForm.controls['identifier'].touched && otpForm.controls['identifier'].invalid"
+            class="error-text"
+          >
+            Please enter a valid mobile number or email.
+          </div>
+        </div>
+        <button type="button" class="btn-primary" (click)="sendOtp()">
+          Send OTP
+        </button>
+      </div>
+
+      <!-- Step 2: Enter OTP -->
+      <div *ngIf="otpSent" class="otp-section">
+        <p class="otp-subtext">
+          Please enter the OTP sent to <strong>{{ otpForm.value.identifier }}</strong>
+        </p>
+
+        <div class="otp-box">
+          <input
+            #otp1
+            type="text"
+            formControlName="otp1"
+            maxlength="1"
+            class="otp-input"
+            (input)="onOtpInput($event, otp2)"
+          />
+          <input
+            #otp2
+            type="text"
+            formControlName="otp2"
+            maxlength="1"
+            class="otp-input"
+            (input)="onOtpInput($event, otp3)"
+            (keydown)="onKeyDown($event, otp1)"
+          />
+          <input
+            #otp3
+            type="text"
+            formControlName="otp3"
+            maxlength="1"
+            class="otp-input"
+            (input)="onOtpInput($event, otp4)"
+            (keydown)="onKeyDown($event, otp2)"
+          />
+          <input
+            #otp4
+            type="text"
+            formControlName="otp4"
+            maxlength="1"
+            class="otp-input"
+            (keydown)="onKeyDown($event, otp3)"
+          />
+        </div>
+
+        <div class="otp-info">
+          <span
+            >Remaining time: <b>00:{{ timer | number : "2.0" }}s</b></span
+          >
+          <span
+            >Didn’t get the code?
+            <a
+              href="javascript:void(0)"
+              (click)="resendOtp()"
+              [class.disabled]="timer > 0"
+              >Resend</a
+            ></span
+          >
+        </div>
+
+        <button type="button" class="btn-primary" (click)="verifyOtp()">
+          Verify
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="btn-outline"
+        [routerLink]="['/login']"
+      >
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>
