@@ -1,0 +1,75 @@
+<div class="dashboard-card ">
+  <table class="appointment-table">
+    <thead>
+      <tr>
+        <th (click)="sortTable('visitPurpose')">
+          Visit Purpose
+          <span class="sort-icon">{{getSortIcon('visitPurpose')}}</span>
+        </th>
+
+        <th (click)="sortTable('patientName')">
+          Patient Name
+          <span class="sort-icon">{{getSortIcon('patientName')}}</span>
+        </th>
+
+        <th (click)="sortTable('appointmentDate')">
+          Appointment Date
+          <span class="sort-icon">{{getSortIcon('appointmentDate')}}</span>
+        </th>
+
+        <th (click)="sortTable('appointmentTime')">
+          Appointment Time
+          <span class="sort-icon">{{getSortIcon('appointmentTime')}}</span>
+        </th>
+
+
+        <th (click)="sortTable('doctorName')">
+          Dr. Name
+          <span class="sort-icon">{{getSortIcon('doctorName')}}</span>
+        </th>
+
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (item of sortedTableData(); track $index) {
+      <tr [class.highlight]="item.patientName === 'Self'">
+        <td>
+          {{ item.visitPurpose }}
+        </td>
+
+        <td>
+          {{ item.patientName }}
+        </td>
+
+        <td>
+          {{ item.appointmentDate }}
+        </td>
+
+        <td>
+          {{ item.appointmentTime }}
+        </td>
+
+        <td>
+          {{ item.doctorName }}
+        </td>
+
+        <td>
+          <span class="status" [ngClass]="{
+                      completed: item.status === 'Completed',
+                      upcoming: item.status === 'Upcoming',
+                    }">
+            {{ item.status }}
+          </span>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <div class="btn-container">
+    <button class="new-btn" (click)="goToSpecialities()">
+      📅 New Appointment
+    </button>
+  </div>
+</div>

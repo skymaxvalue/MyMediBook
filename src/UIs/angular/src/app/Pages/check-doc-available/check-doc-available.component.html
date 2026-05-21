@@ -1,0 +1,96 @@
+<div class="availability-container">
+    <h2>Doctor's Availabilities</h2>
+
+    <div class="date-filter">
+        <label>View Availability From:</label>
+        <input type="date" [(ngModel)]="selectedDate" [min]="minDate" (change)="onDateChange()" />
+    </div>
+
+    <div class="availability-card">
+        <div class="doctor-info">
+            <div class="doctor-top">
+                <img src="assets/images/doc.jpg" class="doc-img" alt="doctor" />
+
+                <h3>{{ doctor?.name }}</h3>
+                <p>{{ doctor?.degree }}</p>
+                <span class="tag">{{ doctor?.department }}</span>
+            </div>
+
+            <button class="back-btn" (click)="goBack()">
+                ⬅ Return to Doctor List
+            </button>
+        </div>
+
+        <div class="schedule-box">
+            @for (item of schedule; track $index) {
+            <div class="row">
+
+                <span class="col">{{ item.formattedDate }}</span>
+
+                <span class="badge col-5" [ngClass]="item.badgeClass" (click)="openSlotsPopup(item)">
+                    {{ item.text }}
+                </span>
+            </div>
+            }
+
+            <div class="week-nav">
+                <div class="week-item">
+                    <button type="button" (click)="prevWeek()">❮</button>
+                    <span>Previous Week</span>
+                </div>
+
+                <div class="week-item">
+                    <button type="button" (click)="nextWeek()">❯</button>
+                    <span>Next Week</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <span><i class="dot green"></i> Available</span>
+        <span><i class="dot red"></i> Limited Slots</span>
+        <span><i class="dot beige"></i> Unavailable</span>
+    </div>
+</div>
+
+@if (showSlotsModal) {
+<div class="modal" [style.display]="'flex'">
+    <div class="modal-content appointment-card">
+        <div class="close-icon" (click)="closeSlotsModal()">✖</div>
+
+        <h2>Available Appointments</h2>
+        <p class="slot-date">{{ selectedDateGlobal }}</p>
+
+        <div class="appointment-body">
+            <div class="doctor-info-popup">
+                <img src="assets/images/doc.jpg" class="doctor-img-popup" alt="doctor" />
+
+                <h4>{{ doctor?.name }}</h4>
+                <p>{{ doctor?.degree }}</p>
+                <span class="tag">{{ doctor?.department }}</span>
+            </div>
+
+            <div class="slots-section">
+                <div class="slots-grid">
+                    @for (slot of slots; track $index) {
+                    <div class="slot" [class.booked]="slot.booked" [class.available]="!slot.booked"
+                        [class.selected]="selectedSlot === slot.time" (click)="!slot.booked && selectSlot(slot.time)">
+                        {{ slot.time }}
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="legend-popup">
+            <span><span class="dot available"></span> Available</span>
+            <span><span class="dot booked"></span> Already Booked</span>
+        </div>
+
+        <button class="book-btn" (click)="goToBooking()">
+            Book Appointment
+        </button>
+    </div>
+</div>
+}
