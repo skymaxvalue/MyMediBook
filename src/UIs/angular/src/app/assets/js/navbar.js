@@ -61,12 +61,13 @@ function setupNavbar() {
 function setActiveTab() {
     const file = window.location.pathname.split("/").pop();
 
-    const map = {
-        "dashboard.html": "appointments",
-        "specialities.html": "specialities",
-        "availability.html": "specialities",
-        "booking.html": "specialities"
-    };
+const map = {
+    "dashboard.html": "appointments",
+    "specialities.html": "specialities",
+    "availability.html": "specialities",
+    "booking.html": "specialities",
+    "otp-verification.html": "specialities"
+};
 
     document.querySelectorAll(".nav-item").forEach(item => {
         item.classList.remove("active");

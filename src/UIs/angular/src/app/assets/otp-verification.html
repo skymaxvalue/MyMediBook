@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>OTP Verification</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="css/otp-verification.css">
+
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<div class="otp-page">
+
+    <div class="otp-main-container">
+
+        <h1 class="otp-title">
+            OTP VERIFICATION
+        </h1>
+
+        <div class="otp-card">
+
+          <div class="otp-icon">
+
+    <img src="images/otp-icon.png" class="otp-icon-img">
+
+
+
+            </div>
+
+            <div class="otp-heading">
+
+                <h2>
+                    OTP sent to<br>
+                    +91******2541
+                </h2>
+
+            </div>
+
+            <p class="otp-desc">
+                Please enter the 4-digit OTP send to your mobile number
+                / e-mail account to confirm your appointment.
+            </p>
+
+            <div class="otp-input-group">
+
+                <input maxlength="1" class="otp-input">
+                <input maxlength="1" class="otp-input">
+                <input maxlength="1" class="otp-input">
+                <input maxlength="1" class="otp-input">
+
+            </div>
+
+            <div class="otp-bottom">
+
+                <div>
+                    Remaining time:
+                    <span class="timer" id="timer">
+                        00:59s
+                    </span>
+                </div>
+
+                <div>
+                    Didn’t get the code?
+                    <span class="resend" onclick="resetTimer()">
+                        Resend
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+    <div class="summary-item appointment-item">
+
+        <div class="appointment-icon-wrapper">
+
+            <img src="images/calendar-icon.png"
+            class="appointment-icon">
+
+        </div>
+
+        <div>
+
+            <div class="summary-label">
+                Appointment With
+            </div>
+
+            <div class="summary-value">
+                Dr. Kumar
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="summary-item">
+
+        <div class="summary-label">
+            Date & Time
+        </div>
+
+        <div class="summary-value">
+            Apr 13, 2026 • 09:30 AM
+        </div>
+
+    </div>
+
+    <div class="summary-item">
+
+        <div class="summary-label">
+            Department
+        </div>
+
+        <div class="summary-value">
+            General
+        </div>
+
+    </div>
+
+</div>
+       <div class="security-box">
+
+    <img src="images/security-icon.png"
+    class="security-icon">
+
+    <span>
+        For your security, do not share this OTP with anyone.
+    </span>
+
+</div>
+
+        <div class="action-buttons">
+
+            <button class="verify-btn" onclick="verifyOtp()">
+
+    <img src="images/calendar-white.png"
+    class="btn-icon">
+
+    <span>
+        Verify & Book Appointment
+    </span>
+
+</button>
+
+            <button class="cancel-btn" onclick="cancelOtp()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+<script>
+fetch("footer.html")
+.then(res => res.text())
+.then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+});
+
+</script>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/otp-verification.js"></script>
+
+
+
+
+</body>
+</html>
