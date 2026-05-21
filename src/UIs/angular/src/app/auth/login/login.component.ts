@@ -20,7 +20,8 @@ export class LoginComponent implements AfterViewInit, OnInit {
   loginForm!: FormGroup;
   constructor(
     public auth: AuthService,
-    private form_builder: FormBuilder
+    private form_builder: FormBuilder,
+    private router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -28,8 +29,8 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
   ngOnInit(): void {
     this.loginForm = this.form_builder.group({
-      username: ["", [Validators.required, Validators.minLength(3)]],
-      password: ["", [Validators.required, Validators.minLength(6)]],
+      username: ["", [Validators.required]],
+      password: ["", [Validators.required]],
       remember: [false],
     });
   }
@@ -74,11 +75,13 @@ export class LoginComponent implements AfterViewInit, OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       // Process login form value here
+      if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
+        localStorage.setItem("token", "userToken");
+        this.router.navigate(["/dashboard"]);
+      }
     } else {
       this.loginForm.markAllAsTouched();
     }
-
-    // this.auth.login("/welcome");
   }
   get f() {
     return this.loginForm.controls;

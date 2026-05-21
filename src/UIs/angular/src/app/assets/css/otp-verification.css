@@ -1,0 +1,253 @@
+body{
+    font-family:'Source Sans Pro',sans-serif;
+    background:#F3F4F6;
+    color:#111111;
+}
+
+.otp-page{
+    padding:20px 60px;
+}
+
+.otp-main-container{
+    width:100%;
+    border:1px solid #BFD0FF;
+    border-radius:28px;
+    background:#FFFFFF;
+    padding:35px 30px 45px;
+}
+
+.otp-title{
+    text-align:center;
+    font-size:32px;
+    font-weight:700;
+    margin-bottom:30px;
+    color:#000000;
+}
+
+.otp-card{
+    width:100%;
+    max-width:980px;
+    margin:auto;
+    background:#EEF2FF;
+    border-radius:28px;
+    padding:45px 35px 35px;
+}
+
+.otp-icon{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:auto;
+}
+
+.otp-icon-img{
+    width:140px;
+    height:140px;
+    object-fit:contain;
+    display:block;
+}
+
+
+.appointment-item{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.appointment-icon-wrapper{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    background:#EEF2FF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.appointment-icon{
+    width:34px;
+    height:34px;
+    object-fit:contain;
+}
+
+
+
+.security-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+}
+
+.security-icon{
+    width:26px;
+    height:26px;
+    object-fit:contain;
+}
+
+
+
+.verify-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+}
+
+.btn-icon{
+    width:20px;
+    height:20px;
+    object-fit:contain;
+}
+
+.otp-heading{
+    margin-top:22px;
+    text-align:center;
+}
+
+.otp-heading h2{
+    font-size:30px;
+    line-height:1.25;
+    font-weight:700;
+    color:#000000;
+}
+
+.otp-desc{
+    max-width:620px;
+    margin:20px auto 0;
+    text-align:center;
+    font-size:16px;
+    line-height:1.6;
+    color:#3F3F46;
+}
+
+.otp-input-group{
+    display:flex;
+    justify-content:center;
+    gap:28px;
+    margin-top:28px;
+    margin-bottom:30px;
+}
+
+.otp-input{
+    width:92px;
+    height:92px;
+    border-radius:14px;
+    border:1px solid #D4D4D8;
+    background:#FFFFFF;
+    text-align:center;
+    font-size:38px;
+    color:#2563EB;
+    outline:none;
+}
+
+.otp-input:focus{
+    border-color:#2563EB;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.10);
+}
+
+.otp-bottom{
+    display:flex;
+    justify-content:center;
+    gap:70px;
+    flex-wrap:wrap;
+    font-size:15px;
+    color:#3F3F46;
+}
+
+.timer{
+    color:#5B6CFF;
+    font-weight:700;
+}
+
+.resend{
+    color:#5B6CFF;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+.summary-card{
+    width:100%;
+    max-width:860px;
+    margin:24px auto 0;
+    background:#FFFFFF;
+    border:1px solid #E4E4E7;
+    border-radius:18px;
+    padding:24px 28px;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:20px;
+}
+
+.summary-item{
+    border-right:1px solid #E4E4E7;
+    padding-right:18px;
+}
+
+.summary-item:last-child{
+    border-right:none;
+}
+
+.summary-label{
+    font-size:14px;
+    color:#71717A;
+    margin-bottom:8px;
+}
+
+.summary-value{
+    font-size:16px;
+    font-weight:700;
+    line-height:1.5;
+    color:#111111;
+}
+
+.security-box{
+    width:100%;
+    max-width:860px;
+    margin:18px auto 0;
+    background:#EEF2FF;
+    border:1px solid #DBE4FF;
+    border-radius:16px;
+    padding:18px 20px;
+    text-align:center;
+    color:#3159D4;
+    font-size:15px;
+    font-weight:600;
+}
+
+.action-buttons{
+    margin-top:35px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+}
+
+.verify-btn{
+    width:100%;
+    max-width:520px;
+    height:56px;
+    border:none;
+    border-radius:12px;
+    background:#3159D4;
+    color:#FFFFFF;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.cancel-btn{
+    width:100%;
+    max-width:520px;
+    height:56px;
+    border:1.5px solid #5B6CFF;
+    border-radius:12px;
+    background:#FFFFFF;
+    color:#111111;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
