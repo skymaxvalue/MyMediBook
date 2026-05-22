@@ -1,11 +1,13 @@
-﻿using Medicare.Application.Features.Commands.User;
+﻿using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Interfaces.Dapper;
 using Medicare.Application.Interfaces.IAuthRepository;
+using Medicare.Application.Interfaces.IEmail;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.DAL.Persistence.Dapper;
 using Medicare.DAL.Persistence.Repositories;
+using Medicare.DAL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using System.Reflection;
@@ -44,13 +46,14 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<ISecurityQuestionsRepository, SecurityQuestionMasterRepository>();
             builder.Services.AddScoped<IErrorLogRepository, ErrorLogRepository>();
-
             // ✅ Dapper Context
             builder.Services.AddScoped<DapperContext>();
 
             // ✅ Connection Factory
             builder.Services.AddScoped<IDbConnectionFactory, DapperConnectionFactory>();
 
+            // ✅ Services
+            builder.Services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

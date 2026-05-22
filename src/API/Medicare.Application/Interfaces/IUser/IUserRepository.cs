@@ -7,7 +7,6 @@ namespace Medicare.Application.Interfaces.UserRepository
         public interface IUserRepository
         {
             Task<UserInfoDataModel> GetUserInfoAsync(string Username);
-            Task<ResponseModel> RegisterUserAsync(UserModel Model);
             Task<UserInfoDataModel> GetUserByIdAsync(int Id);
     }
     }

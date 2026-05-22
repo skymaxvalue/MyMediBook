@@ -45,41 +45,6 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> RegisterUserAsync(UserModel model)
-        {
-            string procName = "USP_UserRegister";
-            ResponseModel returnData = new ResponseModel();
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("Username", model.Username);
-                param.Add("PasswordHash", model.PasswordHash);
-                param.Add("PasswordSalt", model.PasswordSalt);
-                param.Add("FirstName", model.FirstName);
-                param.Add("LastName", model.LastName);
-                param.Add("PhoneNumber", model.PhoneNumber);
-                param.Add("Email", model.Email);
-                param.Add("RoleId", model.RoleId);
-                param.Add("DepartmentId", model.DepartmentId);
-                param.Add("CreatedBy", model.CreatedBy);
-
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
-            }
-            catch (Exception ex) 
-            {
-                string path = "USP_UserRegister";
-                await _errorLog.InsertErrorLog(new ErrorLogModel()
-                {
-                    IsDBError = false,
-                    Error_Message = ex.Message,
-                    Error_Procedure = path,
-                    Error_Trace = ex.StackTrace
-                });
-            }
-            //TODO : Use aggregate factory function
-            return returnData;
-        }
-
         public async Task<UserInfoDataModel> GetUserByIdAsync(int Id)
         {
             string procName = "USP_GetUserById";
