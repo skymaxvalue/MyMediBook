@@ -5,8 +5,6 @@ using Medicare.Application.Interfaces.IEmail;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,21 +13,29 @@ namespace Medicare.Application.Handlers.CommandHandlers
     public class RequestOtpCommandHandler : IRequestHandler<RequestOtpCommand, ResponseModel>
     {
         private readonly IAuthRepository _authRepository;
-        private readonly IEmailService _emailService;  
-
-        public RequestOtpCommandHandler(IAuthRepository authRepository, IEmailService emailService)
+        private readonly IEmailJobService _emailJobService;
+        private readonly IUserRepository _userRepository;
+        public RequestOtpCommandHandler(IAuthRepository authRepository, IEmailJobService emailJobService, IUserRepository userRepository)
         {
             _authRepository = authRepository;
-            _emailService = emailService;
+            _emailJobService = emailJobService;
+            _userRepository = userRepository;
         }
 
         public async Task<ResponseModel> Handle(RequestOtpCommand request, CancellationToken ct)
         {
+            var checkIfEmailExists = await _userRepository.GetUserByEmailAsync(request.Model.Email);
+            if (checkIfEmailExists.Status == 0) 
+            {
+                return checkIfEmailExists;
+            }
+            // Generate OTP
             var rawOtp = GenerateOtp();
 
+            //Hash OTP 
             using var hmac = new HMACSHA512();
             var otpSalt = hmac.Key;
-            var otpHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(rawOtp));
+            var otpHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawOtp));
 
             var expiry = DateTime.UtcNow.AddMinutes(5);
 
@@ -39,15 +45,24 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 OtpHash = otpHash,
                 OtpSalt = otpSalt,
                 Expiry = expiry,
-                Attempts = 0
+                OtpAttempts = 0
             };
 
+            //Save OTP details to database
             await _authRepository.SaveOtpAsync(otpModel);
 
-            //await _emailService.SendOtpEmailAsync(request.Model.Email, rawOtp);
+            var jobId = _emailJobService.QueueOtpEmail(
+                toEmail: request.Model.Email,
+                toName: request.Model.Email,
+                otpCode: rawOtp
+            );
 
-            return new ResponseModel
+            return new ResponseModel()
             {
+                Status = 1,
+                IsSuccess = 1,
+                ResponseMessage = $"OTP has been sent to {request.Model.Email}.",
+                ResponseId = 0
             };
         }
 

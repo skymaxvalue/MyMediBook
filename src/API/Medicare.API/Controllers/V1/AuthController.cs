@@ -63,7 +63,7 @@ namespace Medicare.API.Controllers.V1
             ApiResponse = new ApiResponse<ResponseModel>()
             {
                 Data = response,
-                StatusMessage = "User Logged In Successfully",
+                StatusMessage = response.ResponseMessage,
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
             };
@@ -80,7 +80,7 @@ namespace Medicare.API.Controllers.V1
             ApiResponse = new ApiResponse<ResponseModel>()
             {
                 Data = response,
-                StatusMessage = "User Logged In Successfully",
+                StatusMessage = response.ResponseMessage,
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
             };

@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IAuthRepository;
+using Medicare.Application.Interfaces.IEmail;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.Authentication;
+using Medicare.Application.Models.CommonModels.Email;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
@@ -13,10 +15,12 @@ namespace Medicare.DAL.Persistence.Repositories
     {
         private readonly DapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public AuthRepository(DapperContext context, IErrorLogRepository errorLog) 
+        private readonly IEmailService _emailService;
+        public AuthRepository(DapperContext context, IErrorLogRepository errorLog, IEmailService emailService)
         {
             _context = context;
             _errorLog = errorLog;
+            _emailService = emailService;
         }
 
         public async Task<ResponseModel> RegisterUserAsync(UserModel model)
@@ -61,9 +65,9 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("Username", Username);
-                returnData  = await _context.QuerySingleStoredProcAsync<AuthDetailModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<AuthDetailModel>(procName, param);
 
-            }catch (Exception ex)
+            } catch (Exception ex)
             {
                 string path = "USP_GetUserPassword";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
@@ -137,12 +141,11 @@ namespace Medicare.DAL.Persistence.Repositories
             try
             {
                 var param = new DynamicParameters();
-                param.Add("UserId", model.UserId);
                 param.Add("Email", model.Email);
                 param.Add("OtpHash", model.OtpHash);
                 param.Add("OtpSalt", model.OtpSalt);
                 param.Add("Expiry", model.Expiry);
-                param.Add("Attempts", model.Attempts);
+                param.Add("OtpAttempts", model.OtpAttempts);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
 
             }
@@ -158,7 +161,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 });
             }
 
-            return returnData; 
+            return returnData;
         }
         public async Task<OtpDetailModel> GetOtpDetailAsync(string email)
         {
@@ -184,6 +187,59 @@ namespace Medicare.DAL.Persistence.Repositories
             }
 
             return returnData;
+        }
+
+        public async Task<ResponseModel> SendOtpEmailAsync(string toEmail, string toName, string otpCode)
+        {
+            try
+            {
+                var email = new EmailModel
+                {
+                    ToEmail = toEmail,
+                    ToName = toName,
+                    Subject = "Your Medicare Login OTP",
+                    Body = BuildOtpEmailBody(toName, otpCode),
+                    IsHtml = false
+                };
+
+                await _emailService.SendEmailAsync(email);
+
+                return new ResponseModel()
+                {
+                    IsSuccess = 1,
+                    ResponseMessage = "OTP email sent successfully."
+                };
+            }
+            catch (Exception ex) 
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = "SendOtpEmailAsync",
+                    Error_Trace = ex.StackTrace
+                });
+
+                return new ResponseModel()
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "Failed to send OTP email."
+                };
+            }
+        }
+        private static string BuildOtpEmailBody(string name, string otpCode)
+        {
+            return $@"
+Hello { name },
+
+Your Medicare OTP is: { otpCode }
+
+This OTP is valid for 5 minutes.
+
+Do not share this OTP with anyone.
+
+Thanks,
+Medicare Team";
         }
     }
 }

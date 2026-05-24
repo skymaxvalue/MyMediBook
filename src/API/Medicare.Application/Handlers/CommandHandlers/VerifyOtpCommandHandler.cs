@@ -1,9 +1,8 @@
-﻿using System.Text;
-using MediatR;
-using System.Security.Cryptography;
-using Medicare.Application.Models.CommonModels.ResponseModel;
+﻿using MediatR;
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Interfaces.IAuthRepository;
+using Medicare.Application.Models.CommonModels.ResponseModel;
+using System.Security.Cryptography;
 
 namespace Medicare.Application.Handlers.CommandHandlers
 {
@@ -24,7 +23,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
             if (otpDetail is null)
                 throw new Exception("No OTP request found for this email.");
 
-            if (otpDetail.Attempts >= MaxAttempts)
+            if (otpDetail.OtpAttempts >= MaxAttempts)
                 throw new Exception("OTP locked. Please request a new one.");
 
             if (DateTime.UtcNow > otpDetail.Expiry)
@@ -37,15 +36,18 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             if (!CryptographicOperations.FixedTimeEquals(computedHash, otpDetail.OtpHash))
             {
-                // Increment attempt count in DB
                 await _authRepository.IncrementOtpAttemptsAsync(otpDetail.Email);
                 throw new Exception("Invalid OTP.");
             }
 
             await _authRepository.ClearOtpAsync(request.model.Email);
 
-            return new ResponseModel
+            return new ResponseModel()
             {
+                Status = 1,
+                IsSuccess = 1,
+                ResponseMessage = "OTP verified successfully",
+                ResponseId = 0
             };
         }
     }

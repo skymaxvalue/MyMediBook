@@ -8,5 +8,6 @@ namespace Medicare.Application.Interfaces.UserRepository
         {
             Task<UserInfoDataModel> GetUserInfoAsync(string Username);
             Task<UserInfoDataModel> GetUserByIdAsync(int Id);
+            Task<ResponseModel> GetUserByEmailAsync(string email);
     }
-    }
+}
