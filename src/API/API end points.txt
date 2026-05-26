@@ -1,0 +1,8 @@
+API Name      InParameters      Result      
+
+ 
+
+GetMyAppointments     PatientId
+GetSpecialities      Nil/Doctor Name/Dept Name  
+GetDoctorAvailabilities    DoctorId
+GetAvailableAppointments  DoctorId, RequestedDate
