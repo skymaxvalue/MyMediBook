@@ -1,5 +1,6 @@
 ﻿using MediatR;
-using Medicare.Application.Features.Commands.User;
+using Medicare.Application.Features.Commands.Authentication;
+using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
@@ -9,10 +10,10 @@ namespace Medicare.Application.Handlers.CommandHandlers
 {
     public class CreateUserHandler : IRequestHandler<UserCommand, ResponseModel>
     {
-        private readonly IUserRepository _repository;
-        public CreateUserHandler(IUserRepository repository)
+        private readonly IAuthRepository _authRepository;
+        public CreateUserHandler(IAuthRepository authRepository)
         {
-            _repository = repository;
+            _authRepository = authRepository;
         }
         public async Task<ResponseModel> Handle(UserCommand request, CancellationToken cancellationToken)
         {
@@ -20,7 +21,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             request.Model.PasswordHash = hash;
             request.Model.PasswordSalt = salt;
-            return await _repository.RegisterUserAsync(request.Model);
+            return await _authRepository.RegisterUserAsync(request.Model);
         }
         private void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)
         {

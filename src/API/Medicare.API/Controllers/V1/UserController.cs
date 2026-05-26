@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Medicare.Application.Features.Commands.User;
 using Medicare.Application.Features.Queries.SecurityQuestions;
 using Medicare.Application.Features.Queries.User;
 using Medicare.Application.Models.Authentication;
@@ -19,40 +18,6 @@ namespace Medicare_API.Controllers.V1
         public UserController(IMediator mediator)
         {
             _mediator = mediator;
-        }
-
-        [HttpPost]
-        [Route("SignUpUser")]
-        public async Task<IActionResult> SignUpUser([FromBody] UserModel model)
-        {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
-            ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new UserCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>()
-            {
-                Data = response,
-                StatusMessage = "User Registered Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
-        }
-
-        [HttpPost]
-        [Route("LoginUser")]
-        public async Task<IActionResult> LoginUser([FromBody] AuthModel model)
-        {
-            ApiResponse<UserInfoDataModel> ApiResponse = new ApiResponse<UserInfoDataModel>();
-            UserInfoDataModel response = new UserInfoDataModel();
-            response = await _mediator.Send(new AuthUserQuery(model));
-            ApiResponse = new ApiResponse<UserInfoDataModel>()
-            {
-                Data = response,
-                StatusMessage = "User Logged In Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
         }
 
         [HttpPost]

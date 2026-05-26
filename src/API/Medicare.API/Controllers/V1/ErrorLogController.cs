@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.ErrorLog;
-using Medicare.Application.Features.Commands.User;
 using Medicare.Application.Features.Queries.ErrorLog;
 using Medicare.Application.Features.Queries.SecurityQuestions;
 using Medicare.Application.Models.CommonModels.ErrorLog;
