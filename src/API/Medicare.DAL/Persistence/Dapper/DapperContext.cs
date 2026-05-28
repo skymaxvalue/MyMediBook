@@ -51,6 +51,14 @@ namespace Medicare.DAL.Persistence.Dapper
                 await connection.ExecuteAsync(procName, param, commandType: CommandType.StoredProcedure), procName, param
             ); 
         }
+        public async Task<List<T>> QueryStoredProcListAsync<T>(string procName, object param = null)
+        {
+            using var connection = _factory.CreateConnection();
+            var result = await ExecuteWithLoggingAync(async (connection) =>
+                await connection.QueryAsync<T>(procName, param, commandType: CommandType.StoredProcedure), procName, param);
+
+            return result.ToList();
+        }
 
         private async Task<TResult> ExecuteWithLoggingAync<TResult>(Func<IDbConnection, Task<TResult>> databaseOperation, string sql, object param)
         {
