@@ -1,0 +1,73 @@
+<div class="container">
+
+
+    <div class="confirmation-title">Doctor's Appointment Confirmation</div>
+
+
+    <div class="top-section">
+
+        <div class="doctor-card">
+            <img src="assets/images/doc.jpg" alt="">
+            <h3>{{doctor.name}}</h3>
+            <p>{{doctor.degree}}</p>
+            <span class="tag">{{doctor.department}}</span>
+        </div>
+
+
+        <div class="details">
+
+            <label>Patient Name</label>
+            <input [value]="bookingPatient.firstName + ' ' + bookingPatient.lastName" readonly>
+
+            <label>Date</label>
+            <input [value]="selectedDate" readonly>
+
+            <label>Time</label>
+            <input [value]="selectedSlot" readonly>
+
+
+        </div>
+
+
+        <div class="confirm-img">
+            <img src="assets/images/confirm.png" alt="">
+        </div>
+
+    </div>
+
+
+    <div class="info-box">
+
+        <h3>Making the most of your visit</h3>
+
+        <p>
+            Care providers often manage complex schedules to ensure every patient receives the attention they need.
+            To maximize your time with your doctor and ensure a relaxed experience, we recommend the following steps:
+        </p>
+
+        <h4>Arrive early, stay relaxed</h4>
+        <p>
+            Plan to arrive at the office 10 to 15 minutes before your scheduled appointment. This allows ample time for:
+        </p>
+
+        <ol>
+            <li>Complete any necessary check-in paperwork.</li>
+            <li>Record your vital signs (such as height, weight, and blood pressure).</li>
+            <li>Ensure you are ready to see the doctor the moment they become available.</li>
+        </ol>
+
+        <h4>Stay organized</h4>
+        <p>
+            To help keep your day running smoothly, we suggest recording your appointment date and time in a personal
+            calendar or digital planner as soon as it is scheduled. Incorporating your visit into your daily routine
+            helps prevent any last-minute rushes and ensures you feel prepared for your consultation.
+        </p>
+
+    </div>
+
+
+    <div class="footer2">
+        <button class="back-btn" (click)="goBack()">📅 Back to My Appointments</button>
+    </div>
+
+</div>

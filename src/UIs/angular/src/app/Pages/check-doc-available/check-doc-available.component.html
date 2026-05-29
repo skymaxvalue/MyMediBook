@@ -1,3 +1,4 @@
+@if(!showAddbookingAppoinmentForm && !showBookingCunfermationOtp && !showBookingSuccess && !showBookingFaild){
 <div class="availability-container">
     <h2>Doctor's Availabilities</h2>
 
@@ -55,42 +56,73 @@
 </div>
 
 @if (showSlotsModal) {
+
 <div class="modal" [style.display]="'flex'">
     <div class="modal-content appointment-card">
-        <div class="close-icon" (click)="closeSlotsModal()">✖</div>
 
-        <h2>Available Appointments</h2>
-        <p class="slot-date">{{ selectedDateGlobal }}</p>
+        <!-- Fixed Header -->
+        <div class="modal-header">
+            <h2>Available Appointments</h2>
+            <div class="close-icon" (click)="closeSlotsModal()">✖</div>
+        </div>
 
-        <div class="appointment-body">
-            <div class="doctor-info-popup">
-                <img src="assets/images/doc.jpg" class="doctor-img-popup" alt="doctor" />
+        <!-- Scrollable Body -->
+        <div class="modal-body">
+            <p class="slot-date">{{ selectedDateGlobal }}</p>
 
-                <h4>{{ doctor?.name }}</h4>
-                <p>{{ doctor?.degree }}</p>
-                <span class="tag">{{ doctor?.department }}</span>
-            </div>
+            <div class="appointment-body">
+                <div class="doctor-info-popup">
+                    <img src="assets/images/doc.jpg" class="doctor-img-popup" alt="doctor" />
 
-            <div class="slots-section">
-                <div class="slots-grid">
-                    @for (slot of slots; track $index) {
-                    <div class="slot" [class.booked]="slot.booked" [class.available]="!slot.booked"
-                        [class.selected]="selectedSlot === slot.time" (click)="!slot.booked && selectSlot(slot.time)">
-                        {{ slot.time }}
+                    <h4>{{ doctor?.name }}</h4>
+                    <p>{{ doctor?.degree }}</p>
+                    <span class="tag">{{ doctor?.department }}</span>
+                </div>
+
+                <div class="slots-section">
+                    <div class="slots-grid">
+                        @for (slot of slots; track $index) {
+                        <div class="slot" [class.booked]="slot.booked" [class.available]="!slot.booked"
+                            [class.selected]="selectedSlot === slot.time"
+                            (click)="!slot.booked && selectSlot(slot.time)">
+                            {{ slot.time }}
+                        </div>
+                        }
                     </div>
-                    }
                 </div>
             </div>
         </div>
 
-        <div class="legend-popup">
-            <span><span class="dot available"></span> Available</span>
-            <span><span class="dot booked"></span> Already Booked</span>
+        <!-- Fixed Footer -->
+        <div class="modal-footer">
+            <div class="legend-popup">
+                <span><span class="dot available"></span> Available</span>
+                <span><span class="dot booked"></span> Already Booked</span>
+            </div>
+
+            <button class="book-btn" (click)="goToBooking()">
+                Book Appointment
+            </button>
         </div>
 
-        <button class="book-btn" (click)="goToBooking()">
-            Book Appointment
-        </button>
     </div>
 </div>
+}
+}
+@if (showAddbookingAppoinmentForm) {
+<app-book-appoiment-form [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    (backToAvailability)="backToAvailability($event)"></app-book-appoiment-form>
+}
+@if(showBookingCunfermationOtp){
+<app-booking-otp-verificatin [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    [bookingPatient]="bookingPatient" [otpDevice]="otpDevice" (backToForm)="backToForm()"
+    (VerifyOTP)="onVerifyOTP($event)"></app-booking-otp-verificatin>
+}
+@if(showBookingSuccess){
+<app-booking-successfull [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    [bookingPatient]="bookingPatient"></app-booking-successfull>
+}
+@if(showBookingFaild){
+<app-booking-failed [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    [bookingPatient]="bookingPatient"></app-booking-failed>
 }

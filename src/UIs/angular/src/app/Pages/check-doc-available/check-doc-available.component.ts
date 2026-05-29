@@ -2,6 +2,10 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BookAppoimentFormComponent } from "../book-appoiment-form/book-appoiment-form.component";
+import { BookingOTPVerificatinComponent } from "../booking-otp-verificatin/booking-otp-verificatin.component";
+import { BookingSuccessfullComponent } from "../booking-successfull/booking-successfull.component";
+import { BookingFailedComponent } from "../booking-failed/booking-failed.component";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -10,7 +14,7 @@ interface ScheduleItem {
 }
 @Component({
   selector: "app-check-doc-available",
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BookAppoimentFormComponent, BookingOTPVerificatinComponent, BookingSuccessfullComponent, BookingFailedComponent],
   templateUrl: "./check-doc-available.component.html",
   styleUrl: "./check-doc-available.component.css",
 })
@@ -22,12 +26,15 @@ export class CheckDocAvailableComponent {
   currentStartDate: Date = new Date();
   minDate: string = '';
   selectedDate: string = '';
-
+  showBookingCunfermationOtp = false;
+  showBookingSuccess = false;
+  bookingPatient: any = {};
   schedule: ScheduleItem[] = [];
-
+  showBookingFaild = false;
   showSlotsModal = false;
   selectedDateGlobal = '';
   selectedSlot = '';
+  otpDevice: { otpDevice: string, value: string } = { otpDevice: 'email', value: '' };
 
   allSlots: string[] = [
     '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
@@ -37,6 +44,7 @@ export class CheckDocAvailableComponent {
   ];
 
   slots: { time: string; booked: boolean }[] = [];
+  showAddbookingAppoinmentForm: boolean = false
 
   constructor(private router: Router) { }
 
@@ -149,13 +157,36 @@ export class CheckDocAvailableComponent {
       alert('Please select a time slot');
       return;
     }
+    this.showAddbookingAppoinmentForm = true
 
 
-
-    this.router.navigate(['/booking']);
   }
 
   goBack(): void {
     this.backToSpecialities.emit();
+  }
+
+  backToAvailability(otpDeviceDetails: any): void {
+    this.otpDevice = otpDeviceDetails;
+    this.bookingPatient = otpDeviceDetails.bookingPatient;
+    // alert(JSON.stringify(otpDeviceDetails))
+    this.showAddbookingAppoinmentForm = false;
+
+    this.showBookingCunfermationOtp = true;
+  }
+  backToForm(): void {
+    this.showBookingCunfermationOtp = false;
+    this.showAddbookingAppoinmentForm = false;
+    this.showSlotsModal = false;
+    this.showBookingSuccess = false;
+    this.showBookingFaild = true;
+  }
+  onVerifyOTP(patientDetail: any): void {
+    this.bookingPatient = patientDetail;
+    this.showBookingCunfermationOtp = false;
+    this.showAddbookingAppoinmentForm = false;
+    this.showSlotsModal = false;
+    this.showBookingSuccess = true;
+
   }
 }
