@@ -1,1 +1,375 @@
-<p>book-appoiment-form works!</p>
+<!-- Angular 21 Template Syntax -->
+<!-- book-appoiment-form.component.html -->
+
+<div class="availability-container">
+    <h2>Patient Information</h2>
+
+    <div class="schedule-box">
+        <form [formGroup]="bookingForm" (ngSubmit)="submitForm()">
+            <div class="form-grid">
+
+                <!-- First Name -->
+                <label for="firstName">First Name</label>
+                <div class="field-container">
+                    <input id="firstName" type="text" formControlName="firstName"
+                        placeholder="Enter patient first name" />
+                    @if (getErrorMessage('firstName')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('firstName') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Last Name -->
+                <label for="lastName">Last Name</label>
+                <div class="field-container">
+                    <input id="lastName" type="text" formControlName="lastName" placeholder="Enter patient last name" />
+                    @if (getErrorMessage('lastName')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('lastName') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Date of Birth -->
+                <label for="dateOfBirth">Date Of Birth</label>
+                <div class="field-container">
+                    <input id="dateOfBirth" type="date" formControlName="dateOfBirth" />
+                    @if (getErrorMessage('dateOfBirth')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('dateOfBirth') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Age -->
+                <label>Age</label>
+                <div class="field-container">
+                    <div class="inline-group age-type-group">
+                        <input id="age" type="number" formControlName="age" placeholder="Enter age"
+                            style="width: 120px" />
+
+                        <label class="age-option">
+                            <input type="radio" value="years" formControlName="ageType" />
+                            <span>Year(s)</span>
+                        </label>
+
+                        <label class="age-option">
+                            <input type="radio" value="months" formControlName="ageType" />
+                            <span>Month(s)</span>
+                        </label>
+                    </div>
+
+                    @if (getErrorMessage('age')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('age') }}
+                    </small>
+                    }
+
+                    @if (getErrorMessage('ageType')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('ageType') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Gender -->
+                <label for="gender">Gender</label>
+                <div class="field-container">
+                    <select id="gender" formControlName="gender">
+                        <option value="">Select patient gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+
+                    @if (getErrorMessage('gender')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('gender') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Insurance -->
+                <label>Do you have insurance?</label>
+                <div class="field-container">
+                    <div class="mobile-radio-group">
+                        <label class="radio-item">
+                            <input type="radio" value="yes" formControlName="insurance" />
+                            <span>Yes</span>
+                        </label>
+
+                        <label class="radio-item">
+                            <input type="radio" value="no" formControlName="insurance" />
+                            <span>No</span>
+                        </label>
+                    </div>
+
+                    @if (getErrorMessage('insurance')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('insurance') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Address -->
+                <label for="address">Primary Address</label>
+                <div class="field-container">
+                    <textarea id="address" formControlName="address" placeholder="Enter patient address"></textarea>
+
+                    @if (getErrorMessage('address')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('address') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Phone -->
+                <label for="phone">Contact Number</label>
+                <div class="field-container">
+                    <input id="phone" type="tel" formControlName="phone" placeholder="Enter contact number" />
+
+                    @if (getErrorMessage('phone')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('phone') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Email -->
+                <label for="email">Email Address</label>
+                <div class="field-container">
+                    <input id="email" type="email" formControlName="email" placeholder="Enter email address" />
+
+                    @if (getErrorMessage('email')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('email') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Visit Purpose -->
+                <label for="visitPurpose">Dr. Visit Purpose</label>
+                <div class="field-container">
+                    <textarea id="visitPurpose" formControlName="visitPurpose"
+                        placeholder="Enter visit purpose / symptoms"></textarea>
+
+                    @if (getErrorMessage('visitPurpose')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('visitPurpose') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- Visit Type -->
+                <label for="visitType">Type Of Visit</label>
+                <div class="field-container">
+                    <select id="visitType" formControlName="visitType">
+                        <option value="">Select type of visit</option>
+                        <option value="Consultation">Consultation</option>
+                        <option value="Follow-up">Follow-up</option>
+                    </select>
+
+                    @if (getErrorMessage('visitType')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('visitType') }}
+                    </small>
+                    }
+                </div>
+
+                <!-- OTP Method -->
+                <label>OTP Verification</label>
+                <div class="field-container">
+                    <div class="mobile-radio-group otp-method-group">
+                        <label class="otp-option">
+                            <input type="radio" value="mobile" formControlName="otpMethod" />
+                            <span>Mobile Number</span>
+                        </label>
+
+                        <label class="otp-option">
+                            <input type="radio" value="email" formControlName="otpMethod" />
+                            <span>Email Address</span>
+                        </label>
+                    </div>
+
+                    @if (getErrorMessage('otpMethod')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('otpMethod') }}
+                    </small>
+                    }
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="book-btn">
+                    Confirm
+                </button>
+
+                <button type="button" class="clear-btn" (click)="clearForm()">
+                    Clear
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Insurance Modal -->
+
+@if (showInsuranceModal) {
+<div class="modal">
+    <div class="modal-content" [formGroup]="insuranceForm">
+
+        <!-- Fixed Header -->
+        <div class="modal-header">
+            <h2>Insurance Details</h2>
+            <div class="close-icon" (click)="closeInsuranceModal()">✖</div>
+        </div>
+
+        <!-- Scrollable Body -->
+        <div class="modal-body">
+            <div class="form-grid">
+                <label>Provider Name</label>
+                <div class="field-container">
+                    <input formControlName="provider" placeholder="Enter provider name" />
+                    @if (getNestedError('insuranceData', 'provider', 'Provider Name')) {
+                    <small class="error-message">
+                        {{ getNestedError('insuranceData', 'provider', 'Provider Name') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Insurance Policy Id</label>
+                <div class="field-container">
+                    <input formControlName="policy" placeholder="Enter policy id" />
+                    @if (getNestedError('insuranceData', 'policy', 'Insurance Policy Id')) {
+                    <small class="error-message">
+                        {{ getNestedError('insuranceData', 'policy', 'Insurance Policy Id') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Insurance Group Id</label>
+                <div class="field-container">
+                    <input formControlName="groupId" placeholder="Enter group id" />
+                    @if (getNestedError('insuranceData', 'groupId', 'Insurance Group Id')) {
+                    <small class="error-message">
+                        {{ getNestedError('insuranceData', 'groupId', 'Insurance Group Id') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Primary Holder Name</label>
+                <div class="field-container">
+                    <input formControlName="holderName" placeholder="Enter holder name" />
+                    @if (getNestedError('insuranceData', 'holderName', 'Primary Holder Name')) {
+                    <small class="error-message">
+                        {{ getNestedError('insuranceData', 'holderName', 'Primary Holder Name') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Primary Address</label>
+                <div class="field-container">
+                    <input formControlName="address" placeholder="Enter address" />
+                    @if (getNestedError('insuranceData', 'address', 'Primary Address')) {
+                    <small class="error-message">
+                        {{ getNestedError('insuranceData', 'address', 'Primary Address') }}
+                    </small>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Footer -->
+        <div class="modal-footer">
+            <button type="button" class="book-btn" (click)="confirmInsurance()">
+                Confirm
+            </button>
+            <button type="button" class="cancel-btn" (click)="closeInsuranceModal()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Payment Modal -->
+@if (showPaymentModal) {
+<div class="modal">
+    <div class="modal-content" [formGroup]="paymentForm">
+
+        <!-- Fixed Header -->
+        <div class="modal-header">
+            <h2 class="modal-title">Payment Details</h2>
+            <div class="close-icon" (click)="closePaymentModal()">✖</div>
+        </div>
+
+        <!-- Scrollable Body -->
+        <div class="modal-body">
+            <div class="form-grid">
+                <label>Payment Type</label>
+                <div class="field-container">
+                    <input formControlName="paymentType" placeholder="Enter Payment Type" />
+                    @if (getNestedError('paymentData', 'paymentType', 'Payment Type')) {
+                    <small class="error-message">
+                        {{ getNestedError('paymentData', 'paymentType', 'Payment Type') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Card Holder Name</label>
+                <div class="field-container">
+                    <input formControlName="cardHolder" placeholder="Enter Card Holder Name" />
+                    @if (getNestedError('paymentData', 'cardHolder', 'Card Holder Name')) {
+                    <small class="error-message">
+                        {{ getNestedError('paymentData', 'cardHolder', 'Card Holder Name') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Card Number</label>
+                <div class="field-container">
+                    <input formControlName="cardNumber" placeholder="Enter Card Number" />
+                    @if (getNestedError('paymentData', 'cardNumber', 'Card Number')) {
+                    <small class="error-message">
+                        {{ getNestedError('paymentData', 'cardNumber', 'Card Number') }}
+                    </small>
+                    }
+                </div>
+
+                <label>Expiry Date</label>
+                <div class="inline-row">
+                    <div class="field-container expiry-container">
+                        <input formControlName="expiry" placeholder="MM/YY" />
+                        @if (getNestedError('paymentData', 'expiry', 'Expiry Date')) {
+                        <small class="error-message">
+                            {{ getNestedError('paymentData', 'expiry', 'Expiry Date') }}
+                        </small>
+                        }
+                    </div>
+
+                    <span class="cvv-label">CVV</span>
+
+                    <div class="field-container cvv-container">
+                        <input formControlName="cvv" placeholder="XXX" />
+                        @if (getNestedError('paymentData', 'cvv', 'CVV')) {
+                        <small class="error-message">
+                            {{ getNestedError('paymentData', 'cvv', 'CVV') }}
+                        </small>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Footer -->
+        <div class="modal-footer">
+            <button type="button" class="book-btn" (click)="confirmPayment()">
+                Confirm
+            </button>
+            <button type="button" class="cancel-btn" (click)="closePaymentModal()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+}

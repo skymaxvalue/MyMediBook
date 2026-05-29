@@ -1,8 +1,6 @@
 <div class="container-fluid main-div vh-100">
   <div class="row g-0 h-100">
-    <div
-      class="left-panel d-flex flex-column justify-content-between align-items-center text-center text-white"
-    >
+    <div class="left-panel d-flex flex-column justify-content-between align-items-center text-center text-white">
       <h1 class="left-title">Doctors Just a Click Away.</h1>
 
       <img src="assets/images/doctor.png" alt="Doctor" class="doctor-img" />
@@ -23,13 +21,8 @@
         <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
           <div class="input-group">
             <label>Username</label>
-            <input
-              class="rounded-3"
-              type="text"
-              formControlName="username"
-              placeholder="Enter your username"
-              required
-            />
+            <input class="rounded-3" type="text" formControlName="username" placeholder="Enter your username"
+              required />
             <div *ngIf="f.username.touched && f.username.invalid" class="text-danger">
               <small *ngIf="f.username.errors?.['required']"> Username is required </small>
               <!-- <small *ngIf="f.username.errors?.['minlength']">
@@ -40,25 +33,24 @@
 
           <div class="input-group">
             <label>Password</label>
-            <input
-              class="rounded-3"
-              [type]="showPassword ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="Enter your password"
-              required
-            />
+            <input class="rounded-3" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              placeholder="Enter your password" required />
+            @if(f.password.value){
             <div class="password-wrapper">
-              <img
-                src="assets/images/show.png"
-                class="toggle-password"
-                (click)="togglePassword()"
-              />
+              @if(showPassword) {
+              <img src="assets/images/hide.png" class="toggle-password" (click)="togglePassword()" />
+
+              }@else {
+              <img src="assets/images/show.png" class="toggle-password" (click)="togglePassword()" />
+
+              }
+
             </div>
+
+            }
             <div *ngIf="f.password.touched && f.password.invalid" class="text-danger">
               <small *ngIf="f.password.errors?.['required']"> Password is required </small>
-              <!-- <small *ngIf="f.password.errors?.['minlength']">
-                Minimum 6 characters required
-              </small> -->
+
             </div>
           </div>
 
@@ -79,12 +71,12 @@
             </button>
           </div>
 
-          <div class="otp-login-link">
+          <!-- <div class="otp-login-link">
             <a [routerLink]="['/otp-login']" class="otp-btn">
               <img src="assets/images/phone.png" alt="OTP" *ngIf="false" />
               Login with OTP
             </a>
-          </div>
+          </div> -->
 
           <p class="signup-text">
             Don’t have an account?
