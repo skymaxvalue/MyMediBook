@@ -6,25 +6,25 @@
     <div class="col-12">
       <ul class="nav nav-tabs border-0 custom-tabs justify-content-around ">
         <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'appointments'" (click)="activeTab = 'appointments'">
+          <button class="nav-link" [class.active]="activeTab === 'appointments'" (click)="changeTab('appointments')">
             My Appointments
           </button>
         </li>
 
         <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'specialities'" (click)="activeTab = 'specialities'">
+          <button class="nav-link" [class.active]="activeTab === 'specialities'" (click)="changeTab('specialities')">
             Specialities
           </button>
         </li>
 
         <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'medicine'" (click)="activeTab = 'medicine'">
+          <button class="nav-link" [class.active]="activeTab === 'medicine'" (click)="changeTab('medicine')">
             Medicine Orders
           </button>
         </li>
 
         <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'support'" (click)="activeTab = 'support'">
+          <button class="nav-link" [class.active]="activeTab === 'support'" (click)="changeTab('support')">
             Support & Help
           </button>
         </li>

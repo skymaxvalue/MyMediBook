@@ -32,6 +32,8 @@ import { MainLayoutComponent } from "./main-layout/main-layout.component";
 
 import { DashboardComponent } from "./Pages/dashboard/dashboard.component";
 import { authGuard } from "./auth/guards/auth.guard";
+import { OtpLoginComponent } from "./users/otp-login/otp-login.component";
+import { ForgetPasswordComponent } from "./auth/forget-password/forget-password.component";
 
 export const routes: Routes = [
   // Display with Navbar using Child Represtation
@@ -101,7 +103,7 @@ export const routes: Routes = [
 
   // Authentication Flow routs
   { path: "login", component: LoginComponent },
-  { path: "otp-login", component: OtpLoginComponent },
+  { path: "forgot-password", component: ForgetPasswordComponent },
   {
     path: "sign-up",
     component: SelfRegistrationComponent,

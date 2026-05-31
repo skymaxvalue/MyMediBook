@@ -2,11 +2,11 @@ import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from "@angula
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
 import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from "ngxsmk-tel-input";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-self-registration",
-  imports: [ReactiveFormsModule, NgxsmkTelInputComponent],
+  imports: [ReactiveFormsModule, NgxsmkTelInputComponent, RouterModule],
   templateUrl: "./self-registration.component.html",
   styleUrls: ["./self-registration.component.css"],
   standalone: true,
@@ -37,11 +37,13 @@ export class SelfRegistrationComponent implements OnInit {
     India: ["Maharashtra", "Delhi"],
     USA: ["California", "Texas"],
   };
+  showPassword: boolean = false;
+  showconfirmPasswordPassword: boolean = false
 
   constructor(
     private fb: FormBuilder,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -137,5 +139,12 @@ export class SelfRegistrationComponent implements OnInit {
     // console.log(this.signupForm.value);
     alert("Form Submitted Successfully");
     this.router.navigate(["/login"]);
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+  toggleconfirmPassword() {
+    this.showconfirmPasswordPassword = !this.showconfirmPasswordPassword
   }
 }

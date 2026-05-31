@@ -85,6 +85,28 @@ export class DashboardComponent {
     this.selectedDoctor = null;
   }
   goToSpecialities() {
+    this.selectedDoctor = null;
     this.activeTab = "specialities";
+  }
+
+  changeTab(tab: string) {
+
+    this.activeTab = tab;
+
+    console.log('Tab Changed:', tab);
+
+    // Your custom event logic here
+
+    if (tab === 'appointments') {
+
+      // call API
+      // refresh data
+      this.selectedDoctor = null;
+    }
+
+    if (tab === 'specialities') {
+
+      this.selectedDoctor = null;
+    }
   }
 }

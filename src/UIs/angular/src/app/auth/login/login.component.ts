@@ -22,7 +22,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
     public auth: AuthService,
     private form_builder: FormBuilder,
     private router: Router
-  ) {}
+  ) { }
 
   ngAfterViewInit(): void {
     this.waitForGoogle();
@@ -44,6 +44,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
 
   initializeGoogle() {
+    // console.log("Initializing Google Sign-In", this.clientId);
     google.accounts.id.initialize({
       client_id: this.clientId,
       callback: this.handleCredentialResponse.bind(this),
@@ -66,6 +67,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
   handleCredentialResponse(response: any) {
     // Handle the token response here
+    // console.log(response, "------------>")
   }
 
   togglePassword() {
