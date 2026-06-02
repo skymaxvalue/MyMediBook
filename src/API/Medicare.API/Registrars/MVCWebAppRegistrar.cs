@@ -23,6 +23,8 @@ namespace Medicare_API.Registrars
 
             app.UseHttpsRedirection();
 
+            app.UseCors("MyPolicy");
+
             app.UseAuthorization();
 
             app.MapControllers();
