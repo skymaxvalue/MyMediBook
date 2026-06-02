@@ -57,31 +57,6 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<AuthDetailModel> GetPasswordByUsernameAsync(string Username)
-        {
-            string procName = "USP_GetUserPassword";
-            AuthDetailModel returnData = new AuthDetailModel();
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("Username", Username);
-                returnData = await _context.QuerySingleStoredProcAsync<AuthDetailModel>(procName, param);
-
-            } catch (Exception ex)
-            {
-                string path = "USP_GetUserPassword";
-                await _errorLog.InsertErrorLog(new ErrorLogModel()
-                {
-                    IsDBError = false,
-                    Error_Message = ex.Message,
-                    Error_Procedure = path,
-                    Error_Trace = ex.StackTrace
-                });
-            }
-
-            return returnData;
-        }
-
         public async Task<ResponseModel> IncrementOtpAttemptsAsync(string email)
         {
             string procName = "USP_UpdateOtpAttempts";

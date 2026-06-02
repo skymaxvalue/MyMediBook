@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Interfaces.IAuthRepository;
-using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
 using System.Security.Cryptography;

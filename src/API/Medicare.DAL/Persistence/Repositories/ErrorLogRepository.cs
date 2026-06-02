@@ -17,7 +17,7 @@ namespace Medicare.DAL.Persistence.Repositories
         {
             List<ErrorLogModel> returnData = new List<ErrorLogModel>();
             string procName = "USP_GetErrorLogs";
-            returnData = await _context.QuerySingleStoredProcAsync<List<ErrorLogModel>>(procName);
+            returnData = await _context.QueryStoredProcListAsync<ErrorLogModel>(procName);
 
             return returnData;
         }

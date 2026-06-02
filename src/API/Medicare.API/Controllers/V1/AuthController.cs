@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Authentication;
+using Medicare.Application.Features.Queries.SecurityQuestions;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
@@ -37,23 +38,6 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPost]
-        [Route("LoginUser")]
-        public async Task<IActionResult> LoginUser([FromBody] AuthModel model)
-        {
-            ApiResponse<UserInfoDataModel> ApiResponse = new ApiResponse<UserInfoDataModel>();
-            UserInfoDataModel response = new UserInfoDataModel();
-            response = await _mediator.Send(new AuthUserCommand(model));
-            ApiResponse = new ApiResponse<UserInfoDataModel>()
-            {
-                Data = response,
-                StatusMessage = "User Logged In Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
-        }
-
-        [HttpPost]
         [Route("RequestOtp")]
         public async Task<IActionResult> RequestOtp([FromBody] RequestOtpModel model)
         {
@@ -81,6 +65,24 @@ namespace Medicare.API.Controllers.V1
             {
                 Data = response,
                 StatusMessage = response.ResponseMessage,
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            };
+            return Ok(ApiResponse);
+        }
+
+
+        [HttpGet]
+        [Route("GetSecurityQuestionMaster")]
+        public async Task<IActionResult> GetSecurityQuestionMaster()
+        {
+            ApiResponse<List<SecurityQuestionDataModel>> ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>();
+            List<SecurityQuestionDataModel> response = new List<SecurityQuestionDataModel>();
+            response = await _mediator.Send(new GetSecurityQuestionMasterQuery());
+            ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>()
+            {
+                Data = response,
+                StatusMessage = "Security Question Master Fetched Successfully",
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
             };
