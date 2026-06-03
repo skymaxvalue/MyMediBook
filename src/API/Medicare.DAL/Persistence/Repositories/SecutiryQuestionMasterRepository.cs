@@ -21,16 +21,15 @@ namespace Medicare.DAL.Persistence.Repositories
             List<SecurityQuestionDataModel> returnData = new List<SecurityQuestionDataModel>();
             try 
             {
-                returnData = await _context.QuerySingleStoredProcAsync<List<SecurityQuestionDataModel>>(procName);
+                returnData = await _context.QueryStoredProcListAsync<SecurityQuestionDataModel>(procName);
             }
             catch (Exception ex) 
             {
-                string path = "USP_GetSecurityQuestionMaster";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = path,
+                    Error_Procedure = procName,
                     Error_Trace = ex.StackTrace
                 });
             }

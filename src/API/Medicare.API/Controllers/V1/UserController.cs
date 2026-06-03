@@ -37,21 +37,5 @@ namespace Medicare_API.Controllers.V1
             return Ok(ApiResponse);
         }
 
-        [HttpGet]
-        [Route("GetSecurityQuestionMaster")]
-        public async Task<IActionResult> GetSecurityQuestionMaster()
-        {
-            ApiResponse<List<SecurityQuestionDataModel>> ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>();
-            List<SecurityQuestionDataModel> response = new List<SecurityQuestionDataModel>();
-            response = await _mediator.Send(new GetSecurityQuestionMasterQuery());
-            ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>()
-            {
-                Data = response,
-                StatusMessage = "Security Question Master Fetched Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
-        }
     }
 }
