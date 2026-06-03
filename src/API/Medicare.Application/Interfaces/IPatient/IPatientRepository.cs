@@ -1,4 +1,5 @@
 ﻿
+using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
 
@@ -10,5 +11,7 @@ namespace Medicare.Application.Interfaces.IPatient
         Task<ResponseModel> UpdatePatientDetails(PatientMasterModel model);
         Task<PatientMasterModel> GetPatientByContact(string contactNo);
         Task<PatientMasterModel> GetPatientById(int Id);
+        Task<PatientAuthDetailModel> GetPasswordByUsernameAsync(string Username);
+        Task<PatientDetailModel> GetPatientInfoByUsername(string Username);
     }
 }

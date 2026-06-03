@@ -1,0 +1,48 @@
+﻿using MediatR;
+using Medicare.Application.Features.Commands.Patient;
+using Medicare.Application.Interfaces.IPatient;
+using Medicare.Application.Models.Patient;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace Medicare.Application.Handlers.CommandHandlers
+{
+    public class AuthPatientCommandHandler : IRequestHandler<AuthPatientCommand, PatientDetailModel>
+    {
+        private readonly IPatientRepository _patientRepository;
+
+        public AuthPatientCommandHandler(IPatientRepository patientRepository)
+        {
+            _patientRepository = patientRepository;
+        }
+
+        public async Task<PatientDetailModel> Handle(AuthPatientCommand request, CancellationToken cancellationToken)
+        {
+            var user = await _patientRepository.GetPasswordByUsernameAsync(request.model.Username);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            bool isPasswordValid = VerifyPassword(request.model.Password, user.PasswordHash, user.PasswordSalt);
+
+            if (!isPasswordValid)
+            {
+                throw new Exception("Invalid Password");
+            }
+
+            var result = await _patientRepository.GetPatientInfoByUsername(request.model.Username);
+
+            return result;
+        }
+        private bool VerifyPassword(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            using var hmac = new HMACSHA512(storedSalt);
+
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            return computedHash.SequenceEqual(storedHash);
+        }
+    }
+}

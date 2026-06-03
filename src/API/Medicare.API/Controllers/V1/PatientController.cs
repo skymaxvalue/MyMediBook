@@ -39,6 +39,23 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPost]
+        [Route("LoginPatient")]
+        public async Task<IActionResult> LoginPatient([FromBody] PatientAuthModel model)
+        {
+            ApiResponse<PatientDetailModel> ApiResponse = new ApiResponse<PatientDetailModel>();
+            PatientDetailModel response = new PatientDetailModel();
+            response = await _mediator.Send(new AuthPatientCommand(model));
+            ApiResponse = new ApiResponse<PatientDetailModel>()
+            {
+                Data = response,
+                StatusMessage = "User Logged In Successfully",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            };
+            return Ok(ApiResponse);
+        }
+
+        [HttpPost]
         [Route("UpdatePatientDetails")]
         public async Task<IActionResult> UpdatePatientDetails([FromBody] CreatePatientRequestModel model)
         {
