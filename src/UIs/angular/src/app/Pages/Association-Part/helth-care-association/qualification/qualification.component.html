@@ -1,0 +1,129 @@
+<section class="form-step" data-step="1">
+    <h2>Qualification</h2>
+
+    <div class="form-layout compact" [formGroup]="group">
+        <label for="highestDegree">Highest Degree<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="highestDegree" formControlName="highestDegree" type="text"
+                placeholder="(e.g., MBBS, B.Sc Nursing, MD)" required>
+            @if(group.get('highestDegree')?.touched &&
+            group.get('highestDegree')?.hasError('required')) {
+            <div class="error-message">
+                Please enter your highest degree is required
+            </div>
+            }
+        </div>
+
+
+        <label for="specialization">Specialization<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="specialization" formControlName="specialization" type="text"
+                placeholder="(e.g., Pediatrics, Cardiology, General Surgery)" required>
+            @if(group.get('specialization')?.touched &&
+            group.get('specialization')?.hasError('required')) {
+            <div class="error-message">
+                Please enter your specialization is required
+            </div>
+            }
+
+        </div>
+
+        <label for="institutionName">Institution/University Name<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="institutionName" formControlName="institutionName" type="text"
+                placeholder="Enter your Institution/University Name" required>
+            @if(group.get('institutionName')?.touched &&
+            group.get('institutionName')?.hasError('required')) {
+            <div class="error-message">
+                Please enter your institution name is required
+            </div>
+            }
+
+        </div>
+
+        <label for="yearOfPassing">Year of Passing<span class="star">*</span></label>
+        <div class="field-with-icon compact-field">
+            <div class="field-container">
+                <input id="yearOfPassing" formControlName="yearOfPassing" type="date" required>
+                @if(group.get('yearOfPassing')?.touched &&
+                group.get('yearOfPassing')?.hasError('required')) {
+                <div class="error-message">
+                    Please enter your passing year name is required
+                </div>
+                }
+            </div>
+        </div>
+
+        <label for="registrationNumber">Registration/License Number<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="registrationNumber" formControlName="registrationNumber" type="text"
+                placeholder="Enter your Registration/License Number" required>
+            @if(group.get('registrationNumber')?.touched &&
+            group.get('registrationNumber')?.hasError('required')) {
+            <div class="error-message">
+                Please enter your registration number name is required
+            </div>
+            }
+        </div>
+
+        <label for="licenseExpiry">License Expiry Date<span class="star">*</span></label>
+        <div class="field-with-icon compact-field">
+            <div class="field-container">
+                <input id="licenseExpiry" formControlName="licenseExpiry" type="date" required>
+                @if(group.get('licenseExpiry')?.touched &&
+                group.get('licenseExpiry')?.hasError('required')) {
+                <div class="error-message">
+                    Please enter your license expriry date number name is required
+                </div>
+                }
+            </div>
+        </div>
+
+        <label for="additionalCertifications">Additional Certifications</label>
+        <input id="additionalCertifications" formControlName="additionalCertifications" type="text">
+
+        <label for="qualificationDocuments">Upload Documents<span class="star">*</span></label>
+        <!-- <div class="upload-row">
+            <input id="qualificationDocuments" formControlName="qualificationDocuments" type="file" hidden>
+            <button type="button" class="file-button" data-file-trigger="qualificationDocuments"
+                data-file-label="qualificationFileName">
+                <span class="file-button-text" id="qualificationFileName">choose file</span>
+                <span class="file-button-hint">preview after selection</span>
+            </button>
+            <button type="button" class="secondary-action upload-trigger"
+                data-upload-target="qualificationDocuments">upload</button>
+        </div> -->
+        <div class="upload-row">
+
+            <input #identityFileInput type="file" hidden (change)="onFileSelected($event)">
+
+            <button type="button" class="file-button" (click)="identityFileInput.click()">
+
+                <span class="file-button-text">
+                    {{ selectedFile?.name || 'Choose File' }}
+                </span>
+
+                <span class="file-button-hint">
+                    Preview after selection
+                </span>
+
+            </button>
+
+            <button type="button" class="secondary-action upload-trigger" [disabled]="!selectedFile"
+                [class.uploaded]="isFileUploaded" (click)="uploadFile()">
+
+                Upload
+            </button>
+        </div>
+        @if(!isFileUploaded) {
+        <div class="error-message">
+            Please select and upload file is required
+        </div>
+        }
+    </div>
+
+    <div class="wizard-actions between">
+        <button type="button" class="secondary-action wide" (click)="onPrevious()">Back</button>
+        <button type="button" class="primary-action" (click)="onNext()">Save and Next</button>
+    </div>
+</section>

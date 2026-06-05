@@ -77,7 +77,6 @@ export class DashboardComponent {
   ];
 
   onDoctorSelected(doctor: any): void {
-    // debugger
     this.selectedDoctor = doctor;
     console.log('Received from child:', doctor);
   }

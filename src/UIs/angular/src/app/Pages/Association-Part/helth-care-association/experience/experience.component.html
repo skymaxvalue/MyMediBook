@@ -1,0 +1,83 @@
+<section class="form-step" data-step="2">
+    <h2>Experience</h2>
+
+    <div class="form-layout compact" [formGroup]="group">
+        <label for="experienceYears">Total Years of Experience<span class="star">*</span></label>
+        <div class="field-container">
+            <div class="field-with-action compact-field medium-field">
+                <select id="experienceYears" formControlName="experienceYears" required>
+                    <option value="">Select total experience</option>
+                    <option>0-1 Years</option>
+                    <option>1-3 Years</option>
+                    <option>3-5 Years</option>
+                    <option>5+ Years</option>
+                </select>
+
+                <span class="field-action">⌄</span>
+            </div>
+
+            @if(group.get('experienceYears')?.touched &&
+            group.get('experienceYears')?.hasError('required')) {
+            <div class="error-message">
+                Total experience is required
+            </div>
+            }
+        </div>
+
+        <label for="organizationName">Current/Last Organization Name<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="organizationName" formControlName="organizationName" type="text" required>
+
+            @if(group.get('organizationName')?.touched &&
+            group.get('organizationName')?.hasError('required')) {
+            <div class="error-message">
+                Organization name is required
+            </div>
+            }
+        </div>
+
+        <label for="designationRole">Designation/Role<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="designationRole" formControlName="designationRole" type="text"
+                placeholder="(e.g., Senior Resident, Staff Nurse)" required>
+            @if(group.get('designationRole')?.touched &&
+            group.get('designationRole')?.hasError('required')) {
+            <div class="error-message">
+                Designation role is required
+            </div>
+            }
+        </div>
+
+
+        <label for="departmentWorked">Department Worked In<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="departmentWorked" formControlName="departmentWorked" type="text"
+                placeholder="(e.g., ICU, Emergency, OPD)" required>
+            @if(group.get('departmentWorked')?.touched &&
+            group.get('departmentWorked')?.hasError('required')) {
+            <div class="error-message">
+                Last worked department name is required
+            </div>
+            }
+        </div>
+
+
+        <label for="keySkills">Key Skills/Competencies<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="keySkills" formControlName="keySkills" type="text"
+                placeholder="(e.g., Ventilator Management, Patient Triage)" required>
+            @if(group.get('keySkills')?.touched &&
+            group.get('keySkills')?.hasError('required')) {
+            <div class="error-message">
+                Key skills are required
+            </div>
+            }
+        </div>
+
+    </div>
+
+    <div class="wizard-actions between">
+        <button type="button" class="secondary-action wide" data-prev (click)="back.emit()">Back</button>
+        <button type="button" class="primary-action" data-next (click)="onNext()">Save and Next</button>
+    </div>
+</section>

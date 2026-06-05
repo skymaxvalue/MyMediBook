@@ -1,0 +1,74 @@
+<section class="form-step" data-step="3">
+    <h2>Employment Details</h2>
+
+    <div class="form-layout compact" [formGroup]="group">
+        <label for="joiningDate">Date of Joining<span class="star">*</span></label>
+        <div class="field-with-icon compact-field">
+            <div class="field-container">
+                <input id="joiningDate" formControlName="joiningDate" type="date" required>
+                @if(group.get('joiningDate')?.touched &&
+                group.get('joiningDate')?.hasError('required')) {
+                <div class="error-message">
+                    Joining date is required
+                </div>
+                }
+            </div>
+
+        </div>
+
+        <label for="employeeType">Employee Type<span class="star">*</span></label>
+
+        <div class="field-container">
+            <div class="field-with-action compact-field medium-field">
+                <select id="employeeType" formControlName="employeeType" required>
+                    <option value="">(e.g., Part Time / Full Time)</option>
+                    <option>Part Time</option>
+                    <option>Full Time</option>
+                    <option>Contract</option>
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+
+            @if(group.get('employeeType')?.touched &&
+            group.get('employeeType')?.hasError('required')) {
+            <div class="error-message">
+                The emplyee type is required
+            </div>
+            }
+        </div>
+
+
+
+        <label for="departmentName">Department<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="departmentName" formControlName="departmentName" type="text" required
+                placeholder="Enter department name">
+            @if(group.get('departmentName')?.touched &&
+            group.get('departmentName')?.hasError('required')) {
+            <div class="error-message">
+                Department name is required
+            </div>
+            }
+        </div>
+
+
+        <label for="designation">Designation<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="designation" formControlName="designation" type="text" required
+                placeholder="Enter your designation">
+            @if(group.get('designation')?.touched &&
+            group.get('designation')?.hasError('required')) {
+            <div class="error-message">
+                Designation is required
+            </div>
+            }
+        </div>
+
+
+    </div>
+
+    <div class="wizard-actions between">
+        <button type="button" class="secondary-action wide" data-prev (click)="back.emit()">Back</button>
+        <button type="submit" class="primary-action" (click)="submit()">Submit</button>
+    </div>
+</section>

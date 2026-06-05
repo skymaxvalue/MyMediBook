@@ -1,0 +1,458 @@
+<section class="form-step active" data-step="0">
+    <h2>Personal Information</h2>
+
+    <div class="form-layout" [formGroup]="group">
+        <label for="firstName">First Name<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="firstName" formControlName="firstName" type="text" placeholder="Enter your first name"
+                (keypress)="allowOnlyText($event)" required>
+            @if(group.get('firstName')?.touched &&
+            group.get('firstName')?.hasError('required')) {
+            <div class="error-message">
+                First Name is required
+            </div>
+            }
+        </div>
+
+        <label for="middleName">Middle Name </label>
+        <input id="middleName" formControlName="middleName" type="text" placeholder="Enter your middle name"
+            (keypress)="allowOnlyText($event)">
+
+        <label for="lastName">Last Name<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="lastName" formControlName="lastName" type="text" placeholder="Enter your last name" required
+                (keypress)="allowOnlyText($event)">
+            @if(group.get('lastName')?.touched &&
+            group.get('lastName')?.hasError('required')) {
+            <div class="error-message">
+                Last Name is required
+            </div>
+            }
+        </div>
+        <label for="dateOfBirth">Date Of Birth<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="dateOfBirth" formControlName="dateOfBirth" type="date" required>
+            @if(group.get('dateOfBirth')?.touched &&
+            group.get('dateOfBirth')?.hasError('required')) {
+            <div class="error-message">
+                Date of Birth is required
+            </div>
+            }
+        </div>
+
+        <label for="employeeId">Employee ID<span class="star">*</span></label>
+        <div class="compact-field">
+            <input id="employeeId" formControlName="employeeId" type="text" placeholder="Enter your employee id"
+                required>
+            @if(group.get('employeeId')?.touched &&
+            group.get('employeeId')?.hasError('required')) {
+            <div class="error-message">
+                Employee ID is required
+            </div>
+            }
+        </div>
+
+        <label for="phoneNumber">Phone Number<span class="star">*</span></label>
+        <div class="field-container">
+
+            <div class="split-field phone-number-group">
+                <select id="phoneCountryCode" formControlName="phoneCountryCode" class="code-select">
+                    @for(c of countries; track c) {
+                    <option [value]="c.phoneCode">{{ c.countryCode }}</option>
+                    }
+
+                </select>
+                <div class="phone-input-wrapper">
+                    <span class="phone-prefix">
+                        {{ group.get('phoneCountryCode')?.value }}
+                    </span>
+                    <input id="phoneNumber" formControlName="phoneNumber" type="tel" maxlength="10"
+                        (keypress)="allowOnlyNumbers($event)" placeholder=" Enter phone number" required>
+                </div>
+            </div>
+            @if(group.get('phoneNumber')?.touched &&
+            group.get('phoneNumber')?.hasError('required')) {
+            <div class="error-message">
+                Phone Number is required
+            </div>
+            }
+        </div>
+
+        <label for="emailId">Email ID<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="emailId" formControlName="emailId" type="email" placeholder="Enter your email id" required>
+            @if(group.get('emailId')?.touched &&
+            group.get('emailId')?.hasError('required')) {
+            <div class="error-message">
+                Email ID is required
+            </div>
+            }
+            @if(group.get('emailId')?.touched &&
+            group.get('emailId')?.hasError('email')) {
+            <div class="error-message">
+                Please enter a valid email address
+            </div>
+            }
+        </div>
+        <label for="gender">Gender<span class="star">*</span></label>
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="gender" formControlName="gender" required>
+                    <option value="">Select your gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+            @if(group.get('gender')?.touched &&
+            group.get('gender')?.hasError('required')) {
+            <div class="error-message">
+                Gender is required
+            </div>
+            }
+
+        </div>
+
+        <label for="residentialAddress">Residential Address<span class="star">*</span></label>
+        <div class="field-container">
+            <textarea id="residentialAddress" formControlName="residentialAddress" placeholder="Enter your address"
+                rows="3" required></textarea>
+            @if(group.get('residentialAddress')?.touched &&
+            group.get('residentialAddress')?.hasError('required')) {
+            <div class="error-message">
+                Residential Address is required
+            </div>
+            }
+
+        </div>
+
+        <label for="permanentAddress">Permanent Address</label>
+
+        <div class="stacked-field">
+            <div class="field-container">
+                <textarea id="permanentAddress" formControlName="permanentAddress" placeholder="Enter your address"
+                    rows="3" required></textarea>
+                @if(group.get('permanentAddress')?.touched &&
+                group.get('permanentAddress')?.hasError('required')) {
+                <div class="error-message">
+                    Permanent Address is required
+                </div>
+                }
+            </div>
+            <label class="check-row">
+                <input id="sameAddress" type="checkbox" (change)="onCheckboxChange($event)">
+                <span>Same as Residential Address</span>
+            </label>
+        </div>
+
+        <label for="country">Country<span class="star">*</span></label>
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="country" formControlName="countryId" required (change)="onCountryChange($event)">
+                    <option [ngValue]="null">Enter your country</option>
+                    @for(c of countries; track c) {
+                    <option [value]="c.countryId">{{ c.countryName }}</option>
+                    }
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+
+            @if(group.get('countryId')?.touched &&
+            group.get('countryId')?.hasError('required')) {
+            <div class="error-message">
+                Country is required
+            </div>
+            }
+        </div>
+
+        <label for="state">State<span class="star">*</span></label>
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="state" formControlName="stateId" required (change)="onStateChange($event)">
+                    <option [ngValue]="null">Enter your State</option>
+                    @for(s of states ; track s){
+
+                    <option [value]="s.stateId">{{s.stateName}}</option>
+                    }
+
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+
+            @if(group.get('stateId')?.touched &&
+            group.get('stateId')?.hasError('required')) {
+            <div class="error-message">
+                State is required
+            </div>
+            }
+        </div>
+        <label for="city">City<span class="star">*</span></label>
+
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="city" formControlName="cityId" required>
+                    <option [ngValue]="null">Enter your city</option>
+                    @for(c of cities ; track c){
+
+                    <option [value]="c.cityId">{{c.cityName}}</option>
+                    }
+
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+
+            @if(group.get('city')?.touched &&
+            group.get('city')?.hasError('required')) {
+            <div class="error-message">
+                city is required
+            </div>
+            }
+        </div>
+
+
+        <label for="zipCode">Zip Code<span class="star">*</span></label>
+        <div class="compact-field">
+            <input id="zipCode" formControlName="zipCode" type="text" placeholder="Enter your zip code" required
+                (keypress)="allowOnlyNumbers($event)">
+            @if(group.get('zipCode')?.touched &&
+            group.get('zipCode')?.hasError('required')) {
+            <div class="error-message">
+                Zip Code is required
+            </div>
+            }
+        </div>
+
+
+
+
+        <label for="identityDocument">Identity Document<span class="star">*</span></label>
+        <div class="stacked-field">
+            <div class="field-container">
+                <div class="field-with-action">
+                    <select id="identityDocument" formControlName="identityDocument" required>
+                        <option value="">Select identity document type</option>
+                        <option value="1">Aadhaar Card</option>
+                        <option value="2">PAN Card</option>
+                        <option value="3">Passport</option>
+                        <option value="4">Driving License</option>
+                    </select>
+                    <span class="field-action">⌄</span>
+                </div>
+
+                @if(group.get('identityDocument')?.touched &&
+                group.get('identityDocument')?.hasError('required')) {
+                <div class="error-message">
+                    Identity Document is required
+                </div>
+                }
+            </div>
+            <!-- <div class="upload-row">
+                <input id="identityFile" formControlName="identityFile" type="file" hidden>
+                <button type="button" class="file-button" data-file-trigger="identityFile"
+                    data-file-label="identityFileName">
+                    <span class="file-button-text" id="identityFileName">choose file</span>
+                    <span class="file-button-hint">preview after selection</span>
+                </button>
+                <button type="button" class="secondary-action upload-trigger"
+                    data-upload-target="identityFile">upload</button>
+            </div> -->
+            <div class="upload-row">
+
+                <input #identityFileInput type="file" hidden (change)="onFileSelected($event)">
+
+                <button type="button" class="file-button" (click)="identityFileInput.click()">
+
+                    <span class="file-button-text">
+                        {{ selectedFile?.name || 'Choose File' }}
+                    </span>
+
+                    <span class="file-button-hint">
+                        Preview after selection
+                    </span>
+
+                </button>
+
+                <button type="button" class="secondary-action upload-trigger" [disabled]="!selectedFile"
+                    [class.uploaded]="isFileUploaded" (click)="uploadFile()">
+
+                    Upload
+                </button>
+
+
+            </div>
+            @if(!isFileUploaded) {
+            <div class="error-message">
+                Please select and upload file is required
+            </div>
+            }
+
+            @if(selectedFile && previewUrl) {
+            <a class="upload-preview-hint" style="font-size: 14px; font-weight: 500;" [href]="previewUrl"
+                target="_blank">Click to
+                Preview available
+                after
+                Choosing File
+
+            </a>
+            }
+        </div>
+
+
+        <label>Languages Spoken<span class="star">*</span></label>
+        <div class="multi-select" id="languagesContainer">
+            <!-- <label class="check-item">
+                <input type="checkbox" formControlName="languagesSpoken" value="English">
+                <span>English</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" formControlName="languagesSpoken" value="Hindi">
+                <span>Hindi</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" formControlName="languagesSpoken" value="Bengali">
+                <span>Bengali</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" formControlName="languagesSpoken" value="Tamil">
+                <span>Tamil</span>
+            </label> -->
+            @for(language of languages; track language) {
+            <label class="check-item">
+
+                <input type="checkbox" [value]="language" (change)="onLanguageChange($event, language)">
+
+                <span>{{ language }}</span>
+
+            </label>
+            }
+            @if(group.get('languagesSpoken')?.touched &&
+            group.get('languagesSpoken')?.hasError('required')) {
+            <div class="error-message">
+                Please select at least one language
+            </div>
+            }
+        </div>
+
+        <div class="language-addition-row" id="languageAdditionRow">
+            <button type="button" id="showLanguageInputBtn" class="add-language-trigger-btn"
+                (click)="openLanguageModal()">+ Add Language</button>
+        </div>
+
+        <div class="section-label emergency-heading">
+            <strong>Emergency Contact Details</strong>
+            <span>(who we should notify incase of emergency)</span>
+        </div>
+        <div></div>
+
+        <label for="emergencyName">Name<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="emergencyName" formControlName="emergencyName" type="text"
+                placeholder="Name of Emergency contact" required (keypress)="allowOnlyText($event)">
+            @if(group.get('emergencyName')?.touched &&
+            group.get('emergencyName')?.hasError('required')) {
+            <div class="error-message">
+                Emergency Contact Name is required
+            </div>
+            }
+        </div>
+
+        <label for="emergencyRelationship">Relationship<span class="star">*</span></label>
+        <div class="field-container">
+            <input id="emergencyRelationship" formControlName="emergencyRelationship" type="text"
+                placeholder="Relationship with emergency contact" required (keypress)="allowOnlyText($event)">
+            @if(group.get('emergencyRelationship')?.touched &&
+            group.get('emergencyRelationship')?.hasError('required')) {
+            <div class="error-message">
+                Emergency Contact Relationship is required
+            </div>
+            }
+        </div>
+
+        <!-- <label for="emergencyPhone">Phone Number<span class="star">*</span></label>
+
+        <div class="field-container">
+
+            <div class="split-field phone-number-group">
+                <select id="emergencyPhone" formControlName="emergencyPhone" class="code-select">
+                    <option value="+91">IN</option>
+                    <option value="+1">US</option>
+                    <option value="+44">UK</option>
+                </select>
+                <input id="emergencyPhone" formControlName="emergencyPhone" type="tel" placeholder="Enter phone number"
+                    required>
+            </div>
+            @if(group.get('emergencyPhone')?.touched &&
+            group.get('emergencyPhone')?.hasError('required')) {
+            <div class="error-message">
+                Emergency Contact Phone Number is required
+            </div>
+            }
+        </div> -->
+        <label for="emergencyPhone">
+            Phone Number<span class="star">*</span>
+        </label>
+
+        <div class="field-container">
+
+            <div class="split-field phone-number-group">
+
+                <!-- Blue Box -->
+                <select formControlName="emergencyCode" class="code-select" id="emergencyCode">
+                    @for(c of countries; track c) {
+                    <option [value]="c.phoneCode">{{ c.countryCode }}</option>
+                    }
+                </select>
+
+                <!-- Phone Input -->
+                <div class="phone-input-wrapper">
+                    <span class="phone-prefix">
+                        {{ group.get('emergencyCode')?.value }}
+                    </span>
+
+                    <input formControlName="emergencyPhone" (keypress)="allowOnlyNumbers($event)" maxlength="10"
+                        type=" tel" placeholder="Enter phone number">
+                </div>
+
+            </div>
+
+            @if(group.get('emergencyPhone')?.touched &&
+            group.get('emergencyPhone')?.hasError('required')) {
+            <div class="error-message">
+                Emergency Contact Phone Number is required
+            </div>
+            }
+
+        </div>
+
+
+        <div class="wizard-actions end">
+            <button type="button" class="primary-action" (click)="onNext()">Save and Next</button>
+        </div>
+    </div>
+</section>
+
+@if(showLanguageModal) {
+<div class="language-modal-overlay">
+
+    <div class="language-modal">
+
+        <h3>Add Language</h3>
+
+        <input type="text" [(ngModel)]="newLanguage" placeholder="Enter language name">
+
+
+        <div class="modal-actions">
+            <button type="button" class="secondary-action" (click)="closeLanguageModal()">
+                Cancel
+            </button>
+
+            <button type="button" class="primary-action" (click)="addLanguage()">
+                Add
+            </button>
+        </div>
+
+    </div>
+
+</div>
+}

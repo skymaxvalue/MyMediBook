@@ -1,14 +1,28 @@
-import { enableProdMode, importProvidersFrom, inject, provideZoneChangeDetection } from "@angular/core";
+import {
+  enableProdMode,
+  importProvidersFrom,
+  inject,
+  provideZoneChangeDetection,
+} from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { BrowserModule } from "@angular/platform-browser";
 import { provideRouter } from "@angular/router";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { StoreModule } from "@ngrx/store";
-import { StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { EffectsModule } from "@ngrx/effects";
+import {
+  //  StoreModule,
+  provideStore
+} from "@ngrx/store";
+import {
+  //  StoreDevtoolsModule,
+  provideStoreDevtools
+} from "@ngrx/store-devtools";
+import {
+  //  EffectsModule,
+  provideEffects
+} from "@ngrx/effects";
 import { ToastrModule } from "ngx-toastr";
-import { ErrorHandler, provideAppInitializer } from "@angular/core";
+import { ErrorHandler, provideAppInitializer, isDevMode } from "@angular/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatTimepickerModule } from "@angular/material/timepicker";
 import { MatNativeDateModule } from "@angular/material/core";
@@ -33,6 +47,12 @@ import { EditProductGuard } from "./app/products/edit-product/edit-product.guard
 // Audit Log State
 import { auditLogReducer } from "./app/auditlogs/audit-log.reducer";
 import { AuditLogEffects } from "./app/auditlogs/audit-log.effects";
+// import { AuthEffects } from "./app/Store/Auth/auth.effects";
+
+// Auth State
+import { AuthEffects } from "./app/Store/Auth/auth.effects";
+import { AuthState } from "./app/Store/Auth/auth.state"
+import { authReducer } from "./app/Store/Auth/auth.reducer"
 
 if (environment.production) {
   enableProdMode();
@@ -40,19 +60,20 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),importProvidersFrom(
+    // provideZoneChangeDetection(),
+    importProvidersFrom(
       BrowserModule,
       BrowserAnimationsModule,
-      StoreModule.forRoot({}),
-      StoreModule.forFeature("auditLog", auditLogReducer),
-      StoreDevtoolsModule.instrument({
-        name: "Practical.CleanArchitecture App DevTools",
-        maxAge: 25,
-        logOnly: environment.production,
-        connectInZone: true,
-      }),
-      EffectsModule.forRoot([]),
-      EffectsModule.forFeature([AuditLogEffects]),
+      // StoreModule.forRoot({}),
+      // StoreModule.forFeature("auditLog", auditLogReducer),
+      // StoreDevtoolsModule.instrument({
+      //   name: "Practical.CleanArchitecture App DevTools",
+      //   maxAge: 25,
+      //   logOnly: environment.production,
+      //   connectInZone: true,
+      // }),
+      // EffectsModule.forRoot([]),
+      // EffectsModule.forFeature([AuditLogEffects]),
       ToastrModule.forRoot(),
       MatDatepickerModule,
       MatTimepickerModule,
@@ -73,5 +94,13 @@ bootstrapApplication(AppComponent, {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler,
     },
+    provideStore({
+      auth: authReducer,
+    }),
+    provideEffects([
+      AuthEffects,
+      AuditLogEffects
+    ]),
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],
 }).catch((err) => console.error(err));

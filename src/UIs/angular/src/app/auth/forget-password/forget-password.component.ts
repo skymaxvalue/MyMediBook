@@ -3,9 +3,14 @@ import {
   ElementRef,
   QueryList,
   ViewChildren,
+  ChangeDetectorRef
 } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
+import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
+import { AppState } from "src/app/Store/app.state";
+import { Store } from '@ngrx/store';
+import * as AuthActions from "../../Store/Auth/auth.actions";
 
 @Component({
   selector: "app-forget-password",
@@ -18,7 +23,7 @@ export class ForgetPasswordComponent {
   isOtpVerified = false;
   showNewPassword = false;
   showConfirmPassword = false;
-
+  emailOrMobile: any = '';
   otpArray = [1, 2, 3, 4];
 
   @ViewChildren('otpInput')
@@ -32,8 +37,9 @@ export class ForgetPasswordComponent {
   newPasswordError: string = '';
   confirmPasswordError: string = '';
   showPassword: boolean = false;
+  OtpData: any;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private store: Store<AppState>, private cdr: ChangeDetectorRef) {
 
   }
   moveNext(event: Event, index: number): void {
@@ -64,39 +70,45 @@ export class ForgetPasswordComponent {
   }
 
   startTimer() {
+    clearInterval(this.interval);
 
     this.seconds = 59;
 
     this.interval = setInterval(() => {
 
-      const mins =
-        Math.floor(this.seconds / 60);
-
-      const secs =
-        this.seconds % 60;
+      const mins = Math.floor(this.seconds / 60);
+      const secs = this.seconds % 60;
 
       this.timer =
-        `${mins.toString().padStart(2, '0')}:${secs
-          .toString()
-          .padStart(2, '0')}`;
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+      this.cdr.detectChanges();
 
       if (this.seconds > 0) {
         this.seconds--;
-      }
-
-      else {
+      } else {
         clearInterval(this.interval);
       }
 
     }, 1000);
   }
-
   sendOtp() {
-    // Implement OTP sending logic here
-    alert("OTP sent successfully!");
-    this.isOtpSent = true;
 
-    this.startTimer();
+    alert("OTP sent successfully!");
+    this.store.dispatch(AuthActions.requestOTP({ email: this.emailOrMobile }))
+
+
+    this.store.select(state => state.auth.requestedOtp).subscribe((OTP: any) => {
+
+      if (OTP) {
+        this.OtpData = OTP
+        console.log(OTP)
+        this.isOtpSent = true;
+        this.startTimer();
+      }
+    });
+
+
   }
 
   verifyOtp() {

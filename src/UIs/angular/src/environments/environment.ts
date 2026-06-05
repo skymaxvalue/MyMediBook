@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   OpenIdConnect: {
     Authority: "https://localhost:44367",
+    apiUrl: 'http://skymedibook.runasp.net/api/v1/',
     //Authority: "http://host.docker.internal:9000/",
     //Authority: "http://identityserver",
     ClientId: "ClassifiedAds.Angular",
