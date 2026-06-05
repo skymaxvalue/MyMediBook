@@ -70,8 +70,8 @@ namespace Medicare.Application.Handlers.CommandHandlers
         {
             // Cryptographically secure random 6-digit OTP
             var bytes = RandomNumberGenerator.GetBytes(4);
-            var number = BitConverter.ToUInt32(bytes, 0) % 1_000_000;
-            return number.ToString("D6");
+            var number = BitConverter.ToUInt32(bytes, 0) % 10_000;
+            return number.ToString("D4");
         }
     }
 }
