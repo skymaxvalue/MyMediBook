@@ -1,0 +1,63 @@
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.7); /* optional */
+  z-index: 9999;
+}
+
+
+
+.medical-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cross {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  animation: pulse 1.2s infinite;
+}
+
+.cross::before,
+.cross::after {
+  content: '';
+  position: absolute;
+  background:  #2b59ea;
+}
+
+.cross::before {
+  width: 14px;
+  height: 40px;
+  left: 13px;
+}
+
+.cross::after {
+  width: 40px;
+  height: 14px;
+  top: 13px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+}

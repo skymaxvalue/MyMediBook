@@ -152,3 +152,118 @@ small {
 .password-wrapper input {
   padding-right: 42px;
 }
+.form-row .select{
+  width: 100%;
+}
+
+.split-field {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr);
+}
+
+
+
+.split-field input {
+    border-radius: 0 10px 10px 0;
+}
+
+.stacked-field {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+}
+option{
+  color: #000;
+}
+
+
+.compact-field {
+    max-width: 260px;
+}
+
+.split-field input {
+    border-left: none;   
+    border-radius: 0 10px 10px 0;
+}
+
+.split-field .code-select {
+    border-radius: 10px 0 0 10px;
+}
+
+
+.phone-number-group {
+    max-width: 380px;
+}
+
+
+.split-field input {
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+}
+
+
+
+.compact-field {
+    max-width: 280px;
+    width: 100%;
+}
+
+
+.compact-field {
+    max-width: 280px;
+    width: 100%;
+}
+
+.phone-number-group {
+    max-width: 380px;
+}
+
+.split-field .code-select {
+    background: linear-gradient(135deg, #2b59ea, #3570f6);
+    color: #fff;
+    border: 1px solid #d9dee8;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    font-weight: 600;
+}
+
+.split-field input {
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+}
+
+
+
+
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border: 1px solid #e74c3c !important;
+  box-shadow: 0 0 6px rgba(231, 76, 60, 0.25);
+}
+.error-message {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 4px;
+}
+.phone-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.phone-prefix {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.phone-input-wrapper input {
+  padding-left: 50px !important;
+}
+a{
+    text-decoration: none;
+}

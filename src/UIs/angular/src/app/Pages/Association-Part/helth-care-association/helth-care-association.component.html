@@ -1,0 +1,80 @@
+<main class="master-page">
+    <header class="master-header">
+        <h1>Health Care Associate</h1>
+    </header>
+
+    <div class="stepper">
+        <button class="step-chip" [class.active]="stepStatus[0] === 'active'"
+            [class.completed]="stepStatus[0] === 'completed'" (click)="changeStepsOnClick(0)">
+
+            <span class="step-meta">Step 1</span>
+            <strong>Personal Info</strong>
+            <span class="step-status">
+                {{ stepStatus[0] === 'completed' ? 'Completed' :
+                stepStatus[0] === 'active' ? 'In Progress' : 'Pending' }}
+            </span>
+        </button>
+
+        <button class="step-chip" [class.active]="stepStatus[1] === 'active'"
+            [class.completed]="stepStatus[1] === 'completed'" (click)="changeStepsOnClick(1)">
+
+            <span class="step-meta">Step 2</span>
+            <strong>Qualification</strong>
+            <span class="step-status">
+                {{ stepStatus[1] === 'completed' ? 'Completed' :
+                stepStatus[1] === 'active' ? 'In Progress' : 'Pending' }}
+            </span>
+        </button>
+
+        <button class="step-chip" [class.active]="stepStatus[2] === 'active'"
+            [class.completed]="stepStatus[2] === 'completed'" (click)="changeStepsOnClick(2)">
+
+            <span class="step-meta">Step 3</span>
+            <strong>Experience</strong>
+            <span class="step-status">
+                {{ stepStatus[2] === 'completed' ? 'Completed' :
+                stepStatus[2] === 'active' ? 'In Progress' : 'Pending' }}
+            </span>
+        </button>
+
+        <button class="step-chip" [class.active]="stepStatus[3] === 'active'"
+            [class.completed]="stepStatus[3] === 'completed'" (click)="changeStepsOnClick(3)">
+
+            <span class="step-meta">Step 4</span>
+            <strong>Employment Details</strong>
+            <span class="step-status">
+                {{ stepStatus[3] === 'completed' ? 'Completed' :
+                stepStatus[3] === 'active' ? 'In Progress' : 'Pending' }}
+            </span>
+        </button>
+    </div>
+
+    <section class="wizard-card">
+
+        @if(currentStep === 0){
+        <app-personal-info [group]="associateForm.controls.personalInfo" (next)="nextStep($event)"
+            [currentStep]="currentStep" [countries]="countries" [states]="states" [cities]="cities"
+            (onSelectCountry)="onSelectCountry($event)" (onSelectState)="onSelectState($event)">
+        </app-personal-info>
+        }
+
+        @if(currentStep === 1){
+        <app-qualification [group]="associateForm.controls.qualification" (next)="nextStep($event)"
+            (back)="previousStep()" [currentStep]="currentStep">
+        </app-qualification>
+        }
+
+        @if(currentStep === 2){
+        <app-experience [group]="associateForm.controls.experience" (next)="nextStep($event)" (back)="previousStep()"
+            [currentStep]="currentStep">
+        </app-experience>
+        }
+
+        @if(currentStep === 3){
+        <app-employment-details [group]="associateForm.controls.employmentDetails" (back)="previousStep()"
+            (submitForm)="submit()" [currentStep]="currentStep">
+        </app-employment-details>
+        }
+
+    </section>
+</main>

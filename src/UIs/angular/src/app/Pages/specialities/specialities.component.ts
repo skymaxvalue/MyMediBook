@@ -17,7 +17,6 @@ export class SpecialitiesComponent {
 
   goToAvailability(doctor: any, ocId: any) {
     console.log('Selected Doctor:', doctor);
-    // debugger
     this.onDoctorSelected.emit(doctor);
   }
 

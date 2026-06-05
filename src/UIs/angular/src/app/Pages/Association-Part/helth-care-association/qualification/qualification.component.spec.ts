@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+
+import { QualificationComponent } from "./qualification.component";
+
+describe("QualificationComponent", () => {
+  let component: QualificationComponent;
+  let fixture: ComponentFixture<QualificationComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [QualificationComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(QualificationComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
+});

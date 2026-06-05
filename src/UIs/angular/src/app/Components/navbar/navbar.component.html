@@ -17,16 +17,11 @@
     <div class="title">Patient Activity Center</div>
   </div>
 
-  <!-- <div class="right">
+  <div class="right">
     <div class="user-box" id="userBox">
       <div class="user-top">
         <span>User</span>
-        <button
-          type="button"
-          class="profile-toggle"
-          id="profileToggle"
-          aria-label="Open account menu"
-        >
+        <button type="button" class="profile-toggle" id="profileToggle" aria-label="Open account menu">
           <img src="assets/images/user.png" alt="User profile" (click)="showLogout = !showLogout" />
         </button>
       </div>
@@ -35,7 +30,7 @@
         <button id="logoutBtn" (click)="logout()">Logout</button>
       </div>
 
-      <div class="user-bottom">Logged In As <b id="username">User Name</b></div>
+      <div class="user-bottom">Logged In As <b id="username">{{username}}</b></div>
     </div>
-  </div> -->
+  </div>
 </div>

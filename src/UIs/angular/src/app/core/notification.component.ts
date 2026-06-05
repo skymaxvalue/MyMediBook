@@ -14,7 +14,7 @@ export class NotificationComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const connection = new HubConnectionBuilder()
@@ -34,14 +34,14 @@ export class NotificationComponent implements OnInit {
         });
       },
       function () {
-        console.log(
-          "Cannot connect to NotificationHub: " + environment.ResourceServer.NotificationEndpoint
-        );
-        vm.toastr.error(
-          "Cannot connect to NotificationHub: " + environment.ResourceServer.NotificationEndpoint,
-          "",
-          { progressBar: true }
-        );
+        // console.log(
+        //   "Cannot connect to NotificationHub: " + environment.ResourceServer.NotificationEndpoint
+        // );
+        // vm.toastr.error(
+        //   "Cannot connect to NotificationHub: " + environment.ResourceServer.NotificationEndpoint,
+        //   "",
+        //   { progressBar: true }
+        // );
       }
     );
 

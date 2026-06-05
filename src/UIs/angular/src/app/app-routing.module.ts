@@ -34,6 +34,8 @@ import { DashboardComponent } from "./Pages/dashboard/dashboard.component";
 import { authGuard } from "./auth/guards/auth.guard";
 import { OtpLoginComponent } from "./users/otp-login/otp-login.component";
 import { ForgetPasswordComponent } from "./auth/forget-password/forget-password.component";
+import { HelthCareAssociationComponent } from "./Pages/Association-Part/helth-care-association/helth-care-association.component";
+import { AssociationListComponent } from "./Pages/Association-Part/association-list/association-list.component";
 
 export const routes: Routes = [
   // Display with Navbar using Child Represtation
@@ -96,7 +98,13 @@ export const routes: Routes = [
 
       // Audit logs route
       { path: "auditlogs", component: AuditLogListComponent },
-
+      // Association Routs
+      {
+        path: "association", component: HelthCareAssociationComponent
+      },
+      {
+        path: "association-list", component: AssociationListComponent
+      }
 
     ],
   },

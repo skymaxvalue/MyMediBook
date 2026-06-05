@@ -19,7 +19,8 @@
         <div>
           <div class="form-row">
             <label>First Name<span class="star">*</span></label>
-            <input type="text" formControlName="firstName" placeholder="Enter your first name" required />
+            <input type="text" formControlName="firstName" placeholder="Enter your first name" required
+              (keypress)="allowOnlyText($event)" />
           </div>
 
           @if (f.firstName.touched && f.firstName.errors?.["required"]) {
@@ -32,12 +33,14 @@
 
         <div class="form-row">
           <label>Middle Name</label>
-          <input type="text" formControlName="middleName" placeholder="Enter your middle name" />
+          <input type="text" formControlName="middleName" placeholder="Enter your middle name"
+            (keypress)="allowOnlyText($event)" />
         </div>
         <div>
           <div class="form-row">
             <label>Last Name<span class="star">*</span></label>
-            <input type="text" formControlName="lastName" placeholder="Enter your last name" required />
+            <input type="text" formControlName="lastName" placeholder="Enter your last name" required
+              (keypress)="allowOnlyText($event)" />
           </div>
           @if (f.lastName.touched && f.lastName.errors?.["required"]) {
           <div class="form-row mt-0 pt-0">
@@ -49,30 +52,44 @@
         <div>
           <div class="form-row">
             <label>Date Of Birth<span class="star">*</span></label>
-            <input type="date" formControlName="dob" id="dob" placeholder="Select your date of birth" required />
+            <input type="date" formControlName="dateOfBirth" id="dob" placeholder="Select your date of birth"
+              required />
           </div>
-          @if (f.dob.touched && f.dob.errors?.["required"]) {
+          @if (f.dateOfBirth.touched && f.dateOfBirth.errors?.["required"]) {
           <div class="form-row mt-0 pt-0">
             <label for="dob"></label>
             <small class="text-danger">Date of birth is required</small>
           </div>
           }
         </div>
-        <div>
-          <div class="form-row">
-            <label>Phone Number<span class="star">*</span></label>
 
-            <ngxsmk-tel-input formControlName="phone" dir="ltr" [initialCountry]="'In'"
-              [preferredCountries]="['US', 'GB', 'AU']" [i18n]="enLabels" [localizedCountries]="enCountries"
-              [separateDialCode]="true" [formatWhenValid]="'typing'" [lockWhenValid]="true"></ngxsmk-tel-input>
+        <div class="form-row">
+          <label for="phoneNumber">Phone Number<span class="star">*</span></label>
+          <div class="field-container">
+
+            <div class="split-field phone-number-group">
+              <select id="phoneCountryCode" formControlName="phoneCountryCode" class="code-select select">
+                @for(c of countries; track c) {
+                <option [value]="c.phoneCode">{{ c.countryCode }}</option>
+                }
+              </select>
+              <div class="phone-input-wrapper">
+                <span class="phone-prefix">
+                  {{ signupForm.get('phoneCountryCode')?.value }}
+                </span>
+                <input class="select" id="phoneNumber" formControlName="phoneNumber" type="tel"
+                  placeholder="Enter phone number" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
+              </div>
+            </div>
+            @if(f.phoneNumber.touched && f.phoneNumber.errors?.["required"]) {
+            <div class="error-message">
+              Phone Number is required
+            </div>
+            }
           </div>
-          @if (f.phone.touched && f.phone.errors?.["required"]) {
-          <div class="form-row mt-0 pt-0">
-            <label for="phone"></label>
-            <small class="text-danger">Phone number is required</small>
-          </div>
-          }
+
         </div>
+
         <div>
           <div class="form-row">
             <label>Email ID<span class="star">*</span></label>
@@ -120,10 +137,50 @@
         </div>
         <div>
           <div class="form-row">
-            <label>City<span class="star">*</span></label>
-            <input type="text" formControlName="city" placeholder="Enter your city" required />
+            <label>Country<span class="star">*</span></label>
+            <select id="abc" formControlName="countryId" (change)="onCountryChange($event)">
+              <option [ngValue]="null">Select Country</option>
+              @for (c of countries; track c) {
+              <option [value]="c.countryId">{{ c.countryName }}</option>
+              }
+            </select>
           </div>
-          @if (f.city.touched && f.city.errors?.["required"]) {
+          @if (f.countryId.touched && f.countryId.errors?.["required"]) {
+          <div class="form-row mt-0 pt-0">
+            <label for="city"></label>
+            <small class="text-danger">Country name is required</small>
+          </div>
+          }
+        </div>
+        <div>
+          <div class="form-row">
+            <label>State<span class="star">*</span></label>
+            <select formControlName="stateId" (change)="onStateChange($event)" [disabled]="states.length===0">
+              <option [ngValue]="null" disabled>Select State</option>
+              @for (s of states; track s) {
+              <option [value]="s.stateId">{{ s.stateName }}</option>
+              }
+            </select>
+          </div>
+          @if (f.stateId.touched && f.stateId.errors?.["required"]) {
+          <div class="form-row mt-0 pt-0">
+            <label for="city"></label>
+            <small class="text-danger">State name is required</small>
+          </div>
+          }
+        </div>
+        <div>
+
+          <div class="form-row">
+            <label>City<span class="star">*</span></label>
+            <select formControlName="cityId" [disabled]="cities.length===0">
+              <option [ngValue]="null" disabled>Select City</option>
+              @for (c of cities; track c) {
+              <option [value]="c.cityId">{{ c.cityName }}</option>
+              }
+            </select>
+          </div>
+          @if (f.cityId.touched && f.cityId.errors?.["required"]) {
           <div class="form-row mt-0 pt-0">
             <label for="city"></label>
             <small class="text-danger">City is required</small>
@@ -133,7 +190,8 @@
         <div>
           <div class="form-row">
             <label>Zip Code<span class="star">*</span></label>
-            <input type="text" formControlName="zipCode" placeholder="Enter your zip code" required />
+            <input type="text" formControlName="zipCode" placeholder="Enter your zip code" required
+              (keypress)="allowOnlyNumbers($event)" />
           </div>
           @if (f.zipCode.touched && f.zipCode.errors?.["required"]) {
           <div class="form-row mt-0 pt-0">
@@ -143,24 +201,7 @@
           }
         </div>
 
-        <div class="form-row">
-          <label>Country</label>
-          <select formControlName="country" (change)="onCountryChange($event)">
-            <option value="">Select</option>
-            @for (c of countries; track c) {
-            <option [value]="c">{{ c }}</option>
-            }
-          </select>
-        </div>
 
-        <div class="form-row">
-          <label>State</label>
-          <select formControlName="state">
-            @for (s of states; track s) {
-            <option>{{ s }}</option>
-            }
-          </select>
-        </div>
       </div>
       }
 
@@ -170,9 +211,10 @@
         <div>
           <div class="form-row">
             <label>User ID<span class="star">*</span></label>
-            <input type="text" formControlName="userId" placeholder="Enter your user ID  (eg: john_doe123)" required />
+            <input type="text" formControlName="username" placeholder=" Enter your user ID (eg: john_doe123)"
+              required />
           </div>
-          @if (f.userId.touched && f.userId.errors?.["required"]) {
+          @if (f.username.touched && f.username.errors?.["required"]) {
           <div class="form-row mt-0 pt-0">
             <label for="userId"></label>
             <small class="text-danger">User ID is required</small>
@@ -235,23 +277,36 @@
           </div>
           }
         </div>
+        <div>
+          <div class="form-row">
+            <label>Security Question<span class="star">*</span></label>
+            <select id="securityQuestion" formControlName="securityQuestionId" required>
+              <option [ngValue]="null" disabled>Select question</option>
+              @for (q of securityQuestions; track q) {
+              <option [value]="q.questionId">{{ q.questionText }}</option>
+              }
 
-        <div class="form-row">
-          <label>Security Question<span class="star">*</span></label>
-          <select id="securityQuestion" formControlName="securityQuestion" required>
-            <option value="" disabled selected>Select question</option>
-            <option value="pet">What is your pet's name?</option>
-            <option value="school">What was your first school?</option>
-            <option value="city">Which city were you born in?</option>
-            <option value="mother">What is your mother's maiden name?</option>
-            <option value="food">What is your favorite food?</option>
-          </select>
+            </select>
+          </div>
+          @if (f.securityQuestionId.touched && f.securityQuestionId.errors?.["required"]) {
+          <div class="form-row mt-0 pt-0">
+            <label for="password"></label>
+            <small class="text-danger">Security question is required</small>
+          </div>
+          }
         </div>
-
-        <div class="form-row">
-          <label>Answer<span class="star">*</span></label>
-          <input type="text" formControlName="securityAnswer" placeholder="Enter answer for security question"
-            required />
+        <div>
+          <div class="form-row">
+            <label>Answer<span class="star">*</span></label>
+            <input type="text" formControlName="securityAnswer" placeholder="Enter answer for security question"
+              required />
+          </div>
+          @if (f.securityAnswer.touched && f.securityAnswer.errors?.["required"]) {
+          <div class="form-row mt-0 pt-0">
+            <label for="password"></label>
+            <small class="text-danger">Security answer is required</small>
+          </div>
+          }
         </div>
       </div>
       }
