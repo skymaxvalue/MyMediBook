@@ -47,7 +47,7 @@ namespace Medicare.API.Controllers.V1
             ApiResponse = new ApiResponse<ResponseModel>()
             {
                 Data = response,
-                StatusMessage = response.ResponseMessage,
+                StatusMessage = "OTP Sent Successfully",
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
             };
