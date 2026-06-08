@@ -5,7 +5,6 @@ using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
-using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
 namespace Medicare.DAL.Persistence.Repositories
 {
@@ -30,6 +29,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("MiddleName", model.MiddleName);
                 param.Add("LastName", model.LastName);
                 param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
                 param.Add("Email", model.Email);
                 param.Add("Gender", model.Gender);
@@ -78,6 +78,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("MiddleName", model.MiddleName);
                 param.Add("LastName", model.LastName);
                 param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
                 param.Add("Email", model.Email);
                 param.Add("Gender", model.Gender);

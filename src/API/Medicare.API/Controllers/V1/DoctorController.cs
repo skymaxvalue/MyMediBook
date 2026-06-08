@@ -4,8 +4,6 @@ using Medicare.Application.Models.Doctor;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-
 namespace Medicare.API.Controllers.V1
 {
     [ApiVersion("1.0")]
