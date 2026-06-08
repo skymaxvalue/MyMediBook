@@ -13,7 +13,9 @@ export class NavbarComponent implements OnInit {
   showLogout: boolean = false;
 
   todayDate = new Date();
-  constructor(private router: Router) {}
+  username: any;
+  user: any
+  constructor(private router: Router) { }
   ngOnInit(): void {
     const today = new Date();
 
@@ -25,6 +27,10 @@ export class NavbarComponent implements OnInit {
     });
 
     this.formattedDate = `${month} ${day}${this.getOrdinal(day)} ${year}`;
+    this.user = JSON.parse(localStorage.getItem('token') || 'null');
+    console.log(this.user)
+    this.username = this.user.data.firstName + " " + this.user.data.lastName
+
   }
   getOrdinal(day: number): string {
     if (day > 3 && day < 21) {

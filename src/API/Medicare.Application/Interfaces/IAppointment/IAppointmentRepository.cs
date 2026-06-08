@@ -1,4 +1,5 @@
 ﻿using Medicare.Application.Models.Appointment;
+using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.Application.Interfaces.IAppointment
 {
@@ -6,6 +7,10 @@ namespace Medicare.Application.Interfaces.IAppointment
     {
         Task<List<PatientAppointmentModel>> GetMyAppointmentsAsync(int patientId);
         Task<List<SpecialityModel>> GetSpecialitiesAsync(string? doctorName, string? departmentName);
-       Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int doctorId, DateTime requestedDate);
+        Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int doctorId, DateTime requestedDate);
+        Task<AppointmentDetailModel> GetAppointmentById(int appointmentId);
+        Task<ResponseModel> CreateAppointmentAsync(AppointmentMasterModel model);
+        Task<ResponseModel> UpdateAppointmentDetailAsync(UpdateAppointmentRequestModel model);
+        Task<ResponseModel> CancelAppointmentByIdAsync(int appointmentId);
     }
 }

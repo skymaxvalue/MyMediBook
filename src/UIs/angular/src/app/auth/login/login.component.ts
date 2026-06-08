@@ -5,6 +5,10 @@ import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "src/environments/environment";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { selectLoginPatient } from "src/app/Store/Auth/auth.selectors";
+import { AppState } from "src/app/Store/app.state";
+import { Store } from '@ngrx/store';
+import * as AuthActions from "../../Store/Auth/auth.actions"
 
 declare const google: any;
 
@@ -21,7 +25,8 @@ export class LoginComponent implements AfterViewInit, OnInit {
   constructor(
     public auth: AuthService,
     private form_builder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) { }
 
   ngAfterViewInit(): void {
@@ -74,13 +79,27 @@ export class LoginComponent implements AfterViewInit, OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.loginForm.valid) {
       // Process login form value here
-      if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
-        localStorage.setItem("token", "userToken");
-        this.router.navigate(["/dashboard"]);
-      }
+      // if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
+      //   localStorage.setItem("token", "userToken");
+      //   this.router.navigate(["/dashboard"]);
+      // }
+      await this.store.dispatch(
+        AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password })
+      );
+      await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
+        console.log(patient, "----------")
+        if (patient) {
+
+          localStorage.setItem('token', JSON.stringify(patient))
+
+          this.router.navigate(['/dashboard']);
+        }
+      });
+
+
     } else {
       this.loginForm.markAllAsTouched();
     }

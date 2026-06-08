@@ -46,7 +46,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
             {
                 Status = 1,
                 IsSuccess = 1,
-                ResponseMessage = "OTP verified successfully",
+                ResponseMessage = "OTP Verified Successfully",
                 ResponseId = 0
             };
         }
