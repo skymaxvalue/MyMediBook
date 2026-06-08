@@ -5,7 +5,6 @@ using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
-using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
 namespace Medicare.DAL.Persistence.Repositories
 {
@@ -30,6 +29,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("MiddleName", model.MiddleName);
                 param.Add("LastName", model.LastName);
                 param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
                 param.Add("Email", model.Email);
                 param.Add("Gender", model.Gender);
@@ -78,6 +78,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("MiddleName", model.MiddleName);
                 param.Add("LastName", model.LastName);
                 param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
                 param.Add("Email", model.Email);
                 param.Add("Gender", model.Gender);
@@ -94,8 +95,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
                 param.Add("SecurityAnswerSalt", model.SecurityAnswerSalt);
                 param.Add("IsActive", model.IsActive);
-                param.Add("CreatedBy", model.CreatedBy);
-                param.Add("CreatedDate", model.CreatedDate);
                 param.Add("UpdatedBy", model.UpdatedBy);
                 param.Add("UpdatedDate", model.UpdatedDate);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);

@@ -11,7 +11,8 @@
         public DateTime AppointmentDate { get; set; }
         public string TimeSlot { get; set; }
         public string Status { get; set; }         // Scheduled / Cancelled / Completed
-        public string Notes { get; set; }
+        public string VisitPurpose { get; set; }   
+        public string VisitType { get; set; }
     }
     public class SpecialityModel
     {

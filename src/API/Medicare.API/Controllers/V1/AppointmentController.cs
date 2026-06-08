@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Medicare.Application.Features.Commands.Appointment;
 using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ResponseModel;
@@ -22,14 +23,17 @@ namespace Medicare.API.Controllers.V1
         [Route("GetMyAppointments/{patientId}")]
         public async Task<IActionResult> GetMyAppointments(int patientId)
         {
-            var response = await _mediator.Send(new GetMyAppointmentsQuery(patientId));
-            return Ok(new ApiResponse<List<PatientAppointmentModel>>
+            ApiResponse<List<PatientAppointmentModel>> ApiResponse = new ApiResponse<List<PatientAppointmentModel>>();
+            List<PatientAppointmentModel> response = new List<PatientAppointmentModel>();
+            response = await _mediator.Send(new GetMyAppointmentsQuery(patientId));
+            ApiResponse = new ApiResponse<List<PatientAppointmentModel>>()
             {
                 Data = response,
                 StatusMessage = "Data fetched successfully",
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
-            });
+            };
+            return Ok(ApiResponse);
         }
 
         [HttpGet]
@@ -38,15 +42,17 @@ namespace Medicare.API.Controllers.V1
             [FromQuery] string? doctorName,
             [FromQuery] string? departmentName)
         {
-            var response = await _mediator.Send(
-                new GetSpecialitiesQuery(doctorName, departmentName));
-            return Ok(new ApiResponse<List<SpecialityModel>>
+            ApiResponse<List<SpecialityModel>> ApiResponse = new ApiResponse<List<SpecialityModel>>();
+            List<SpecialityModel> response = new List<SpecialityModel>();
+            response = await _mediator.Send(new GetSpecialitiesQuery(doctorName, departmentName));
+            ApiResponse = new ApiResponse<List<SpecialityModel>>
             {
                 Data = response,
                 StatusMessage = "Data fetched successfully",
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
-            });
+            };
+            return Ok(ApiResponse);
         }
 
         [HttpGet]
@@ -55,15 +61,86 @@ namespace Medicare.API.Controllers.V1
             [FromQuery] int doctorId,
             [FromQuery] DateTime requestedDate)
         {
-            var response = await _mediator.Send(
-                new GetAvailableAppointmentsQuery(doctorId, requestedDate));
-            return Ok(new ApiResponse<List<AvailableAppointmentModel>>
+            ApiResponse<List<AvailableAppointmentModel>> ApiResponse = new ApiResponse<List<AvailableAppointmentModel>>();
+            List<AvailableAppointmentModel> response = new List<AvailableAppointmentModel>();
+            response = await _mediator.Send(new GetAvailableAppointmentsQuery(doctorId, requestedDate));
+            ApiResponse = new ApiResponse<List<AvailableAppointmentModel>>
             {
                 Data = response,
                 StatusMessage = "Data fetched successfully",
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
-            });
-        } 
+            };
+            return Ok(ApiResponse);
+        }
+
+        [HttpGet]
+        [Route("GetAppointmentById/{AppointmentId}")]
+        public async Task<IActionResult> GetAppointmentById([FromRoute] int AppointmentId)
+        {
+            ApiResponse<AppointmentDetailModel> ApiResponse = new ApiResponse<AppointmentDetailModel>();
+            AppointmentDetailModel response = new AppointmentDetailModel();
+            response = await _mediator.Send(new GetAppointmentByIdQuery(AppointmentId));
+            ApiResponse = new ApiResponse<AppointmentDetailModel>
+            {
+                Data = response,
+                StatusMessage = "Data fetched successfully",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            };
+            return Ok(ApiResponse);
+        }
+
+        [HttpPost]
+        [Route("CreateAppointment")]
+        public async Task<IActionResult> CreateAppointment(AppointmentMasterModel model)
+        {
+            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new CreateAppointmentCommand(model));
+            ApiResponse = new ApiResponse<ResponseModel>
+            {
+                Data = response,
+                StatusMessage = "Data fetched successfully",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            };
+            return Ok(ApiResponse);
+        }
+
+        [HttpPut]
+        [Route("UpdateAppointmentDetail")]
+        public async Task<IActionResult> UpdateAppointmentDetail(UpdateAppointmentRequestModel model)
+        {
+            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new UpdateAppointmentCommand(model));
+            ApiResponse = new ApiResponse<ResponseModel>
+            {
+                Data = response,
+                StatusMessage = "Data fetched successfully",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            };
+            return Ok(ApiResponse);
+        }
+
+        [HttpDelete]
+        [Route("CancelAppointmentById")]
+        public async Task<IActionResult> CancelAppointmentById([FromQuery] int appointmentId)
+        {
+            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new DeleteAppointmentCommand(appointmentId));
+            ApiResponse = new ApiResponse<ResponseModel>
+            {
+                Data = response,
+                StatusMessage = "Data fetched successfully",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            };
+            return Ok(ApiResponse);
+        }
+
     } 
 }
