@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 
 @Component({
   selector: "app-navbar",
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: "./navbar.component.html",
   styleUrl: "./navbar.component.css",
 })
@@ -51,9 +51,8 @@ export class NavbarComponent implements OnInit {
     }
   }
   logout() {
-    // Implement logout logic here, such as clearing user session and redirecting to login page
     localStorage.removeItem("token");
     this.router.navigate(["/login"]);
-    console.log("Logout clicked");
+
   }
 }

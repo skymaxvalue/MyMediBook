@@ -155,7 +155,7 @@
         <div>
           <div class="form-row">
             <label>State<span class="star">*</span></label>
-            <select formControlName="stateId" (change)="onStateChange($event)" [disabled]="states.length===0">
+            <select formControlName="stateId" (change)="onStateChange($event)">
               <option [ngValue]="null" disabled>Select State</option>
               @for (s of states; track s) {
               <option [value]="s.stateId">{{ s.stateName }}</option>
@@ -173,7 +173,7 @@
 
           <div class="form-row">
             <label>City<span class="star">*</span></label>
-            <select formControlName="cityId" [disabled]="cities.length===0">
+            <select formControlName="cityId">
               <option [ngValue]="null" disabled>Select City</option>
               @for (c of cities; track c) {
               <option [value]="c.cityId">{{ c.cityName }}</option>
@@ -322,9 +322,11 @@
       }
 
       @if (currentStep === 2) {
-      <button (click)="onSubmit()" class="btn-primary">Submit</button>
+      <button (click)="onSubmit()" class="btn-primary">{{this.url === '/profile-update'? 'update' :
+        'submit'}}</button>
       } @else {
-      <button type="button" class="btn-primary" (click)="nextStep()">Save and Next</button>
+      <button type="button" class="btn-primary" (click)="nextStep()">{{this.url === '/profile-update'? 'update' :
+        'submit'}} and Next</button>
       }
     </div>
   </div>
