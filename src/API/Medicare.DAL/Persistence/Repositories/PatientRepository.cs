@@ -95,8 +95,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
                 param.Add("SecurityAnswerSalt", model.SecurityAnswerSalt);
                 param.Add("IsActive", model.IsActive);
-                param.Add("CreatedBy", model.CreatedBy);
-                param.Add("CreatedDate", model.CreatedDate);
                 param.Add("UpdatedBy", model.UpdatedBy);
                 param.Add("UpdatedDate", model.UpdatedDate);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
