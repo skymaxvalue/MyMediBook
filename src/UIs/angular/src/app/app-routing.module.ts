@@ -104,6 +104,11 @@ export const routes: Routes = [
       },
       {
         path: "association-list", component: AssociationListComponent
+      },
+      // Update user Ptofile patient
+
+      {
+        path: "profile-update", component: SelfRegistrationComponent
       }
 
     ],

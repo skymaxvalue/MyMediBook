@@ -1,0 +1,39 @@
+import { Injectable } from '@angular/core';
+import {
+  HttpClient,
+  HttpHeaders
+} from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+import { PatientRegister, LoginRequest } from '../Models/Patient-Model';
+import { environment } from '../../environments/environment';
+import { APIEndpoints } from '../Utility/EndPointsOfAPI'
+
+@Injectable({
+  providedIn: "root",
+})
+export class PatientService {
+  // API Base URL
+  private apiUrl = environment.OpenIdConnect.apiUrl
+
+  constructor(
+    private http: HttpClient) {
+
+  }
+
+  getPatientById(data: any): Observable<any> {
+
+    return this.http.post<any>(
+      `${this.apiUrl}${APIEndpoints.GET_PATIENT_PROFILE_BY_ID}${data.id}`,
+      data
+    );
+  }
+  updatePatientById(data: any): Observable<any> {
+
+    return this.http.post<any>(
+      `${this.apiUrl}${APIEndpoints.UPDATE_PATIONT_DTAILS}`,
+      data
+    );
+  }
+
+}

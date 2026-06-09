@@ -8,6 +8,7 @@ import { selectRegisteredPatient, selectSecurityQuestions } from "src/app/Store/
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
 import * as AuthActions from "../../Store/Auth/auth.actions";
+import * as PatientAction from "../../Store/Patient/patient.action"
 import { ToastrService } from "ngx-toastr";
 
 @Component({
@@ -18,32 +19,14 @@ import { ToastrService } from "ngx-toastr";
   standalone: true,
 })
 export class SelfRegistrationComponent implements OnInit {
-  enLabels: IntlTelI18n = {
-    selectedCountryAriaLabel: "Selected country",
-    countryListAriaLabel: "Country list",
-    searchPlaceholder: "Search country",
-    zeroSearchResults: "No results",
-    noCountrySelected: "No country selected",
-  };
-
-  enCountries: CountryMap = {
-    US: "United States",
-    GB: "United Kingdom",
-    AU: "Australia",
-    CA: "Canada",
-  };
-
   signupForm!: FormGroup;
   currentStep = 0;
   patientRegisterRequest: PatientRegister = {} as PatientRegister;
   countries: any[] = [];
   states: any[] = [];
   cities: any[] = []
-
-  statesData: any = {
-    India: ["Maharashtra", "Delhi"],
-    USA: ["California", "Texas"],
-  };
+  url: string = ""
+  user: any
   showPassword: boolean = false;
   showconfirmPasswordPassword: boolean = false
   securityQuestions: any[] | undefined;
@@ -54,18 +37,35 @@ export class SelfRegistrationComponent implements OnInit {
     private store: Store<AppState>,
     private toastr: ToastrService
 
-  ) { }
+  ) {
+    this.user = JSON.parse(localStorage.getItem('token') || 'null');
+
+  }
 
   ngOnInit(): void {
+    console.log(this.router.url);
     this.formInitialization();
+    this.url = this.router.url
+    if (this.router.url === '/profile-update' && this.user.data) {
+      queueMicrotask(() => {
+        this.initialAPICalls();
+      });
+      this.initialSelectors();
+      this.loadPatientData();
+    } else {
+      // 
+      queueMicrotask(() => {
+        this.initialAPICalls();
+      });
+      this.initialSelectors();
 
-    queueMicrotask(() => {
-      this.initialAPICalls();
-    });
-    this.initialSelectors();
+    }
+
+
 
   }
   get f() {
+
     return this.signupForm.controls;
   }
   markStepTouched(fields: string[]) {
@@ -74,18 +74,7 @@ export class SelfRegistrationComponent implements OnInit {
     });
   }
 
-  get getCountryCode(): string {
-    const country = this.signupForm.get('phoneCountryCode')?.value;
 
-    switch (country) {
-      case '+1':
-        return '+1';
-      case '+44':
-        return '+44';
-      default:
-        return '+91';
-    }
-  }
   nextStep() {
     if (this.currentStep === 0) {
       if (
@@ -97,6 +86,10 @@ export class SelfRegistrationComponent implements OnInit {
       ) {
         this.markStepTouched(["firstName", "lastName", "phoneNumber", "dateOfBirth", "email"]);
         return;
+      }
+      if (this.url === '/profile-update') {
+        this.loadStates(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId)
+
       }
     }
 
@@ -141,6 +134,105 @@ export class SelfRegistrationComponent implements OnInit {
     }
   }
 
+  loadPatientData() {
+    queueMicrotask(() => {
+      this.store.dispatch(
+        PatientAction.getPatientDetailsById({
+          id: this.user.data.patientId
+        })
+      );
+
+    })
+
+
+    this.store
+      .select(state => state.patient.patientDetails)
+      .subscribe((response: any) => {
+        console.log(response, "---------->")
+        if (response?.data) {
+
+          this.patientRegisterRequest = response.data;
+
+          this.signupForm.patchValue({
+            firstName: this.patientRegisterRequest.firstName,
+            middleName: this.patientRegisterRequest.middleName,
+            lastName: this.patientRegisterRequest.lastName,
+            phoneNumber: this.patientRegisterRequest.phoneNumber,
+            dateOfBirth: this.patientRegisterRequest.dateOfBirth,
+            email: this.patientRegisterRequest.email,
+            gender: this.patientRegisterRequest.gender,
+            countryId: this.patientRegisterRequest.countryId,
+            stateId: this.patientRegisterRequest.stateId,
+            cityId: this.patientRegisterRequest.cityId,
+            addressLine1: this.patientRegisterRequest.addressLine1,
+            addressLine2: this.patientRegisterRequest.addressLine2,
+            zipCode: this.patientRegisterRequest.zipCode,
+            username: this.patientRegisterRequest.username,
+            securityQuestionId: this.patientRegisterRequest.securityQuestionId,
+            securityAnswer: this.patientRegisterRequest.securityAnswer,
+            phoneCountryCode: this.patientRegisterRequest.phoneCountryCode
+          });
+
+          this.signupForm.get('password')?.disable();
+          this.signupForm.get('confirmPassword')?.disable();
+
+          const dob = this.patientRegisterRequest.dateOfBirth
+            ? new Date(this.patientRegisterRequest.dateOfBirth).toISOString().split('T')[0]
+            : null;
+
+          this.signupForm.patchValue({
+            dateOfBirth: dob
+          });
+        }
+
+      });
+
+  }
+
+  loadStates(countryId: number, stateId: number, cityId: number) {
+
+    this.store.dispatch(
+      AuthActions.getStates({ countryId })
+    );
+
+    this.store.select(state => state.auth.getStates)
+      .subscribe((response: any) => {
+
+        if (!response?.data) return;
+
+        this.states = response.data;
+
+        this.signupForm.get('stateId')?.enable();
+        this.signupForm.patchValue({
+          countryId,
+          stateId
+        });
+
+        // Step 2
+        this.loadCities(stateId, cityId);
+      });
+  }
+
+  loadCities(stateId: number, cityId: number) {
+
+    this.store.dispatch(
+      AuthActions.getCities({ stateId })
+    );
+
+    this.store.select(state => state.auth.getCities)
+      .subscribe((response: any) => {
+
+        if (!response?.data) return;
+
+        this.cities = response.data;
+
+        this.signupForm.get('cityId')?.enable();
+
+        this.signupForm.patchValue({
+          cityId
+        });
+      });
+  }
   async onCountryChange(event: any) {
 
     await this.store.dispatch(
@@ -208,6 +300,9 @@ export class SelfRegistrationComponent implements OnInit {
   }
 
   formInitialization() {
+    // alert(patient)
+
+
     this.signupForm = this.fb.group({
       firstName: ["", Validators.required],
       middleName: [""],
@@ -229,6 +324,7 @@ export class SelfRegistrationComponent implements OnInit {
       securityAnswer: ["", Validators.required],
       phoneCountryCode: [""]
     });
+
   }
 
   onSubmit() {
@@ -272,6 +368,7 @@ export class SelfRegistrationComponent implements OnInit {
       password: this.signupForm.value.password,
       securityQuestionId: Number(this.signupForm.value.securityQuestionId),
       securityAnswer: this.signupForm.value.securityAnswer,
+      phoneCountryCode: this.signupForm.value.phoneCountryCode,
       isActive: true,
       createdBy: 'SelfRegistration',
       createdDate: new Date().toISOString(),
@@ -279,11 +376,17 @@ export class SelfRegistrationComponent implements OnInit {
       updatedDate: new Date().toISOString()
     }
 
-    this.store.dispatch(
-      AuthActions.register({
-        patient: payload
-      })
-    );
+    if (this.url === '/profile-update') {
+      this.store.dispatch(PatientAction.updatePatientDetailsById({ patient: payload }))
+    } else {
+      this.store.dispatch(
+        AuthActions.register({
+          patient: payload
+        })
+      );
+
+    }
+
     // console.log(this.signupForm.value);()
     this.store.select(state => state.auth.registeredPatient).subscribe((patient: any) => {
       console.log(patient)

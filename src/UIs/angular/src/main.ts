@@ -53,6 +53,8 @@ import { AuditLogEffects } from "./app/auditlogs/audit-log.effects";
 import { AuthEffects } from "./app/Store/Auth/auth.effects";
 import { AuthState } from "./app/Store/Auth/auth.state"
 import { authReducer } from "./app/Store/Auth/auth.reducer"
+import { PatientEffects } from "./app/Store/Patient/patient.effect";
+import { patientReducer } from "./app/Store/Patient/patient.reducer";
 
 if (environment.production) {
   enableProdMode();
@@ -96,9 +98,11 @@ bootstrapApplication(AppComponent, {
     },
     provideStore({
       auth: authReducer,
+      patient: patientReducer
     }),
     provideEffects([
       AuthEffects,
+      PatientEffects,
       AuditLogEffects
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
