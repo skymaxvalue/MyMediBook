@@ -3,6 +3,7 @@
 @import "font-awesome/css/font-awesome.min.css";
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "ngx-toastr/toastr";
+@import "bootstrap-icons/font/bootstrap-icons.css";
 
 * {
   margin: 0;

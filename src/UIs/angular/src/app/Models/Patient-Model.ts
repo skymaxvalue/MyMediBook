@@ -4,7 +4,7 @@ export interface PatientRegister {
     middleName: string;
     lastName: string;
     dateOfBirth: string;
-
+    phoneCountryCode: string;
     phoneNumber: string;
     email: string;
     gender: string;
