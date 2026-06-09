@@ -13,10 +13,12 @@
         public string Status { get; set; }         // Scheduled / Cancelled / Completed
         public string VisitPurpose { get; set; }   
         public string VisitType { get; set; }
+        public string RealtionType { get; set; }
     }
     public class SpecialityModel
     {
         public int SpecialityId { get; set; }
+        public int DoctorId { get; set; }
         public string SpecialityName { get; set; }
         public string DepartmentName { get; set; }
         public string DoctorName { get; set; }

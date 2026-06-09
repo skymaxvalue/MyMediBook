@@ -128,6 +128,15 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("PatientId", model.PatientId);
                 param.Add("DoctorId", model.DoctorId);
                 param.Add("SlotId", model.SlotId);
+                param.Add("FirstName", model.FirstName);
+                param.Add("LastName", model.LastName);
+                param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("Age", model.Age);
+                param.Add("AgeType", model.AgeType);
+                param.Add("Email", model.Email);
+                param.Add("Gender", model.Gender);
+                param.Add("Phone", model.Phone);
+                param.Add("RelatonType", model.RelatonType);
                 param.Add("AppointmentDate", model.AppointmentDate);
                 param.Add("TimeSlot", model.TimeSlot);
                 param.Add("VisitPurpose", model.VisitPurpose);
@@ -139,12 +148,14 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("Policy", model.InsuranceData?.Policy);
                 param.Add("GroupId", model.InsuranceData?.GroupId);
                 param.Add("HolderName", model.InsuranceData?.HolderName);
-                param.Add("InsuranceAddress", model.InsuranceData?.Address);
+                param.Add("Address", model.InsuranceData?.Address);
 
                 param.Add("PaymentType", model.PaymentData?.PaymentType);
-                param.Add("TransactionId", model.PaymentData?.TransactionId);
-                param.Add("Amount", model.PaymentData?.Amount);
-                param.Add("PaymentStatus", model.PaymentData?.PaymentStatus);
+                param.Add("CardHolder", model.PaymentData?.CardHolder);
+                param.Add("CardNumber", model.PaymentData?.CardNumber);
+                param.Add("Expiry", model.PaymentData?.Expiry);
+                param.Add("CvvHash", model.PaymentData?.CvvHash);
+                param.Add("CvvSalt", model.PaymentData?.CvvSalt);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
@@ -192,7 +203,10 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> CancelAppointmentByIdAsync(int appointmentId)
+        public async Task<ResponseModel> CancelAppointmentByIdAsync(
+            int appointmentId, 
+            int patientId
+            )
         {
             string procName = "USP_CancelAppointment";
             ResponseModel returnData = new ResponseModel();
@@ -200,6 +214,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("AppointmentId", appointmentId);
+                param.Add("PatientId", patientId);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }

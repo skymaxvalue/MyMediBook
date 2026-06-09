@@ -8,7 +8,7 @@ namespace Medicare.Application.Interfaces.IPatient
     public interface IPatientRepository
     {
         Task<ResponseModel> CreatePatientDetails(PatientMasterModel model);
-        Task<ResponseModel> UpdatePatientDetails(PatientMasterModel model);
+        Task<ResponseModel> UpdatePatientDetails(UpdatePatientRequestModel model);
         Task<PatientMasterModel> GetPatientByContact(string contactNo);
         Task<PatientMasterModel> GetPatientById(int Id);
         Task<PatientAuthDetailModel> GetPasswordByUsernameAsync(string Username);
