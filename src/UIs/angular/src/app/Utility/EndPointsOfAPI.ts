@@ -12,6 +12,7 @@ export const APIEndpoints = {
     GET_STAETES: "Location/GetStatesByCountryList/",
     GET_CITIES: "Location/GetCitiesByStateList/",
     GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
-    UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails"
+    UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
+    CREATE_APPOINTMENT: "Appointment/CreateAppointment"
 
 }

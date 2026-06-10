@@ -8,11 +8,32 @@
         <form [formGroup]="bookingForm" (ngSubmit)="submitForm()">
             <div class="form-grid">
 
+                <label for="gender">Relation With Patient</label>
+                <div class="field-container">
+                    <select id="gender" formControlName="RealtionType" (change)="OnSelectRelationShip($event)">
+                        <option value="">Select relation with patient</option>
+                        <option value="Self">Self</option>
+                        <option value="Spouse">Spouse</option>
+                        <option value="Daughter">Daughter </option>
+                        <option value="Son">Son </option>
+                        <option value="Mother">Mother </option>
+                        <option value="Father">Father </option>
+                        <option value="Other">Other </option>
+
+                    </select>
+
+                    @if (getErrorMessage('RealtionType')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('RealtionType') }}
+                    </small>
+                    }
+                </div>
+
                 <!-- First Name -->
                 <label for="firstName">First Name</label>
                 <div class="field-container">
-                    <input id="firstName" type="text" formControlName="firstName"
-                        placeholder="Enter patient first name" />
+                    <input id="firstName" type="text" formControlName="firstName" placeholder="Enter patient first name"
+                        (keypress)="allowOnlyText($event)" />
                     @if (getErrorMessage('firstName')) {
                     <small class="error-message">
                         {{ getErrorMessage('firstName') }}
@@ -23,7 +44,8 @@
                 <!-- Last Name -->
                 <label for="lastName">Last Name</label>
                 <div class="field-container">
-                    <input id="lastName" type="text" formControlName="lastName" placeholder="Enter patient last name" />
+                    <input id="lastName" type="text" formControlName="lastName" placeholder="Enter patient last name"
+                        (keypress)="allowOnlyText($event)" />
                     @if (getErrorMessage('lastName')) {
                     <small class="error-message">
                         {{ getErrorMessage('lastName') }}
@@ -126,7 +148,8 @@
                 <!-- Phone -->
                 <label for="phone">Contact Number</label>
                 <div class="field-container">
-                    <input id="phone" type="tel" formControlName="phone" placeholder="Enter contact number" />
+                    <input id="phone" type="tel" formControlName="phone" placeholder="Enter contact number"
+                        (keypress)="allowOnlyNumbers($event)" />
 
                     @if (getErrorMessage('phone')) {
                     <small class="error-message">

@@ -6,6 +6,8 @@ import { BookAppoimentFormComponent } from "../book-appoiment-form/book-appoimen
 import { BookingOTPVerificatinComponent } from "../booking-otp-verificatin/booking-otp-verificatin.component";
 import { BookingSuccessfullComponent } from "../booking-successfull/booking-successfull.component";
 import { BookingFailedComponent } from "../booking-failed/booking-failed.component";
+import { Store } from "@ngrx/store";
+import * as AppintmentAction from "../../Store/Appointments/appointment.actions"
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -46,7 +48,7 @@ export class CheckDocAvailableComponent {
   slots: { time: string; booked: boolean }[] = [];
   showAddbookingAppoinmentForm: boolean = false
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private store: Store) { }
 
   ngOnInit(): void {
 
@@ -187,6 +189,21 @@ export class CheckDocAvailableComponent {
     this.showAddbookingAppoinmentForm = false;
     this.showSlotsModal = false;
     this.showBookingSuccess = true;
+    console.log(patientDetail, this.selectedDate, this.selectedSlot, "========>")
+    const payload = {
+      ...patientDetail,
+      appointmentDate: this.selectedDate,
+      timeSlot: this.selectedSlot,
+
+      patientId: 0,
+      doctorId: 0,
+      slotId: 0,
+    }
+    this.store.dispatch(
+      AppintmentAction.createAppointment({
+        appointment: payload
+      })
+    );
 
   }
 }

@@ -1,8 +1,14 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MyAppointmentComponent } from "../my-appointment/my-appointment.component";
 import { SpecialitiesComponent } from "../specialities/specialities.component";
 import { MedicineOrdersComponent } from "../medicine-orders/medicine-orders.component";
 import { CheckDocAvailableComponent } from "../check-doc-available/check-doc-available.component";
+import { DoctorSpecialityState } from "src/app/Store/Doctor/doctor.state";
+import { Store } from "@ngrx/store";
+import { loadDoctorSpecialities } from "src/app/Store/Doctor/doctor.action";
+import { selectDoctorSpecialities } from "src/app/Store/Doctor/doctor.selectors";
+import { AsyncPipe } from "@angular/common";
+import { DoctorSpeciality } from "src/app/Models/DoctorAndSpeciality-Model";
 
 @Component({
   selector: "app-dashboard",
@@ -10,10 +16,62 @@ import { CheckDocAvailableComponent } from "../check-doc-available/check-doc-ava
   templateUrl: "./dashboard.component.html",
   styleUrl: "./dashboard.component.css",
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   activeTab = "appointments";
   selectedDoctor: any;
 
+
+
+  constructor(
+    private store: Store<DoctorSpecialityState>
+  ) { }
+
+  ngOnInit(): void {
+    this.callInitialAPI()
+
+
+  }
+
+  callInitialAPI() {
+    this.store.dispatch(
+      loadDoctorSpecialities());
+
+    this.store.select(selectDoctorSpecialities)
+      .subscribe((specialities: DoctorSpeciality[]) => {
+
+        const groupedData = specialities.reduce((acc: any[], item) => {
+
+          let speciality = acc.find(
+            x => x.category === item.specialityName
+          );
+
+          if (!speciality) {
+            speciality = {
+              category: item.specialityName,
+              doctors: []
+            };
+
+            acc.push(speciality);
+          }
+
+          speciality.doctors.push({
+            specialityId: item.specialityId,
+            name: item.doctorName,
+            degree: '',
+            department: item.departmentName,
+            image: 'assets/images/doc.jpg',
+            time: ''
+          });
+
+          return acc;
+
+        }, []);
+
+        this.specialities = groupedData;
+
+        console.log(this.specialities);
+      });
+  }
   appointments = [
     {
       visitPurpose: "ENT",

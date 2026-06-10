@@ -26,7 +26,7 @@ export class BookAppoimentFormComponent implements OnInit {
 
   showInsuranceModal = false;
   showPaymentModal = false;
-
+  loginUser: any
   validationMessages: any = {
     firstName: {
       required: 'First name is required.',
@@ -78,7 +78,10 @@ export class BookAppoimentFormComponent implements OnInit {
     }
   };
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {
+    this.loginUser = JSON.parse(localStorage.getItem('token') || 'null')
+
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -113,7 +116,7 @@ export class BookAppoimentFormComponent implements OnInit {
       insuranceData: this.fb.group({
         provider: [''],
         policy: [''],
-        groupId: [''],
+        groupId: [0],
         holderName: [''],
         address: ['']
       }),
@@ -131,13 +134,12 @@ export class BookAppoimentFormComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       visitPurpose: ['', [Validators.required, Validators.minLength(5)]],
       visitType: ['', Validators.required],
-      otpMethod: ['', Validators.required]
+      otpMethod: ['', Validators.required],
+      RealtionType: ['', Validators.required]
     });
   }
 
-  // =========================
-  // Getters
-  // =========================
+
   get insuranceForm(): FormGroup {
     return this.bookingForm.get('insuranceData') as FormGroup;
   }
@@ -146,9 +148,7 @@ export class BookAppoimentFormComponent implements OnInit {
     return this.bookingForm.get('paymentData') as FormGroup;
   }
 
-  // =========================
-  // Error Messages
-  // =========================
+
   getErrorMessage(controlName: string): string {
     const control = this.bookingForm.get(controlName);
 
@@ -186,9 +186,6 @@ export class BookAppoimentFormComponent implements OnInit {
     return '';
   }
 
-  // =========================
-  // Insurance / Payment Logic
-  // =========================
   handleInsuranceChange(): void {
     this.bookingForm.get('insurance')?.valueChanges.subscribe(value => {
       this.InsurenceValue = value;
@@ -259,9 +256,28 @@ export class BookAppoimentFormComponent implements OnInit {
     this.showPaymentModal = false;
   }
 
-  // =========================
-  // DOB -> Age Calculation
-  // =========================
+  OnSelectRelationShip(event: any) {
+
+    if (event.target.value === "Self") {
+      this.bookingForm.get('firstName')?.setValue(this.loginUser.data.firstName);
+      this.bookingForm.get('lastName')?.setValue(this.loginUser.data.lastName);
+      this.bookingForm.get('email')?.setValue(this.loginUser.data.email);
+      this.bookingForm.get('gender')?.setValue(this.loginUser.data.gender);
+      this.bookingForm.get('phone')?.setValue(this.loginUser.data.phoneNumber);
+      this.bookingForm.get('address')?.setValue(`${this.loginUser.data.addressLine1}  ${this.loginUser.data.addressLine2} `);
+      const dob = this.loginUser.data.dateOfBirth
+        ? new Date(this.loginUser.data.dateOfBirth).toISOString().split('T')[0]
+        : null;
+
+      this.bookingForm.patchValue({
+        dateOfBirth: dob
+      });
+      // this.bookingForm.get('firstName')?.setValue(this.loginUser.data.firstName);
+
+
+      console.log(this.loginUser.data)
+    }
+  }
   handleDobChange(): void {
     this.bookingForm.get('dateOfBirth')?.valueChanges.subscribe(() => {
       this.updateAgeFromDob();
@@ -303,25 +319,52 @@ export class BookAppoimentFormComponent implements OnInit {
     this.bookingForm.get('ageType')?.disable();
   }
 
-  // =========================
-  // Form Submit
-  // =========================
+  allowOnlyText(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    if (
+      !(charCode >= 65 && charCode <= 90) &&
+      !(charCode >= 97 && charCode <= 122) &&
+      charCode !== 32
+    ) {
+      event.preventDefault();
+    }
+  }
+
+  allowOnlyNumbers(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    // 0-9
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+
   submitForm(): void {
     this.bookingForm.markAllAsTouched();
 
     if (this.bookingForm.invalid) {
       return;
+    } else {
+      const bookingPatient = this.bookingForm.getRawValue();
+      if (bookingPatient.insurance === "yes") {
+        bookingPatient.insurance = true
+        delete bookingPatient.paymentData
+      }
+      if (bookingPatient.insurance === "no") {
+
+        bookingPatient.insurance = false
+        delete bookingPatient.insuranceData
+      }
+      const otpDeviceDetails: any = { otpDevice: this.bookingForm.value.otpMethod, value: this.bookingForm.get('otpMethod')?.value === "mobile" ? this.bookingForm.get('phone')?.value : this.bookingForm.get('email')?.value, bookingPatient: bookingPatient }
+      this.backToAvailability.emit(otpDeviceDetails);
+      // { otpDevice: this.otpDevice, value: this.bookingForm.get('otp')?.value }
+      console.log('Form Submitted:', this.bookingForm.getRawValue());
+
     }
-    const bookingPatient = this.bookingForm.getRawValue();
-    const otpDeviceDetails: any = { otpDevice: this.bookingForm.value.otpMethod, value: this.bookingForm.get('otpMethod')?.value === "mobile" ? this.bookingForm.get('phone')?.value : this.bookingForm.get('email')?.value, bookingPatient: bookingPatient }
-    this.backToAvailability.emit(otpDeviceDetails);
-    // { otpDevice: this.otpDevice, value: this.bookingForm.get('otp')?.value }
-    console.log('Form Submitted:', this.bookingForm.getRawValue());
   }
 
-  // =========================
-  // Reset Form
-  // =========================
+
   clearForm(): void {
     this.bookingForm.reset();
 
