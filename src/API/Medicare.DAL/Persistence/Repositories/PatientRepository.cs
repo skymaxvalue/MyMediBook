@@ -66,7 +66,7 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> UpdatePatientDetails(PatientMasterModel model)
+        public async Task<ResponseModel> UpdatePatientDetails(UpdatePatientRequestModel model)
         {
             string procName = "USP_UpdatePatientDetails";
             ResponseModel returnData = new ResponseModel();
@@ -88,15 +88,8 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ZipCode", model.ZipCode);
                 param.Add("StateId", model.StateId);
                 param.Add("CountryId", model.CountryId);
-                param.Add("Username", model.Username);
-                param.Add("PasswordHash", model.PasswordHash);
-                param.Add("PasswordSalt", model.PasswordSalt);
-                param.Add("SecurityQuestionId", model.SecurityQuestionId);
-                param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
-                param.Add("SecurityAnswerSalt", model.SecurityAnswerSalt);
                 param.Add("IsActive", model.IsActive);
                 param.Add("UpdatedBy", model.UpdatedBy);
-                param.Add("UpdatedDate", model.UpdatedDate);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
             catch (Exception ex)

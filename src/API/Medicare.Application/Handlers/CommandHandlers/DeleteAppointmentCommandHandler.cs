@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
         }
         public async Task<ResponseModel> Handle(DeleteAppointmentCommand request, CancellationToken cancellationToken)
         {
-            return await _appointmentRepository.CancelAppointmentByIdAsync(request.appointmentId);
+            return await _appointmentRepository.CancelAppointmentByIdAsync(request.appointmentId, request.patientId);
         }
     }
 }

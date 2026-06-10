@@ -57,7 +57,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpPost]
         [Route("UpdatePatientDetails")]
-        public async Task<IActionResult> UpdatePatientDetails([FromBody] CreatePatientRequestModel model)
+        public async Task<IActionResult> UpdatePatientDetails([FromBody] UpdatePatientRequestModel model)
         {
             ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();

@@ -37,25 +37,6 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetSpecialities")]
-        public async Task<IActionResult> GetSpecialities(
-            [FromQuery] string? doctorName,
-            [FromQuery] string? departmentName)
-        {
-            ApiResponse<List<SpecialityModel>> ApiResponse = new ApiResponse<List<SpecialityModel>>();
-            List<SpecialityModel> response = new List<SpecialityModel>();
-            response = await _mediator.Send(new GetSpecialitiesQuery(doctorName, departmentName));
-            ApiResponse = new ApiResponse<List<SpecialityModel>>
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
-        }
-
-        [HttpGet]
         [Route("GetAvailableAppointments")]
         public async Task<IActionResult> GetAvailableAppointments(
             [FromQuery] int doctorId,
@@ -127,11 +108,14 @@ namespace Medicare.API.Controllers.V1
 
         [HttpDelete]
         [Route("CancelAppointmentById")]
-        public async Task<IActionResult> CancelAppointmentById([FromQuery] int appointmentId)
+        public async Task<IActionResult> CancelAppointmentById(
+            [FromQuery] int appointmentId,
+            [FromQuery] int patientId
+            )
         {
             ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new DeleteAppointmentCommand(appointmentId));
+            response = await _mediator.Send(new DeleteAppointmentCommand(appointmentId, patientId));
             ApiResponse = new ApiResponse<ResponseModel>
             {
                 Data = response,

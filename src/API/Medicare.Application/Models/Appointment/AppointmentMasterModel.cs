@@ -1,10 +1,21 @@
-﻿namespace Medicare.Application.Models.Appointment
+﻿using System.Text.Json.Serialization;
+
+namespace Medicare.Application.Models.Appointment
 {
     public class AppointmentMasterModel
     {
         public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public int SlotId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Age { get; set; }
+        public int AgeType { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string Email { get; set; }
+        public string Gender { get; set; }
+        public string Phone { get; set; }
+        public string RelatonType { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string TimeSlot { get; set; }
         public string VisitPurpose { get; set; }
@@ -27,9 +38,13 @@
     public class PaymentData
     {
         public string PaymentType { get; set; }
-        public string TransactionId { get; set; }
-        public decimal Amount { get; set; }
-        public string PaymentStatus { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public string CardHolder { get; set; }
+        public string CardNumber { get; set; }
+        public string Expiry { get; set; }
+        public string CVV { get; set; }
+        [JsonIgnore]
+        public byte[]? CvvHash { get; set; }
+        [JsonIgnore]
+        public byte[]? CvvSalt { get; set; }
     }
 }
