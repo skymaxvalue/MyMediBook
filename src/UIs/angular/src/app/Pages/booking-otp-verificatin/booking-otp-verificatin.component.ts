@@ -7,7 +7,8 @@ import {
   OnDestroy,
   Output,
   EventEmitter,
-  Input
+  Input,
+  ChangeDetectorRef
 } from '@angular/core';
 @Component({
   selector: "app-booking-otp-verificatin",
@@ -32,6 +33,8 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
   time: number = 59;
 
   interval: any;
+
+  constructor(private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -84,19 +87,11 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
 
     this.interval = setInterval(() => {
 
-
-
       if (this.time > 0) {
-
         this.time--;
-
-
+        this.cdr.detectChanges();
       } else {
-
         clearInterval(this.interval);
-
-        this.time = 0;
-
         alert('OTP Expired');
       }
 

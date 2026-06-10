@@ -9,7 +9,16 @@
         <div class="otp-card">
 
             <div class="otp-icon">
+
+                @if(otpDevice.otpDevice==='mobile'){
                 <img src="assets/images/otp-icon.png" class="otp-icon-img">
+
+                }
+                @if(otpDevice.otpDevice==='email'){
+
+                <img src="../../../assets/images/otp - mail.png" class="otp-icon-img">
+                }
+
             </div>
 
             <div class="otp-heading">

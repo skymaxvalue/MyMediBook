@@ -349,7 +349,6 @@ export class SelfRegistrationComponent implements OnInit {
     }
 
     const payload: PatientRegister = {
-      patientId: 0,
 
       firstName: this.signupForm.value.firstName,
       middleName: this.signupForm.value.middleName,
@@ -365,7 +364,7 @@ export class SelfRegistrationComponent implements OnInit {
       countryId: Number(this.signupForm.value.countryId),
       zipCode: this.signupForm.value.zipCode,
       username: this.signupForm.value.username,
-      password: this.signupForm.value.password,
+      password: this.signupForm.value.password ? this.signupForm.value.password : "",
       securityQuestionId: Number(this.signupForm.value.securityQuestionId),
       securityAnswer: this.signupForm.value.securityAnswer,
       phoneCountryCode: this.signupForm.value.phoneCountryCode,
@@ -377,8 +376,10 @@ export class SelfRegistrationComponent implements OnInit {
     }
 
     if (this.url === '/profile-update') {
-      this.store.dispatch(PatientAction.updatePatientDetailsById({ patient: payload }))
+      payload.patientId = this.user.data.patientId,
+        this.store.dispatch(PatientAction.updatePatientDetailsById({ patient: payload }))
     } else {
+
       this.store.dispatch(
         AuthActions.register({
           patient: payload

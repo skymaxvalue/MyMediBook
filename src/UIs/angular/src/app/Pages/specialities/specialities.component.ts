@@ -13,7 +13,9 @@ export class SpecialitiesComponent {
   @Output() onDoctorSelected = new EventEmitter<any>();
   searchText: string = '';
   searchedText: string = '';
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    console.log(this.specialities, "------->")
+  }
 
   goToAvailability(doctor: any, ocId: any) {
     console.log('Selected Doctor:', doctor);

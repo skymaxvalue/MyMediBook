@@ -37,31 +37,31 @@
     </div>
 
     <!-- Doctor Cards -->
-    @for (doctor of speciality.doctors; track $index) {
+    @for (doctor of speciality.doctors; track doctor.name) {
 
-    <div class="doctor-card" (click)="goToAvailability(doctor,$index)">
+    <div class="doctor-card" (click)="goToAvailability(doctor,doctor.specialityId)">
 
         <div class="doc-left">
 
-            <img src="assets/images/doc.jpg" class="doc-img" alt="doctor">
+            <img src="{{doctor.image}}" class="doc-img" alt="doctor">
 
             <div class="doc-info">
 
                 <p>
                     Doctor Name :
-                    <b>{{ doctor.name }}</b>
+                    <b>{{ doctor?.name }}</b>
                 </p>
 
                 <p>
                     Degree :
-                    <b>{{ doctor.degree }}</b>
+                    <b>{{ doctor?.degree }}</b>
                 </p>
 
                 <p>
                     Department :
 
                     <span class="badge">
-                        {{ doctor.department }}
+                        {{ doctor?.department }}
                     </span>
 
                 </p>
@@ -74,7 +74,7 @@
 
             <p>[Visiting Hours / Out Of Station]</p>
 
-            <h3>{{ doctor.time }}</h3>
+            <h3>{{ doctor?.time }}</h3>
 
             <span class="arrow">➤</span>
 

@@ -55,6 +55,10 @@ import { AuthState } from "./app/Store/Auth/auth.state"
 import { authReducer } from "./app/Store/Auth/auth.reducer"
 import { PatientEffects } from "./app/Store/Patient/patient.effect";
 import { patientReducer } from "./app/Store/Patient/patient.reducer";
+import { appointmentReducer } from "./app/Store/Appointments/appointment.reducer";
+import { AppointmentEffects } from "./app/Store/Appointments/appointment.effect";
+import { doctorSpecialityReducer } from "./app/Store/Doctor/doctor.reducer";
+import { DoctorSpecialityEffects } from "./app/Store/Doctor/doctor.effect";
 
 if (environment.production) {
   enableProdMode();
@@ -98,11 +102,15 @@ bootstrapApplication(AppComponent, {
     },
     provideStore({
       auth: authReducer,
-      patient: patientReducer
+      patient: patientReducer,
+      appointment: appointmentReducer,
+      doctor: doctorSpecialityReducer
     }),
     provideEffects([
       AuthEffects,
       PatientEffects,
+      AppointmentEffects,
+      DoctorSpecialityEffects,
       AuditLogEffects
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
