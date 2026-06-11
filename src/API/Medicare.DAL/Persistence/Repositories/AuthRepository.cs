@@ -45,12 +45,11 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                string path = "USP_UserRegister";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = path,
+                    Error_Procedure = procName,
                     Error_Trace = ex.StackTrace
                 });
             }
@@ -59,7 +58,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> IncrementOtpAttemptsAsync(string email)
         {
-            string procName = "USP_UpdateOtpAttempts";
+            string procName = "USP_UpdatePatientOtpAttempts";
             ResponseModel returnData = new ResponseModel();
             try
             {
@@ -70,12 +69,11 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                string path = "USP_UpdateOtpAttempts";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = path,
+                    Error_Procedure = procName,
                     Error_Trace = ex.StackTrace
                 });
             }
@@ -85,7 +83,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> ClearOtpAsync(string email)
         {
-            string procName = "USP_ClearOtp";
+            string procName = "USP_ClearPatientOtp";
             ResponseModel returnData = new ResponseModel();
             try
             {
@@ -96,12 +94,11 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                string path = "USP_ClearOtp";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = path,
+                    Error_Procedure = procName,
                     Error_Trace = ex.StackTrace
                 });
             }
@@ -111,7 +108,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> SaveOtpAsync(OtpDetailModel model)
         {
-            string procName = "USP_SaveOtp";
+            string procName = "USP_SavePatientOtp";
             ResponseModel returnData = new ResponseModel();
             try
             {
@@ -126,12 +123,11 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                string path = "USP_SaveOtp";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = path,
+                    Error_Procedure = procName,
                     Error_Trace = ex.StackTrace
                 });
             }
@@ -140,7 +136,7 @@ namespace Medicare.DAL.Persistence.Repositories
         }
         public async Task<OtpDetailModel> GetOtpDetailAsync(string email)
         {
-            string procName = "USP_GetOtpDetail";
+            string procName = "USP_GetPatientOtpDetail";
             OtpDetailModel returnData = new OtpDetailModel();
             try
             {
@@ -151,12 +147,11 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                string path = "USP_GetOtpDetail";
                 await _errorLog.InsertErrorLog(new ErrorLogModel()
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = path,
+                    Error_Procedure = procName,
                     Error_Trace = ex.StackTrace
                 });
             }
@@ -215,6 +210,30 @@ Do not share this OTP with anyone.
 
 Thanks,
 Medicare Team";
+        }
+
+        public async Task<ResponseModel> ResetFailedAttemptsAsync(string email)
+        {
+            string procName = "USP_ResetFailedAttempts";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("Email", email);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
         }
     }
 }

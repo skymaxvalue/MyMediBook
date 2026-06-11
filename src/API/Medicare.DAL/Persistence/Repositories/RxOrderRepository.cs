@@ -1,0 +1,160 @@
+﻿using Dapper;
+using Medicare.Application.Interfaces.IErrorLog;
+using Medicare.Application.Interfaces.IOrders;
+using Medicare.Application.Models.CommonModels.ErrorLog;
+using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.Orders;
+using Medicare.DAL.Persistence.Dapper;
+
+namespace Medicare.DAL.Persistence.Repositories
+{
+    public class RxOrderRepository : IRxOrderRepository
+    {
+        private readonly DapperContext _context;
+        private readonly IErrorLogRepository _errorLog;
+
+        public RxOrderRepository(DapperContext context, IErrorLogRepository errorLog)
+        {
+            _context = context;
+            _errorLog = errorLog;
+        }
+
+        public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(int patientId)
+        {
+            string procName = "";
+            List<RxOrderDetailModel> returnData = new List<RxOrderDetailModel>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("PatientId", patientId);
+
+                returnData = await _context.QueryStoredProcListAsync<RxOrderDetailModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<RxOrderDetailModel> GetRxOrderByOrderIdAsync(int orderId)
+        {
+            string procName = "";
+            RxOrderDetailModel returnData = new RxOrderDetailModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("OrderId", orderId);
+
+                returnData = await _context.QuerySingleStoredProcAsync<RxOrderDetailModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        // ── CREATE ───────────────────────────────────────────────────
+        public async Task<ResponseModel> CreateRxOrderAsync(CreateRxOrderRequestModel model)
+        {
+            string procName = "";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("PatientId", model.PatientId);
+                param.Add("DoctorId", model.DoctorId);
+                param.Add("PharmacyId", model.PharmacyId);
+                param.Add("DrugName", model.DrugName);
+                param.Add("Dosage", model.Dosage);
+                param.Add("Frequency", model.Frequency);
+                param.Add("DurationDays", model.DurationDays);
+                param.Add("Instructions", model.Instructions);
+                param.Add("ExpiryDate", model.ExpiryDate);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<ResponseModel> CancelRxOrderAsync(CancelRxOrderRequestModel model)
+        {
+            string procName = "";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("OrderId", model.OrderId);
+                param.Add("CancelReason", model.CancelReason);
+               
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<ResponseModel> UpdateRxOrderAsync(UpdateRxOrderRequestModel model)
+        {
+            string procName = "";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("OrderId", model.OrderId);
+                param.Add("PharmacyId", model.PharmacyId);
+                param.Add("PharmacyId", model.PharmacyId);
+                param.Add("DrugName", model.DrugName);
+                param.Add("Dosage", model.Dosage);
+                param.Add("Frequency", model.Frequency);
+                param.Add("DurationDays", model.DurationDays);
+                param.Add("Instructions", model.Instructions);
+                param.Add("ExpiryDate", model.ExpiryDate);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+    }
+}

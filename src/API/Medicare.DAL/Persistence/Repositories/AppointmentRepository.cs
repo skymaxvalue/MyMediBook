@@ -5,6 +5,7 @@ using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.DAL.Persistence.Dapper;
+using System.Data;
 
 namespace Medicare.DAL.Persistence.Repositories
 {
@@ -68,8 +69,7 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(
-            int doctorId, DateTime requestedDate)
+        public async Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int doctorId)
         {
             string procName = "USP_GetAvailableAppointments";
             List<AvailableAppointmentModel> returnData = new List<AvailableAppointmentModel>();
@@ -77,7 +77,6 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("DoctorId", doctorId);
-                param.Add("RequestedDate", requestedDate.Date);
 
                 returnData = await _context.QueryStoredProcListAsync<AvailableAppointmentModel>(procName, param);
             }
@@ -120,23 +119,38 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> CreateAppointmentAsync(AppointmentMasterModel model)
         {
-            string procName = "USP_CreateAppointment";
+            string profileProc = "USP_AddPatientProfile";
+            string appointmentProc = "USP_CreateAppointment";
             ResponseModel returnData = new ResponseModel();
+
             try
             {
+                if (!string.IsNullOrEmpty(model.RelatonType) && !model.RelatonType.Equals("Self", StringComparison.OrdinalIgnoreCase))
+                {
+                    var profileParam = new DynamicParameters();
+                    profileParam.Add("PatientId", model.PatientId);
+                    profileParam.Add("FirstName", model.FirstName);
+                    profileParam.Add("LastName", model.LastName);
+                    profileParam.Add("DateOfBirth", model.DateOfBirth);
+                    profileParam.Add("Age", model.Age);
+                    profileParam.Add("AgeType", model.AgeType);
+                    profileParam.Add("Gender", model.Gender);
+                    profileParam.Add("Email", model.Email);
+                    profileParam.Add("PhoneNumber", model.Phone);
+                    profileParam.Add("RelationType", model.RelatonType);
+
+                    var profileResult = await _context.QuerySingleStoredProcAsync<ResponseModel>(profileProc, profileParam);
+
+                    if (profileResult.IsSuccess == 0) return profileResult;
+
+                    model.ProfileId = profileResult.ResponseId;
+                }
+
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
+                param.Add("ProfileId", model.ProfileId);   
                 param.Add("DoctorId", model.DoctorId);
                 param.Add("SlotId", model.SlotId);
-                param.Add("FirstName", model.FirstName);
-                param.Add("LastName", model.LastName);
-                param.Add("DateOfBirth", model.DateOfBirth);
-                param.Add("Age", model.Age);
-                param.Add("AgeType", model.AgeType);
-                param.Add("Email", model.Email);
-                param.Add("Gender", model.Gender);
-                param.Add("Phone", model.Phone);
-                param.Add("RelatonType", model.RelatonType);
                 param.Add("AppointmentDate", model.AppointmentDate);
                 param.Add("TimeSlot", model.TimeSlot);
                 param.Add("VisitPurpose", model.VisitPurpose);
@@ -154,10 +168,11 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("CardHolder", model.PaymentData?.CardHolder);
                 param.Add("CardNumber", model.PaymentData?.CardNumber);
                 param.Add("Expiry", model.PaymentData?.Expiry);
-                param.Add("CvvHash", model.PaymentData?.CvvHash);
-                param.Add("CvvSalt", model.PaymentData?.CvvSalt);
+                param.Add("CvvHash", model.PaymentData?.CvvHash, dbType: DbType.Binary);
+                param.Add("CvvSalt", model.PaymentData?.CvvSalt, dbType: DbType.Binary);
 
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(appointmentProc, param);
+
             }
             catch (Exception ex)
             {
@@ -165,7 +180,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 {
                     IsDBError = false,
                     Error_Message = ex.Message,
-                    Error_Procedure = procName,
+                    Error_Procedure = appointmentProc,
                     Error_Trace = ex.StackTrace
                 });
             }

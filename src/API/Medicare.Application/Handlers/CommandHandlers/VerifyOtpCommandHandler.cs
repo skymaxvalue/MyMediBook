@@ -41,7 +41,9 @@ namespace Medicare.Application.Handlers.CommandHandlers
             }
 
             await _authRepository.ClearOtpAsync(request.model.Email);
-
+            
+            await _authRepository.ResetFailedAttemptsAsync(request.model.Email);  
+            
             return new ResponseModel()
             {
                 Status = 1,

@@ -5,6 +5,7 @@ namespace Medicare.Application.Models.Appointment
     public class AppointmentMasterModel
     {
         public int PatientId { get; set; }
+        public int ProfileId { get; set; }
         public int DoctorId { get; set; }
         public int SlotId { get; set; }
         public string FirstName { get; set; }

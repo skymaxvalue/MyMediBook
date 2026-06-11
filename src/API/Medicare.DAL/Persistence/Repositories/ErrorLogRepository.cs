@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.CommonModels.ErrorLog;
-using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
 
 namespace Medicare.DAL.Persistence.Repositories

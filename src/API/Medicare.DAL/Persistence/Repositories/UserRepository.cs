@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.UserRepository;
-using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;

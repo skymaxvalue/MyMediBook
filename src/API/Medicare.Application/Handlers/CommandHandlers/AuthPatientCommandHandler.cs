@@ -20,7 +20,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
         {
             var user = await _patientRepository.GetPasswordByUsernameAsync(request.model.Username);
 
-            if (user == null)
+            if (user.PasswordHash == null && user.PasswordSalt == null)
             {
                 throw new Exception("User not found");
             }

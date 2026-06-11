@@ -6,6 +6,7 @@ using Medicare.Application.Interfaces.IDoctor;
 using Medicare.Application.Interfaces.IEmail;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.ILocations;
+using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
 using Medicare.Application.Interfaces.UserRepository;
@@ -52,12 +53,13 @@ namespace Medicare_API.Registrars
             // ✅ Repository
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-            builder.Services.AddScoped<ISecurityQuestionsRepository, SecurityQuestionMasterRepository>();
+            builder.Services.AddScoped<ISecurityQuestionRepository, SecurityQuestionRepository>();
             builder.Services.AddScoped<IErrorLogRepository, ErrorLogRepository>();
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>(); 
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+            builder.Services.AddScoped<IRxOrderRepository, RxOrderRepository>();
 
             // ✅ Dapper Context
             builder.Services.AddScoped<DapperContext>();

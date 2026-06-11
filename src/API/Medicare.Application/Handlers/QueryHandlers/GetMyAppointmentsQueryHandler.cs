@@ -9,12 +9,10 @@ namespace Medicare.Application.Handlers.QueryHandlers
        : IRequestHandler<GetMyAppointmentsQuery, List<PatientAppointmentModel>>
     {
         private readonly IAppointmentRepository _appointmentRepository;
-
         public GetMyAppointmentsQueryHandler(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
         }
-
         public async Task<List<PatientAppointmentModel>> Handle(
             GetMyAppointmentsQuery request, CancellationToken cancellationToken)
         {
