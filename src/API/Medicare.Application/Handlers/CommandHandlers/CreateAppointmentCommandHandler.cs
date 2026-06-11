@@ -15,12 +15,16 @@ namespace Medicare.Application.Handlers.CommandHandlers
             _appointmentRepository = appointmentRepository;
         }
         public async Task<ResponseModel> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken) 
-        { 
-            if (request.model.PaymentData?.CVV != null)
+        {
+            if (request.model.PaymentData != null)
             {
-                CreateHash(request.model.PaymentData.CVV, out byte[] cvvHash, out byte[] cvvSalt);
-                request.model.PaymentData.CvvHash = cvvHash;
-                request.model.PaymentData.CvvSalt = cvvSalt;
+                if (!string.IsNullOrWhiteSpace(request.model.PaymentData.CVV))
+                {
+                    CreateHash(request.model.PaymentData.CVV, out byte[] cvvHash, out byte[] cvvSalt);
+
+                    request.model.PaymentData.CvvHash = cvvHash;
+                    request.model.PaymentData.CvvSalt = cvvSalt;
+                }
             }
             return await _appointmentRepository.CreateAppointmentAsync(request.model);
         } 

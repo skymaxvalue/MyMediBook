@@ -18,8 +18,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         public async Task<List<AvailableAppointmentModel>> Handle(
             GetAvailableAppointmentsQuery request, CancellationToken cancellationToken)
         {
-            return await _appointmentRepository.GetAvailableAppointmentsAsync(
-                request.DoctorId, request.RequestedDate);
+            return await _appointmentRepository.GetAvailableAppointmentsAsync(request.DoctorId);
         }
     }
 }

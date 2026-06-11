@@ -31,6 +31,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 LastName = request.model.LastName,
                 DateOfBirth = request.model.DateOfBirth,
                 PhoneNumber = request.model.PhoneNumber,
+                PhoneCountryCode = request.model.PhoneCountryCode,
                 Email = request.model.Email,
                 Gender = request.model.Gender,
                 AddressLine1 = request.model.AddressLine1,
@@ -47,9 +48,6 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 SecurityAnswerSalt = answerSalt,   
                 IsActive = request.model.IsActive,
                 CreatedBy = request.model.CreatedBy,
-                CreatedDate = request.model.CreatedDate,
-                UpdatedBy = request.model.UpdatedBy,
-                UpdatedDate = request.model.UpdatedDate
             };
 
             return await _patientRepository.CreatePatientDetails(patientModel);

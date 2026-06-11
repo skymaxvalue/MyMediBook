@@ -19,12 +19,11 @@ namespace Medicare.DAL.Persistence.Repositories
         }
         public async Task<ResponseModel> CreatePatientDetails(PatientMasterModel model)
         {
-            string procName = "USP_CreatePatientDetails";
+            string procName = "USP_RegisterPatientAccount";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("PatientId", model.PatientId);
                 param.Add("FirstName", model.FirstName);
                 param.Add("MiddleName", model.MiddleName);
                 param.Add("LastName", model.LastName);
@@ -45,11 +44,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("SecurityQuestionId", model.SecurityQuestionId);
                 param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
                 param.Add("SecurityAnswerSalt", model.SecurityAnswerSalt);
-                param.Add("IsActive", model.IsActive);
                 param.Add("CreatedBy", model.CreatedBy);
-                param.Add("CreatedDate", model.CreatedDate);
-                param.Add("UpdatedBy", model.UpdatedBy);
-                param.Add("UpdatedDate", model.UpdatedDate);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
             catch (Exception ex)
@@ -68,7 +63,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> UpdatePatientDetails(UpdatePatientRequestModel model)
         {
-            string procName = "USP_UpdatePatientDetails";
+            string procName = "USP_UpdatePatientAccount";
             ResponseModel returnData = new ResponseModel();
             try
             {
@@ -133,12 +128,12 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<PatientMasterModel> GetPatientById(int Id)
         {
-            string procName = "USP_GetPatientById";
+            string procName = "USP_GetPatientAccountById";
             PatientMasterModel returnData = new PatientMasterModel();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("Id", Id);
+                param.Add("PatientId", Id);
                 returnData = await _context.QuerySingleStoredProcAsync<PatientMasterModel>(procName, param);
 
             }
@@ -182,7 +177,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<PatientDetailModel> GetPatientInfoByUsername(string Username)
         {
-            string procName = "USP_GetPatientByUsername";
+            string procName = "USP_GetPatientAccountByUsername";
             PatientDetailModel returnData = new PatientDetailModel();
             try
             {
@@ -205,5 +200,28 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
+        public async Task<List<PatientProfileModel>> GetPatientProfilesById(int patientId)
+        {
+            string procName = "USP_GetPatientProfiles";
+            List<PatientProfileModel> returnData = new List<PatientProfileModel>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("PatientId", patientId);
+
+                returnData = await _context.QueryStoredProcListAsync<PatientProfileModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
     }
 }

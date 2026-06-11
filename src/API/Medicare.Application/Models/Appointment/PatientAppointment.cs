@@ -13,7 +13,7 @@
         public string Status { get; set; }         // Scheduled / Cancelled / Completed
         public string VisitPurpose { get; set; }   
         public string VisitType { get; set; }
-        public string RealtionType { get; set; }
+        public string RelationType { get; set; }
     }
     public class SpecialityModel
     {

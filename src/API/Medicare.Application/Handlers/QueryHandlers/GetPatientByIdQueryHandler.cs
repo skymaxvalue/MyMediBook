@@ -8,7 +8,6 @@ namespace Medicare.Application.Handlers.QueryHandlers
     public class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQuery, PatientMasterModel>
     {
         private readonly IPatientRepository _patientRepository;
-
         public GetPatientByIdQueryHandler(IPatientRepository patientRepository)
         {
             _patientRepository = patientRepository;

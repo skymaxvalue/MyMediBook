@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Medicare.Application.Interfaces.ISecurityQuestionsRepository
 {
-    public interface ISecurityQuestionsRepository
+    public interface ISecurityQuestionRepository
     {
         Task<List<SecurityQuestionDataModel>> GetSecurityQuestionMasterAsync();
     }

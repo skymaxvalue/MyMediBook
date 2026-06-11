@@ -12,5 +12,6 @@ namespace Medicare.Application.Interfaces.IAuthRepository
         Task<OtpDetailModel> GetOtpDetailAsync(string email);
         Task<ResponseModel> ClearOtpAsync(string email);
         Task<ResponseModel> IncrementOtpAttemptsAsync(string email);
+        Task<ResponseModel> ResetFailedAttemptsAsync(string email);
     }
 }

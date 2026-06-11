@@ -73,12 +73,12 @@ namespace Medicare.API.Controllers.V1
 
 
         [HttpGet]
-        [Route("GetSecurityQuestionMaster")]
-        public async Task<IActionResult> GetSecurityQuestionMaster()
+        [Route("GetSecurityQuestionList")]
+        public async Task<IActionResult> GetSecurityQuestionList()
         {
             ApiResponse<List<SecurityQuestionDataModel>> ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>();
             List<SecurityQuestionDataModel> response = new List<SecurityQuestionDataModel>();
-            response = await _mediator.Send(new GetSecurityQuestionMasterQuery());
+            response = await _mediator.Send(new GetSecurityQuestionListQuery());
             ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>()
             {
                 Data = response,

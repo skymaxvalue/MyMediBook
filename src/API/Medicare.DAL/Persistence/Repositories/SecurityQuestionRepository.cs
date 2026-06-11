@@ -6,18 +6,18 @@ using Medicare.DAL.Persistence.Dapper;
 
 namespace Medicare.DAL.Persistence.Repositories
 {
-    public class SecurityQuestionMasterRepository : ISecurityQuestionsRepository
+    public class SecurityQuestionRepository : ISecurityQuestionRepository
     {
         private readonly DapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public SecurityQuestionMasterRepository(DapperContext context, IErrorLogRepository errorLog)
+        public SecurityQuestionRepository(DapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;
         }
         public async Task<List<SecurityQuestionDataModel>> GetSecurityQuestionMasterAsync()
         {
-            string procName = "USP_GetSecurityQuestionMaster";
+            string procName = "USP_GetSecurityQuestion";
             List<SecurityQuestionDataModel> returnData = new List<SecurityQuestionDataModel>();
             try 
             {
