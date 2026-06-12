@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-specialities",
   imports: [CommonModule, FormsModule],
@@ -9,12 +10,12 @@ import { Router } from "@angular/router";
   styleUrl: "./specialities.component.css",
 })
 export class SpecialitiesComponent {
+  apiUrl = environment.OpenIdConnect.apiUrl
   @Input() specialities: any[] = [];
   @Output() onDoctorSelected = new EventEmitter<any>();
   searchText: string = '';
   searchedText: string = '';
   constructor(private router: Router) {
-    console.log(this.specialities, "------->")
   }
 
   goToAvailability(doctor: any, ocId: any) {
@@ -22,6 +23,19 @@ export class SpecialitiesComponent {
     this.onDoctorSelected.emit(doctor);
   }
 
+  getAmPmTime(time: string): string {
+
+    const [hours, minutes] = time.split(':');
+
+    let h = parseInt(hours, 10);
+
+    const ampm = h >= 12 ? 'PM' : 'AM';
+
+    h = h % 12;
+    h = h ? h : 12; // 0 → 12
+
+    return `${h}:${minutes} ${ampm}`;
+  }
   onSearch() {
     this.searchedText = this.searchText;
   }

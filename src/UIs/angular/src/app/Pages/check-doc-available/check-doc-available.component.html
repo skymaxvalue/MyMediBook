@@ -79,15 +79,22 @@
                     <span class="tag">{{ doctor?.department }}</span>
                 </div>
 
+
                 <div class="slots-section">
                     <div class="slots-grid">
+
                         @for (slot of slots; track $index) {
+
                         <div class="slot" [class.booked]="slot.booked" [class.available]="!slot.booked"
                             [class.selected]="selectedSlot === slot.time"
                             (click)="!slot.booked && selectSlot(slot.time)">
+
                             {{ slot.time }}
+
                         </div>
+
                         }
+
                     </div>
                 </div>
             </div>
