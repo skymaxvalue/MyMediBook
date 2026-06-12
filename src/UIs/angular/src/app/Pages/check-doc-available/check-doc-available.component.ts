@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges } from "@angular/core";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ interface ScheduleItem {
   templateUrl: "./check-doc-available.component.html",
   styleUrl: "./check-doc-available.component.css",
 })
-export class CheckDocAvailableComponent {
+export class CheckDocAvailableComponent implements OnInit, OnChanges {
   @Input() doctor: any = {}
   @Output() backToSpecialities = new EventEmitter<void>();
 
@@ -48,7 +48,9 @@ export class CheckDocAvailableComponent {
   slots: { time: string; booked: boolean }[] = [];
   showAddbookingAppoinmentForm: boolean = false
 
-  constructor(private router: Router, private store: Store) { }
+  constructor(private router: Router, private store: Store) {
+    this.generateSlots(this.doctor.availableFrom, this.doctor.availableTo, 30)
+  }
 
   ngOnInit(): void {
 
@@ -56,6 +58,16 @@ export class CheckDocAvailableComponent {
     this.selectedDate = this.minDate;
 
     this.generateSchedule(this.today);
+
+  }
+  ngOnChanges(): void {
+    if (this.doctor?.availableFrom && this.doctor?.availableTo) {
+      this.generateSlots(
+        this.doctor.availableFrom,
+        this.doctor.availableTo,
+        30
+      );
+    }
   }
 
   toInputDate(date: Date): string {
@@ -81,7 +93,7 @@ export class CheckDocAvailableComponent {
       d.setDate(d.getDate() + i);
 
       let badgeClass: 'green' | 'red' | 'beige' = 'green';
-      let text = '09:00 AM - 05:30 PM';
+      let text = `${this.getAmPmTime(this.doctor.availableFrom)} - ${this.getAmPmTime(this.doctor.availableTo)}`
 
       if (i === 4) {
         badgeClass = 'red';
@@ -140,10 +152,10 @@ export class CheckDocAvailableComponent {
       bookedSlots = this.allSlots.slice(0, 3);
     }
 
-    this.slots = this.allSlots.map(slot => ({
-      time: slot,
-      booked: bookedSlots.includes(slot)
-    }));
+    // this.slots = this.allSlots.map(slot => ({
+    //   time: slot,
+    //   booked: bookedSlots.includes(slot)
+    // }));
   }
 
   selectSlot(slot: string): void {
@@ -167,7 +179,19 @@ export class CheckDocAvailableComponent {
   goBack(): void {
     this.backToSpecialities.emit();
   }
+  getAmPmTime(time: string): string {
 
+    const [hours, minutes] = time.split(':');
+
+    let h = parseInt(hours, 10);
+
+    const ampm = h >= 12 ? 'PM' : 'AM';
+
+    h = h % 12;
+    h = h ? h : 12; // 0 → 12
+
+    return `${h}:${minutes} ${ampm}`;
+  }
   backToAvailability(otpDeviceDetails: any): void {
     this.otpDevice = otpDeviceDetails;
     this.bookingPatient = otpDeviceDetails.bookingPatient;
@@ -205,5 +229,41 @@ export class CheckDocAvailableComponent {
       })
     );
 
+  }
+
+  generateSlots(startHr: string, endHr: string, interval: number) {
+    if (!startHr || !endHr) {
+      console.warn('Start or End time missing');
+      return;
+    }
+    const slots: any[] = [];
+
+    // convert "09:00" → 9
+    const [sh, sm] = startHr.split(':').map(Number);
+    const [eh, em] = endHr.split(':').map(Number);
+
+    let current = new Date();
+    current.setHours(sh, sm, 0, 0);
+
+    const end = new Date();
+    end.setHours(eh, em, 0, 0);
+
+    while (current <= end) {
+
+      const time = current.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      slots.push({
+        time: time,
+        booked: false
+      });
+
+      current = new Date(current.getTime() + interval * 60000);
+    }
+
+    this.slots = slots;
   }
 }

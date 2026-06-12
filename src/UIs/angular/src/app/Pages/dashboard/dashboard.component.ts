@@ -37,39 +37,8 @@ export class DashboardComponent implements OnInit {
       loadDoctorSpecialities());
 
     this.store.select(selectDoctorSpecialities)
-      .subscribe((specialities: DoctorSpeciality[]) => {
-
-        const groupedData = specialities.reduce((acc: any[], item) => {
-
-          let speciality = acc.find(
-            x => x.category === item.specialityName
-          );
-
-          if (!speciality) {
-            speciality = {
-              category: item.specialityName,
-              doctors: []
-            };
-
-            acc.push(speciality);
-          }
-
-          speciality.doctors.push({
-            specialityId: item.specialityId,
-            name: item.doctorName,
-            degree: '',
-            department: item.departmentName,
-            image: 'assets/images/doc.jpg',
-            time: ''
-          });
-
-          return acc;
-
-        }, []);
-
-        this.specialities = groupedData;
-
-        console.log(this.specialities);
+      .subscribe((res: any) => {
+        this.specialities = res;
       });
   }
   appointments = [
@@ -101,37 +70,7 @@ export class DashboardComponent implements OnInit {
   searchText: string = '';
 
   specialities = [
-    {
-      category: 'General Physician',
-      doctors: [
-        {
-          name: 'Dr. Kumar',
-          degree: 'MBBS',
-          department: 'GENERAL',
-          image: 'images/doc.jpg',
-          time: '11:00 AM - 04:30 PM'
-        },
-        {
-          name: 'Dr. Bose',
-          degree: 'MBBS',
-          department: 'INTERNAL MEDICINE',
-          image: 'images/doc.jpg',
-          time: '12:00 PM - 05:30 PM'
-        }
-      ]
-    },
-    {
-      category: 'Cardiology',
-      doctors: [
-        {
-          name: 'Dr. Raman',
-          degree: 'MBBS, MD',
-          department: 'DNB (CARDIOLOGY)',
-          image: 'images/doc.jpg',
-          time: '09:00 AM - 12:30 PM'
-        }
-      ]
-    }
+
   ];
 
   onDoctorSelected(doctor: any): void {

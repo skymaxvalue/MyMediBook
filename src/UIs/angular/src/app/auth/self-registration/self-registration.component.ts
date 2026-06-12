@@ -30,6 +30,9 @@ export class SelfRegistrationComponent implements OnInit {
   showPassword: boolean = false;
   showconfirmPasswordPassword: boolean = false
   securityQuestions: any[] | undefined;
+  dob: string = '';
+  ageError: string = '';
+  isValidAge: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -64,6 +67,41 @@ export class SelfRegistrationComponent implements OnInit {
 
 
   }
+
+  onDobChange(event: any) {
+
+    const value = event.target.value;
+
+    if (!value) {
+      this.ageError = 'Please select date of birth';
+      this.isValidAge = false;
+      return;
+    }
+
+    const selectedDob = new Date(value);
+    const today = new Date();
+
+    let age = today.getFullYear() - selectedDob.getFullYear();
+
+    const monthDiff = today.getMonth() - selectedDob.getMonth();
+    const dayDiff = today.getDate() - selectedDob.getDate();
+
+    // adjust age if birthday not yet occurred this year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    if (age >= 18) {
+      this.ageError = '';
+      this.isValidAge = true;
+    } else {
+      this.ageError = 'User must be 18 years or older';
+      this.isValidAge = false;
+    }
+
+    console.log('Age:', age);
+  }
+
   get f() {
 
     return this.signupForm.controls;
@@ -88,6 +126,7 @@ export class SelfRegistrationComponent implements OnInit {
         return;
       }
       if (this.url === '/profile-update') {
+        console.log(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId, "------------>")
         this.loadStates(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId)
 
       }
@@ -238,7 +277,7 @@ export class SelfRegistrationComponent implements OnInit {
     await this.store.dispatch(
       AuthActions.getStates({ countryId: event.target.value })
     );
-    this.store.select(state => state.auth.getStates).subscribe((states: any) => {
+    await this.store.select(state => state.auth.getStates).subscribe((states: any) => {
 
       if (states) {
         this.signupForm.get('stateId')?.enable();
@@ -255,7 +294,7 @@ export class SelfRegistrationComponent implements OnInit {
     await this.store.dispatch(
       AuthActions.getCities({ stateId: event.target.value })
     );
-    this.store.select(state => state.auth.getCities).subscribe((cities: any) => {
+    await this.store.select(state => state.auth.getCities).subscribe((cities: any) => {
       if (cities) {
         this.signupForm.get('cityId')?.enable();
         this.cities = cities.data;

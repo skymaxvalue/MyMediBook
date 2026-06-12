@@ -52,8 +52,8 @@
         <div>
           <div class="form-row">
             <label>Date Of Birth<span class="star">*</span></label>
-            <input type="date" formControlName="dateOfBirth" id="dob" placeholder="Select your date of birth"
-              required />
+            <input type="date" formControlName="dateOfBirth" id="dob" placeholder="Select your date of birth" required
+              (change)="onDobChange($event)" />
           </div>
           @if (f.dateOfBirth.touched && f.dateOfBirth.errors?.["required"]) {
           <div class="form-row mt-0 pt-0">
@@ -61,6 +61,14 @@
             <small class="text-danger">Date of birth is required</small>
           </div>
           }
+          @if(!isValidAge){
+
+          <div class="form-row mt-0 pt-0">
+            <label for="dob"></label>
+            <small class="text-danger"> {{ ageError }}</small>
+          </div>
+          }
+
         </div>
 
         <div class="form-row">
