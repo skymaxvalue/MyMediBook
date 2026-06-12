@@ -50,10 +50,26 @@ function setupNavbar() {
         item.onclick = () => {
             const page = item.getAttribute("data-page");
 
-            if (page === "appointments") location.href = "dashboard.html";
-            if (page === "specialities") location.href = "specialities.html";
-            if (page === "medicine") alert("Coming soon");
-            if (page === "support") alert("Coming soon");
+            if (page === "appointments")
+                location.href = "dashboard.html";
+
+            if (page === "specialities")
+                location.href = "specialities.html";
+
+            if (page === "medicine")
+                location.href = "medicine-orders.html";
+
+            if (page === "lab-results")
+                location.href = "lab-results.html";
+
+            if (page === "billing")
+                location.href = "billing.html";
+
+            if (page === "messages")
+                location.href = "messages.html";
+
+            if (page === "settings")
+                location.href = "settings.html";
         };
     });
 }
@@ -66,7 +82,19 @@ const map = {
     "specialities.html": "specialities",
     "availability.html": "specialities",
     "booking.html": "specialities",
-    "otp-verification.html": "specialities"
+    "otp-verification.html": "specialities",
+    "success.html": "specialities",
+        "failed.html": "specialities",
+
+        "medicine-orders.html": "medicine",
+
+        "lab-results.html": "lab-results",
+
+        "billing.html": "billing",
+
+        "messages.html": "messages",
+
+        "settings.html": "settings"
 };
 
     document.querySelectorAll(".nav-item").forEach(item => {

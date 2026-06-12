@@ -112,6 +112,7 @@ body {
     background: #f3f5f9;
     padding: 18px 0;
     border-bottom: 1px solid #dcdcff;
+    gap: 32px;
 }
 
 .nav-item {
