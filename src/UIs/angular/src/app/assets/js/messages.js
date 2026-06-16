@@ -1,3 +1,5 @@
+
+
 const messages = [
 
 {
@@ -22,12 +24,29 @@ description:"Your medicine order #12345 is on the way and will be delivered soon
 doctor:"Dr Doss",
 icon:"images/transit-icon2.png",
 archived:false
+},
+
+{
+id:3,
+date:"2026-05-15",
+time:"04:15 PM",
+title:"Your order #12345 is on the way",
+type:"Order Update",
+description:"Your medicine order #12345 is on the way and will be delivered soon.",
+doctor:"Dr Ross",
+icon:"images/transit-icon2.png",
+archived:false
 }
+
 
 ];
 
-
 let currentTab = "all";
+let searchValue = "";
+let filterValue = "all";
+let deleteMessageId = null;
+
+
 
 function archiveMessage(id){
 
@@ -60,21 +79,39 @@ function render(){
 
     let filteredMessages;
 
-    if(currentTab === "all"){
+   filteredMessages =
+messages.filter(message=>{
 
-        filteredMessages =
-        messages.filter(
-            m => !m.archived
-        );
+    const tabMatch =
+    currentTab === "all"
+    ? !message.archived
+    : message.archived;
 
-    }else{
+    const searchMatch =
+    message.title
+    .toLowerCase()
+    .includes(searchValue)
+    ||
+    message.description
+    .toLowerCase()
+    .includes(searchValue)
+    ||
+    message.doctor
+    .toLowerCase()
+    .includes(searchValue);
 
-        filteredMessages =
-        messages.filter(
-            m => m.archived
-        );
+    const filterMatch =
+    filterValue === "all"
+    ||
+    message.type === filterValue;
 
-    }
+    return (
+        tabMatch &&
+        searchMatch &&
+        filterMatch
+    );
+
+});
 
     filteredMessages.forEach(message=>{
 
@@ -105,29 +142,41 @@ function render(){
 
             </div>
 
-            <div>
+                           <div class="message-actions">
 
-                ${
-                message.archived
-                ?
-                `<button
-                    onclick="unarchiveMessage(${message.id})"
-                    class="archive-btn">
+                            ${
+                            message.archived
+                            ?
+                            `
+                            <button
+                            onclick="unarchiveMessage(${message.id})"
+                            class="archive-btn">
 
-                    Unarchive
+                            Unarchive
 
-                </button>`
-                :
-                `<button
-                    onclick="archiveMessage(${message.id})"
-                    class="archive-btn">
+                            </button>
 
-                    Archive
+                            <button
+                            onclick="deleteMessage(${message.id})"
+                            class="delete-btn">
 
-                </button>`
-                }
+                            🗑
 
-            </div>
+                            </button>
+                            `
+                            :
+                            `
+                            <button
+                            onclick="archiveMessage(${message.id})"
+                            class="archive-btn">
+
+                            Archive
+
+                            </button>
+                            `
+                            }
+
+                            </div>
 
             <div class="doctor-info">
 
@@ -190,5 +239,69 @@ function updateCounts(){
     ).length;
 }
 
+
+document
+.getElementById("searchInput")
+.addEventListener("input",(e)=>{
+
+    searchValue =
+    e.target.value.toLowerCase();
+
+    render();
+
+});
+
+document
+.getElementById("filterSelect")
+.addEventListener("change",(e)=>{
+
+    filterValue =
+    e.target.value;
+
+    render();
+
+});
+
+function deleteMessage(id){
+
+    deleteMessageId = id;
+
+    document
+    .getElementById("deleteModal")
+    .classList.add("show");
+}
+
+function closeDeleteModal(){
+
+    deleteMessageId = null;
+
+    document
+    .getElementById("deleteModal")
+    .classList.remove("show");
+}
+
+
+document
+.getElementById("confirmDeleteBtn")
+.addEventListener("click",()=>{
+
+    if(deleteMessageId === null) return;
+
+    const index =
+    messages.findIndex(
+        m => m.id === deleteMessageId
+    );
+
+    if(index !== -1){
+
+        messages.splice(index,1);
+
+    }
+
+    closeDeleteModal();
+
+    render();
+
+});
 
 render();
