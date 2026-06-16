@@ -4,7 +4,7 @@
     {
         public int AppointmentId { get; set; }
         public int PatientId { get; set; }
-        public int DoctorId { get; set; }
+        public int AssociateId { get; set; }
         public int SlotId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string TimeSlot { get; set; }

@@ -75,11 +75,11 @@ namespace Medicare.API.Controllers.V1
 
         [HttpGet]
         [Route("GetAvailableAppointments")]
-        public async Task<IActionResult> GetAvailableAppointments([FromQuery] int doctorId)
+        public async Task<IActionResult> GetAvailableAppointments([FromQuery] int associateId)
         {
             ApiResponse<List<AvailableAppointmentModel>> ApiResponse = new ApiResponse<List<AvailableAppointmentModel>>();
             List<AvailableAppointmentModel> response = new List<AvailableAppointmentModel>();
-            response = await _mediator.Send(new GetAvailableAppointmentsQuery(doctorId));
+            response = await _mediator.Send(new GetAvailableAppointmentsQuery(associateId));
             ApiResponse = new ApiResponse<List<AvailableAppointmentModel>>
             {
                 Data = response,

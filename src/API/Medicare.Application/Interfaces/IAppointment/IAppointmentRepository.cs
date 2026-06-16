@@ -6,8 +6,7 @@ namespace Medicare.Application.Interfaces.IAppointment
     public interface IAppointmentRepository
     {
         Task<List<PatientAppointmentModel>> GetMyAppointmentsAsync(int patientId);
-        Task<List<SpecialityModel>> GetSpecialitiesAsync(string? doctorName, string? departmentName);
-        Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int doctorId);
+        Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int associateId);
         Task<AppointmentDetailModel> GetAppointmentById(int appointmentId);
         Task<ResponseModel> CreateAppointmentAsync(AppointmentMasterModel model);
         Task<ResponseModel> UpdateAppointmentDetailAsync(UpdateAppointmentRequestModel model);

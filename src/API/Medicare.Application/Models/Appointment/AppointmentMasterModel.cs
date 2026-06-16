@@ -6,7 +6,7 @@ namespace Medicare.Application.Models.Appointment
     {
         public int PatientId { get; set; }
         public int ProfileId { get; set; }
-        public int DoctorId { get; set; }
+        public int AssociateId { get; set; }
         public int SlotId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

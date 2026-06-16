@@ -3,7 +3,8 @@
     public class CreateRxOrderRequestModel
     {
         public int PatientId { get; set; }
-        public int DoctorId { get; set; }
+        public int ProfileId { get; set; }
+        public int AssociateId { get; set; }
         public int? PharmacyId { get; set; }
         public string DrugName { get; set; }
         public string Dosage { get; set; }
