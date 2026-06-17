@@ -44,39 +44,14 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<List<SpecialityModel>> GetSpecialitiesAsync(string? doctorName, string? departmentName)
-        {
-            string procName = "USP_GetSpecialities";
-            List<SpecialityModel> returnData = new List<SpecialityModel>();
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("DoctorName", doctorName);
-                param.Add("DepartmentName", departmentName);
-
-                returnData = await _context.QueryStoredProcListAsync<SpecialityModel>(procName, param);
-            }
-            catch (Exception ex)
-            {
-                await _errorLog.InsertErrorLog(new ErrorLogModel()
-                {
-                    IsDBError = false,
-                    Error_Message = ex.Message,
-                    Error_Procedure = procName,
-                    Error_Trace = ex.StackTrace
-                });
-            }
-            return returnData;
-        }
-
-        public async Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int doctorId)
+        public async Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int associateId)
         {
             string procName = "USP_GetAvailableAppointments";
             List<AvailableAppointmentModel> returnData = new List<AvailableAppointmentModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("DoctorId", doctorId);
+                param.Add("AssociateId", associateId);
 
                 returnData = await _context.QueryStoredProcListAsync<AvailableAppointmentModel>(procName, param);
             }
@@ -149,7 +124,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
                 param.Add("ProfileId", model.ProfileId);   
-                param.Add("DoctorId", model.DoctorId);
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("SlotId", model.SlotId);
                 param.Add("AppointmentDate", model.AppointmentDate);
                 param.Add("TimeSlot", model.TimeSlot);
@@ -196,7 +171,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("AppointmentId", model.AppointmentId);
                 param.Add("PatientId", model.PatientId);
-                param.Add("DoctorId", model.DoctorId);
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("SlotId", model.SlotId);
                 param.Add("TimeSlot", model.TimeSlot);
                 param.Add("VisitPurpose", model.VisitPurpose);

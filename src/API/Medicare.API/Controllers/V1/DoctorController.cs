@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Features.Queries.Doctor;
-using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Doctor;
+using Medicare.Application.Models.Speciality;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 namespace Medicare.API.Controllers.V1
@@ -37,15 +36,15 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetSpecialities")]
+        [Route("GetDoctorSpecialityList")]
         public async Task<IActionResult> GetSpecialities(
             [FromQuery] string? doctorName,
             [FromQuery] string? departmentName)
         {
-            ApiResponse<List<SpecialityModel>> ApiResponse = new ApiResponse<List<SpecialityModel>>();
-            List<SpecialityModel> response = new List<SpecialityModel>();
-            response = await _mediator.Send(new GetSpecialitiesQuery(doctorName, departmentName));
-            ApiResponse = new ApiResponse<List<SpecialityModel>>
+            ApiResponse<List<SpecialityDataModel>> ApiResponse = new ApiResponse<List<SpecialityDataModel>>();
+            List<SpecialityDataModel> response = new List<SpecialityDataModel>();
+            response = await _mediator.Send(new GetDoctorSpecialityListQuery(doctorName, departmentName));
+            ApiResponse = new ApiResponse<List<SpecialityDataModel>>
             {
                 Data = response,
                 StatusMessage = "Data fetched successfully",
@@ -57,12 +56,12 @@ namespace Medicare.API.Controllers.V1
 
 
         [HttpGet]
-        [Route("GetDoctorAvailabilities/{doctorId}")]
-        public async Task<IActionResult> GetDoctorAvailabilities(int doctorId)
+        [Route("GetDoctorAvailabilities/{associateId}")]
+        public async Task<IActionResult> GetDoctorAvailabilities(int associateId)
         {
             ApiResponse<List<DoctorAvailabilityModel>> ApiResponse = new ApiResponse<List<DoctorAvailabilityModel>>();
             List<DoctorAvailabilityModel> response = new List<DoctorAvailabilityModel>();
-            response = await _mediator.Send(new GetDoctorAvailabilitiesQuery(doctorId));
+            response = await _mediator.Send(new GetDoctorAvailabilitiesQuery(associateId));
             ApiResponse = new ApiResponse<List<DoctorAvailabilityModel>>()
             {
                 Data = response,

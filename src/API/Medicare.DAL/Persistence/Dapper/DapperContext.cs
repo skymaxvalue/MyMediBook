@@ -1,7 +1,5 @@
 ﻿using Dapper;
 using System.Data;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Medicare.Application.Interfaces.Dapper;
 using Microsoft.Extensions.Logging;
 using Medicare.Application.Models.CommonModels.ErrorLog;

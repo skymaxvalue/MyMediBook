@@ -21,7 +21,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(int patientId)
         {
-            string procName = "";
+            string procName = "USP_GetRxOrdersByPatientId";
             List<RxOrderDetailModel> returnData = new List<RxOrderDetailModel>();
             try
             {
@@ -45,7 +45,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<RxOrderDetailModel> GetRxOrderByOrderIdAsync(int orderId)
         {
-            string procName = "";
+            string procName = "USP_GetRxOrderByOrderId";
             RxOrderDetailModel returnData = new RxOrderDetailModel();
             try
             {
@@ -67,16 +67,15 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        // ── CREATE ───────────────────────────────────────────────────
         public async Task<ResponseModel> CreateRxOrderAsync(CreateRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_CreateRxOrder";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
-                param.Add("DoctorId", model.DoctorId);
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("PharmacyId", model.PharmacyId);
                 param.Add("DrugName", model.DrugName);
                 param.Add("Dosage", model.Dosage);
@@ -102,7 +101,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> CancelRxOrderAsync(CancelRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_CancelRxOrder";
             ResponseModel returnData = new ResponseModel();
             try
             {
@@ -127,7 +126,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> UpdateRxOrderAsync(UpdateRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_UpdateRxOrder";
             ResponseModel returnData = new ResponseModel();
             try
             {

@@ -27,13 +27,13 @@ namespace Medicare.Application.Handlers.QueryHandlers
                 Category = g.Key.Category,
                 Doctors = g.Select(d => new DoctorProfileModel
                 {
-                    DoctorId = d.DoctorId,
+                    AssociateId = d.AssociateId,
                     Name = d.Name,
                     Degree = d.Degree,
                     Image = d.Image,
                     Department = d.Department,
-                    AvailableFrom = d.AvailableFrom,
-                    AvailableTo = d.AvailableTo
+                    FromTime = d.FromTime,
+                    ToTime = d.ToTime
                 }).ToList()
             })
             .ToList();
