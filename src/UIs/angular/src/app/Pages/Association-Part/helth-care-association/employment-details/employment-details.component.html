@@ -40,29 +40,67 @@
 
 
         <label for="departmentName">Department<span class="star">*</span></label>
+
         <div class="field-container">
-            <input id="departmentName" formControlName="departmentName" type="text" required
-                placeholder="Enter department name">
-            @if(group.get('departmentName')?.touched &&
-            group.get('departmentName')?.hasError('required')) {
+            <div class="field-with-action compact-field">
+                <select id="gender" formControlName="departmentId" required>
+                    <option value="">Select Department Name</option>
+                    @for(dep of departments; track dep.departmentId) {
+                    <option [value]="dep?.departmentId">{{ dep.departmentName }}</option>
+                    }
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+            @if(group.get('departmentId')?.touched &&
+            group.get('departmentId')?.hasError('required')) {
             <div class="error-message">
                 Department name is required
             </div>
             }
+
         </div>
 
+        <label for="designation">Speciality<span class="star">*</span></label>
 
-        <label for="designation">Designation<span class="star">*</span></label>
         <div class="field-container">
-            <input id="designation" formControlName="designation" type="text" required
-                placeholder="Enter your designation">
-            @if(group.get('designation')?.touched &&
-            group.get('designation')?.hasError('required')) {
+            <div class="field-with-action compact-field">
+                <select formControlName="specialityId" required>
+                    <option value="">Select Role Name</option>
+                    @for(spe of speciality; track spe.specialityId) {
+                    <option [value]="spe?.specialityId">{{ spe.specialityName }}</option>
+                    }
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+            @if(group.get('specialityId')?.touched &&
+            group.get('specialityId')?.hasError('required')) {
             <div class="error-message">
-                Designation is required
             </div>
             }
+
         </div>
+
+
+        <label for="role">Role<span class="star">*</span></label>
+
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="gender" formControlName="roleId" required>
+                    <option value="">Select Role Name</option>
+                    @for(role of roles; track role.roleId) {
+                    <option [value]="role?.roleId"> <b>{{ role.roleName }}</b> {{ role.description }}</option>
+                    }
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+            @if(group.get('roleId')?.touched &&
+            group.get('roleId')?.hasError('required')) {
+            <div class="error-message">
+            </div>
+            }
+
+        </div>
+
 
 
     </div>

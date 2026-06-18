@@ -36,6 +36,7 @@ import { OtpLoginComponent } from "./users/otp-login/otp-login.component";
 import { ForgetPasswordComponent } from "./auth/forget-password/forget-password.component";
 import { HelthCareAssociationComponent } from "./Pages/Association-Part/helth-care-association/helth-care-association.component";
 import { AssociationListComponent } from "./Pages/Association-Part/association-list/association-list.component";
+import { AssignScheduleAsspciationComponent } from "./Pages/Association-Part/assign-schedule-asspciation/assign-schedule-asspciation.component";
 
 export const routes: Routes = [
   // Display with Navbar using Child Represtation
@@ -104,6 +105,9 @@ export const routes: Routes = [
       },
       {
         path: "association-list", component: AssociationListComponent
+      },
+      {
+        path: "association-schedule", component: AssignScheduleAsspciationComponent
       },
       // Update user Ptofile patient
 

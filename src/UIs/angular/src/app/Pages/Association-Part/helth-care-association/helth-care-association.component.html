@@ -51,6 +51,11 @@
 
     <section class="wizard-card">
 
+        <div class="shape shape-left shape-top"></div>
+        <!-- <div class="shape shape-right shape-mid"></div>
+        <div class="shape shape-left shape-bottom"></div> -->
+        <div class="shape shape-right shape-end"></div>
+
         @if(currentStep === 0){
         <app-personal-info [group]="associateForm.controls.personalInfo" (next)="nextStep($event)"
             [currentStep]="currentStep" [countries]="countries" [states]="states" [cities]="cities"
@@ -71,8 +76,9 @@
         }
 
         @if(currentStep === 3){
-        <app-employment-details [group]="associateForm.controls.employmentDetails" (back)="previousStep()"
-            (submitForm)="submit()" [currentStep]="currentStep">
+        <app-employment-details [group]="associateForm.controls.employmentDetails" [speciality]="allSpecialities"
+            [departments]="allDepartments" [roles]="allRoles" (back)="previousStep()" (submitForm)="submit()"
+            [currentStep]="currentStep">
         </app-employment-details>
         }
 

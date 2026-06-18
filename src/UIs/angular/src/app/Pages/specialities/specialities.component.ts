@@ -13,7 +13,7 @@ export class SpecialitiesComponent {
   apiUrl = environment.OpenIdConnect.apiUrl
   @Input() specialities: any[] = [];
   @Output() onDoctorSelected = new EventEmitter<any>();
-  searchText: string = '';
+  searchText: any = '';
   searchedText: string = '';
   constructor(private router: Router) {
   }
@@ -65,7 +65,7 @@ export class SpecialitiesComponent {
   }
 
   clearSearch() {
-    this.searchText = '';
+    this.searchText = null;
     this.searchedText = '';
   }
 }

@@ -151,7 +151,7 @@
             <div class="field-with-action compact-field">
                 <select id="country" formControlName="countryId" required (change)="onCountryChange($event)">
                     <option [ngValue]="null">Enter your country</option>
-                    @for(c of countries; track c) {
+                    @for(c of countries; track c.countryId) {
                     <option [value]="c.countryId">{{ c.countryName }}</option>
                     }
                 </select>
@@ -171,7 +171,7 @@
             <div class="field-with-action compact-field">
                 <select id="state" formControlName="stateId" required (change)="onStateChange($event)">
                     <option [ngValue]="null">Enter your State</option>
-                    @for(s of states ; track s){
+                    @for(s of states ; track s.stateId){
 
                     <option [value]="s.stateId">{{s.stateName}}</option>
                     }
@@ -193,7 +193,7 @@
             <div class="field-with-action compact-field">
                 <select id="city" formControlName="cityId" required>
                     <option [ngValue]="null">Enter your city</option>
-                    @for(c of cities ; track c){
+                    @for(c of cities ; track c.cityId){
 
                     <option [value]="c.cityId">{{c.cityName}}</option>
                     }

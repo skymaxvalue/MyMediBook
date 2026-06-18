@@ -24,9 +24,9 @@ export class PersonalInfoComponent implements OnInit {
   isFileUploaded = false
   @Input() group!: FormGroup;
   @Input() currentStep!: number;
-  @Input() countries!: Country[]
-  @Input() states !: any[];
-  @Input() cities !: any[];
+  @Input() countries: Country[] = []
+  @Input() states: any[] = [];
+  @Input() cities: any[] = [];
   @Output() next = new EventEmitter<any>();
   @Output() onSelectCountry = new EventEmitter<any>();
   @Output() onSelectState = new EventEmitter<any>();
@@ -55,13 +55,14 @@ export class PersonalInfoComponent implements OnInit {
 
   async onCountryChange(event: any) {
     await this.onSelectCountry.emit(event.target.value)
-    this.group.get('stateId')?.enable();
+    // const stateControl = this.group.get('stateId');
+    // this.group.get('stateId')?.enable();
 
   }
 
   async onStateChange(event: any) {
     await this.onSelectState.emit(event.target.value)
-    this.group.get('cityId')?.enable();
+
 
   }
   onCheckboxChange(event: any) {

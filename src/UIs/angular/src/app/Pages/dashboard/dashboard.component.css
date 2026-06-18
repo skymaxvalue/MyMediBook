@@ -9,7 +9,13 @@
   background: #f3f5f9;
   padding: 18px 0;
   border-bottom: 1px solid #dcdcff;
+  position:sticky;
+  top:90px;
+  left: 0;
+  right:0;
+  z-index: 999;
 }
+
 .custom-tabs .nav-link {
   flex: 1;
   text-align: center;

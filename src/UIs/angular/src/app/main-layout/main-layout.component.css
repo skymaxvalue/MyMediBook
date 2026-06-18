@@ -6,4 +6,33 @@
 }
 .main-content {
   flex: 1;
+  margin-top: 100px;
+}
+.othercontainer{
+    background: #f5f6fa ;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F5F7FB;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #2157F4, #4A6CF7);
+    border-radius: 10px;
+    border: 2px solid #F5F7FB;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #1747D8, #2157F4);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #2157F4 #F5F7FB;
 }
