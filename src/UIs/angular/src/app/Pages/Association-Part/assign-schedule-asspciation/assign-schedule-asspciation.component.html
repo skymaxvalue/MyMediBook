@@ -1,0 +1,306 @@
+<main class="schedule-page">
+    <header class="schedule-header">
+        <h1>Associate Schedule</h1>
+    </header>
+
+    <section class="schedule-stepper" aria-label="Associate schedule progress">
+        <div class="progress-line">
+            <span class="progress-line-fill" [style.width]="progressWidth">
+            </span>
+        </div>
+        <button type="button" class="schedule-step" [class.active]="currentStep === 0"
+            [class.completed]="currentStep > 0">
+            <span class="step-circle"></span>
+            <span class="step-label">Step 1:</span>
+            <strong>Select Associate</strong>
+        </button>
+        <button type="button" class="schedule-step" [class.active]="currentStep === 1"
+            [class.completed]="currentStep > 1">
+            <span class="step-circle"></span>
+            <span class="step-label">Step 2:</span>
+            <strong>Availability</strong>
+        </button>
+        <button type="button" class="schedule-step" [class.active]="currentStep === 2">
+            <span class="step-circle"></span>
+            <span class="step-label">Step 3:</span>
+            <strong>Consultation</strong>
+        </button>
+    </section>
+
+    <section class="schedule-card">
+        <div class="shape shape-left shape-top"></div>
+        <div class="shape shape-right shape-mid"></div>
+
+
+        <form [formGroup]="scheduleForm" novalidate>
+            @if (currentStep === 0) {
+            <section class="schedule-panel active">
+                <h2>Select Associate</h2>
+
+                <div class="schedule-grid schedule-grid-compact">
+                    <label for="associateDepartment">Department<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select formControlName="associateDepartment" (change)="updateNameOptions()">
+                            (change)="updateNameOptions()" required>
+                            <option value="">Select Department</option>
+                            <option value="GENERAL">GENERAL</option>
+                            <option value="CARDIOLOGY">CARDIOLOGY</option>
+                            <option value="ORTHOPEDICS">ORTHOPEDICS</option>
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                    </div>
+
+                    <label for="associateName">Full Name<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select formControlName="associateName" (change)="updateSpeciality()">
+
+                            <option value="">Select Full Name</option>
+
+                            @for (associate of filteredAssociates; track associate.name) {
+                            <option [value]="associate.name">
+                                {{ associate.name }}
+                            </option>
+                            }
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                    </div>
+
+                    <label for="associateRole">Role<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select formControlName="associateRole" (change)="updateSpeciality()">
+                            <option value="">Select Role</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="Consultant">Consultant</option>
+                            <option value="Specialist">Specialist</option>
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                    </div>
+
+                    <label for="associateSpeciality">Speciality</label>
+                    <input formControlName="associateSpeciality" readonly>
+                </div>
+
+                <div class="schedule-actions between">
+                    <button type="button" class="action-btn secondary" (click)="previousStep()">
+                        Back
+                    </button>
+
+                    <button type="button" class="action-btn primary" (click)="openAssociatePopup()">
+                        Save and Next
+                    </button>
+                </div>
+            </section>
+            }
+
+            @if (currentStep === 1) {
+            <section class="schedule-panel active">
+                <h2>Availability</h2>
+
+                <div class="subsection-label">Availability Period</div>
+                <div class="availability-two-col">
+                    <div class="availability-block">
+                        <label for="fromDate">From Date<span class="star">*</span></label>
+                        <div class="date-shell">
+                            <input type="date" formControlName="fromDate">
+
+                        </div>
+                    </div>
+                    <div class="availability-block">
+                        <label for="toDate">To Date<span class="star">*</span></label>
+                        <div class="date-shell">
+                            <input type="date" formControlName="toDate">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-label top-gap">Availability Time</div>
+                <div class="availability-two-col">
+                    <div class="availability-block">
+                        <label for="fromTime">From Time<span class="star">*</span></label>
+                        <div class="select-shell time-shell">
+                            <select formControlName="fromTime">
+                                <option value="10:00 AM">10:00 AM</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="12:00 PM">12:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                    <div class="availability-block">
+                        <label for="toTime">To Time<span class="star">*</span></label>
+                        <div class="select-shell time-shell">
+                            <select formControlName="toTime">
+                                <option value="10:00 PM">10:00 PM</option>
+                                <option value="09:00 PM">09:00 PM</option>
+                                <option value="08:00 PM">08:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection-label top-gap">Availability Days</div>
+                <div class="day-pills" id="dayPills">
+                    @for (day of allDays; track day) {
+
+                    <button type="button" class="day-pill" [class.active]="isDaySelected(day)" (click)="toggleDay(day)">
+
+                        {{ day }}
+
+                    </button>
+
+                    }
+
+                </div>
+
+                <div class="subsection-label top-gap">Breaks</div>
+                <div class="availability-two-col">
+                    <div class="availability-block">
+                        <label for="breakFrom">From Time</label>
+                        <div class="select-shell time-shell">
+                            <select formControlName="breakFrom">
+                                <option value="02:00 PM">02:00 PM</option>
+                                <option value="01:00 PM">01:00 PM</option>
+                                <option value="03:00 PM">03:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                    <div class="availability-block">
+                        <label for="breakTo">To Time</label>
+                        <div class="select-shell time-shell">
+                            <select formControlName="breakTo">
+                                <option value="06:00 PM">06:00 PM</option>
+                                <option value="05:00 PM">05:00 PM</option>
+                                <option value="07:00 PM">07:00 PM</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-actions between">
+                    <button type="button" class="action-btn secondary" (click)="previousStep()">
+                        Back
+                    </button>
+
+                    <button type="button" class="action-btn primary" (click)="nextStep()">
+                        Save and Next
+                    </button>
+                </div>
+            </section>
+            }
+
+            @if (currentStep === 2) {
+            <section class="schedule-panel active">
+                <h2>Consultation</h2>
+
+                <div class="consult-layout">
+                    <div class="consult-block">
+                        <label for="consultDuration">Consultation Duration</label>
+                        <div class="select-shell consult-shell">
+                            <select formControlName="consultDuration">
+                                <option value="30 Minutes">30 Minutes</option>
+                                <option value="45 Minutes">45 Minutes</option>
+                                <option value="60 Minutes">60 Minutes</option>
+                            </select>
+                            <span class="select-arrow">⌄</span>
+                        </div>
+                    </div>
+
+                    <div class="consult-block">
+                        <label for="averageCharge">Average Charge Per Visit</label>
+                        <input type="text" formControlName="averageCharge">
+                    </div>
+                </div>
+
+                <div class="schedule-actions between">
+                    <button type="button" class="action-btn secondary" (click)="previousStep()">
+                        Back
+                    </button>
+
+                    <button type="button" class="action-btn primary" (click)="submitSchedule()">
+                        Confirm
+                    </button>
+                </div>
+            </section>
+            }
+        </form>
+    </section>
+</main>
+
+@if (associateModal) {
+
+<div class="schedule-modal show">
+
+    <div class="schedule-modal-card">
+
+        <button type="button" class="modal-close" (click)="closeAssociatePopup()">
+            ×
+        </button>
+
+        <h3>Matching Record Found</h3>
+
+        <div class="associate-preview">
+
+            <div class="associate-photo">
+                <img src="assets/images/doc.jpg" alt="Associate">
+            </div>
+
+            <div class="associate-data">
+
+                <div>
+                    <span>Department:</span>
+                    <strong>{{ modalRecord.department }}</strong>
+                </div>
+
+                <div>
+                    <span>Full Name:</span>
+                    <strong>{{ modalRecord.name }}</strong>
+                </div>
+
+                <div>
+                    <span>Role:</span>
+                    <strong>{{ modalRecord.role }}</strong>
+                </div>
+
+                <div>
+                    <span>Speciality:</span>
+                    <strong>{{ modalRecord.speciality }}</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="schedule-actions between modal-actions">
+
+            <button type="button" class="action-btn secondary" (click)="closeAssociatePopup()">
+                Back
+            </button>
+
+            <button type="button" class="action-btn primary" (click)="confirmAssociate()">
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+@if(successModal){
+
+<div class="schedule-modal" id="successModal" aria-hidden="true">
+    <div class="schedule-modal-card success-card">
+        <button type="button" class="modal-close" id="closeSuccessModal">×</button>
+        <h3>Schedule Confirmed</h3>
+        <p>The associate schedule has been saved successfully.</p>
+        <div class="summary-grid" id="scheduleSummary"></div>
+        <button type="button" class="action-btn primary full" id="doneScheduleModal">Done</button>
+    </div>
+</div>
+}

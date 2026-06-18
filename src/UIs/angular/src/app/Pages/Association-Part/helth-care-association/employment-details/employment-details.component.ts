@@ -15,6 +15,9 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 export class EmploymentDetailsComponent {
 
   @Input() group!: FormGroup;
+  @Input() roles!: any[];
+  @Input() speciality!: any[];
+  @Input() departments!: any[];
   @Input() currentStep!: number;
   @Output() back = new EventEmitter<void>();
   @Output() submitForm = new EventEmitter<void>();
@@ -25,6 +28,8 @@ export class EmploymentDetailsComponent {
       this.group.markAllAsTouched();
       return;
     }
+
+
 
     this.submitForm.emit();
 

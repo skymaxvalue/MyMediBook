@@ -9,6 +9,7 @@ import { loadDoctorSpecialities } from "src/app/Store/Doctor/doctor.action";
 import { selectDoctorSpecialities } from "src/app/Store/Doctor/doctor.selectors";
 import { AsyncPipe } from "@angular/common";
 import { DoctorSpeciality } from "src/app/Models/DoctorAndSpeciality-Model";
+import { AppState } from "src/app/Store/app.state";
 
 @Component({
   selector: "app-dashboard",
@@ -23,7 +24,7 @@ export class DashboardComponent implements OnInit {
 
 
   constructor(
-    private store: Store<DoctorSpecialityState>
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
@@ -86,6 +87,8 @@ export class DashboardComponent implements OnInit {
   }
 
   changeTab(tab: string) {
+    history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
 
     this.activeTab = tab;
 

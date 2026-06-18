@@ -11,7 +11,20 @@ export const selectDoctorSpecialities = createSelector(
     state => state.specialities
 );
 
+export const selectAllSpecialities = createSelector(
+    selectDoctorSpecialityState,
+    state => state.allSpeciality
+);
+export const selectAllDepartments = createSelector(
+    selectDoctorSpecialityState,
+    state => state.allDepartments
+);
+export const selectAllRoles = createSelector(
+    selectDoctorSpecialityState,
+    state => state.allRoles
+);
 export const selectLoading = createSelector(
     selectDoctorSpecialityState,
     state => state.isLoading
 );
+

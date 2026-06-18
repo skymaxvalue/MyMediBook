@@ -49,7 +49,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   showAddbookingAppoinmentForm: boolean = false
 
   constructor(private router: Router, private store: Store) {
-    this.generateSlots(this.doctor.availableFrom, this.doctor.availableTo, 30)
+    this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
   }
 
   ngOnInit(): void {
@@ -61,10 +61,10 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
   }
   ngOnChanges(): void {
-    if (this.doctor?.availableFrom && this.doctor?.availableTo) {
+    if (this.doctor?.fromTime && this.doctor?.toTime) {
       this.generateSlots(
-        this.doctor.availableFrom,
-        this.doctor.availableTo,
+        this.doctor.fromTime,
+        this.doctor.toTime,
         30
       );
     }
@@ -93,7 +93,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
       d.setDate(d.getDate() + i);
 
       let badgeClass: 'green' | 'red' | 'beige' = 'green';
-      let text = `${this.getAmPmTime(this.doctor.availableFrom)} - ${this.getAmPmTime(this.doctor.availableTo)}`
+      let text = `${this.getAmPmTime(this.doctor.fromTime)} - ${this.getAmPmTime(this.doctor.toTime)}`
 
       if (i === 4) {
         badgeClass = 'red';

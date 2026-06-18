@@ -9,6 +9,8 @@ import { Store } from '@ngrx/store';
 import * as AuthActions from "../../../Store/Auth/auth.actions";
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { loadAllDepartments, loadAllRoles, loadAllSpecialities } from 'src/app/Store/Doctor/doctor.action';
+import { selectAllDepartments, selectAllRoles, selectAllSpecialities } from 'src/app/Store/Doctor/doctor.selectors';
 
 @Component({
   selector: "app-helth-care-association",
@@ -31,25 +33,16 @@ export class HelthCareAssociationComponent {
   ];
 
   associateForm!: FormGroup;
+  allSpecialities: any;
+  allDepartments: any;
+  allRoles: any;
 
   constructor(private fb: FormBuilder, private store: Store<AppState>, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
-    this.store.dispatch(
-      AuthActions.getCountries()
-    );
-    this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
-      if (countries.data) {
-        console.log(countries)
-        this.countries = countries.data;
-        this.associateForm
-          .get('personalInfo.phoneCountryCode')
-          ?.setValue(this.countries[0].phoneCode);
-        this.associateForm
-          .get('personalInfo.emergencyCode')
-          ?.setValue(this.countries[0].phoneCode);
-      }
-    });
+
+    this.InitialApiCall()
+
     this.createForm();
     this.updateStepStatus();
   }
@@ -106,8 +99,9 @@ export class HelthCareAssociationComponent {
       employmentDetails: this.fb.group({
         joiningDate: ['', Validators.required],
         employeeType: ['', Validators.required],
-        departmentName: ['', Validators.required],
-        designation: ['', Validators.required],
+        departmentId: ['', Validators.required],
+        roleId: ['', Validators.required],
+        specialityId: ['', Validators.required],
       })
     });
   }
@@ -125,6 +119,9 @@ export class HelthCareAssociationComponent {
     this.store.select(state => state.auth.getStates).subscribe((states: any) => {
       if (states) {
         this.states = states.data;
+        const stateControl = this.associateForm.get('personalInfo.stateId');
+        stateControl?.enable();
+        stateControl?.reset();
       }
     });
   }
@@ -135,6 +132,10 @@ export class HelthCareAssociationComponent {
     this.store.select(state => state.auth.getCities).subscribe((cities: any) => {
       if (cities) {
         this.cities = cities.data;
+        const cityControl = this.associateForm.get('personalInfo.cityId');
+
+        cityControl?.enable();
+        cityControl?.reset();
       }
     });
   }
@@ -189,6 +190,48 @@ export class HelthCareAssociationComponent {
     }) as ('pending' | 'active' | 'completed')[];
   }
 
+  InitialApiCall() {
+    this.store.dispatch(
+      AuthActions.getCountries()
+    );
+
+    this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
+      if (countries.data) {
+        console.log(countries)
+        this.countries = countries.data;
+        this.associateForm
+          .get('personalInfo.phoneCountryCode')
+          ?.setValue(this.countries[0].phoneCode);
+        this.associateForm
+          .get('personalInfo.emergencyCode')
+          ?.setValue(this.countries[0].phoneCode);
+      }
+    });
+    this.store.dispatch(
+      loadAllSpecialities());
+    this.store.dispatch(
+      loadAllDepartments());
+    this.store.dispatch(
+      loadAllRoles());
+
+
+    this.store.select(selectAllSpecialities)
+      .subscribe((res: any) => {
+        this.allSpecialities = res;
+        console.log(this.allSpecialities, "------12----->")
+      });
+    this.store.select(selectAllDepartments)
+      .subscribe((res: any) => {
+        this.allDepartments = res;
+        console.log(this.allDepartments, "------1----->")
+      });
+    this.store.select(selectAllRoles)
+      .subscribe((res: any) => {
+        this.allRoles = res;
+        console.log(this.allRoles, "------2----->")
+      });
+  }
+
   getStepStatus(step: number): string {
 
     const forms = [
@@ -223,6 +266,16 @@ export class HelthCareAssociationComponent {
 
   submit(): void {
     console.log(this.associateForm.value);
+    const payload = {
+      ...this.associateForm.value.personalInfo,
+      ...this.associateForm.value.employmentDetails,
+      associateQualification: {
+        ...this.associateForm.value.qualification
+      },
+      associateExperience: {
+        ...this.associateForm.value.experience
+      }
+    }
     this.toastr.success("Association added successfully")
     this.router.navigateByUrl('association-list')
 

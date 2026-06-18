@@ -1,3 +1,5 @@
+@if( CurrentUrl === '/dashboard'){
+
 <div class="maincontainer">
   <app-navbar></app-navbar>
   <div class="container-fluid main-content">
@@ -6,3 +8,11 @@
   <app-footer></app-footer>
   <app-notification></app-notification>
 </div>
+}@else{
+<div class="othercontainer">
+  <app-navbar></app-navbar>
+  <div class="container-fluid main-content ">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+}

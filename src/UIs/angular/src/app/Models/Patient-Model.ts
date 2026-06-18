@@ -41,3 +41,17 @@ export interface Country {
     countryCode: string;
     phoneCode: string
 }
+
+export interface MedicineOrder {
+    id: number;
+    patient: string;
+    medicine: string;
+    strength: string;
+    instructions: string;
+    date: string;
+    doctor: string;
+    status: string;
+    address: string;
+    image: string;
+    refill: boolean;
+}

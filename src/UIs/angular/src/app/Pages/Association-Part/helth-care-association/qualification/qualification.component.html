@@ -114,12 +114,13 @@
 
                 Upload
             </button>
+            @if(!isFileUploaded) {
+            <div class="error-message" style="display: block;">
+                Please select and upload file is required
+            </div>
+            }
         </div>
-        @if(!isFileUploaded) {
-        <div class="error-message">
-            Please select and upload file is required
-        </div>
-        }
+
     </div>
 
     <div class="wizard-actions between">

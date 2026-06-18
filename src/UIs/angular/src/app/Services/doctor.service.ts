@@ -17,4 +17,22 @@ export class DoctorService {
       `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_SPECIALITIES}`
     );
   }
+
+  getAllSpecialities() {
+    return this.http.get(
+      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_ALL_SPECIALITYLIST}`
+    );
+  }
+
+  getAllDepartments() {
+    return this.http.get(
+      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_DEPARTMENT}`
+    );
+  }
+
+  getAllRoles() {
+    return this.http.get(
+      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_ROLES}`
+    );
+  }
 }

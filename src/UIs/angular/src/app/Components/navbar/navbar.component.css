@@ -5,7 +5,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 40px;
-  position: relative;
+  position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    right: 0;
 }
 
 /* LEFT SIDE */
@@ -96,12 +100,17 @@
 
 /* NAVIGATION BAR */
 .navbar {
-  display: flex;
+ 
+   display: flex;
   justify-content: space-around;
   align-items: center;
   background: #f3f5f9;
   padding: 18px 0;
   border-bottom: 1px solid #dcdcff;
+
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
 .nav-item {

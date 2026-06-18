@@ -28,7 +28,12 @@
 
     <!-- Categories -->
     @if(filteredSpecialities.length === 0) {
+    @if(searchText === ''){
+    <p class="no-results"> No Data Avalilable</p>
+    }@else{
+
     <p class="no-results">No results found for "{{ searchText }}"</p>
+    }
     }
     @for (speciality of filteredSpecialities; track speciality.category) {
 
@@ -74,7 +79,7 @@
 
             <p>[Visiting Hours / Out Of Station]</p>
 
-            <h3>{{ getAmPmTime(doctor?.availableFrom) }} - {{ getAmPmTime(doctor?.availableTo) }}</h3>
+            <h3>{{ getAmPmTime(doctor?.fromTime) }} - {{ getAmPmTime(doctor?.toTime) }}</h3>
 
             <span class="arrow">➤</span>
 
