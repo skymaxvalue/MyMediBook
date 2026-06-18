@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IAssociate;
+using Medicare.Application.Interfaces.IDoctor;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.CommonModels.ErrorLog;
@@ -12,12 +13,14 @@ namespace Medicare.DAL.Persistence.Repositories
     {
         private readonly DapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public AssociateRepository(DapperContext context, IErrorLogRepository errorLogRepository)
+        private readonly IDoctorRepository _doctorRepository;
+        public AssociateRepository(DapperContext context, IErrorLogRepository errorLogRepository, IDoctorRepository doctorRepository)
         {
             _context = context;
             _errorLog = errorLogRepository;
+            _doctorRepository = doctorRepository;
         }
-        public async Task<AssociateDetailModel> GetAssociateLDetailByIdAsync(int associateId)
+        public async Task<AssociateDetailModel> GetAssociateDetailByIdAsync(int associateId)
         {
             string procName = "USP_GetAssociateDetailById";
             AssociateDetailModel returnData = new AssociateDetailModel();
@@ -54,7 +57,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("DateOfBirth", model.DateOfBirth);
                 param.Add("Gender", model.Gender);
                 param.Add("IdentityDocument", model.IdentityDocument);
-                param.Add("IdentityFile", model.IdentityFileBytes);
+                param.Add("IdentityFile", model.IdentityFile);
                 param.Add("EmployeeId", model.EmployeeId);
                 param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
@@ -83,7 +86,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("RegistrationNumber", model.AssociateQualification.RegistrationNumber);
                 param.Add("LicenseExpiry", model.AssociateQualification.LicenseExpiry);
                 param.Add("AdditionalCertifications", model.AssociateQualification.AdditionalCertifications);
-                param.Add("QualificationDocuments", model.AssociateQualification.QualificationDocumentsBytes);
+                param.Add("QualificationDocuments", model.AssociateQualification.QualificationDocuments);
 
                 param.Add("ExperienceYears", model.AssociateExperience.ExperienceYears);
                 param.Add("OrganizationName", model.AssociateExperience.OrganizationName);
@@ -129,6 +132,17 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("CreatedBy", model.CreatedBy);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+                
+                if (returnData.IsSuccess == 1 && returnData.ResponseId > 0)
+                {
+                    var slotResult = await _doctorRepository.CreateDoctorTimeSlotsAsync(model);
+
+                    if (slotResult.IsSuccess != 1)
+                    {
+                        returnData.IsSuccess = 0;
+                        returnData.ResponseMessage = "Slot generation failed: " + slotResult.ResponseMessage;
+                    }
+                }
             }
             catch (Exception ex)
             {

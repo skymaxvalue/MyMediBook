@@ -5,6 +5,7 @@ using Medicare.Application.Models.Doctor;
 using Medicare.Application.Models.Speciality;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+
 namespace Medicare.API.Controllers.V1
 {
     [ApiVersion("1.0")]
@@ -37,14 +38,14 @@ namespace Medicare.API.Controllers.V1
 
         [HttpGet]
         [Route("GetDoctorSpecialityList")]
-        public async Task<IActionResult> GetSpecialities(
+        public async Task<IActionResult> GetDoctorSpecialityList(
             [FromQuery] string? doctorName,
             [FromQuery] string? departmentName)
         {
-            ApiResponse<List<SpecialityDataModel>> ApiResponse = new ApiResponse<List<SpecialityDataModel>>();
-            List<SpecialityDataModel> response = new List<SpecialityDataModel>();
+            ApiResponse<List<DoctorSpecialityDataModel>> ApiResponse = new ApiResponse<List<DoctorSpecialityDataModel>>();
+            List<DoctorSpecialityDataModel> response = new List<DoctorSpecialityDataModel>();
             response = await _mediator.Send(new GetDoctorSpecialityListQuery(doctorName, departmentName));
-            ApiResponse = new ApiResponse<List<SpecialityDataModel>>
+            ApiResponse = new ApiResponse<List<DoctorSpecialityDataModel>>
             {
                 Data = response,
                 StatusMessage = "Data fetched successfully",
@@ -55,13 +56,13 @@ namespace Medicare.API.Controllers.V1
         }
 
 
-        [HttpGet]
-        [Route("GetDoctorAvailabilities/{associateId}")]
-        public async Task<IActionResult> GetDoctorAvailabilities(int associateId)
+        [HttpPost]
+        [Route("GetDoctorTimeSlotById")]
+        public async Task<IActionResult> GetDoctorTimeSlot(DoctorTimeSlotRequestModel model)
         {
             ApiResponse<List<DoctorAvailabilityModel>> ApiResponse = new ApiResponse<List<DoctorAvailabilityModel>>();
             List<DoctorAvailabilityModel> response = new List<DoctorAvailabilityModel>();
-            response = await _mediator.Send(new GetDoctorAvailabilitiesQuery(associateId));
+            response = await _mediator.Send(new GetDoctorTimeSlotQuery(model));
             ApiResponse = new ApiResponse<List<DoctorAvailabilityModel>>()
             {
                 Data = response,

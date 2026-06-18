@@ -3,6 +3,5 @@ using Medicare.Application.Models.Doctor;
 
 namespace Medicare.Application.Features.Queries.Doctor
 {
-    public record GetDoctorAvailabilitiesQuery(int associateId)
-       : IRequest<List<DoctorAvailabilityModel>>;
+    public record GetDoctorTimeSlotQuery(DoctorTimeSlotRequestModel model) : IRequest<List<DoctorAvailabilityModel>>;
 }

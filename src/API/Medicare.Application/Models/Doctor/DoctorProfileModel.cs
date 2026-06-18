@@ -13,8 +13,8 @@
         public string Degree { get; set; }
         public string Image { get; set; }
         public string Department { get; set; }
-        public TimeSpan FromTime { get; set; }
-        public TimeSpan ToTime { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
     }
     public class DoctorItemModel
     {
@@ -25,7 +25,7 @@
         public string Degree { get; set; }
         public string Image { get; set; }
         public string Department { get; set; }
-        public TimeSpan FromTime { get; set; }
-        public TimeSpan ToTime { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
     }
 }

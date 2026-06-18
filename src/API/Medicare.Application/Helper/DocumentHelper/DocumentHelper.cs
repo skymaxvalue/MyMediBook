@@ -69,22 +69,18 @@
             return Convert.ToBase64String(fileBytes);
         }
 
-        public static (byte[]? Bytes, string? Error) ProcessDocument(string? base64String)
+        public static (byte[]? Bytes, string? Error) ProcessDocument(byte[] base64String)
         {
-            if (string.IsNullOrWhiteSpace(base64String))
-                return (null, "Document cannot be empty.");
-
-            var bytes = ConvertBase64ToBytes(base64String);
-            if (bytes == null)
+            if (base64String == null)
                 return (null, "Invalid document format. Must be a valid Base64 string.");
 
-            if (!IsFileSizeValid(bytes))
+            if (!IsFileSizeValid(base64String))
                 return (null, $"Document size exceeds the allowed limit of {MaxFileSizeBytes / (1024 * 1024)}MB.");
 
-            if (!IsAllowedFileType(bytes))
+            if (!IsAllowedFileType(base64String))
                 return (null, "Only PDF, PNG, and JPG documents are allowed.");
 
-            return (bytes, null);
+            return (base64String, null);
         }
     }
 }

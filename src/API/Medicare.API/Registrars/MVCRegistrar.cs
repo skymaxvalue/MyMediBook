@@ -12,6 +12,7 @@ using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Interfaces.IRoles;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
+using Medicare.Application.Interfaces.Master;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.Email;
 using Medicare.DAL.Persistence.Dapper;
@@ -66,6 +67,7 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IAssociateRepository, AssociateRepository>();
+            builder.Services.AddScoped<IMasterRepository, MasterRepository>();
 
             // ✅ Dapper Context
             builder.Services.AddScoped<DapperContext>();
