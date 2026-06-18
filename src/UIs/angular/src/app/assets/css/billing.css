@@ -1,0 +1,235 @@
+```css
+body{
+    font-family:'Source Sans Pro',sans-serif;
+}
+
+.billing-page{
+    padding:30px;
+    background:#F5F7FB;
+    min-height:100vh;
+}
+
+.billing-container{
+    background:#fff;
+    border:1px solid #C8D8FF;
+    border-radius:32px;
+    padding:25px;
+}
+
+.billing-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    gap:20px;
+}
+
+.title-section{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.title-section h2{
+    margin:0;
+    font-weight:700;
+}
+
+.billing-icon{
+    width:65px;
+    height:65px;
+    border-radius:18px;
+    background:#E9EEFD;
+    border:1px solid #CBDDFF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.billing-icon img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+}
+
+.header-actions{
+    display:flex;
+    gap:15px;
+}
+
+.search-box input{
+    width:380px;
+    height:58px;
+    border:1px solid #E4E6EF;
+    border-radius:12px;
+    padding:0 18px;
+}
+
+.sort-select{
+    width:220px;
+    height:58px;
+    border:1px solid #E4E6EF;
+    border-radius:12px;
+    padding:0 15px;
+}
+
+.table-header{
+    background:#F4F4F6;
+    border-radius:16px;
+    padding:25px 18px;
+    display:grid;
+    grid-template-columns:
+    1.2fr
+    1fr
+    1fr
+    1.5fr
+    1fr
+    1fr
+    1.2fr
+    1.2fr
+    1fr
+    1fr;
+    gap:12px;
+    font-weight:700;
+}
+
+.bill-card{
+    margin-top:18px;
+    border:1px solid #E8EAF0;
+    border-radius:20px;
+    padding:20px 18px;
+    display:grid;
+    grid-template-columns:
+    1.2fr
+    1fr
+    1fr
+    1.5fr
+    1fr
+    1fr
+    1.2fr
+    1.2fr
+    1fr
+    1fr;
+    gap:12px;
+    align-items:center;
+}
+
+.bill-card > div{
+    word-break:break-word;
+}
+
+.patient{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.patient img{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.pharmacy-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.location-icon{
+    width:20px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.location-icon:hover{
+    transform:scale(1.1);
+}
+
+.balance-paid{
+    color:#15803d;
+    font-weight:700;
+}
+
+.balance-due{
+    color:#dc2626;
+    font-weight:700;
+}
+
+.pagination-wrapper{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:15px;
+    margin-top:25px;
+}
+
+.pagination-wrapper button{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:10px;
+}
+
+#pageNumber{
+    width:50px;
+    height:50px;
+    border-radius:12px;
+    background:#2157F4;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+}
+
+@media(max-width:1200px){
+
+.table-header{
+    display:none;
+}
+
+.bill-card{
+    grid-template-columns:1fr 1fr;
+}
+
+}
+
+@media(max-width:768px){
+
+.billing-page{
+    padding:15px;
+}
+
+.billing-header{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.header-actions{
+    flex-direction:column;
+}
+
+.search-box input,
+.sort-select{
+    width:100%;
+}
+
+.table-header{
+    display:none;
+}
+
+.bill-card{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.pagination-wrapper{
+    justify-content:center;
+}
+
+}
+```
