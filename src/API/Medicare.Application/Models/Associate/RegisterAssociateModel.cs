@@ -8,7 +8,8 @@
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string IdentityDocument { get; set; }
-        public byte[]? IdentityFile { get; set; }
+        public string? IdentityFile { get; set; }   
+        public byte[]? IdentityFileBytes { get; set; }
         public string EmployeeId { get; set; }
         public string PhoneCountryCode { get; set; }
         public string PhoneNumber { get; set; }
@@ -43,7 +44,8 @@
         public string RegistrationNumber { get; set; }
         public DateTime LicenseExpiry { get; set; }
         public string AdditionalCertifications { get; set; }
-        public byte[]? QualificationDocuments { get; set; }
+        public string? QualificationDocuments { get; set; }  
+        public byte[]? QualificationDocumentBytes { get; set; }
     }
 
     public class AssociateExperienceModel

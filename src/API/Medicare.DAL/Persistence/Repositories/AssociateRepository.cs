@@ -57,7 +57,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("DateOfBirth", model.DateOfBirth);
                 param.Add("Gender", model.Gender);
                 param.Add("IdentityDocument", model.IdentityDocument);
-                param.Add("IdentityFile", model.IdentityFile);
+                param.Add("IdentityFile", model.IdentityFileBytes);
                 param.Add("EmployeeId", model.EmployeeId);
                 param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
@@ -86,7 +86,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("RegistrationNumber", model.AssociateQualification.RegistrationNumber);
                 param.Add("LicenseExpiry", model.AssociateQualification.LicenseExpiry);
                 param.Add("AdditionalCertifications", model.AssociateQualification.AdditionalCertifications);
-                param.Add("QualificationDocuments", model.AssociateQualification.QualificationDocuments);
+                param.Add("QualificationDocuments", model.AssociateQualification.QualificationDocumentBytes);
 
                 param.Add("ExperienceYears", model.AssociateExperience.ExperienceYears);
                 param.Add("OrganizationName", model.AssociateExperience.OrganizationName);

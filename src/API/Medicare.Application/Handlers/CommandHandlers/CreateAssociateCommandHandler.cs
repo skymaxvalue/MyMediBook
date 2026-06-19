@@ -30,7 +30,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                         ResponseId = 0
                     };
 
-                result.IdentityFile = identityDocBytes;
+                result.IdentityFileBytes = identityDocBytes;
             }
 
             if (result.AssociateQualification.QualificationDocuments != null)
@@ -46,7 +46,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                         ResponseId = 0
                     };
 
-                result.AssociateQualification.QualificationDocuments = qualificationDocBytes;
+                result.AssociateQualification.QualificationDocumentBytes = qualificationDocBytes;
             }
             return await _associateRepository.RegisterAssociateAsync(request.model);
         }
