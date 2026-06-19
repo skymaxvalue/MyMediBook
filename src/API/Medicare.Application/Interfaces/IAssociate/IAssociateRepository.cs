@@ -7,6 +7,6 @@ namespace Medicare.Application.Interfaces.IAssociate
     {
         Task<ResponseModel> RegisterAssociateAsync(RegisterAssociateModel model);
         Task<ResponseModel> CreateAssociateScheduleAsync(AssociateScheduleModel model); 
-        Task<AssociateDetailModel> GetAssociateLDetailByIdAsync(int associateId);
+        Task<AssociateDetailModel> GetAssociateDetailByIdAsync(int associateId);
     }
 }

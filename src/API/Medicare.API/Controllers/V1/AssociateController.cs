@@ -21,7 +21,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpGet]
         [Route("GetAssociatebyId")]
-        public async Task<IActionResult> GetAssociateList(int associateId)
+        public async Task<IActionResult> GetAssociatebyId(int associateId)
         {
             ApiResponse<AssociateDetailModel> ApiResponse = new ApiResponse<AssociateDetailModel>();
             AssociateDetailModel response = new AssociateDetailModel();

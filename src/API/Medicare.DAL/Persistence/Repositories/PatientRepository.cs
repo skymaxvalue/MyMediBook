@@ -202,7 +202,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<List<PatientProfileModel>> GetPatientProfilesById(int patientId)
         {
-            string procName = "USP_GetPatientProfiles";
+            string procName = "USP_GetPatientProfileById";
             List<PatientProfileModel> returnData = new List<PatientProfileModel>();
             try
             {

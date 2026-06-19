@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<AssociateDetailModel> Handle(GetAssociateDetailByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _associateRepository.GetAssociateLDetailByIdAsync(request.associateId);
+            return await _associateRepository.GetAssociateDetailByIdAsync(request.associateId);
         }
     }
 }

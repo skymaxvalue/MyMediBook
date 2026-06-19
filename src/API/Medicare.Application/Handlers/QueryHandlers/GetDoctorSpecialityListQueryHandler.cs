@@ -6,7 +6,7 @@ using Medicare.Application.Models.Speciality;
 
 namespace Medicare.Application.Handlers.QueryHandlers
 {
-    public class GetDoctorSpecialityListQueryHandler : IRequestHandler<GetDoctorSpecialityListQuery, List<SpecialityDataModel>>
+    public class GetDoctorSpecialityListQueryHandler : IRequestHandler<GetDoctorSpecialityListQuery, List<DoctorSpecialityDataModel>>
     {
         private readonly IDoctorRepository _doctorRepository;
         public GetDoctorSpecialityListQueryHandler(IDoctorRepository doctorRepository)
@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
             _doctorRepository = doctorRepository;
         }
 
-        public async Task<List<SpecialityDataModel>> Handle(GetDoctorSpecialityListQuery request, CancellationToken cancellationToken)
+        public async Task<List<DoctorSpecialityDataModel>> Handle(GetDoctorSpecialityListQuery request, CancellationToken cancellationToken)
         {
             return await _doctorRepository.GetDoctorSpecialityListAsync(request.DoctorName, request.DepartmentName);
         }

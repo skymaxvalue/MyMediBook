@@ -15,24 +15,38 @@ namespace Medicare.Application.Handlers.CommandHandlers
         }
         public async Task<ResponseModel> Handle(CreateAssociateCommand request, CancellationToken cancellationToken)
         {
-            var associate = request.model;
+            var result = request.model;
 
-            if (associate != null)
+            if(result.IdentityFile != null)
             {
-                var (qualificationDocBytes, error) = DocumentHelper.ProcessDocument(associate.AssociateQualification.QualificationDocuments);
-                var (identityDocBytes, err) = DocumentHelper.ProcessDocument(associate.IdentityFile);
+                var (identityDocBytes, identityErr) = DocumentHelper.ProcessDocument(result.IdentityFile);
 
-                if (error != null)
-                    return new ResponseModel()
+                if (identityErr != null)
+                    return new ResponseModel() 
                     { 
                         Status = 0, 
+                        ResponseMessage = $"Identity Document: {identityErr}",
                         IsSuccess = 0,
-                        ResponseId = 0,
-                        ResponseMessage = error
+                        ResponseId = 0
                     };
 
-                associate.AssociateQualification.QualificationDocumentsBytes = qualificationDocBytes;
-                associate.IdentityFileBytes= identityDocBytes;
+                result.IdentityFileBytes = identityDocBytes;
+            }
+
+            if (result.AssociateQualification.QualificationDocuments != null)
+            {
+                var (qualificationDocBytes, qualErr) = DocumentHelper.ProcessDocument(result.AssociateQualification.QualificationDocuments);
+
+                if (qualErr != null)
+                    return new ResponseModel() 
+                    { 
+                        Status = 0, 
+                        ResponseMessage = $"Qualification Document: {qualErr}",
+                        IsSuccess = 0,
+                        ResponseId = 0
+                    };
+
+                result.AssociateQualification.QualificationDocumentBytes = qualificationDocBytes;
             }
             return await _associateRepository.RegisterAssociateAsync(request.model);
         }
