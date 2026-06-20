@@ -64,18 +64,35 @@ body{
     gap:15px;
 }
 
+
 .search-box{
     position:relative;
 }
 
+.search-icon{
+    position:absolute;
+    left:18px;
+    top:50%;
+    transform:translateY(-50%);
+
+    width:22px;
+    height:22px;
+
+    object-fit:contain;
+    pointer-events:none;
+}
+
 .search-box input{
-    width:420px;
+    width:390px;
     height:58px;
+
     border:1px solid #E4E6EF;
     border-radius:12px;
-    padding:0 18px;
-    font-size:16px;
+
+    padding-left:54px;
+    padding-right:16px;
 }
+
 
 .filter-select{
     width:180px;

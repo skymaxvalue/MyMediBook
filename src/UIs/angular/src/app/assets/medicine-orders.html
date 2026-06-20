@@ -71,12 +71,20 @@
     </div>
      <div class="header-actions">
 
-                <div class="search-box">
-                    <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Search by medicine or order..."
-                    >
+                  <div class="search-box">
+
+                <img
+                    src="images/search-icon.png"
+                    alt="Search"
+                    class="search-icon"
+                >
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search medicine orders..."
+                >
+
                 </div>
 
                 <select id="sortSelect" class="sort-select">
@@ -94,13 +102,28 @@
 
         <div class="table-header">
 
-            <div>Patient Name</div>
-            <div>Medicine Details</div>
-            <div>Instructions</div>
-            <div>Order Details</div>
+                    <div onclick="sortTable('patient')">
+            Patient Name
+            <span class="sort-icon">▼</span>
+        </div>
+
+        <div onclick="sortTable('medicine')">
+            Medicine Details
+            <span class="sort-icon">▼</span>
+        </div>
+
+        <div>Instructions</div>
+
+        <div onclick="sortTable('date')">
+            Order Details
+            <span class="sort-icon">▼</span>
+        </div>
             <div>Request Refill</div>
             <div>Pharmacy Information</div>
-            <div>Status</div>
+            <div onclick="sortTable('status')">
+    Status
+    <span class="sort-icon">▼</span>
+</div>
             <div>Action</div>
 
         </div>
@@ -108,6 +131,10 @@
         <div id="ordersContainer"></div>
 
     </div>
+
+
+
+   
 
 
 
