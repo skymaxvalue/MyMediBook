@@ -364,3 +364,62 @@ function downloadPDF(){
         .from(element)
         .save();
 }
+
+
+
+
+let sortDirection = {};
+
+function sortTable(field){
+
+    if(sortDirection[field] === undefined){
+        sortDirection[field] = false;
+    }else{
+        sortDirection[field] = !sortDirection[field];
+    }
+
+    const isAsc = sortDirection[field];
+
+    filtered.sort((a,b)=>{
+
+        let valA = a[field];
+        let valB = b[field];
+
+        if(field === "date"){
+            valA = new Date(valA);
+            valB = new Date(valB);
+        }else{
+            valA = valA.toString().toLowerCase();
+            valB = valB.toString().toLowerCase();
+        }
+
+        return isAsc
+            ? (valA > valB ? 1 : -1)
+            : (valA < valB ? 1 : -1);
+
+    });
+
+    document
+        .querySelectorAll(".sort-icon")
+        .forEach(icon=>icon.innerText="▼");
+
+    const icons =
+        document.querySelectorAll(".table-header .sort-icon");
+
+    if(field==="patient")
+        icons[0].innerText=isAsc?"▲":"▼";
+
+    if(field==="medicine")
+        icons[1].innerText=isAsc?"▲":"▼";
+
+    if(field==="date")
+        icons[2].innerText=isAsc?"▲":"▼";
+    
+
+    if(field==="status")
+    icons[3].innerText=isAsc?"▲":"▼";
+
+    currentPage=1;
+
+    render();
+}
