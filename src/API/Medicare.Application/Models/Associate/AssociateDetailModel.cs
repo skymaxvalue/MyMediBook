@@ -38,6 +38,9 @@
         public int? SpecialityId { get; set; }
         public string? SpecialityName { get; set; }
 
+        public int DesignationId { get; set; }
+        public string? DesignationName { get; set; }
+
         public IEnumerable<AssociateQualificationDetailModel> Qualifications { get; set; }
         public IEnumerable<AssociateExperienceDetailModel> Experiences { get; set; }
         public AssociateScheduleDetailModel? Schedule { get; set; }

@@ -13,6 +13,7 @@
         public string Degree { get; set; }
         public string Image { get; set; }
         public string Department { get; set; }
+        public string Designation { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
     }
@@ -25,6 +26,7 @@
         public string Degree { get; set; }
         public string Image { get; set; }
         public string Department { get; set; }
+        public string Designation { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
     }

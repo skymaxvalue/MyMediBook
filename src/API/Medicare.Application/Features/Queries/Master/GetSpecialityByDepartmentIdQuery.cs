@@ -3,5 +3,5 @@ using Medicare.Application.Models.Speciality;
 
 namespace Medicare.Application.Features.Queries.Master
 {
-    public record GetSpecialityTypeListQuery() : IRequest<List<SpecialityTypeModel>>;
+    public record GetSpecialityByDepartmentIdQuery(int departmentId) : IRequest<List<SpecialityTypeModel>>;
 }

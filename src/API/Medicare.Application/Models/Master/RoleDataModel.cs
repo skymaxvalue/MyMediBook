@@ -1,4 +1,4 @@
-﻿namespace Medicare.Application.Models.Role
+﻿namespace Medicare.Application.Models.MasterModels
 {
     public class RoleDataModel
     {

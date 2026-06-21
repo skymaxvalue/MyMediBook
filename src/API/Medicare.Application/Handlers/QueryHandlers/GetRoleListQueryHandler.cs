@@ -1,21 +1,21 @@
 ﻿using MediatR;
-using Medicare.Application.Features.Queries.Role;
-using Medicare.Application.Interfaces.IRoles;
-using Medicare.Application.Models.Role;
+using Medicare.Application.Features.Queries.Master;
+using Medicare.Application.Interfaces.Master;
+using Medicare.Application.Models.MasterModels;
 
 namespace Medicare.Application.Handlers.QueryHandlers
 {
     public class GetRoleListQueryHandler : IRequestHandler<GetRoleListQuery, List<RoleDataModel>>
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly IMasterRepository _masterRepository;
 
-        public GetRoleListQueryHandler(IRoleRepository roleRepository)
+        public GetRoleListQueryHandler(IMasterRepository masterRepository)
         {
-            _roleRepository = roleRepository;
+            _masterRepository = masterRepository;
         }
         public async Task<List<RoleDataModel>> Handle(GetRoleListQuery request, CancellationToken cancellationToken)
         {
-            return await _roleRepository.GetRoleListAsync();
+            return await _masterRepository.GetRoleListAsync();
         }
     }
 }
