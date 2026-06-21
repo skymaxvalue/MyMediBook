@@ -138,21 +138,7 @@ function sortBills() {
             filtered.sort((a, b) => new Date(a.visitDate) - new Date(b.visitDate));
             break;
 
-        case "highCharge":
-            filtered.sort((a, b) => b.totalCharge - a.totalCharge);
-            break;
-
-        case "lowCharge":
-            filtered.sort((a, b) => a.totalCharge - b.totalCharge);
-            break;
-
-        case "highBalance":
-            filtered.sort((a, b) => b.remainingBalance - a.remainingBalance);
-            break;
-
-        case "lowBalance":
-            filtered.sort((a, b) => a.remainingBalance - b.remainingBalance);
-            break;
+        
     }
 
     render();

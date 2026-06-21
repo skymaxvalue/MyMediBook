@@ -209,6 +209,10 @@ body{
 
 @media(max-width:1200px){
 
+     .sort-select{
+        display:block;
+    }
+
 .table-header{
     display:none;
 }
@@ -220,6 +224,11 @@ body{
 }
 
 @media(max-width:768px){
+
+
+     .sort-select{
+        display:block;
+    }
 
 .billing-page{
     padding:15px;

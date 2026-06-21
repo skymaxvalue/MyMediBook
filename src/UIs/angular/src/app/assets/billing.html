@@ -56,10 +56,7 @@
                     <option value="nameDesc">Patient Z-A</option>
                     <option value="newest">Newest Visit</option>
                     <option value="oldest">Oldest Visit</option>
-                    <option value="highCharge">Highest Charge</option>
-                    <option value="lowCharge">Lowest Charge</option>
-                    <option value="highBalance">Highest Balance</option>
-                    <option value="lowBalance">Lowest Balance</option>
+                    
                 </select>
 
             </div>
@@ -68,8 +65,15 @@
 
         <div class="table-header">
 
-            <div>Patient Name</div>
-            <div>Visit Date</div>
+            <div onclick="sortTable('patient')">
+                Patient Name
+                <span class="sort-icon">▼</span>
+            </div>
+
+            <div onclick="sortTable('visitDate')">
+                Visit Date
+                <span class="sort-icon">▼</span>
+            </div>
             <div>Doctor Name</div>
             <div>Clinic Address</div>
             <div>Total Charge</div>
