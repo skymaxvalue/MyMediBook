@@ -12,10 +12,10 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class MasterContoller : Controller
+    public class MasterController : Controller
     {
         private readonly IMediator _mediator;
-        public MasterContoller(IMediator mediator)
+        public MasterController(IMediator mediator)
         {
             _mediator = mediator;
         }
