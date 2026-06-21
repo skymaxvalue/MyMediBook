@@ -88,6 +88,7 @@ body{
 
 
 .sort-select{
+        display:none;
     width:220px;
     height:58px;
     border:1px solid #E4E6EF;

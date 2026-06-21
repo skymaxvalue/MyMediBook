@@ -26,6 +26,35 @@ status:"In Transit",
 address:"CBC Pharmacy",
 image:"images/user.png",
 refill:true
+},
+
+
+{
+id:3,
+patient:"Ankit",
+medicine:"Paracetamol",
+strength:"650mg",
+instructions:"1 Tablet After Food",
+date:"2026-03-15",
+doctor:"Dr. Roy",
+status:"Ready",
+address:"XYZ Pharmacy",
+image:"images/user.png",
+refill:true
+},
+
+{
+id:4,
+patient:"Zoya",
+medicine:"Cetirizine",
+strength:"10mg",
+instructions:"1 Tablet Night",
+date:"2026-06-10",
+doctor:"Dr. Khan",
+status:"In Transit",
+address:"City Pharmacy",
+image:"images/user.png",
+refill:false
 }
 
 ];
@@ -110,6 +139,7 @@ order.refill
 'N/A'
 }
 
+
 </div>
 
 <div class="pharmacy-info">
@@ -156,12 +186,9 @@ View Details
 </div>
 `;
 });
-
-document.getElementById(
-"showingCount"
-).innerText=
-`${filtered.length} Orders`;
 }
+
+
 
 function searchOrders(){
 
@@ -382,22 +409,24 @@ function sortTable(field){
 
     filtered.sort((a,b)=>{
 
-        let valA = a[field];
-        let valB = b[field];
+    let valA = a[field];
+    let valB = b[field];
 
-        if(field === "date"){
-            valA = new Date(valA);
-            valB = new Date(valB);
-        }else{
-            valA = valA.toString().toLowerCase();
-            valB = valB.toString().toLowerCase();
-        }
+    if(field === "date"){
+        valA = new Date(valA).getTime();
+        valB = new Date(valB).getTime();
+    } else {
+        valA = String(valA).toLowerCase();
+        valB = String(valB).toLowerCase();
+    }
 
-        return isAsc
-            ? (valA > valB ? 1 : -1)
-            : (valA < valB ? 1 : -1);
+    if(valA === valB) return 0;
 
-    });
+    return isAsc
+        ? (valA > valB ? 1 : -1)
+        : (valA < valB ? 1 : -1);
+
+});
 
     document
         .querySelectorAll(".sort-icon")
