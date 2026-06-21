@@ -78,6 +78,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("DepartmentId", model.DepartmentId);
                 param.Add("RoleId", model.RoleId);
                 param.Add("SpecialityId", model.SpecialityId);
+                param.Add("DesignationId", model.DesignationId);
 
                 param.Add("HighestDegree", model.AssociateQualification.HighestDegree);
                 param.Add("Specialization", model.AssociateQualification.Specialization);

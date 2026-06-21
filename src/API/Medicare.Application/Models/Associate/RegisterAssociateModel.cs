@@ -30,6 +30,7 @@
         public int DepartmentId { get; set; }
         public int RoleId { get; set; }
         public int SpecialityId { get; set; }
+        public int DesignationId { get; set; }
         public string CreatedBy { get; set; }
         public AssociateQualificationModel AssociateQualification { get; set; }
         public AssociateExperienceModel AssociateExperience { get; set; }
