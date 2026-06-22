@@ -79,20 +79,19 @@ container.innerHTML += `
     <!-- 1 -->
     <div class="patient">
         <img src="${item.image}">
-        <div>${item.patient}</div>
+        
+        <span><b>${item.patient}</b></span>
     </div>
 
     <!-- 2 -->
-    <div class="mobile-field">
- 
-    <span>${item.test}</span>
+   <div class="mobile-field">
+    <span><b>${item.test}</b></span>
 </div>
 
     <!-- 3 -->
-    <div class="mobile-field">
-        
-        <span>${item.code}</span>
-    </div>
+<div class="mobile-field">
+    <span><b>${formatDate(item.date)}</b></span>
+</div>
 
     <!-- 4 -->
     <div class="mobile-field">

@@ -354,221 +354,6 @@ body{
 }
 
 
-@media(max-width:1200px){
-
-.messages-container{
-    padding:20px;
-}
-
-.messages-header{
-    flex-direction:column;
-    align-items:stretch;
-    gap:20px;
-}
-
-.header-actions{
-    width:100%;
-}
-
-.search-box{
-    flex:1;
-}
-
-.search-box input{
-    width:100%;
-}
-
-.filter-select{
-    width:220px;
-}
-
-.table-header{
-    display:none;
-}
-
-.message-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px 40px;
-    align-items:start;
-}
-
-.message-row > div{
-    width:100%;
-}
-
-.message-details{
-    grid-column:1/-1;
-}
-
-.message-details h4{
-    font-size:20px;
-}
-
-.message-details img{
-    width:64px;
-    height:64px;
-}
-
-.archive-btn{
-    width:fit-content;
-}
-
-.pagination-wrapper{
-    justify-content:center;
-}
-
-}
-
-
-
-
-
-
-
-
-
-
-@media(max-width:768px){
-
-.messages-page{
-    padding:15px;
-}
-
-.messages-container{
-    padding:18px;
-    border-radius:24px;
-}
-
-.messages-header{
-    flex-direction:column;
-    align-items:stretch;
-    gap:18px;
-}
-
-.title-section{
-    gap:16px;
-}
-
-.messages-icon{
-    width:72px;
-    height:72px;
-}
-
-.messages-icon img{
-    width:40px;
-    height:40px;
-}
-
-.title-section h2{
-    font-size:32px;
-}
-
-.title-section p{
-    font-size:15px;
-}
-
-.header-actions{
-    flex-direction:column;
-    gap:12px;
-}
-
-.search-box input,
-.filter-select{
-    width:100%;
-}
-
-.message-tabs{
-    overflow-x:auto;
-    white-space:nowrap;
-}
-
-.tab{
-    padding:14px 18px;
-    font-size:14px;
-}
-
-.table-header{
-    display:none;
-}
-
-.message-row{
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-    padding:20px;
-}
-
-.message-date{
-    border-bottom:1px solid #E8EAF0;
-    padding-bottom:12px;
-}
-
-.message-details{
-    flex-direction:row;
-    gap:14px;
-}
-
-.message-details img{
-    width:56px;
-    height:56px;
-    padding:10px;
-}
-
-.message-details h4{
-    font-size:18px;
-    margin-bottom:6px;
-}
-
-.message-details p{
-    font-size:14px;
-}
-
-.message-tag{
-    font-size:12px;
-    padding:5px 10px;
-}
-
-.archive-btn{
-    width:100%;
-    height:46px;
-}
-
-.doctor-info{
-    border-top:1px solid #E8EAF0;
-    padding-top:12px;
-}
-
-.doctor-info img{
-    width:44px;
-    height:44px;
-}
-
-.pagination-wrapper{
-    justify-content:center;
-    margin-top:25px;
-}
-
-.pagination-wrapper button{
-    width:42px;
-    height:42px;
-}
-
-#pageNumber{
-    width:44px;
-    height:44px;
-}
-
-}
-
-
-
-
-
-
-
-
-
 .message-actions{
     display:flex;
     gap:10px;
@@ -665,19 +450,347 @@ body{
 
 
 
+
+
+@media(max-width:1200px){
+
+    .messages-page{
+        padding:15px;
+    }
+
+    .messages-container{
+        padding:20px;
+        border-radius:24px;
+    }
+
+    .messages-header{
+        flex-direction:column;
+        align-items:stretch;
+        gap:20px;
+    }
+
+    .header-actions{
+        width:100%;
+        display:flex;
+        gap:15px;
+    }
+
+    .search-box,
+    .filter-select{
+        flex:1 1 0;
+        min-width:0;
+    }
+
+    .search-box input,
+    .filter-select{
+        width:100%;
+    }
+
+    .table-header{
+        display:none;
+    }
+
+    .message-row{
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap:14px;
+        padding:24px;
+        border-radius:24px;
+    }
+
+    .message-row > div{
+        width:100%;
+    }
+
+    .message-details{
+        gap:18px;
+    }
+
+    .message-details img{
+        width:64px;
+        height:64px;
+    }
+
+    .message-details h4{
+        font-size:20px;
+        font-weight:700;
+    }
+
+    .message-date{
+        margin-bottom:4px;
+    }
+
+    .doctor-info{
+        margin-top:4px;
+    }
+
+    .message-actions{
+        width:100%;
+        display:flex;
+        gap:10px;
+    }
+
+    .archive-btn{
+        flex:1;
+        height:52px;
+    }
+
+    .delete-btn{
+        width:52px;
+        height:52px;
+        flex-shrink:0;
+    }
+
+    .pagination-wrapper{
+        justify-content:center;
+        margin-top:25px;
+    }
+
+}
+
+
+
+
 @media(max-width:768px){
 
-.message-actions{
+    .messages-page{
+        padding:15px;
+    }
+
+    .messages-container{
+        padding:18px;
+        border-radius:24px;
+    }
+
+    .messages-header{
+        flex-direction:column;
+        align-items:stretch;
+        gap:18px;
+    }
+
+    .title-section{
+        gap:16px;
+    }
+
+    .messages-icon{
+        width:72px;
+        height:72px;
+    }
+
+    .messages-icon img{
+        width:40px;
+        height:40px;
+    }
+
+    .title-section h2{
+        font-size:28px;
+    }
+
+    .title-section p{
+        font-size:15px;
+    }
+
+    .header-actions{
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .search-box,
+.filter-select{
     width:100%;
+    flex:none;
 }
 
-.archive-btn{
-    flex:1;
+.search-box input,
+.filter-select{
+    width:100%;
+    height:58px;
+    min-width:100%;
 }
 
-.delete-btn{
-    width:46px;
-    flex-shrink:0;
+    
+
+    .message-tabs{
+        overflow-x:auto;
+        white-space:nowrap;
+        scrollbar-width:none;
+    }
+
+    .message-tabs::-webkit-scrollbar{
+        display:none;
+    }
+
+    .tab{
+        padding:14px 18px;
+        font-size:14px;
+    }
+
+    .table-header{
+        display:none;
+    }
+
+    .message-row{
+        display:flex;
+        flex-direction:column;
+        gap:14px;
+        padding:24px;
+        border-radius:24px;
+    }
+
+    .message-date{
+        border-bottom:1px solid #E8EAF0;
+        padding-bottom:12px;
+    }
+
+    .message-details{
+        flex-direction:row;
+        gap:14px;
+    }
+
+    .message-details img{
+        width:56px;
+        height:56px;
+        padding:10px;
+    }
+
+    .message-details h4{
+        font-size:18px;
+        font-weight:700;
+        line-height:1.4;
+        margin-bottom:6px;
+    }
+
+    .message-details p{
+        font-size:14px;
+    }
+
+    .message-tag{
+        font-size:12px;
+        padding:5px 10px;
+    }
+
+    .doctor-info{
+        border-top:1px solid #E8EAF0;
+        padding-top:12px;
+    }
+
+    .doctor-info img{
+        width:44px;
+        height:44px;
+    }
+
+    .message-actions{
+        width:100%;
+        display:flex;
+        gap:10px;
+    }
+
+    .archive-btn{
+        flex:1;
+        width:100%;
+        height:46px;
+        margin-top:8px;
+    }
+
+    .delete-btn{
+        width:46px;
+        height:46px;
+        flex-shrink:0;
+    }
+
+    .pagination-wrapper{
+        justify-content:center;
+        margin-top:25px;
+    }
+
+    .pagination-wrapper button{
+        width:42px;
+        height:42px;
+    }
+
+    #pageNumber{
+        width:46px;
+        height:46px;
+    }
+
 }
+
+@media (max-width:480px){
+
+    .messages-page{
+        padding:10px;
+    }
+
+    .messages-container{
+        padding:14px;
+        border-radius:18px;
+    }
+
+    .messages-icon{
+        width:56px;
+        height:56px;
+    }
+
+    .messages-icon img{
+        width:32px;
+        height:32px;
+    }
+
+    .title-section h2{
+        font-size:22px;
+    }
+
+    .title-section p{
+        font-size:13px;
+    }
+
+    .message-row{
+        padding:16px;
+        gap:12px;
+        border-radius:18px;
+    }
+
+    .message-details img{
+        width:48px;
+        height:48px;
+    }
+
+    .message-details h4{
+        font-size:16px;
+    }
+
+    .message-details p{
+        font-size:13px;
+    }
+
+    .message-date h5{
+        font-size:16px;
+    }
+
+    .message-tag{
+        font-size:11px;
+        padding:4px 8px;
+    }
+
+    .archive-btn{
+        height:44px;
+        font-size:14px;
+    }
+
+    .delete-btn{
+        width:44px;
+        height:44px;
+    }
+
+    .filter-select,
+.search-box input{
+    width:100%;
+    min-width:100%;
+    height:48px;
+}
+    .pagination-wrapper{
+        margin-top:20px;
+    }
 
 }

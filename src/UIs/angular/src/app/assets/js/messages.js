@@ -142,6 +142,14 @@ messages.filter(message=>{
 
             </div>
 
+            <div class="doctor-info">
+
+                <img src="images/doctor-icon.png">
+
+                <span>${message.doctor}</span>
+
+            </div>
+
                            <div class="message-actions">
 
                             ${
@@ -178,13 +186,7 @@ messages.filter(message=>{
 
                             </div>
 
-            <div class="doctor-info">
-
-                <img src="images/doctor-icon.png">
-
-                <span>${message.doctor}</span>
-
-            </div>
+            
 
         </div>
 
