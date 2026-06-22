@@ -227,14 +227,13 @@ filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
 if(val==="oldest")
 filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
 
-if(val==="normal")
-filtered.sort((a,b)=>(a.status==="Normal"?-1:1));
+if(val==="testAsc")
+filtered.sort((a,b)=>
+a.test.localeCompare(b.test));
 
-if(val==="critical")
-filtered.sort((a,b)=>(a.status==="Critical"?-1:1));
-
-if(val==="pending")
-filtered.sort((a,b)=>(a.status==="Pending"?-1:1));
+if(val==="testDesc")
+filtered.sort((a,b)=>
+b.test.localeCompare(a.test));
 
 render();
 }
@@ -265,7 +264,7 @@ document.getElementById("detailsModal")
 ).show();
 
 }
-
+// 
 function downloadPDF(){
 
 html2pdf()

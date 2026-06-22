@@ -95,7 +95,7 @@ body {
   margin: 0;
 }
 
-/* Summary card variants */
+
 .summary-card.total {
   background: #F8FAFF;
   border: 1px solid #D8E4FF;
@@ -369,7 +369,7 @@ body {
   color: #1F2937;
 }
 
-/* Tablet: max-width 1200px */
+
 @media (max-width: 1200px) {
   .table-header {
     display: none;
@@ -448,7 +448,7 @@ body {
   }
 }
 
-/* Mobile: max-width 768px */
+
 @media (max-width: 768px) {
   .lab-page {
     padding: 15px;
@@ -574,11 +574,6 @@ body {
 
 
 
-
-
-/* ============================================
-   BASE (Desktop)
-   ============================================ */
 body {
   font-family: 'Source Sans Pro', sans-serif;
 }
@@ -631,7 +626,6 @@ body {
   object-fit: contain;
 }
 
-/* ===== Top controls & summary ===== */
 .top-controls {
   display: flex;
   justify-content: space-between;
@@ -692,7 +686,7 @@ body {
   border: 1px solid #FFE0A3;
 }
 
-/* ===== Header actions (search + sort) ===== */
+
 .header-actions {
   display: flex;
   gap: 15px;
@@ -727,10 +721,9 @@ body {
   border-radius: 12px;
   border: 1px solid #E4E6EF;
   padding: 0 15px;
-  display: none; /* hidden on desktop */
+  display: none; 
 }
 
-/* ===== Table header & cards (desktop grid) ===== */
 .table-header {
   background: #F4F4F6;
   border-radius: 16px;
@@ -763,7 +756,7 @@ body {
   word-break: break-word;
 }
 
-/* ===== Patient ===== */
+
 .patient {
   display: flex;
   align-items: center;
@@ -780,7 +773,7 @@ body {
   margin: 0;
 }
 
-/* ===== Status badges ===== */
+
 .status-ready {
   background: #DDF4E5;
   color: #156A37;
@@ -798,7 +791,7 @@ body {
   font-weight: 700;
 }
 
-/* ===== Buttons ===== */
+
 .refill-btn {
   border: none;
   background: #2157F4;
@@ -852,7 +845,7 @@ body {
   transform: scale(1.1);
 }
 
-/* ===== Pagination ===== */
+
 .pagination-wrapper {
   display: flex;
   justify-content: flex-end;
@@ -884,11 +877,22 @@ body {
   margin-top: 10px;
 }
 
-/* ============================================
-   TABLET (769px – 1200px)
-   ============================================ */
-@media (min-width: 769px) and (max-width: 1200px) {
-  /* Hide grid header, show sort */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 1200px) {
+  
   .table-header {
     display: none;
   }
@@ -896,7 +900,6 @@ body {
     display: block;
   }
 
-  /* Top controls stack */
   .top-controls {
     flex-direction: column;
     gap: 20px;
@@ -924,7 +927,7 @@ body {
     width: 100%;
   }
 
-  /* ---- ✨ BETTER CARD LAYOUT (flex) ---- */
+
   .order-card {
     display: flex;
     flex-wrap: wrap;
@@ -934,7 +937,6 @@ body {
     border-radius: 16px;
   }
 
-  /* Patient block – fixed left */
   .order-card .patient {
     flex: 0 0 auto;
     margin-bottom: 0;
@@ -948,42 +950,39 @@ body {
     font-size: 18px;
   }
 
-  /* Medicine + instructions – grouped together */
+
   .order-card > div:nth-child(2),
   .order-card > div:nth-child(3) {
     flex: 1 1 160px;
   }
 
-  /* Order details (date + doctor) + status – middle group */
+
   .order-card > div:nth-child(4),
   .order-card > div:nth-child(7) {
     flex: 0 1 auto;
   }
-
-  /* Refill button block – if present */
   .order-card > div:nth-child(5) {
     flex: 0 0 auto;
   }
 
-  /* Pharmacy info – can be on the right */
+
   .order-card .pharmacy-info {
     flex: 0 1 180px;
   }
 
-  /* Action button – pushed to the right */
+
   .order-card > div:last-child {
     margin-left: auto;
     flex: 0 0 auto;
   }
 
-  /* Adjust status badge */
+
   .status-ready,
   .status-transit {
     padding: 6px 14px;
     font-size: 14px;
   }
 
-  /* Buttons sizes */
   .refill-btn {
     height: 36px;
     padding: 0 14px;
@@ -992,7 +991,7 @@ body {
     padding: 8px 20px;
   }
 
-  /* Pagination & showing text */
+
   .pagination-wrapper {
     justify-content: flex-end;
   }
@@ -1002,9 +1001,6 @@ body {
   }
 }
 
-/* ============================================
-   MOBILE (≤ 768px)
-   ============================================ */
 @media (max-width: 768px) {
   .medicine-page {
     padding: 15px;
@@ -1063,7 +1059,7 @@ body {
     display: none;
   }
 
-  /* Single‑column card */
+
   .order-card {
     display: flex;
     flex-direction: column;
@@ -1089,7 +1085,7 @@ body {
     margin: 0;
   }
 
-  /* Add labels for mobile fields */
+
   .order-card b {
     display: block;
     margin-bottom: 4px;
@@ -1118,7 +1114,60 @@ body {
     justify-content: center;
     margin-top: 25px;
   }
-  
+
+
+    .summary-section{
+        display:flex;
+        flex-direction:row;
+        flex-wrap:wrap;
+        gap:10px;
+        width:100%;
+    }
+
+    .summary-card{
+        flex:1 1 calc(50% - 5px);
+
+        width:auto;
+        min-width:140px;
+
+        height:70px;
+        min-height:70px;
+
+        padding:10px;
+    }
+
+    .summary-card:last-child{
+        flex:1 1 100%;
+    }
+
+
+    .mobile-field{
+    margin-bottom:14px;
+}
+
+.status-normal,
+.status-critical,
+.status-pending{
+    margin-bottom:8px;
 }
 
 
+.search-box,
+.search-box input,
+.sort-select{
+    width:100%;
+}
+
+
+
+
+.sort-select {
+    display: block;
+    width: 100%;
+    flex: none;
+    height: 58px;
+    min-width: 100%;
+  }
+
+
+}
