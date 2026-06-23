@@ -12,7 +12,7 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : BaseApiController
     {
         private readonly IMediator _mediator;
         public AuthController(IMediator mediator)
@@ -24,51 +24,27 @@ namespace Medicare.API.Controllers.V1
         [Route("SignUpUser")]
         public async Task<IActionResult> SignUpUser([FromBody] UserModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new UserCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>()
-            {
-                Data = response,
-                StatusMessage = "User Registered Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpPost]
         [Route("RequestOtp")]
         public async Task<IActionResult> RequestOtp([FromBody] RequestOtpModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new RequestOtpCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>()
-            {
-                Data = response,
-                StatusMessage = "OTP Sent Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpPost]
         [Route("VerifyOtp")]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new VerifyOtpCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>()
-            {
-                Data = response,
-                StatusMessage = response.ResponseMessage,
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
 
@@ -76,17 +52,9 @@ namespace Medicare.API.Controllers.V1
         [Route("GetSecurityQuestionList")]
         public async Task<IActionResult> GetSecurityQuestionList()
         {
-            ApiResponse<List<SecurityQuestionDataModel>> ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>();
             List<SecurityQuestionDataModel> response = new List<SecurityQuestionDataModel>();
             response = await _mediator.Send(new GetSecurityQuestionListQuery());
-            ApiResponse = new ApiResponse<List<SecurityQuestionDataModel>>()
-            {
-                Data = response,
-                StatusMessage = "Security Question Master Fetched Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleListResponse(response);
         }
     }
 }

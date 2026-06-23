@@ -1,18 +1,16 @@
 ﻿using MediatR;
-using Medicare.Application.Features.Queries.SecurityQuestions;
+using Medicare.API.Controllers.V1;
 using Medicare.Application.Features.Queries.User;
-using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Medicare_API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UserController : BaseApiController
     {
         private readonly IMediator _mediator;
         public UserController(IMediator mediator)
@@ -24,18 +22,9 @@ namespace Medicare_API.Controllers.V1
         [Route("GetUserById/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            ApiResponse<UserInfoDataModel> ApiResponse = new ApiResponse<UserInfoDataModel>();
             UserInfoDataModel response = new UserInfoDataModel();
             response = await _mediator.Send(new GetUserByIdQuery(id));
-            ApiResponse = new ApiResponse<UserInfoDataModel>()
-            {
-                Data = response,
-                StatusMessage = "User Details Fetched Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
-
     }
 }

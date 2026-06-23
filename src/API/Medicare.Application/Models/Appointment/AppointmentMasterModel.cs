@@ -11,12 +11,12 @@ namespace Medicare.Application.Models.Appointment
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Age { get; set; }
-        public string AgeType { get; set; }
+        public int AgeTypeId { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string Gender { get; set; }
         public string Phone { get; set; }
-        public string RelatonType { get; set; }
+        public int RelatonTypeId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string TimeSlot { get; set; }
         public string VisitPurpose { get; set; }

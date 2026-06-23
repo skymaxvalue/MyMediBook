@@ -7,10 +7,10 @@ using System.Security.Cryptography;
 using System.Text;
 namespace Medicare.Application.Handlers.CommandHandlers
 {
-    public class CreateUserHandler : IRequestHandler<UserCommand, ResponseModel>
+    public class CreateUserCommandHandler : IRequestHandler<UserCommand, ResponseModel>
     {
         private readonly IAuthRepository _authRepository;
-        public CreateUserHandler(IAuthRepository authRepository)
+        public CreateUserCommandHandler(IAuthRepository authRepository)
         {
             _authRepository = authRepository;
         }

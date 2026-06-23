@@ -1,6 +1,8 @@
-﻿namespace Medicare.Application.Models.Patient
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Patient
 {
-    public class PatientDetailModel
+    public class PatientDetailModel : IErrorHandling
     {
         public int PatientId { get; set; }
         public string FirstName { get; set; }
@@ -22,5 +24,8 @@
         public DateTime? CreatedDate { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public string ResponseMessage { get; set; }
     }
 }

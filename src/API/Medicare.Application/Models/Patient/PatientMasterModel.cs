@@ -1,10 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+using System.Text.Json.Serialization;
 
 namespace Medicare.Application.Models.Patient
 {
-    public class PatientMasterModel
+    public class PatientMasterModel : IErrorHandling
     {
-        public int PatientId { get; set; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string LastName { get; set; }
@@ -34,11 +34,13 @@ namespace Medicare.Application.Models.Patient
         public DateTime? CreatedDate { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public string ResponseMessage { get; set; }
     }
 
     public class CreatePatientRequestModel  //PATIENT REQUEST DTO MODEL
     {
-        public int PatientId { get; set; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string LastName { get; set; }

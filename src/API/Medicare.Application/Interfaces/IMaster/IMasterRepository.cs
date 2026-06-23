@@ -12,5 +12,8 @@ namespace Medicare.Application.Interfaces.Master
         Task<List<RoleDataModel>> GetRoleListAsync();
         Task<List<DepartmentDataModel>> GetDepartmentByRoleIdAsync(int roleId);
         Task<List<DesignationDataModel>> GetDesignationByRoleIdAsync(int roleId);
+        Task<List<AgeTypeModel>> GetAgeTypeListAsync();
+        Task<List<RelationTypeModel>> GetRelationTypeListAsync();
+
     }
 }

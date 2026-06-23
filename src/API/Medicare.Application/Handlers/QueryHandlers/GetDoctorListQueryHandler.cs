@@ -32,7 +32,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
                     Degree = d.Degree,
                     Image = d.Image,
                     Department = d.Department,
-                    Designation = d.Designation,
+                    DesignationName = d.Designation,
                     FromTime = d.FromTime,
                     ToTime = d.ToTime
                 }).ToList()

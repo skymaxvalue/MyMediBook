@@ -4,6 +4,7 @@
     {
         public int AssociateId { get; set; }
         public int SlotNumber { get; set; }
+        public string SlotDate { get; set; }
         public string WorkingDays { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }

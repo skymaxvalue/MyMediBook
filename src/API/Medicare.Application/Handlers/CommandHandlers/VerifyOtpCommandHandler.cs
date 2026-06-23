@@ -21,13 +21,25 @@ namespace Medicare.Application.Handlers.CommandHandlers
             var otpDetail = await _authRepository.GetOtpDetailAsync(request.model.Email);
 
             if (otpDetail is null)
-                throw new Exception("No OTP request found for this email.");
+                return new ResponseModel
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "No OTP request found for this email."
+                }; 
 
             if (otpDetail.OtpAttempts >= MaxAttempts)
-                throw new Exception("OTP locked. Please request a new one.");
+                return new ResponseModel
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "OTP locked. Please request a new one."
+                };
 
             if (DateTime.UtcNow > otpDetail.Expiry)
-                throw new Exception("OTP has expired. Please request a new one.");
+                return new ResponseModel
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "OTP has expired. Please request a new one."
+                };
 
             using var hmac = new HMACSHA512(otpDetail.OtpSalt);
             var computedHash = hmac.ComputeHash(
@@ -37,7 +49,11 @@ namespace Medicare.Application.Handlers.CommandHandlers
             if (!CryptographicOperations.FixedTimeEquals(computedHash, otpDetail.OtpHash))
             {
                 await _authRepository.IncrementOtpAttemptsAsync(otpDetail.Email);
-                throw new Exception("Invalid OTP.");
+                return new ResponseModel
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "Invalid OTP."
+                };
             }
 
             await _authRepository.ClearOtpAsync(request.model.Email);

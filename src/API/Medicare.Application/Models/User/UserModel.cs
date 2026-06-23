@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+using System.Text.Json.Serialization;
 
 namespace Medicare.Application.Models.User
 {
@@ -18,7 +19,7 @@ namespace Medicare.Application.Models.User
         public string Email { get; set; }
         public string CreatedBy { get; set; }
     }
-    public class UserInfoDataModel
+    public class UserInfoDataModel : IErrorHandling
     {
         public int UserID { get; set; }
         public string Username { get; set; }
@@ -44,6 +45,9 @@ namespace Medicare.Application.Models.User
         //public string SecurityQuestion { get; set; }
         //public string SecurityAnswer { get; set; }
         public bool IsActive { get; set; }
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public string ResponseMessage { get; set; }
     }
 
     public class SecurityQuestionDataModel

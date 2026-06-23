@@ -68,16 +68,16 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<AppointmentDetailModel> GetAppointmentById(int appointmentId)
+        public async Task<AppointmentDetailModelDto> GetAppointmentById(int appointmentId)
         {
             string procName = "USP_GetAppointmentById";
-            AppointmentDetailModel returnData = new AppointmentDetailModel();
+            AppointmentDetailModelDto returnData = new AppointmentDetailModelDto();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("AppointmentId", appointmentId);
 
-                returnData = await _context.QuerySingleStoredProcAsync<AppointmentDetailModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<AppointmentDetailModelDto>(procName, param);
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
             try
             {
-                if (!string.IsNullOrEmpty(model.RelatonType) && !model.RelatonType.Equals("Self", StringComparison.OrdinalIgnoreCase))
+                if (model.RelatonTypeId != null && model.RelatonTypeId == 1)
                 {
                     var profileParam = new DynamicParameters();
                     profileParam.Add("PatientId", model.PatientId);
@@ -108,11 +108,11 @@ namespace Medicare.DAL.Persistence.Repositories
                     profileParam.Add("LastName", model.LastName);
                     profileParam.Add("DateOfBirth", model.DateOfBirth);
                     profileParam.Add("Age", model.Age);
-                    profileParam.Add("AgeType", model.AgeType);
+                    profileParam.Add("AgeTypeId", model.AgeTypeId);
                     profileParam.Add("Gender", model.Gender);
                     profileParam.Add("Email", model.Email);
                     profileParam.Add("PhoneNumber", model.Phone);
-                    profileParam.Add("RelationType", model.RelatonType);
+                    profileParam.Add("RelationTypeId", model.RelatonTypeId);
 
                     var profileResult = await _context.QuerySingleStoredProcAsync<ResponseModel>(profileProc, profileParam);
 
@@ -175,7 +175,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("SlotId", model.SlotId);
                 param.Add("TimeSlot", model.TimeSlot);
                 param.Add("VisitPurpose", model.VisitPurpose);
-                param.Add("AppointmentDate", model.AppointmentDate);
+                param.Add("SlotDate", model.AppointmentDate);
                 param.Add("UpdatedBy", model.UpdatedBy);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
