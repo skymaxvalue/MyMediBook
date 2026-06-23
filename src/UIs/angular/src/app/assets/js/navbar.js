@@ -18,6 +18,7 @@ function initNavbar() {
     setupNavbar();
     setActiveTab();
     setupDropdown();
+    setupMobileMenu();
 }
 
 function setUsername() {
@@ -133,4 +134,18 @@ function setupDropdown() {
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
+}
+
+
+function setupMobileMenu(){
+
+    const btn = document.getElementById("mobileMenuBtn");
+    const nav = document.getElementById("navbar");
+
+    if(!btn || !nav) return;
+
+    btn.addEventListener("click", () => {
+        nav.classList.toggle("show");
+    });
+
 }

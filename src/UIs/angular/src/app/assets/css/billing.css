@@ -101,17 +101,18 @@ body{
     border-radius:16px;
     padding:25px 18px;
     display:grid;
-    grid-template-columns:
-    1.2fr
-    1fr
-    1fr
-    1.5fr
-    1fr
-    1fr
-    1.2fr
-    1.2fr
-    1fr
-    1fr;
+   grid-template-columns:
+1.8fr
+1fr
+1fr
+1.5fr
+1fr
+1fr
+1.2fr
+1.2fr
+1fr
+1fr
+1fr;
     gap:12px;
     font-weight:700;
 }
@@ -122,29 +123,36 @@ body{
     border-radius:20px;
     padding:20px 18px;
     display:grid;
-    grid-template-columns:
-    1.2fr
-    1fr
-    1fr
-    1.5fr
-    1fr
-    1fr
-    1.2fr
-    1.2fr
-    1fr
-    1fr;
+ grid-template-columns:
+1.8fr
+1fr
+1fr
+1.5fr
+1fr
+1fr
+1.2fr
+1.2fr
+1fr
+1fr
+1fr;
     gap:12px;
     align-items:center;
 }
 
-.bill-card > div{
-    word-break:break-word;
-}
+
 
 .patient{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:15px;
+    min-width:0;
+}
+
+.patient strong{
+    white-space:nowrap;
+    word-break:normal;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .patient img{
@@ -207,61 +215,253 @@ body{
     font-weight:700;
 }
 
-@media(max-width:1200px){
 
-     .sort-select{
-        display:block;
-    }
 
-.table-header{
-    display:none;
+.balance-paid{
+    background:#DDF4E5;
+    padding:8px 12px;
+    border-radius:12px;
 }
 
-.bill-card{
-    grid-template-columns:1fr 1fr;
+.balance-due{
+    background:#FFE3E3;
+    padding:8px 12px;
+    border-radius:12px;
 }
 
+
+
+
+.details-btn{
+    border:1px solid #2157F4;
+    color:#2157F4;
+    background:white;
+    transition:.3s;
+    padding:10px 18px;
+    border-radius:12px;
+     min-width:120px;
+    white-space:nowrap;
 }
 
-@media(max-width:768px){
-
-
-     .sort-select{
-        display:block;
-    }
-
-.billing-page{
-    padding:15px;
+.details-btn:hover{
+    background:#2157F4;
+    color:white;
+    box-shadow:0 10px 20px rgba(33,87,244,.2);
 }
 
-.billing-header{
-    flex-direction:column;
-    align-items:stretch;
-}
 
-.header-actions{
-    flex-direction:column;
-}
 
-.search-box input,
-.sort-select{
-    width:100%;
-}
 
-.table-header{
-    display:none;
-}
-
-.bill-card{
+.table-header div{
+    cursor:pointer;
     display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
+    align-items:center;
+    gap:6px;
+    transition:.3s;
 }
 
-.pagination-wrapper{
-    justify-content:center;
+
+
+.sort-icon{
+    font-size:12px;
+    margin-left:6px;
+    color:#9CA3AF;
 }
+
+
+
+
+@media (max-width: 1200px) {
+
+    .sort-select{
+        display:block;
+    }
+
+    .table-header{
+        display:none;
+    }
+
+    .billing-page{
+        padding:15px;
+    }
+
+    .billing-container{
+        padding:18px;
+        border-radius:24px;
+    }
+
+    .header-actions{
+        width:100%;
+        display:flex;
+        flex-direction:row;
+        gap:15px;
+    }
+
+    .search-box,
+    .sort-select{
+        flex:1 1 0;
+        min-width:0;
+    }
+
+    .search-box input,
+    .sort-select{
+        width:100%;
+    }
+
+    .bill-card{
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap:14px;
+        padding:24px;
+        border-radius:24px;
+    }
+
+    .bill-card > div{
+        width:100%;
+    }
+
+    .patient{
+        gap:18px;
+        margin-bottom:4px;
+    }
+
+    .patient img{
+        width:74px;
+        height:74px;
+    }
+
+    .balance-paid,
+    .balance-due{
+        width:fit-content;
+    }
+
+    .details-btn{
+        width:100%;
+        height:52px;
+    }
+
+    .pagination-wrapper{
+        justify-content:center;
+    }
+
+}
+@media (max-width: 768px) {
+
+    .sort-select{
+        display:block;
+        width:100%;
+        flex:none;
+        height:58px;
+        min-width:100%;
+    }
+
+    .billing-page{
+        padding:15px;
+    }
+
+    .billing-header{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .header-actions{
+        flex-direction:column;
+    }
+
+    .search-box,
+    .search-box input,
+    .sort-select{
+        width:100%;
+    }
+
+    .table-header{
+        display:none;
+    }
+
+    .bill-card{
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap:14px;
+        padding:24px;
+        border-radius:24px;
+    }
+
+    .bill-card > div{
+        width:100%;
+    }
+
+    .patient{
+        gap:18px;
+    }
+
+    .patient img{
+        width:74px;
+        height:74px;
+    }
+
+
+    .details-btn{
+        width:100%;
+        height:52px;
+    }
+
+    .balance-paid,
+    .balance-due{
+        display:inline-block;
+        width:fit-content;
+    }
+
+    .pagination-wrapper{
+        justify-content:center;
+    }
 
 }
 
+@media (max-width: 480px) {
+
+    .billing-page{
+        padding:10px;
+    }
+
+    .billing-container{
+        padding:14px;
+        border-radius:18px;
+    }
+
+    .title-section h2{
+        font-size:22px;
+    }
+
+    .billing-icon{
+        width:56px;
+        height:56px;
+    }
+
+    .billing-icon img{
+        width:32px;
+        height:32px;
+    }
+
+    .patient img{
+        width:56px;
+        height:56px;
+    }
+
+    .patient strong{
+        font-size:18px;
+    }
+
+    .bill-card{
+        padding:16px;
+        gap:12px;
+    }
+
+    .details-btn{
+        width:100%;
+        height:44px;
+        font-size:14px;
+    }
+
+}
