@@ -11,7 +11,7 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class AppointmentController : Controller
+    public class AppointmentController : BaseApiController
     {
         private readonly IMediator _mediator;
         public AppointmentController(IMediator mediator)
@@ -23,34 +23,18 @@ namespace Medicare.API.Controllers.V1
         [Route("CreateAppointment")]
         public async Task<IActionResult> CreateAppointment(AppointmentMasterModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateAppointmentCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpPut]
         [Route("UpdateAppointmentDetail")]
         public async Task<IActionResult> UpdateAppointmentDetail(UpdateAppointmentRequestModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new UpdateAppointmentCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpDelete]
@@ -60,68 +44,36 @@ namespace Medicare.API.Controllers.V1
             [FromQuery] int patientId
             )
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new DeleteAppointmentCommand(appointmentId, patientId));
-            ApiResponse = new ApiResponse<ResponseModel>
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpGet]
         [Route("GetAvailableAppointments")]
         public async Task<IActionResult> GetAvailableAppointments([FromQuery] int associateId)
         {
-            ApiResponse<List<AvailableAppointmentModel>> ApiResponse = new ApiResponse<List<AvailableAppointmentModel>>();
             List<AvailableAppointmentModel> response = new List<AvailableAppointmentModel>();
             response = await _mediator.Send(new GetAvailableAppointmentsQuery(associateId));
-            ApiResponse = new ApiResponse<List<AvailableAppointmentModel>>
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleListResponse(response);
         }
 
         [HttpGet]
         [Route("GetMyAppointments/{patientId}")]
         public async Task<IActionResult> GetMyAppointments(int patientId)
         {
-            ApiResponse<List<PatientAppointmentModel>> ApiResponse = new ApiResponse<List<PatientAppointmentModel>>();
             List<PatientAppointmentModel> response = new List<PatientAppointmentModel>();
             response = await _mediator.Send(new GetMyAppointmentsQuery(patientId));
-            ApiResponse = new ApiResponse<List<PatientAppointmentModel>>()
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleListResponse(response);
         }
 
         [HttpGet]
         [Route("GetAppointmentById/{AppointmentId}")]
         public async Task<IActionResult> GetAppointmentById([FromRoute] int AppointmentId)
         {
-            ApiResponse<AppointmentDetailModel> ApiResponse = new ApiResponse<AppointmentDetailModel>();
             AppointmentDetailModel response = new AppointmentDetailModel();
             response = await _mediator.Send(new GetAppointmentByIdQuery(AppointmentId));
-            ApiResponse = new ApiResponse<AppointmentDetailModel>
-            {
-                Data = response,
-                StatusMessage = "Data fetched successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
     } 
 }

@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.ErrorLog;
 using Medicare.Application.Features.Queries.ErrorLog;
-using Medicare.Application.Features.Queries.SecurityQuestions;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using Medicare.Application.Models.User;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

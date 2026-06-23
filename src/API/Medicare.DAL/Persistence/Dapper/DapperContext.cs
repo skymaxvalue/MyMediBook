@@ -16,6 +16,8 @@ namespace Medicare.DAL.Persistence.Dapper
             _factory = factory;
             _logger = logger;
         }
+
+        // Raw SQL 
         public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null)
         {
             using var connection = _factory.CreateConnection();
@@ -28,54 +30,55 @@ namespace Medicare.DAL.Persistence.Dapper
             return await connection.QueryFirstOrDefaultAsync<T>(sql, param, commandType: CommandType.Text);
         }
 
+        // Stored Procs 
         public async Task<IEnumerable<T>> QueryStoredProcAsync<T>(string procName, object param = null)
         {
-            using var connection = _factory.CreateConnection();
-            return await connection.QueryAsync<T>(procName, param, commandType: CommandType.StoredProcedure);
+            return await ExecuteWithLoggingAsync(async (conn) =>
+                await conn.QueryAsync<T>(procName, param, commandType: CommandType.StoredProcedure),
+                procName, param);
         }
 
         public async Task<T> QuerySingleStoredProcAsync<T>(string procName, object param = null)
         {
-            using var connection = _factory.CreateConnection();
-             return await ExecuteWithLoggingAync(async (connection) =>
-                await connection.QueryFirstOrDefaultAsync<T>(procName, param, commandType: CommandType.StoredProcedure), procName, param
-            ); 
+            return await ExecuteWithLoggingAsync(async (conn) =>
+                await conn.QueryFirstOrDefaultAsync<T>(procName, param, commandType: CommandType.StoredProcedure),
+                procName, param);
         }
 
         public async Task<int> ExecuteStoredProcAsync(string procName, object param = null)
         {
-            using var connection = _factory.CreateConnection();
-            return await ExecuteWithLoggingAync(async (connection) =>
-                await connection.ExecuteAsync(procName, param, commandType: CommandType.StoredProcedure), procName, param
-            ); 
+            return await ExecuteWithLoggingAsync(async (conn) =>
+                await conn.ExecuteAsync(procName, param, commandType: CommandType.StoredProcedure),
+                procName, param);
         }
+
         public async Task<List<T>> QueryStoredProcListAsync<T>(string procName, object param = null)
         {
-            using var connection = _factory.CreateConnection();
-            var result = await ExecuteWithLoggingAync(async (connection) =>
-                await connection.QueryAsync<T>(procName, param, commandType: CommandType.StoredProcedure), procName, param);
+            var result = await ExecuteWithLoggingAsync(async (conn) =>
+                await conn.QueryAsync<T>(procName, param, commandType: CommandType.StoredProcedure),
+                procName, param);
 
             return result.ToList();
         }
 
-        private async Task<TResult> ExecuteWithLoggingAync<TResult>(Func<IDbConnection, Task<TResult>> databaseOperation, string sql, object param)
+        private async Task<TResult> ExecuteWithLoggingAsync<TResult>(
+        Func<IDbConnection, Task<TResult>> operation,
+        string procName,
+        object param)
+    {
+        try
         {
-            try
-            {
-                using var connection = _factory.CreateConnection();
-                if(connection.State == ConnectionState.Closed)
-                {
-                    connection.Open();
-                }
+            using var connection = _factory.CreateConnection(); 
+            if (connection.State == ConnectionState.Closed)
+                connection.Open();
 
-                return await databaseOperation(connection);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "Database Operation Failed. ProcName: {sql}. Parameters: {@Params}", sql, param);
-
-                throw;
-            }
+            return await operation(connection);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database operation failed. ProcName: {ProcName}. Params: {@Params}", procName, param);
+            throw;
+        }
+    }
     }
 }

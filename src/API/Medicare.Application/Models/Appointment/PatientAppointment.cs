@@ -10,7 +10,7 @@
         public string Speciality { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string TimeSlot { get; set; }
-        public string Status { get; set; }         // Scheduled / Cancelled / Completed
+        public string AppointmentStatus { get; set; }         // Scheduled / Cancelled / Completed
         public string VisitPurpose { get; set; }   
         public string VisitType { get; set; }
         public string RelationType { get; set; }

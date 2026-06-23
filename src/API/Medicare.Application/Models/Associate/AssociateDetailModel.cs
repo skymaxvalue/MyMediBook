@@ -1,6 +1,8 @@
-﻿namespace Medicare.Application.Models.Associate
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Associate
 {
-    public class AssociateDetailModel
+    public class AssociateDetailModel : IErrorHandling
     {
         public int AssociateId { get; set; }
         public string FirstName { get; set; }
@@ -40,7 +42,9 @@
 
         public int DesignationId { get; set; }
         public string? DesignationName { get; set; }
-
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public string ResponseMessage { get; set; }
         public IEnumerable<AssociateQualificationDetailModel> Qualifications { get; set; }
         public IEnumerable<AssociateExperienceDetailModel> Experiences { get; set; }
         public AssociateScheduleDetailModel? Schedule { get; set; }

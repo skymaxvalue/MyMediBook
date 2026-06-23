@@ -7,7 +7,7 @@ namespace Medicare.Application.Interfaces.IAppointment
     {
         Task<List<PatientAppointmentModel>> GetMyAppointmentsAsync(int patientId);
         Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int associateId);
-        Task<AppointmentDetailModel> GetAppointmentById(int appointmentId);
+        Task<AppointmentDetailModelDto> GetAppointmentById(int appointmentId);
         Task<ResponseModel> CreateAppointmentAsync(AppointmentMasterModel model);
         Task<ResponseModel> UpdateAppointmentDetailAsync(UpdateAppointmentRequestModel model);
         Task<ResponseModel> CancelAppointmentByIdAsync(int appointmentId, int patientId);

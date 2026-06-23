@@ -149,5 +149,47 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
+
+        public async Task<List<AgeTypeModel>> GetAgeTypeListAsync()
+        {
+            string procName = "USP_GetAgeTypeList";
+            List<AgeTypeModel> returnData = new List<AgeTypeModel>();
+            try
+            {
+                returnData = await _context.QueryStoredProcListAsync<AgeTypeModel>(procName);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<List<RelationTypeModel>> GetRelationTypeListAsync()
+        {
+            string procName = "USP_GetRelationTypeList";
+            List<RelationTypeModel> returnData = new List<RelationTypeModel>();
+            try
+            {
+                returnData = await _context.QueryStoredProcListAsync<RelationTypeModel>(procName);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
     }
 }
