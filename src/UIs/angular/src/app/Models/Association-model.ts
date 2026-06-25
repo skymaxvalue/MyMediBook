@@ -49,3 +49,17 @@ export interface AssociateExperience {
     departmentWorked: string;
     keySkills: string;
 }
+export interface CreateScheduleRequest {
+    associateId: number;
+    fromDate: string;
+    toDate: string;
+    fromTime: string;
+    toTime: string;
+    breakTimeFrom: string;
+    breakTimeTo: string;
+    workingDays: string;
+    consultationTime: number;
+    averageCharge: number;
+    otpMethod: string;
+    createdBy: string;
+}

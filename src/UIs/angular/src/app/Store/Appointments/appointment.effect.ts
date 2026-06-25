@@ -39,4 +39,31 @@ export class AppointmentEffects {
             )
         )
     );
+    getAgeType$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getAgeType),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getAgeType()
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getAgeTypeSuccess({
+                                ageType: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getAgeTypeFailure({
+                                    error:
+                                        error?.message ||
+                                        'Appointment Booking Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
 }

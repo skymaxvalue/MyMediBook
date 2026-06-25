@@ -8,6 +8,7 @@ import { BookingSuccessfullComponent } from "../booking-successfull/booking-succ
 import { BookingFailedComponent } from "../booking-failed/booking-failed.component";
 import { Store } from "@ngrx/store";
 import * as AppintmentAction from "../../Store/Appointments/appointment.actions"
+import { getTimeSloteByDoctorID } from "src/app/Store/Doctor/doctor.action";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -142,6 +143,15 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     this.selectedDateGlobal = item.formattedDate;
     this.selectedSlot = '';
+    // hare call API
+    console.log(this.selectedDate, this.doctor, "=====>====>")
+
+    const payload = {
+      associateId: this.doctor.associateId,
+      fromDate: this.selectedDate,
+      toDate: this.selectedDate
+    }
+    this.store.dispatch(getTimeSloteByDoctorID({ payload }))
     this.showSlotsModal = true;
 
     let bookedSlots: string[] = [];

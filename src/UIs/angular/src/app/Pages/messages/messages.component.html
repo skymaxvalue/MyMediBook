@@ -1,0 +1,150 @@
+<div class="messages-page">
+
+    <div class="messages-container">
+
+        <div class="messages-header">
+
+            <div class="title-section">
+
+                <div class="messages-icon">
+                    <img src="assets/images/message-icon.png" alt="">
+                </div>
+
+                <div>
+                    <h2>Messages</h2>
+                    <p>Stay updated with important notifications and updates</p>
+                </div>
+
+            </div>
+
+            <div class="header-actions">
+
+                <div class="search-box">
+                    <input type="text" placeholder="Search messages..." [ngModel]="searchText()"
+                        (ngModelChange)="searchText.set($event)">
+                </div>
+
+                <select class="filter-select" [ngModel]="selectedFilter()" (ngModelChange)="selectedFilter.set($event)">
+
+                    <option value="all">Filter</option>
+                    <option value="Medication Reminder">
+                        Medication Reminder
+                    </option>
+                    <option value="Order Update">
+                        Order Update
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="message-tabs">
+
+            <button class="tab" [class.active]="activeTab() === 'all'" (click)="switchTab('all')">
+
+                All Messages
+                <span>{{ allCount() }}</span>
+
+            </button>
+
+            <button class="tab" [class.active]="activeTab() === 'archived'" (click)="switchTab('archived')">
+
+                Archived
+                <span>{{ archiveCount() }}</span>
+
+            </button>
+
+        </div>
+
+        <div class="table-header">
+
+            <div>Message Date</div>
+            <div>Notifications</div>
+            <div>Archive</div>
+            <div>Prescribed By</div>
+
+        </div>
+
+
+
+        @for(message of filteredMessages(); track message.id){
+
+        <div class="message-row">
+
+            <div class="message-date">
+                <h5>{{ message.date }}</h5>
+                <p>{{ message.time }}</p>
+            </div>
+
+            <div class="message-details">
+
+                <img [src]="message.icon" alt="">
+
+                <div>
+
+                    <h4>{{ message.title }}</h4>
+
+                    <span class="message-tag">
+                        {{ message.type }}
+                    </span>
+
+                    <p>{{ message.description }}</p>
+
+                </div>
+
+            </div>
+
+            <div>
+
+                @if(message.archived){
+
+                <button class="archive-btn" (click)="unarchiveMessage(message.id)">
+                    Unarchive
+                </button>
+
+                } @else {
+
+                <button class="archive-btn" (click)="archiveMessage(message.id)">
+                    Archive
+                </button>
+
+                }
+
+            </div>
+
+            <div class="doctor-info">
+
+                <img src="assets/images/doctor-icon.png" alt="">
+
+                <span>{{ message.doctor }}</span>
+
+            </div>
+
+        </div>
+
+
+        }
+
+
+
+    </div>
+
+    <div class="pagination-wrapper">
+
+        <button (click)="previousPage()" [disabled]="currentPage() === 1">
+            ←
+        </button>
+
+        <span id="pageNumber">
+            {{ currentPage() }}
+        </span>
+
+        <button (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+            →
+        </button>
+
+    </div>
+
+</div>

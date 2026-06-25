@@ -8,16 +8,8 @@ import {
 } from '@angular/forms';
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
-import { loadAllDepartments, loadAllRoles, loadAllSpecialities } from "src/app/Store/Doctor/doctor.action";
-import { selectAllDepartments, selectAllRoles, selectAllSpecialities } from "src/app/Store/Doctor/doctor.selectors";
-
-
-interface AssociateRecord {
-  department: string;
-  name: string;
-  role: string;
-  speciality: string;
-}
+import { createAssociatesSchedule, getAllAssociates, getRoleDepaSpecia, getWeekDays } from "src/app/Store/Doctor/doctor.action";
+import { selectCreatedAssociateSchedule, selectGelAllAssociate, selectGetRoleDepSpeciOfAssociate, selectGetWeekDays } from "src/app/Store/Doctor/doctor.selectors";
 
 
 @Component({
@@ -34,54 +26,48 @@ export class AssignScheduleAsspciationComponent implements OnInit {
 
   scheduleForm!: FormGroup;
 
-  selectedDays: string[] = ['Mon', 'Tue', 'Thu', 'Fri'];
+  selectedDays: any[] = [];
 
-  allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  allDays: any[] = [];
 
-  associateRecords: AssociateRecord[] = [
-    {
-      department: 'GENERAL',
-      name: 'Dr. Kumar',
-      role: 'Doctor',
-      speciality: 'Cardiology'
-    },
-    {
-      department: 'GENERAL',
-      name: 'Dr. Bose',
-      role: 'Consultant',
-      speciality: 'General Medicine'
-    },
-    {
-      department: 'CARDIOLOGY',
-      name: 'Dr. Raman',
-      role: 'Specialist',
-      speciality: 'Interventional Cardiology'
-    },
-    {
-      department: 'ORTHOPEDICS',
-      name: 'Dr. Arya',
-      role: 'Doctor',
-      speciality: 'Sports Injury'
-    }
-  ];
+  associateRecords: any[] = []
 
-  filteredAssociates: AssociateRecord[] = [];
-
+  filteredAssociates: any[] = [];
+  showDesignation = false;
   summaryData: any[] = [];
   allSpecialities: any;
   allDepartments: any;
   allRoles: any;
+  designations: any[] = [];
+  departments: any[] = [];
+  speciality: any[] = [];
 
   constructor(private fb: FormBuilder, private store: Store<AppState>) { }
 
   ngOnInit(): void {
 
 
+    this.formInitialization();
+
+    this.scheduleForm.get('roleId')?.valueChanges.subscribe((roleId) => {
+      this.onRoleChange(roleId);
+    });
+
+    this.scheduleForm.get('departmentId')?.valueChanges.subscribe((departmentId) => {
+      this.onDepartmentChange(departmentId);
+    });
+
+    this.updateNameOptions();
+    this.initialApiCall()
+  }
+
+  formInitialization() {
     this.scheduleForm = this.fb.group({
-      associateDepartment: ['', Validators.required],
-      associateName: ['', Validators.required],
-      associateRole: ['', Validators.required],
-      associateSpeciality: [''],
+      designationId: ["", Validators.required],
+      associateId: [null, Validators.required],
+      departmentId: ["", Validators.required],
+      roleId: ["", Validators.required],
+      specialityId: [""],
 
       fromDate: ['', Validators.required],
       toDate: ['', Validators.required],
@@ -89,46 +75,66 @@ export class AssignScheduleAsspciationComponent implements OnInit {
       fromTime: ['10:00 AM', Validators.required],
       toTime: ['10:00 PM', Validators.required],
 
-      breakFrom: ['02:00 PM'],
-      breakTo: ['06:00 PM'],
+      breakTimeFrom: ['02:00 PM'],
+      breakTimeTo: ['06:00 PM'],
 
-      consultDuration: ['30 Minutes', Validators.required],
-      averageCharge: ['Rs. 600', Validators.required]
+      consultationTime: [30, Validators.required],
+      averageCharge: [100, Validators.required]
     });
-
-    this.updateNameOptions();
-    this.initialApiCall()
   }
 
   initialApiCall() {
+    this.store.dispatch(getAllAssociates())
     this.store.dispatch(
-      loadAllSpecialities());
-    this.store.dispatch(
-      loadAllDepartments());
-    this.store.dispatch(
-      loadAllRoles());
+      getRoleDepaSpecia());
 
-    this.store.select(selectAllSpecialities)
-      .subscribe((res: any) => {
-        this.allSpecialities = res;
-        console.log(this.allSpecialities, "------12----->")
-      });
-    this.store.select(selectAllDepartments)
-      .subscribe((res: any) => {
-        this.allDepartments = res;
 
-      });
-    this.store.select(selectAllRoles)
-      .subscribe((res: any) => {
-        this.allRoles = res;
+    this.store.select(selectGelAllAssociate).subscribe((res: any) => {
+      this.associateRecords = res
 
-      });
+    })
+    this.store.select(selectGetRoleDepSpeciOfAssociate).subscribe((res: any) => {
+      if (res) {
+        this.allRoles = res
+      }
+    })
+
+    this.store.dispatch(getWeekDays());
+
+    this.store.select(selectGetWeekDays).subscribe((res: any) => {
+      this.allDays = res
+
+    })
+
+
+  }
+
+  onRoleChange(roleId: number) {
+
+    const selectedRole = this.allRoles.find(
+      (x: any) => x.roleId == roleId
+    );
+    this.designations = selectedRole?.designations || [];
+
+    this.departments = selectedRole?.departments || [];
+
+  }
+
+  onDepartmentChange(departmentId: number) {
+
+    const selectedDepartment = this.departments.find(
+      (x) => x.departmentId == departmentId
+    );
+
+    this.speciality = selectedDepartment?.specialities || [];
+
+
   }
 
   updateNameOptions(): void {
 
     const department =
-      this.scheduleForm.get('associateDepartment')?.value;
+      this.scheduleForm.get('departmentId')?.value;
 
     this.filteredAssociates =
       this.associateRecords.filter(
@@ -138,33 +144,54 @@ export class AssignScheduleAsspciationComponent implements OnInit {
       );
 
     this.scheduleForm.patchValue({
-      associateName: '',
+      associateId: '',
       associateSpeciality: ''
     });
   }
 
-  updateSpeciality(): void {
+  updateSpeciality(event: any): void {
 
-    const record = this.findSelectedRecord();
+    const record = this.associateRecords.find(
+      x => x.associateId == event.target.value
+    );
+
+    if (!record) return;
+
+
+    const designationControl = this.scheduleForm.get('designationId');
+    this.showDesignation = !!record.designationId;
+    if (record.designationId) {
+      designationControl?.setValidators([Validators.required]);
+    } else {
+      designationControl?.clearValidators();
+      designationControl?.setValue('');
+    }
+
+    designationControl?.updateValueAndValidity();
 
     this.scheduleForm.patchValue({
-      associateSpeciality: record?.speciality || ''
+      roleId: record.roleId,
+      departmentId: record.departmentId,
+      specialityId: record.specialityId
     });
+
+    if (record.designationId) {
+      this.scheduleForm.patchValue({
+        designationId: record.designationId
+      });
+    }
   }
 
-  findSelectedRecord(): AssociateRecord | undefined {
+  findSelectedRecord() {
 
     const form = this.scheduleForm.value;
 
     return this.associateRecords.find(
-      x =>
-        x.department === form.associateDepartment &&
-        x.name === form.associateName &&
-        x.role === form.associateRole
+      x => x.associateId == form.associateId
     );
   }
 
-  toggleDay(day: string): void {
+  toggleDay(day: any): void {
 
     const index = this.selectedDays.indexOf(day);
 
@@ -175,7 +202,7 @@ export class AssignScheduleAsspciationComponent implements OnInit {
     }
   }
 
-  isDaySelected(day: string): boolean {
+  isDaySelected(day: any): boolean {
     return this.selectedDays.includes(day);
   }
 
@@ -183,18 +210,26 @@ export class AssignScheduleAsspciationComponent implements OnInit {
 
     if (this.currentStep === 0) {
 
+
       const controls = [
-        'associateDepartment',
-        'associateName',
-        'associateRole'
+        'associateId',
+        'roleId',
+        'departmentId'
       ];
 
-      controls.forEach(control =>
-        this.scheduleForm.get(control)?.markAsTouched()
-      );
 
-      return controls.every(
-        control => this.scheduleForm.get(control)?.valid
+
+      if (this.showDesignation) {
+        controls.push('designationId');
+      }
+
+      controls.forEach(control => {
+        this.scheduleForm.get(control)?.markAsTouched();
+
+      });
+
+      return controls.every(control =>
+        this.scheduleForm.get(control)?.valid
       );
     }
 
@@ -211,8 +246,8 @@ export class AssignScheduleAsspciationComponent implements OnInit {
         this.scheduleForm.get(control)?.markAsTouched()
       );
 
-      return controls.every(
-        control => this.scheduleForm.get(control)?.valid
+      return controls.every(control =>
+        this.scheduleForm.get(control)?.valid
       );
     }
 
@@ -221,14 +256,14 @@ export class AssignScheduleAsspciationComponent implements OnInit {
 
   openAssociatePopup(): void {
 
+    const record = this.findSelectedRecord();
     if (!this.validateCurrentStep()) {
+      alert('Please fill all required fields');
       return;
     }
 
-    if (!this.findSelectedRecord()) {
-      alert(
-        'Please select matching Department, Name and Role.'
-      );
+    if (!record) {
+      alert('Please select matching Department, Name and Role.');
       return;
     }
 
@@ -240,7 +275,7 @@ export class AssignScheduleAsspciationComponent implements OnInit {
   }
 
   confirmAssociate(): void {
-
+    window.scroll(0, 0)
     this.associateModal = false;
     this.currentStep = 1;
   }
@@ -252,6 +287,7 @@ export class AssignScheduleAsspciationComponent implements OnInit {
     }
 
     this.currentStep++;
+    window.scroll(0, 0)
   }
 
   previousStep(): void {
@@ -261,36 +297,82 @@ export class AssignScheduleAsspciationComponent implements OnInit {
     }
   }
 
-  submitSchedule(): void {
+  async submitSchedule() {
 
     if (this.scheduleForm.invalid) {
       this.scheduleForm.markAllAsTouched();
       return;
     }
-    this.successModal = true
-
-    this.populateSummary();
-
-    console.log({
+    const payload = {
       ...this.scheduleForm.value,
-      selectedDays: this.selectedDays
-    });
+      associateId: Number(this.scheduleForm.value.associateId),
+      workingDays: this.selectedDays.join(","),
+      otpMethod: "mobile",
+      createdBy: "Created By Admin"
 
-    this.successModal = true;
+    }
+
+    await this.store.dispatch(createAssociatesSchedule({ associate: payload }))
+    await this.store.select(selectCreatedAssociateSchedule).subscribe((res: any) => {
+      if (res) {
+        this.successModal = true
+
+        this.populateSummary();
+      }
+    })
+
+
   }
 
   populateSummary(): void {
 
     const form = this.scheduleForm.value;
 
+    const associate = this.associateRecords.find(
+      x => x.associateId == form.associateId
+    );
+
+    const department = this.departments.find(
+      x => x.departmentId == form.departmentId
+    );
+
+    const role = this.allRoles.find(
+      (x: any) => x.roleId == form.roleId
+    );
+
+    const designation = this.designations.find(
+      x => x.designationId == form.designationId
+    );
+
+    const speciality = this.speciality.find(
+      x => x.specialityId == form.specialityId
+    );
+
+    const selectedDayNames = this.allDays
+      .filter(day => this.selectedDays.includes(day.weekdayId))
+      .map(day => day.dayName)
+      .join(', ');
+
     this.summaryData = [
       {
         label: 'Associate',
-        value: form.associateName
+        value: `${associate?.firstName ?? ''} ${associate?.lastName ?? ''}`
+      },
+      {
+        label: 'Role',
+        value: role?.roleName ?? ''
       },
       {
         label: 'Department',
-        value: form.associateDepartment
+        value: department?.departmentName ?? ''
+      },
+      {
+        label: 'Designation',
+        value: designation?.designationName ?? ''
+      },
+      {
+        label: 'Speciality',
+        value: speciality?.specialityName ?? ''
       },
       {
         label: 'Availability',
@@ -302,7 +384,7 @@ export class AssignScheduleAsspciationComponent implements OnInit {
       },
       {
         label: 'Days',
-        value: this.selectedDays.join(', ')
+        value: selectedDayNames
       },
       {
         label: 'Consultation',
@@ -315,7 +397,7 @@ export class AssignScheduleAsspciationComponent implements OnInit {
     this.successModal = false;
   }
 
-  get modalRecord(): AssociateRecord {
+  get modalRecord() {
     return this.findSelectedRecord() || this.associateRecords[0];
   }
 

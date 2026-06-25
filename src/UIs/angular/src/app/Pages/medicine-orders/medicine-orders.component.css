@@ -58,7 +58,7 @@
 }
 
 .search-box input{
-    width:300px !important;
+
     height:58px;
     border:1px solid #E4E6EF;
     border-radius:12px;
@@ -84,12 +84,14 @@
   color: #000;
 }
 
+
 .sort-select{
     width:15vw;
     height:58px;
     border-radius:12px;
     border:1px solid #E4E6EF;
     padding:0 15px;
+    display: none;
 }
 .medicine-table-wrapper{
       width: 100%;
@@ -598,6 +600,7 @@
     .search-box,
     .search-box input,
     .sort-select{
+        display: block;
         width:100% !important;
     }
 

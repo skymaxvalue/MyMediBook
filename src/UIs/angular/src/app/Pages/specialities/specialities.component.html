@@ -48,8 +48,9 @@
 
         <div class="doc-left">
 
-            <img src="{{apiUrl}}{{doctor.image}}" class="doc-img" alt="doctor">
 
+            <!-- <img src="{{apiUrl}}{{doctor.image}}" class="doc-img" alt="doctor"> -->
+            <img src="assets/images/doc.jpg" class="doc-img" alt="doctor">
             <div class="doc-info">
 
                 <p>
@@ -79,7 +80,7 @@
 
             <p>[Visiting Hours / Out Of Station]</p>
 
-            <h3>{{ getAmPmTime(doctor?.fromTime) }} - {{ getAmPmTime(doctor?.toTime) }}</h3>
+            <h3>{{doctor?.fromTime }} - {{doctor?.toTime}}</h3>
 
             <span class="arrow">➤</span>
 

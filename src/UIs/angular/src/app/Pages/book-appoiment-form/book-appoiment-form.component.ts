@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-book-appoiment-form',
@@ -78,7 +79,7 @@ export class BookAppoimentFormComponent implements OnInit {
     }
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private store: Store) {
     this.loginUser = JSON.parse(localStorage.getItem('token') || 'null')
 
   }
@@ -87,7 +88,9 @@ export class BookAppoimentFormComponent implements OnInit {
     this.initializeForm();
     this.handleInsuranceChange();
     this.handleDobChange();
+    this.InitialApiCall();
   }
+
 
   initializeForm(): void {
     this.bookingForm = this.fb.group({
@@ -137,6 +140,10 @@ export class BookAppoimentFormComponent implements OnInit {
       otpMethod: ['', Validators.required],
       RealtionType: ['', Validators.required]
     });
+  }
+
+  InitialApiCall() {
+
   }
 
 

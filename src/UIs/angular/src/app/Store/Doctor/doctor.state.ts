@@ -4,7 +4,14 @@ export interface DoctorSpecialityState {
     error: any;
     allSpeciality: any[];
     allDepartments: any[];
-    allRoles: any[]
+    allRoles: any[];
+    registerassociate: any;
+    allRoleDepartSpeci: any[];
+    weeakDays: any[];
+    allAssociates: any[];
+    associateSchedule: any;
+    timeSlot: any[];
+
 }
 
 export const initialState: DoctorSpecialityState = {
@@ -13,6 +20,12 @@ export const initialState: DoctorSpecialityState = {
     error: null,
     allSpeciality: [],
     allDepartments: [],
-    allRoles: []
+    allRoles: [],
+    registerassociate: null,
+    allRoleDepartSpeci: [],
+    weeakDays: [],
+    allAssociates: [],
+    associateSchedule: null,
+    timeSlot: []
 
 };

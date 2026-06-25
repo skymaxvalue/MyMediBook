@@ -4,7 +4,7 @@
     <div class="form-layout compact" [formGroup]="group">
         <label for="highestDegree">Highest Degree<span class="star">*</span></label>
         <div class="field-container">
-            <input id="highestDegree" formControlName="highestDegree" type="text"
+            <input id="highestDegree" formControlName="highestDegree" (keypress)="allowOnlyText($event)" type="text"
                 placeholder="(e.g., MBBS, B.Sc Nursing, MD)" required>
             @if(group.get('highestDegree')?.touched &&
             group.get('highestDegree')?.hasError('required')) {
@@ -17,7 +17,7 @@
 
         <label for="specialization">Specialization<span class="star">*</span></label>
         <div class="field-container">
-            <input id="specialization" formControlName="specialization" type="text"
+            <input id="specialization" formControlName="specialization" (keypress)="allowOnlyText($event)" type="text"
                 placeholder="(e.g., Pediatrics, Cardiology, General Surgery)" required>
             @if(group.get('specialization')?.touched &&
             group.get('specialization')?.hasError('required')) {
@@ -30,7 +30,7 @@
 
         <label for="institutionName">Institution/University Name<span class="star">*</span></label>
         <div class="field-container">
-            <input id="institutionName" formControlName="institutionName" type="text"
+            <input id="institutionName" formControlName="institutionName" (keypress)="allowOnlyText($event)" type="text"
                 placeholder="Enter your Institution/University Name" required>
             @if(group.get('institutionName')?.touched &&
             group.get('institutionName')?.hasError('required')) {
@@ -44,7 +44,7 @@
         <label for="yearOfPassing">Year of Passing<span class="star">*</span></label>
         <div class="field-with-icon compact-field">
             <div class="field-container">
-                <input id="yearOfPassing" formControlName="yearOfPassing" type="date" required>
+                <input id="yearOfPassing" formControlName="yearOfPassing" [max]="maxDate" type="date" required>
                 @if(group.get('yearOfPassing')?.touched &&
                 group.get('yearOfPassing')?.hasError('required')) {
                 <div class="error-message">
@@ -69,7 +69,7 @@
         <label for="licenseExpiry">License Expiry Date<span class="star">*</span></label>
         <div class="field-with-icon compact-field">
             <div class="field-container">
-                <input id="licenseExpiry" formControlName="licenseExpiry" type="date" required>
+                <input id="licenseExpiry" formControlName="licenseExpiry" [min]="minExpiryDate" type="date" required>
                 @if(group.get('licenseExpiry')?.touched &&
                 group.get('licenseExpiry')?.hasError('required')) {
                 <div class="error-message">

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { Observable, map } from 'rxjs';
+import { Observable, combineLatest, map } from 'rxjs';
 
 import { AsyncPipe } from "@angular/common";
 import { Store } from "@ngrx/store";
@@ -13,15 +13,21 @@ import { AppState } from "./Store/app.state";
   imports: [RouterOutlet, AsyncPipe],
 })
 export class AppComponent {
-  isLoading$ = this.store.select(state => state.auth).pipe(
-    map(auth => {
-      console.log('TEMPLATE AUTH =>', auth);
-      return auth.isLoading;
-    })
-  );
   constructor(private store: Store<AppState>) {
 
   }
+  isLoading$ = combineLatest([
+    this.store.select(state => state.auth.isLoading),
+    this.store.select(state => state.doctor.isLoading),
+    this.store.select(state => state.appointment.isLoading),
+    this.store.select(state => state.patient.isLoading)
+  ]).pipe(
+    map(([auth, doctor, appointment]) =>
+      auth || doctor || appointment
+    )
+  );
+
+
 
 
 
