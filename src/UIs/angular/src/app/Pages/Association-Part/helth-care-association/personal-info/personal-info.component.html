@@ -31,11 +31,19 @@
         </div>
         <label for="dateOfBirth">Date Of Birth<span class="star">*</span></label>
         <div class="field-container">
-            <input id="dateOfBirth" formControlName="dateOfBirth" type="date" required>
+            <input id="dateOfBirth" formControlName="dateOfBirth" type="date" [max]="maxDate" required
+                (change)="onDobChange($event)">
             @if(group.get('dateOfBirth')?.touched &&
             group.get('dateOfBirth')?.hasError('required')) {
             <div class="error-message">
                 Date of Birth is required
+            </div>
+            }
+            @if(!isValidAge){
+
+            <div class="form-row mt-0 pt-0">
+                <label for="dob"></label>
+                <small class="text-danger"> {{ ageError }}</small>
             </div>
             }
         </div>
@@ -259,9 +267,11 @@
             </div> -->
             <div class="upload-row">
 
-                <input #identityFileInput type="file" hidden (change)="onFileSelected($event)">
+                <input #identityFileInput type="file" hidden (change)="onFileSelected($event)"
+                    [disabled]="!group.get('identityDocument')?.value">
 
-                <button type="button" class="file-button" (click)="identityFileInput.click()">
+                <button type="button" class="file-button" (click)="identityFileInput.click()"
+                    [disabled]="!group.get('identityDocument')?.value">
 
                     <span class="file-button-text">
                         {{ selectedFile?.name || 'Choose File' }}

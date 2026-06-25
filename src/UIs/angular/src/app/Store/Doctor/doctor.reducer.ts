@@ -106,7 +106,171 @@ export const doctorSpecialityReducer = createReducer(
     ),
 
     on(
-        DoctorSpecialityActions.loadAllDepartmentsFailure,
+        DoctorSpecialityActions.loadAllRolesFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.registerAssociotion,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.registerAssociotionSuccess,
+        (state, { associate }) => ({
+            ...state,
+            registerassociate: associate,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.registerAssociotionFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    ),
+    on(
+        DoctorSpecialityActions.getRoleDepaSpecia,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getRoleDepaSpeciaSuccess,
+        (state, { allRoleDepartSpeci }) => ({
+            ...state,
+            allRoleDepartSpeci: allRoleDepartSpeci,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getRoleDepaSpeciaFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getWeekDays,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getWeekDaysSuccess,
+        (state, { weeakDays }) => ({
+            ...state,
+            weeakDays: weeakDays,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getWeekDaysFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    )
+    ,
+
+    on(
+        DoctorSpecialityActions.getAllAssociates,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getAllAssociatesSuccess,
+        (state, { allAssociates }) => ({
+            ...state,
+            allAssociates: allAssociates,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getAllAssociatesFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    )
+    ,
+
+    on(
+        DoctorSpecialityActions.createAssociatesSchedule,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.createAssociatesScheduleSuccess,
+        (state, { associateSchedule }) => ({
+            ...state,
+            associateSchedule: associateSchedule,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.createAssociatesScheduleFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    )
+    ,
+
+    on(
+        DoctorSpecialityActions.getTimeSloteByDoctorID,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess,
+        (state, { doctorTimeSlot }) => ({
+            ...state,
+            associateSchedule: doctorTimeSlot,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getTimeSloteByDoctorIDFailure,
         (state, { error }) => ({
             ...state,
             error,

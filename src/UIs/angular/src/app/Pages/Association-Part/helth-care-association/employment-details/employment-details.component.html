@@ -5,7 +5,7 @@
         <label for="joiningDate">Date of Joining<span class="star">*</span></label>
         <div class="field-with-icon compact-field">
             <div class="field-container">
-                <input id="joiningDate" formControlName="joiningDate" type="date" required>
+                <input id="joiningDate" formControlName="joiningDate" type="date" [min]="todayDate" required>
                 @if(group.get('joiningDate')?.touched &&
                 group.get('joiningDate')?.hasError('required')) {
                 <div class="error-message">
@@ -37,6 +37,27 @@
             }
         </div>
 
+        <label for="role">Role<span class="star">*</span></label>
+
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="gender" formControlName="roleId" required>
+                    <option [ngValue]="null">Select Role Name</option>
+                    @for(role of roles; track role.roleId) {
+                    <option [value]="role?.roleId"> <b>{{ role.roleName }}</b> {{ role.description }}</option>
+                    }
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+            @if(group.get('roleId')?.touched &&
+            group.get('roleId')?.hasError('required')) {
+            <div class="error-message">
+                Role is required
+            </div>
+            }
+
+        </div>
+
 
 
         <label for="departmentName">Department<span class="star">*</span></label>
@@ -44,7 +65,7 @@
         <div class="field-container">
             <div class="field-with-action compact-field">
                 <select id="gender" formControlName="departmentId" required>
-                    <option value="">Select Department Name</option>
+                    <option [ngValue]="null">Select Department Name</option>
                     @for(dep of departments; track dep.departmentId) {
                     <option [value]="dep?.departmentId">{{ dep.departmentName }}</option>
                     }
@@ -60,12 +81,37 @@
 
         </div>
 
+        @if(designations && designations.length > 0) {
+        <label for="departmentName">Designation<span class="star">*</span></label>
+
+        <div class="field-container">
+            <div class="field-with-action compact-field">
+                <select id="gender" formControlName="designationId" required>
+                    <option [ngValue]="null">Select Designation Name</option>
+                    @for(des of designations; track des.designationId) {
+                    <option [value]="des?.designationId">{{ des.designationName }}</option>
+                    }
+                </select>
+                <span class="field-action">⌄</span>
+            </div>
+            @if(group.get('designationId')?.touched &&
+            group.get('designationId')?.hasError('required')) {
+            <div class="error-message">
+                Designation name is required
+            </div>
+            }
+
+        </div>
+
+        }
+
+        @if(speciality && speciality.length > 0) {
         <label for="designation">Speciality<span class="star">*</span></label>
 
         <div class="field-container">
             <div class="field-with-action compact-field">
                 <select formControlName="specialityId" required>
-                    <option value="">Select Role Name</option>
+                    <option value="">Select Speciality Name</option>
                     @for(spe of speciality; track spe.specialityId) {
                     <option [value]="spe?.specialityId">{{ spe.specialityName }}</option>
                     }
@@ -75,31 +121,16 @@
             @if(group.get('specialityId')?.touched &&
             group.get('specialityId')?.hasError('required')) {
             <div class="error-message">
+                Speciality name is required
             </div>
             }
 
         </div>
 
+        }
 
-        <label for="role">Role<span class="star">*</span></label>
 
-        <div class="field-container">
-            <div class="field-with-action compact-field">
-                <select id="gender" formControlName="roleId" required>
-                    <option value="">Select Role Name</option>
-                    @for(role of roles; track role.roleId) {
-                    <option [value]="role?.roleId"> <b>{{ role.roleName }}</b> {{ role.description }}</option>
-                    }
-                </select>
-                <span class="field-action">⌄</span>
-            </div>
-            @if(group.get('roleId')?.touched &&
-            group.get('roleId')?.hasError('required')) {
-            <div class="error-message">
-            </div>
-            }
 
-        </div>
 
 
 

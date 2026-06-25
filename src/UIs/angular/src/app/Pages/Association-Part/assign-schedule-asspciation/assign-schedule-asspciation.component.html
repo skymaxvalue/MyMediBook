@@ -38,46 +38,108 @@
                 <h2>Select Associate</h2>
 
                 <div class="schedule-grid schedule-grid-compact">
-                    <label for="associateDepartment">Department<span class="star">*</span></label>
+                    <label for="associateName">Associate Name<span class="star">*</span></label>
                     <div class="select-shell">
-                        <select formControlName="associateDepartment" (change)="updateNameOptions()">
-                            (change)="updateNameOptions()" required>
-                            <option value="">Select Department</option>
-                            <option value="GENERAL">GENERAL</option>
-                            <option value="CARDIOLOGY">CARDIOLOGY</option>
-                            <option value="ORTHOPEDICS">ORTHOPEDICS</option>
-                        </select>
-                        <span class="select-arrow">⌄</span>
-                    </div>
+                        <select formControlName="associateId" (change)="updateSpeciality($event)">
 
-                    <label for="associateName">Full Name<span class="star">*</span></label>
-                    <div class="select-shell">
-                        <select formControlName="associateName" (change)="updateSpeciality()">
+                            <option value="">Select Associate Name</option>
 
-                            <option value="">Select Full Name</option>
-
-                            @for (associate of filteredAssociates; track associate.name) {
-                            <option [value]="associate.name">
-                                {{ associate.name }}
+                            @for (associate of associateRecords; track associate?.associateId) {
+                            <option [value]="associate?.associateId">
+                                {{ associate?.firstName }} {{associate?.lastName}}
                             </option>
                             }
                         </select>
                         <span class="select-arrow">⌄</span>
+                        @if (
+                        scheduleForm.get('associateName')?.touched &&
+                        scheduleForm.get('associateName')?.hasError('required')
+                        ) {
+                        <div class="error-message">
+                            Associate name is required
+                        </div>
+                        }
                     </div>
 
                     <label for="associateRole">Role<span class="star">*</span></label>
                     <div class="select-shell">
-                        <select formControlName="associateRole" (change)="updateSpeciality()">
+                        <select formControlName="roleId" class="readonly-select">
                             <option value="">Select Role</option>
-                            <option value="Doctor">Doctor</option>
-                            <option value="Consultant">Consultant</option>
-                            <option value="Specialist">Specialist</option>
+                            @for(role of allRoles; track role.roleId) {
+                            <option [value]="role?.roleId"> {{ role.roleName }}</option>
+                            }
+
                         </select>
                         <span class="select-arrow">⌄</span>
+                        @if (
+                        scheduleForm.get('roleId')?.touched &&
+                        scheduleForm.get('roleId')?.hasError('required')
+                        ) {
+                        <div class="error-message">
+                            Role is required
+                        </div>
+                        }
                     </div>
 
+                    <label for="associateDepartment">Department<span class="star">*</span></label>
+                    <div class="select-shell">
+                        <select formControlName="departmentId" class="readonly-select">
+                            required>
+                            <option value="">Select Department</option>
+                            @for(dep of departments; track dep.departmentId) {
+                            <option [value]="dep?.departmentId">{{ dep.departmentName }}</option>
+                            }
+                        </select>
+                        <span class="select-arrow">⌄</span>
+                        @if (
+                        scheduleForm.get('departmentId')?.touched &&
+                        scheduleForm.get('departmentId')?.hasError('required')
+                        ) {
+                        <div class="error-message">
+                            Department is required
+                        </div>
+                        }
+                    </div>
+                    @if(showDesignation && designations && designations.length > 0) {
+                    <label for="associateDepartment">Designation<span class="star">*</span></label>
+                    <div class="select-shell">
+
+                        <span class="select-arrow">⌄</span>
+                        <select id="gender" class="readonly-select" formControlName="designationId" required>
+                            <option [ngValue]="null">Select Designation Name</option>
+                            @for(des of designations; track des.designationId) {
+                            <option [value]="des?.designationId">{{ des.designationName }}</option>
+                            }
+                        </select>
+
+                        @if (
+                        scheduleForm.get('designationId')?.touched &&
+                        scheduleForm.get('designationId')?.hasError('required')
+                        ) {
+                        <div class="error-message">
+                            Department is required
+                        </div>
+                        }
+                    </div>
+
+                    }
+                    @if(speciality && speciality.length > 0) {
                     <label for="associateSpeciality">Speciality</label>
-                    <input formControlName="associateSpeciality" readonly>
+                    <div class="select-shell">
+
+                        <span class="select-arrow">⌄</span>
+                        <select id="gender" class="readonly-select" formControlName="specialityId" required>
+                            <option [ngValue]="null">Select Designation Name</option>
+                            @for(spe of speciality; track spe.specialityId) {
+                            <option [value]="spe?.specialityId">{{ spe.specialityName }}</option>
+                            }
+                        </select>
+
+
+                    </div>
+                    }
+
+
                 </div>
 
                 <div class="schedule-actions between">
@@ -102,14 +164,28 @@
                         <label for="fromDate">From Date<span class="star">*</span></label>
                         <div class="date-shell">
                             <input type="date" formControlName="fromDate">
-
+                            @if (
+                            scheduleForm.get('fromDate')?.touched &&
+                            scheduleForm.get('fromDate')?.hasError('required')
+                            ) {
+                            <div class="error-message">
+                                From Date is required
+                            </div>
+                            }
                         </div>
                     </div>
                     <div class="availability-block">
                         <label for="toDate">To Date<span class="star">*</span></label>
                         <div class="date-shell">
                             <input type="date" formControlName="toDate">
-
+                            @if (
+                            scheduleForm.get('toDate')?.touched &&
+                            scheduleForm.get('toDate')?.hasError('required')
+                            ) {
+                            <div class="error-message">
+                                To Date is required
+                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -144,9 +220,10 @@
                 <div class="day-pills" id="dayPills">
                     @for (day of allDays; track day) {
 
-                    <button type="button" class="day-pill" [class.active]="isDaySelected(day)" (click)="toggleDay(day)">
+                    <button type="button" class="day-pill" [class.active]="isDaySelected(day.weekdayId)"
+                        (click)="toggleDay(day.weekdayId)">
 
-                        {{ day }}
+                        {{ day.dayName.slice(0, 3) }}
 
                     </button>
 
@@ -159,7 +236,7 @@
                     <div class="availability-block">
                         <label for="breakFrom">From Time</label>
                         <div class="select-shell time-shell">
-                            <select formControlName="breakFrom">
+                            <select formControlName="breakTimeFrom">
                                 <option value="02:00 PM">02:00 PM</option>
                                 <option value="01:00 PM">01:00 PM</option>
                                 <option value="03:00 PM">03:00 PM</option>
@@ -170,7 +247,7 @@
                     <div class="availability-block">
                         <label for="breakTo">To Time</label>
                         <div class="select-shell time-shell">
-                            <select formControlName="breakTo">
+                            <select formControlName="breakTimeTo">
                                 <option value="06:00 PM">06:00 PM</option>
                                 <option value="05:00 PM">05:00 PM</option>
                                 <option value="07:00 PM">07:00 PM</option>
@@ -200,10 +277,10 @@
                     <div class="consult-block">
                         <label for="consultDuration">Consultation Duration</label>
                         <div class="select-shell consult-shell">
-                            <select formControlName="consultDuration">
-                                <option value="30 Minutes">30 Minutes</option>
-                                <option value="45 Minutes">45 Minutes</option>
-                                <option value="60 Minutes">60 Minutes</option>
+                            <select formControlName="consultationTime">
+                                <option value="30">30 Minutes</option>
+                                <option value="45">45 Minutes</option>
+                                <option value="60">60 Minutes</option>
                             </select>
                             <span class="select-arrow">⌄</span>
                         </div>
@@ -252,23 +329,33 @@
 
                 <div>
                     <span>Department:</span>
-                    <strong>{{ modalRecord.department }}</strong>
+                    <strong>{{ modalRecord?.departmentName }}</strong>
                 </div>
 
                 <div>
                     <span>Full Name:</span>
-                    <strong>{{ modalRecord.name }}</strong>
+                    <strong>{{ modalRecord?.firstName }} {{ modalRecord?.lastName }}</strong>
                 </div>
 
                 <div>
                     <span>Role:</span>
-                    <strong>{{ modalRecord.role }}</strong>
+                    <strong>{{ modalRecord?.roleName }}</strong>
                 </div>
+
+                @if(modalRecord.specialityName){
 
                 <div>
                     <span>Speciality:</span>
-                    <strong>{{ modalRecord.speciality }}</strong>
+                    <strong>{{ modalRecord?.specialityName }}</strong>
                 </div>
+                }
+                @if( modalRecord.designationName){
+                <div>
+                    <span>Designation:</span>
+                    <strong>{{ modalRecord?.designationName }}</strong>
+                </div>
+
+                }
 
             </div>
 
@@ -294,13 +381,38 @@
 
 @if(successModal){
 
-<div class="schedule-modal" id="successModal" aria-hidden="true">
+<div class="schedule-modal">
     <div class="schedule-modal-card success-card">
-        <button type="button" class="modal-close" id="closeSuccessModal">×</button>
-        <h3>Schedule Confirmed</h3>
-        <p>The associate schedule has been saved successfully.</p>
-        <div class="summary-grid" id="scheduleSummary"></div>
-        <button type="button" class="action-btn primary full" id="doneScheduleModal">Done</button>
+
+        <!-- Header -->
+        <div class="modal-header">
+            <button type="button" class="modal-close" (click)="closeSuccessModal()">
+                ×
+            </button>
+
+            <h3>Schedule Confirmed</h3>
+            <p>The associate schedule has been saved successfully.</p>
+        </div>
+
+        <!-- Scrollable Body -->
+        <div class="modal-body">
+            <div class="summary-grid">
+                @for(item of summaryData; track item.label) {
+                <div class="summary-item">
+                    <strong>{{ item.label }}:</strong>
+                    <span>{{ item.value }}</span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Fixed Footer -->
+        <div class="modal-footer">
+            <button type="button" class="action-btn primary full" (click)="closeSuccessModal()">
+                Done
+            </button>
+        </div>
+
     </div>
 </div>
 }

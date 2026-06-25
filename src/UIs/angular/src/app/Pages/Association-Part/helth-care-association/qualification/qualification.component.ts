@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output } from "@angular/core";
+import { Component, Input, EventEmitter, Output, OnInit } from "@angular/core";
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,8 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: "./qualification.component.html",
   styleUrl: "./qualification.component.css",
 })
-export class QualificationComponent {
+export class QualificationComponent implements OnInit {
+
   @Input() group!: FormGroup;
   @Input() currentStep!: number;
 
@@ -16,10 +17,35 @@ export class QualificationComponent {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   isFileUploaded = false
+  maxDate: string = '';
+  minExpiryDate: string = '';
+  ngOnInit(): void {
+
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+
+    this.maxDate = nextYear.toISOString().split('T')[0];
+
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+
+    this.minExpiryDate = new Date().toISOString().split('T')[0];
+  }
+
+
   onPrevious() {
     this.back.emit();
   }
+  allowOnlyText(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
 
+    if (
+      !(charCode >= 65 && charCode <= 90) &&
+      !(charCode >= 97 && charCode <= 122) &&
+      charCode !== 32
+    ) {
+      event.preventDefault();
+    }
+  }
 
 
   onFileSelected(event: Event): void {
@@ -31,15 +57,28 @@ export class QualificationComponent {
     }
   }
 
-  uploadFile(): void {
 
+  uploadFile(): void {
     if (!this.selectedFile) {
       return;
     }
 
     this.previewUrl = URL.createObjectURL(this.selectedFile);
-    this.isFileUploaded = true
-    this.group.get('qualificationDocuments')?.setValue(this.previewUrl);
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result as string;
+
+      this.group.get('qualificationDocuments')?.setValue(base64String);
+
+    };
+
+    reader.readAsDataURL(this.selectedFile);
+
+
+    this.isFileUploaded = true;
+
 
   }
 

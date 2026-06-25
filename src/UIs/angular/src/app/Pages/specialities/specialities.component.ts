@@ -23,6 +23,7 @@ export class SpecialitiesComponent {
     this.onDoctorSelected.emit(doctor);
   }
 
+  // Currently not in used due to change backend data
   getAmPmTime(time: string): string {
 
     const [hours, minutes] = time.split(':');

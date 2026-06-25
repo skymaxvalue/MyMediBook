@@ -22,4 +22,7 @@ export class AppoinmentService {
       appointment
     );
   }
+  getAgeType() {
+    return this.http.get(`${this.apiUrl}${APIEndpoints.GET_AGE_TYPE}`)
+  }
 }

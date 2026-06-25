@@ -9,8 +9,9 @@ import { Store } from '@ngrx/store';
 import * as AuthActions from "../../../Store/Auth/auth.actions";
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { loadAllDepartments, loadAllRoles, loadAllSpecialities } from 'src/app/Store/Doctor/doctor.action';
-import { selectAllDepartments, selectAllRoles, selectAllSpecialities } from 'src/app/Store/Doctor/doctor.selectors';
+import { getRoleDepaSpecia, loadAllDepartments, loadAllDepartmentsSuccess, loadAllRoles, loadAllSpecialities, loadDoctorSpecialities, registerAssociotion } from 'src/app/Store/Doctor/doctor.action';
+import { selectAllDepartments, selectAllRoles, selectAllSpecialities, selectGetRoleDepSpeciOfAssociate, selectRegisterAssociate } from 'src/app/Store/Doctor/doctor.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: "app-helth-care-association",
@@ -81,7 +82,7 @@ export class HelthCareAssociationComponent {
         institutionName: ['', Validators.required],
         yearOfPassing: ['', Validators.required],
         registrationNumber: ['', Validators.required],
-        licenseExpiry: ['', Validators.required],
+        licenseExpiry: [null, Validators.required],
         additionalCertifications: [''],
         qualificationDocuments: [null, Validators.required]
 
@@ -99,14 +100,16 @@ export class HelthCareAssociationComponent {
       employmentDetails: this.fb.group({
         joiningDate: ['', Validators.required],
         employeeType: ['', Validators.required],
-        departmentId: ['', Validators.required],
-        roleId: ['', Validators.required],
-        specialityId: ['', Validators.required],
+        departmentId: [{ value: null, disabled: true }, Validators.required],
+        roleId: [{ value: null, disabled: false }, Validators.required],
+        specialityId: [{ value: null, disabled: true }, Validators.required],
+        designationId: [{ value: null, disabled: true }, Validators.required]
       })
     });
   }
 
   nextStep(step: number) {
+    window.scrollTo(0, 0);
     this.currentStep = step;
     this.updateStepStatus();
 
@@ -123,7 +126,7 @@ export class HelthCareAssociationComponent {
         stateControl?.enable();
         stateControl?.reset();
       }
-    });
+    }); this.store.select
   }
   async onSelectState(stateId: number) {
     await this.store.dispatch(
@@ -191,13 +194,16 @@ export class HelthCareAssociationComponent {
   }
 
   InitialApiCall() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
     this.store.dispatch(
       AuthActions.getCountries()
     );
 
     this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
       if (countries.data) {
-        console.log(countries)
         this.countries = countries.data;
         this.associateForm
           .get('personalInfo.phoneCountryCode')
@@ -207,28 +213,15 @@ export class HelthCareAssociationComponent {
           ?.setValue(this.countries[0].phoneCode);
       }
     });
+
     this.store.dispatch(
-      loadAllSpecialities());
-    this.store.dispatch(
-      loadAllDepartments());
-    this.store.dispatch(
-      loadAllRoles());
+      getRoleDepaSpecia());
 
 
-    this.store.select(selectAllSpecialities)
-      .subscribe((res: any) => {
-        this.allSpecialities = res;
-        console.log(this.allSpecialities, "------12----->")
-      });
-    this.store.select(selectAllDepartments)
-      .subscribe((res: any) => {
-        this.allDepartments = res;
-        console.log(this.allDepartments, "------1----->")
-      });
-    this.store.select(selectAllRoles)
+
+    this.store.select(selectGetRoleDepSpeciOfAssociate)
       .subscribe((res: any) => {
         this.allRoles = res;
-        console.log(this.allRoles, "------2----->")
       });
   }
 
@@ -264,20 +257,43 @@ export class HelthCareAssociationComponent {
     }
   }
 
-  submit(): void {
+  async submit() {
+
     console.log(this.associateForm.value);
     const payload = {
       ...this.associateForm.value.personalInfo,
+      languagesSpoken: this.associateForm.value.personalInfo.languagesSpoken.join(','),
       ...this.associateForm.value.employmentDetails,
+      roleId: Number(this.associateForm.value.employmentDetails.roleId),
+      specialityId: Number(this.associateForm.value.employmentDetails.specialityId),
+      departmentId: Number(this.associateForm.value.employmentDetails.departmentId),
+      cityId: Number(this.associateForm.value.personalInfo.cityId),
+      stateId: Number(this.associateForm.value.personalInfo.stateId),
+      countryId: Number(this.associateForm.value.personalInfo.countryId),
+      createdBy: this.associateForm.value.personalInfo.firstName + " " + this.associateForm.value.personalInfo.lastName,
+      designationId: Number(this.associateForm.value.employmentDetails.designationId),
       associateQualification: {
-        ...this.associateForm.value.qualification
+        ...this.associateForm.value.qualification,
+        yearOfPassing: new Date(this.associateForm.value.qualification.yearOfPassing).getFullYear()
       },
       associateExperience: {
-        ...this.associateForm.value.experience
+        ...this.associateForm.value.experience,
+        experienceYears: Number(this.associateForm.value.experience.experienceYears)
       }
     }
-    this.toastr.success("Association added successfully")
-    this.router.navigateByUrl('association-list')
+    await this.store.dispatch(registerAssociotion({ associate: payload }))
+    await this.store.select(selectRegisterAssociate)
+      .subscribe((res: any) => {
+        if (res) {
+          if (res.isSuccess === 1) {
+            this.router.navigateByUrl('/association-list');
+          } else {
+            return
+          }
+
+
+        }
+      });
 
   }
 }

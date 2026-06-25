@@ -21,5 +21,22 @@ export const appointmentReducer = createReducer(
         ...state,
         isLoading: false,
         error: action.error
+    })),
+    on(AppointmentActions.getAgeType, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getAgeTypeSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        appointment: action.ageType
+    })),
+
+    on(AppointmentActions.getAgeTypeFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
     }))
 );

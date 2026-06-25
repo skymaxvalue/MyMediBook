@@ -27,4 +27,28 @@ export const selectLoading = createSelector(
     selectDoctorSpecialityState,
     state => state.isLoading
 );
+export const selectRegisterAssociate = createSelector(
+    selectDoctorSpecialityState,
+    state => state.registerassociate
+);
+export const selectGetRoleDepSpeciOfAssociate = createSelector(
+    selectDoctorSpecialityState,
+    state => state.allRoleDepartSpeci
+);
+export const selectGetWeekDays = createSelector(
+    selectDoctorSpecialityState,
+    state => state.weeakDays
+);
 
+export const selectGelAllAssociate = createSelector(
+    selectDoctorSpecialityState,
+    state => state.allAssociates
+);
+export const selectCreatedAssociateSchedule = createSelector(
+    selectDoctorSpecialityState,
+    state => state.associateSchedule
+);
+export const selectGetTimeSlotOfDoctor = createSelector(
+    selectDoctorSpecialityState,
+    state => state.timeSlot
+)

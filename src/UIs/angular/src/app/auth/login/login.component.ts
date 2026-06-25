@@ -110,19 +110,19 @@ export class LoginComponent implements AfterViewInit, OnInit {
         "updatedBy": null,
         "updatedDate": null
       }))
-      // const patient =
-      //   await this.store.dispatch(
-      //     AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password })
-      //   );
-      // await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
-      //   console.log(patient, "----------")
-      //   if (patient) {
+      const patient =
+        await this.store.dispatch(
+          AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password })
+        );
+      await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
+        console.log(patient, "----------")
+        if (patient) {
 
-      //     localStorage.setItem('token', JSON.stringify(patient))
+          localStorage.setItem('token', JSON.stringify(patient))
 
-      //     this.router.navigate(['/dashboard']);
-      //   }
-      // });
+          this.router.navigate(['/dashboard']);
+        }
+      });
 
 
     } else {
