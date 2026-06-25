@@ -36,7 +36,7 @@ namespace Medicare.Application.Models.Appointment
         public string PatientName { get; set; }
         public string DateOfBirth { get; set; }
         public string Gender { get; set; }
-        public string RelationType { get; set; }
+        public string RelationTypeName { get; set; }
         public string SlotDate { get; set; }
         public string SlotDay { get; set; }
         public string SlotStartTime { get; set; }

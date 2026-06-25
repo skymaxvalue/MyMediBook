@@ -232,7 +232,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("ProfileId", profileId);
 
-                returnData = await _context.QuerySingleAsync<PatientProfileModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<PatientProfileModel>(procName, param);
             }
             catch (Exception ex)
             {

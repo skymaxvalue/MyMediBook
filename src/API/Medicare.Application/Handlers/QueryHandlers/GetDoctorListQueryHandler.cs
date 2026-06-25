@@ -34,7 +34,10 @@ namespace Medicare.Application.Handlers.QueryHandlers
                     Department = d.Department,
                     DesignationName = d.Designation,
                     FromTime = d.FromTime,
-                    ToTime = d.ToTime
+                    ToTime = d.ToTime,
+                    FromDate = d.FromDate,
+                    ToDate = d.ToDate,
+                    AvailableWeekDays = d.AvailableWeekDates?.Split(',').Select(x => x.Trim()).ToList() ?? new List<string>()
                 }).ToList()
             })
             .ToList();

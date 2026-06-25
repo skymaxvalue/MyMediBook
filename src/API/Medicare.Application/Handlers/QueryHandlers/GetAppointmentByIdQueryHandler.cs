@@ -27,7 +27,6 @@ namespace Medicare.Application.Handlers.QueryHandlers
                 PatientName = result.PatientName,
                 DateOfBirth = result.DateOfBirth,
                 Gender = result.Gender,
-                RelationType = result.RelationType,
                 SlotDate = result.SlotDate,
                 SlotDay = result.SlotDay,
                 SlotStartTime = result.SlotStartTime,
