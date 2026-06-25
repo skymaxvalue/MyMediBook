@@ -12,48 +12,83 @@
 
 <div class="top-header">
 
-    <div class="mobile-menu-btn" id="mobileMenuBtn">
-    ☰
-</div>
-
- 
     <div class="left">
+
         <div class="logo">
-            <img src="images/skylogo2.png">
-            <span>SkyMaxValue Technology Solutions</span>
+            <img src="images/skylogo2.png" alt="SkyMaxValue">
+
+            <div class="logo-text">
+                <div class="company-name">
+                    SkyMaxValue
+                </div>
+
+                <div class="company-subtitle">
+                    Technology Solutions
+                </div>
+            </div>
         </div>
-        <p class="date">Date: <span id="current-date"></span></p>
+
+        <p class="date">
+            Date:
+            <span id="current-date"></span>
+        </p>
+
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            ☰
+        </div>
+
     </div>
 
-    
+
     <div class="center">
+
         <div class="hospital">
-            <img src="images/hospital.png">
-            HEALTH HEAVEN MEDICAL CENTER
+             <img class="hospital-icon" src="images/hospital.png" alt="">
+            <span>HEALTH HEAVEN <br class="mobile-break"> MEDICAL CENTER</span>
         </div>
-        <div class="title">Patient Activity Center</div>
+
+        <div class="title">
+            Patient Activity Center
+        </div>
+
     </div>
 
-   
+
     <div class="right">
+
         <div class="user-box" id="userBox">
 
-            <div class="user-top">
-                <span>User</span>
-                <button type="button" class="profile-toggle" id="profileToggle" aria-label="Open account menu">
-                    <img src="images/user.png" alt="User profile">
-                </button>
-            </div>
+            <div class="user-pill">
 
-            <div class="user-bottom">
-                Logged In As <b id="username">User Name</b>
+                <img
+                    src="images/user.png"
+                    alt="User"
+                    class="user-avatar"
+                >
+
+                <span id="username">
+                    User Name
+                </span>
+
+                <button
+                    type="button"
+                    class="profile-toggle"
+                    id="profileToggle">
+
+                    ▼
+
+                </button>
+
             </div>
 
             <div class="dropdown" id="userDropdown">
-                <button id="logoutBtn">Logout</button>
+                <button id="logoutBtn">
+                    Logout
+                </button>
             </div>
 
         </div>
+
     </div>
 
 </div>
