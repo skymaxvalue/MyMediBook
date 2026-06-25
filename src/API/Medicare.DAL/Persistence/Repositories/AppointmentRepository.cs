@@ -100,7 +100,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
             try
             {
-                if (model.RelatonTypeId != null && model.RelatonTypeId == 1)
+                if (model.RelatonTypeId != null && model.RelatonTypeId != 1)
                 {
                     var profileParam = new DynamicParameters();
                     profileParam.Add("PatientId", model.PatientId);
@@ -126,8 +126,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ProfileId", model.ProfileId);   
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("SlotId", model.SlotId);
-                param.Add("AppointmentDate", model.AppointmentDate);
-                param.Add("TimeSlot", model.TimeSlot);
                 param.Add("VisitPurpose", model.VisitPurpose);
                 param.Add("VisitType", model.VisitType);
                 param.Add("OtpMethod", model.OtpMethod);
@@ -173,10 +171,8 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("PatientId", model.PatientId);
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("SlotId", model.SlotId);
-                param.Add("TimeSlot", model.TimeSlot);
                 param.Add("VisitPurpose", model.VisitPurpose);
-                param.Add("SlotDate", model.AppointmentDate);
-                param.Add("UpdatedBy", model.UpdatedBy);
+                param.Add("VisitType", model.VisitType);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }

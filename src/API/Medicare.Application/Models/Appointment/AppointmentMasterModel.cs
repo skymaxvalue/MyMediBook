@@ -17,8 +17,6 @@ namespace Medicare.Application.Models.Appointment
         public string Gender { get; set; }
         public string Phone { get; set; }
         public int RelatonTypeId { get; set; }
-        public DateTime AppointmentDate { get; set; }
-        public string TimeSlot { get; set; }
         public string VisitPurpose { get; set; }
         public string VisitType { get; set; }
         public string OtpMethod { get; set; }
@@ -29,20 +27,20 @@ namespace Medicare.Application.Models.Appointment
 
     public class InsuranceData
     {
-        public string Provider { get; set; }
-        public string Policy { get; set; }
-        public int GroupId { get; set; }
-        public string HolderName { get; set; }
-        public string Address { get; set; }
+        public string? Provider { get; set; }
+        public string? Policy { get; set; }
+        public int? GroupId { get; set; }
+        public string? HolderName { get; set; }
+        public string? Address { get; set; }
     }
 
     public class PaymentData
     {
-        public string PaymentType { get; set; }
-        public string CardHolder { get; set; }
-        public string CardNumber { get; set; }
-        public string Expiry { get; set; }
-        public string CVV { get; set; }
+        public string? PaymentType { get; set; }
+        public string? CardHolder { get; set; }
+        public string? CardNumber { get; set; }
+        public string? Expiry { get; set; }
+        public string? CVV { get; set; }
         [JsonIgnore]
         public byte[]? CvvHash { get; set; }
         [JsonIgnore]
