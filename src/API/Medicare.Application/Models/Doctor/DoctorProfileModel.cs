@@ -16,6 +16,9 @@
         public string DesignationName { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public List<string> AvailableWeekDays { get; set; }
     }
     public class DoctorItemModel
     {
@@ -29,5 +32,8 @@
         public string Designation { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string AvailableWeekDates { get; set; }
     }
 }
