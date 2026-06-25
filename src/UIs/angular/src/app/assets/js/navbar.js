@@ -35,44 +35,64 @@ function setDate() {
     const today = new Date();
 
     const day = today.getDate();
+
     const suffix =
         (day % 10 === 1 && day !== 11) ? "st" :
         (day % 10 === 2 && day !== 12) ? "nd" :
-        (day % 10 === 3 && day !== 13) ? "rd" : "th";
+        (day % 10 === 3 && day !== 13) ? "rd" :
+        "th";
 
-    const month = today.toLocaleString("en-US", { month: "short" });
+    const month = today.toLocaleString("en-US", {
+        month: "short"
+    });
+
     const year = today.getFullYear();
 
-    el.innerText = `${month} ${day}${suffix} ${year}`;
+    const weekday = today.toLocaleString("en-US", {
+        weekday: "long"
+    });
+
+    el.innerText =
+        `${month} ${day}${suffix} ${year} | ${weekday}`;
 }
 
 function setupNavbar() {
     document.querySelectorAll(".nav-item").forEach(item => {
-        item.onclick = () => {
-            const page = item.getAttribute("data-page");
+    item.onclick = () => {
 
-            if (page === "appointments")
-                location.href = "dashboard.html";
+        const nav = document.getElementById("navbar");
+        const btn = document.getElementById("mobileMenuBtn");
 
-            if (page === "specialities")
-                location.href = "specialities.html";
+        nav?.classList.remove("show");
 
-            if (page === "medicine")
-                location.href = "medicine-orders.html";
+        if (btn) {
+            btn.textContent = "☰";
+        }
 
-            if (page === "lab-results")
-                location.href = "lab-results.html";
+        const page = item.getAttribute("data-page");
 
-            if (page === "billing")
-                location.href = "billing.html";
+        if (page === "appointments")
+            location.href = "dashboard.html";
 
-            if (page === "messages")
-                location.href = "messages.html";
+        if (page === "specialities")
+            location.href = "specialities.html";
 
-            if (page === "settings")
-                location.href = "settings.html";
-        };
-    });
+        if (page === "medicine")
+            location.href = "medicine-orders.html";
+
+        if (page === "lab-results")
+            location.href = "lab-results.html";
+
+        if (page === "billing")
+            location.href = "billing.html";
+
+        if (page === "messages")
+            location.href = "messages.html";
+
+        if (page === "settings")
+            location.href = "settings.html";
+    };
+});
 }
 
 function setActiveTab() {
@@ -137,15 +157,36 @@ function logout() {
 }
 
 
-function setupMobileMenu(){
+function setupMobileMenu() {
 
     const btn = document.getElementById("mobileMenuBtn");
     const nav = document.getElementById("navbar");
 
-    if(!btn || !nav) return;
+    if (!btn || !nav) return;
 
-    btn.addEventListener("click", () => {
-        nav.classList.toggle("show");
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    nav.classList.toggle("show");
+
+    btn.textContent =
+        nav.classList.contains("show")
+            ? "✕"
+            : "☰";
+});
+    nav.addEventListener("click", (e) => {
+        e.stopPropagation();
     });
 
+   document.addEventListener("click", () => {
+    nav.classList.remove("show");
+    btn.textContent = "☰";
+});
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+            nav.classList.remove("show");
+        }
+    });
 }
+
