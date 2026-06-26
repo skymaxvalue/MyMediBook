@@ -1,11 +1,9 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Queries.Master;
-using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Master;
 using Medicare.Application.Models.MasterModels;
 using Medicare.Application.Models.Speciality;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Medicare.API.Controllers.V1
 {
@@ -18,6 +16,15 @@ namespace Medicare.API.Controllers.V1
         public MasterController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        [Route("GetStatusKeyList")]
+        public async Task<IActionResult> GetStatusKeyList()
+        {
+            List<StatusCategoryModel> response = new List<StatusCategoryModel>();
+            response = await _mediator.Send(new GetStatusKeyListQuery());
+            return HandleListResponse(response);
         }
 
         [HttpGet]

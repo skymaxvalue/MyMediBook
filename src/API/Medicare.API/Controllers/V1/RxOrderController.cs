@@ -3,6 +3,7 @@ using Medicare.Application.Features.Commands.RxOrder;
 using Medicare.Application.Features.Queries.RxOrder;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Orders;
+using Medicare.Application.Models.RxOrder;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medicare.API.Controllers.V1
@@ -55,12 +56,12 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
-        [HttpGet]
-        [Route("GetRxOrderByPatientId/{patientId}")]
-        public async Task<IActionResult> GetRxOrderByPatientId(int patientId)
+        [HttpPost]
+        [Route("GetRxOrderByPatientProfileId")]
+        public async Task<IActionResult> GetRxOrderByPatientProfileId(GetRxOrderRequestModel model)
         {
             List<RxOrderDetailModel> response = new List<RxOrderDetailModel>();
-            response = await _mediator.Send(new GetRxOrderByPatientIdQuery(patientId));
+            response = await _mediator.Send(new GetRxOrderByPatientProfileIdQuery(model));
             return HandleListResponse(response);
         }
     }

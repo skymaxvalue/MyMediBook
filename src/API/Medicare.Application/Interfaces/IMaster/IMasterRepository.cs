@@ -6,6 +6,7 @@ namespace Medicare.Application.Interfaces.Master
 {
     public interface IMasterRepository
     {
+        Task<List<StatusKeyModel>> GetStatusListAsync();
         Task<List<WeekDaysModel>> GetWeekDaysListAsync();
         Task<List<SpecialityTypeModel>> GetSpecialityByDepartmentIdAsync(int departmentId);
         Task<List<RoleDepartmentSpecialityModel>> GetRoleDepartmentSpecialityHierarchyAsync();
