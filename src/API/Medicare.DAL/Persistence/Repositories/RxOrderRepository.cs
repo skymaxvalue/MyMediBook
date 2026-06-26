@@ -4,6 +4,7 @@ using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Orders;
+using Medicare.Application.Models.RxOrder;
 using Medicare.DAL.Persistence.Dapper;
 
 namespace Medicare.DAL.Persistence.Repositories
@@ -19,14 +20,15 @@ namespace Medicare.DAL.Persistence.Repositories
             _errorLog = errorLog;
         }
 
-        public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(int patientId)
+        public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(GetRxOrderRequestModel model)
         {
             string procName = "USP_GetRxOrdersByPatientId";
             List<RxOrderDetailModel> returnData = new List<RxOrderDetailModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("PatientId", patientId);
+                param.Add("PatientId", model.PatientId);
+                param.Add("ProfileId", model.ProfileId);
 
                 returnData = await _context.QueryStoredProcListAsync<RxOrderDetailModel>(procName, param);
             }
@@ -75,6 +77,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
+                param.Add("ProfileId", model.ProfileId);
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("PharmacyId", model.PharmacyId);
                 param.Add("DrugName", model.DrugName);
@@ -107,6 +110,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("OrderId", model.OrderId);
+                param.Add("PatientId", model.PatientId);
                 param.Add("CancelReason", model.CancelReason);
                
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
@@ -132,7 +136,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("OrderId", model.OrderId);
-                param.Add("PharmacyId", model.PharmacyId);
+                param.Add("PatientId", model.PatientId);
                 param.Add("PharmacyId", model.PharmacyId);
                 param.Add("DrugName", model.DrugName);
                 param.Add("Dosage", model.Dosage);

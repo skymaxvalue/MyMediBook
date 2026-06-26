@@ -78,7 +78,7 @@ namespace Medicare.API.Controllers.V1
         public async Task<IActionResult> GetPatientProfileByProfileId(int profileId)
         {
             PatientProfileModel response = new PatientProfileModel();
-            response = await _mediator.Send(new GetPatientProfileByProfileIdQuery(profileId));
+            response = await _mediator.Send(new GetRxOrderByPatientProfileIdQuery(profileId));
             return HandleResponse(response);
         }
     }
