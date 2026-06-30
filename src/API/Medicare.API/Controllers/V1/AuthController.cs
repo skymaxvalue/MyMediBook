@@ -4,14 +4,15 @@ using Medicare.Application.Features.Queries.SecurityQuestions;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Medicare.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthController : BaseApiController
     {
         private readonly IMediator _mediator;

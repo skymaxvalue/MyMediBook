@@ -9,18 +9,18 @@ namespace Medicare.API.Controllers.V1
     {
         protected IActionResult HandleResponse<T>(T data) where T : IErrorHandling
         {
-            if(data == null)
+            if (data == null)
             {
                 return NotFound(new ApiResponse<T>()
                 {
                     Data = default,
                     StatusMessage = "An Error Occured While Fetching Data",
-                    StatusCode = HttpStatusCode.NotFound,   
+                    StatusCode = HttpStatusCode.NotFound,
                     Result = 0,
                 });
             }
 
-            if(data.IsSuccess == 0)
+            if (data.IsSuccess == 0)
             {
                 return BadRequest(new ApiResponse<T>
                 {
@@ -58,6 +58,36 @@ namespace Medicare.API.Controllers.V1
                 StatusMessage = "Data fetched successfully.",
                 StatusCode = HttpStatusCode.OK,
                 Result = 1
+            });
+        }
+
+        protected IActionResult HandleLoginResponse<T>(T? data, string? token) where T : IErrorHandling
+        {
+            if (data == null)
+                return StatusCode(500, new ApiResponse<T>
+                {
+                    Data = data,
+                    StatusMessage = "An unexpected error occurred.",
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Result = 0
+                });
+
+            if (data.IsSuccess == 0)
+                return Unauthorized(new ApiResponse<T>
+                {
+                    Data = data,
+                    StatusMessage = data.ResponseMessage,
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Result = 0
+                });
+
+            return Ok(new ApiResponse<T>
+            {
+                Data = data,
+                StatusMessage = data.ResponseMessage,
+                StatusCode = HttpStatusCode.OK,
+                Result = 1,
+                TokenKey = token
             });
         }
     }

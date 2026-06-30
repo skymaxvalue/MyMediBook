@@ -4,5 +4,5 @@ using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.Application.Features.Commands.Appointment
 {
-    public record UpdateAppointmentCommand(UpdateAppointmentRequestModel model) : IRequest<ResponseModel>;
+    public record UpdateAppointmentScheduleCommand(UpdateAppointmentScheduleRequestModel model) : IRequest<ResponseModel>;
 }

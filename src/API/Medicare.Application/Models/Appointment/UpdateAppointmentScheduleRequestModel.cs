@@ -1,6 +1,6 @@
 ﻿namespace Medicare.Application.Models.Appointment
 {
-    public class UpdateAppointmentRequestModel
+    public class UpdateAppointmentScheduleRequestModel
     {
         public int AppointmentId { get; set; }
         public int PatientId { get; set; }

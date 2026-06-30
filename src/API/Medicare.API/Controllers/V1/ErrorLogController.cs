@@ -3,6 +3,7 @@ using Medicare.Application.Features.Commands.ErrorLog;
 using Medicare.Application.Features.Queries.ErrorLog;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -11,6 +12,7 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class ErrorLogController : Controller
     {
         private readonly IMediator _mediator;
@@ -35,7 +37,7 @@ namespace Medicare.API.Controllers.V1
             return Ok(ApiResponse);
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("GetErrorLog")]
         public async Task<IActionResult> GetErrorLog()

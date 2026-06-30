@@ -10,7 +10,7 @@ namespace Medicare.Application.Interfaces.IPatient
         Task<ResponseModel> CreatePatientDetails(PatientMasterModel model);
         Task<ResponseModel> UpdatePatientDetails(UpdatePatientRequestModel model);
         Task<PatientMasterModel> GetPatientByContact(string contactNo);
-        Task<PatientMasterModel> GetPatientById(int Id);
+        Task<PatientDetailModel> GetPatientById(int Id);
         Task<PatientAuthDetailModel> GetPasswordByUsernameAsync(string Username);
         Task<PatientDetailModel> GetPatientInfoByUsername(string Username);
         Task<List<PatientProfileModel>> GetPatientProfileListByIdAsync(int patientId);

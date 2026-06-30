@@ -126,15 +126,15 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<PatientMasterModel> GetPatientById(int Id)
+        public async Task<PatientDetailModel> GetPatientById(int Id)
         {
             string procName = "USP_GetPatientAccountById";
-            PatientMasterModel returnData = new PatientMasterModel();
+            PatientDetailModel returnData = new PatientDetailModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("PatientId", Id);
-                returnData = await _context.QuerySingleStoredProcAsync<PatientMasterModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<PatientDetailModel>(procName, param);
 
             }
             catch (Exception ex)

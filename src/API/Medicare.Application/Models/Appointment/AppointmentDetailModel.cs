@@ -22,7 +22,10 @@ namespace Medicare.Application.Models.Appointment
         public string VisitType { get; set; }
         public string OtpMethod { get; set; }
         public string CreatedDate{ get; set; }
+        public bool? Insurance { get; set; }
         public DoctorProfileModel DoctorProfile { get; set; }
+        public InsuranceData InsuranceData { get; set; }
+        public PaymentData PaymentData { get; set; }
         public int IsSuccess { get; set; }
         public int Status { get; set; }
         public string ResponseMessage { get; set; }
@@ -54,6 +57,16 @@ namespace Medicare.Application.Models.Appointment
         public string DesignationName { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
+        public bool? Insurance { get; set; }
+        public string? Provider { get; set; }
+        public string? Policy { get; set; }
+        public int? GroupId { get; set; }
+        public string? HolderName { get; set; }
+        public string? Address { get; set; }
+        public string? PaymentType { get; set; }
+        public string? CardHolder { get; set; }
+        public string? CardNumber { get; set; }
+        public string? Expiry { get; set; }
         public int IsSuccess { get; set; }
         public int Status { get; set; }
         public string ResponseMessage { get; set; }

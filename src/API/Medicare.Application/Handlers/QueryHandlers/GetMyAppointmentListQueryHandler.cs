@@ -5,18 +5,18 @@ using Medicare.Application.Models.Appointment;
 
 namespace Medicare.Application.Handlers.QueryHandlers
 {
-    public class GetMyAppointmentsQueryHandler
-       : IRequestHandler<GetMyAppointmentsQuery, List<PatientAppointmentModel>>
+    public class GetMyAppointmentListQueryHandler
+       : IRequestHandler<GetMyAppointmentListQuery, List<PatientAppointmentModel>>
     {
         private readonly IAppointmentRepository _appointmentRepository;
-        public GetMyAppointmentsQueryHandler(IAppointmentRepository appointmentRepository)
+        public GetMyAppointmentListQueryHandler(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
         }
         public async Task<List<PatientAppointmentModel>> Handle(
-            GetMyAppointmentsQuery request, CancellationToken cancellationToken)
+            GetMyAppointmentListQuery request, CancellationToken cancellationToken)
         {
-            return await _appointmentRepository.GetMyAppointmentsAsync(request.PatientId);
+            return await _appointmentRepository.GetMyAppointmentListAsync(request.PatientId);
         }
     }
 }
