@@ -75,6 +75,12 @@ body {
     padding: 18px 0;
     border-bottom: 1px solid #dcdcff;
     gap: 32px;
+    position:fixed;
+    top: 8.5rem;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    
 }
 
 .nav-item {

@@ -19,9 +19,12 @@ export class TabServiceService {
   changeTab(tab: string) {
     history.scrollRestoration = 'manual';
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (tab === 'appointments' || tab === 'specialities') {
+    if (tab === 'appointments') {
       this.selectedDoctorSubject.next(null);
       this.reschedulePatientSubject.next(null);
+    }
+    if (tab === 'specialities') {
+
     }
     this.activeTabSubject.next(tab);
   }

@@ -163,7 +163,7 @@ export class DashboardComponent implements OnInit {
 
     if (tab === 'specialities') {
 
-      this.selectedDoctor = null;
+      // this.selectedDoctor = null;
     }
   }
 }
