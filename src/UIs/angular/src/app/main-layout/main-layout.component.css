@@ -6,7 +6,7 @@
 }
 .main-content {
   flex: 1;
-  margin-top: 100px;
+     margin-top: 11rem;
 }
 .othercontainer{
     background: #f5f6fa ;
@@ -35,4 +35,9 @@
 * {
     scrollbar-width: thin;
     scrollbar-color: #2157F4 #F5F7FB;
+}
+@media (max-width:992px){
+    .main-content{
+        margin-top: 20rem;
+    }
 }

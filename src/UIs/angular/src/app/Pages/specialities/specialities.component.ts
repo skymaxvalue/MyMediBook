@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
+import { TabServiceService } from "src/app/Services/tab-service.service";
 import { environment } from "src/environments/environment";
 @Component({
   selector: "app-specialities",
@@ -9,17 +10,19 @@ import { environment } from "src/environments/environment";
   templateUrl: "./specialities.component.html",
   styleUrl: "./specialities.component.css",
 })
-export class SpecialitiesComponent {
+export class SpecialitiesComponent implements OnInit {
   apiUrl = environment.OpenIdConnect.apiUrl
   @Input() specialities: any[] = [];
   @Output() onDoctorSelected = new EventEmitter<any>();
   searchText: any = '';
   searchedText: string = '';
-  constructor(private router: Router) {
+  constructor(private router: Router, private tabService: TabServiceService) {
+  }
+  ngOnInit(): void {
+    // throw new Error("Method not implemented.");
   }
 
   goToAvailability(doctor: any, ocId: any) {
-    console.log('Selected Doctor:', doctor);
     this.onDoctorSelected.emit(doctor);
   }
 

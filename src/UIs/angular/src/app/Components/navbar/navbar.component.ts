@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
+import { TabServiceService } from "src/app/Services/tab-service.service";
 
 @Component({
   selector: "app-navbar",
@@ -9,14 +10,29 @@ import { Router, RouterModule } from "@angular/router";
   styleUrl: "./navbar.component.css",
 })
 export class NavbarComponent implements OnInit {
-  formattedDate: string = "";
-  showLogout: boolean = false;
 
-  todayDate = new Date();
-  username: any;
-  user: any
-  constructor(private router: Router) { }
-  ngOnInit(): void {
+  showProfile = false;
+  mobileMenuOpen = false;
+
+  username = '';
+
+  formattedDate = '';
+
+  activeTab = 'appointments';
+
+  navItems = [
+    { key: 'appointments', label: 'My Appointments' },
+    { key: 'specialities', label: 'Specialities' },
+    { key: 'medicine', label: 'Medicine Orders' },
+    { key: 'labresult', label: 'Lab Results' },
+    { key: 'billing', label: 'Billing' },
+    { key: 'messages', label: 'Messages' },
+    { key: 'setting', label: 'Settings' }
+  ];
+
+  constructor(private tabService: TabServiceService) { }
+
+  ngOnInit() {
     const today = new Date();
 
     const day = today.getDate();
@@ -26,13 +42,19 @@ export class NavbarComponent implements OnInit {
       month: "long",
     });
 
+
     this.formattedDate = `${month} ${day}${this.getOrdinal(day)} ${year}`;
-    this.user = JSON.parse(localStorage.getItem('user') || 'null');
-    console.log(this.user)
-    this.username = this.user.firstName + " " + this.user.lastName
-    // this.username = this.user.data.firstName + " " + this.user.data.lastName
+    this.username =
+      JSON.parse(localStorage.getItem('user') || '{}')?.data?.firstName ?? 'User';
+
+    this.setDate();
+
+    this.tabService.activeTab$.subscribe((tab: any) => {
+      this.activeTab = tab;
+    });
 
   }
+
   getOrdinal(day: number): string {
     if (day > 3 && day < 21) {
       return "th";
@@ -51,9 +73,61 @@ export class NavbarComponent implements OnInit {
         return "th";
     }
   }
-  logout() {
-    localStorage.removeItem("token");
-    this.router.navigate(["/login"]);
+  setDate() {
+
+    const today = new Date();
+
+    this.formattedDate =
+      today.toLocaleDateString('en-US', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
 
   }
+
+  changeTab(tab: string) {
+
+    this.mobileMenuOpen = false;
+
+    this.tabService.changeTab(tab);
+
+  }
+
+  toggleMenu() {
+    // alert(`Toggle Menu ${this.mobileMenuOpen}`)
+    if (this.mobileMenuOpen) {
+      this.mobileMenuOpen = false;
+    } else {
+      this.mobileMenuOpen = true;
+    }
+  }
+
+  toggleProfile(event: Event) {
+
+    event.stopPropagation();
+
+    this.showProfile = !this.showProfile;
+
+  }
+
+  logout() {
+
+    localStorage.clear();
+
+    // router navigate
+
+  }
+
+  @HostListener('document:click')
+  closeMenus() {
+    this.showProfile = false;
+    // this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  stop(event: Event) {
+    event.stopPropagation();
+  }
+
 }

@@ -28,6 +28,6 @@ export const APIEndpoints = {
     GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
     GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
     CANCEL_MY_APPOINTMENT: "Appointment/CancelAppointmentById",
-    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentDetail"
+    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentSchedule"
 
 }

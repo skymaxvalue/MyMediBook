@@ -16,6 +16,7 @@ import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
 import { cancelMyAppointment, getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
 import { selectCanceledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
+import { TabServiceService } from "src/app/Services/tab-service.service";
 
 
 interface FamilyMember {
@@ -57,7 +58,7 @@ export class MyAppointmentComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || 'null')
 
 
-  constructor(private confirmationService: ModalSeviceService, private store: Store<AppState>) {
+  constructor(private confirmationService: ModalSeviceService, private store: Store<AppState>, private tabService: TabServiceService) {
 
   }
 
@@ -239,9 +240,10 @@ export class MyAppointmentComponent implements OnInit {
     this.confirmationService.response$
       .pipe(take(1))
       .subscribe((confirmed) => {
-
+        console.log('Subscriber called');
         if (confirmed) {
-          this.goToSpecialitie.emit(appointment);
+          this.tabService.setReschedulePatient(appointment);
+          // this.tabService.changeTab('specialities');
           // Open doctor availability page here
         }
 
@@ -390,7 +392,7 @@ export class MyAppointmentComponent implements OnInit {
   }
   goToSpecialities() {
     // Implement navigation to the specialities page
-    this.goToSpecialitie.emit();
+    this.tabService.changeTab('specialities');
   }
 
 
