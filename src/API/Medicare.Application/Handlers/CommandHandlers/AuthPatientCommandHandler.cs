@@ -22,14 +22,22 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             if (user.PasswordHash == null && user.PasswordSalt == null)
             {
-                throw new Exception("User not found");
+                return new PatientDetailModel
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "User not found."
+                };
             }
 
             bool isPasswordValid = VerifyPassword(request.model.Password, user.PasswordHash, user.PasswordSalt);
 
             if (!isPasswordValid)
             {
-                throw new Exception("Invalid Password");
+                return new PatientDetailModel
+                {
+                    IsSuccess = 0,
+                    ResponseMessage = "Invalid password."
+                };
             }
 
             var result = await _patientRepository.GetPatientInfoByUsername(request.model.Username);

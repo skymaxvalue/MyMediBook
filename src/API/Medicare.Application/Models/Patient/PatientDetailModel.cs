@@ -1,8 +1,16 @@
-﻿namespace Medicare.Application.Models.Patient
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+using Medicare.Application.Models.Appointment;
+
+namespace Medicare.Application.Models.Patient
 {
-    public class PatientDetailModel
+    public class PatientDetailModel : IErrorHandling
     {
+        public Guid UserId { get; set; }
+        public int RefId { get;set; }
         public int PatientId { get; set; }
+        public int ProfileId { get; set; }
+        public string UserType { get; set; }
+        public string? RoleName { get; set; } = "Patient";
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string LastName { get; set; }
@@ -22,5 +30,8 @@
         public DateTime? CreatedDate { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public string ResponseMessage { get; set; }
     }
 }

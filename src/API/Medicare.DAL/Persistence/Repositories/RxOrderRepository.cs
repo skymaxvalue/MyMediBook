@@ -4,6 +4,7 @@ using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Orders;
+using Medicare.Application.Models.RxOrder;
 using Medicare.DAL.Persistence.Dapper;
 
 namespace Medicare.DAL.Persistence.Repositories
@@ -19,14 +20,15 @@ namespace Medicare.DAL.Persistence.Repositories
             _errorLog = errorLog;
         }
 
-        public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(int patientId)
+        public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(GetRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_GetRxOrdersByPatientId";
             List<RxOrderDetailModel> returnData = new List<RxOrderDetailModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("PatientId", patientId);
+                param.Add("PatientId", model.PatientId);
+                param.Add("ProfileId", model.ProfileId);
 
                 returnData = await _context.QueryStoredProcListAsync<RxOrderDetailModel>(procName, param);
             }
@@ -45,7 +47,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<RxOrderDetailModel> GetRxOrderByOrderIdAsync(int orderId)
         {
-            string procName = "";
+            string procName = "USP_GetRxOrderByOrderId";
             RxOrderDetailModel returnData = new RxOrderDetailModel();
             try
             {
@@ -67,16 +69,16 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        // ── CREATE ───────────────────────────────────────────────────
         public async Task<ResponseModel> CreateRxOrderAsync(CreateRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_CreateRxOrder";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
-                param.Add("DoctorId", model.DoctorId);
+                param.Add("ProfileId", model.ProfileId);
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("PharmacyId", model.PharmacyId);
                 param.Add("DrugName", model.DrugName);
                 param.Add("Dosage", model.Dosage);
@@ -102,12 +104,13 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> CancelRxOrderAsync(CancelRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_CancelRxOrder";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("OrderId", model.OrderId);
+                param.Add("PatientId", model.PatientId);
                 param.Add("CancelReason", model.CancelReason);
                
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
@@ -127,13 +130,13 @@ namespace Medicare.DAL.Persistence.Repositories
 
         public async Task<ResponseModel> UpdateRxOrderAsync(UpdateRxOrderRequestModel model)
         {
-            string procName = "";
+            string procName = "USP_UpdateRxOrder";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("OrderId", model.OrderId);
-                param.Add("PharmacyId", model.PharmacyId);
+                param.Add("PatientId", model.PatientId);
                 param.Add("PharmacyId", model.PharmacyId);
                 param.Add("DrugName", model.DrugName);
                 param.Add("Dosage", model.Dosage);

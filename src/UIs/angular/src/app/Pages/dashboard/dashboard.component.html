@@ -22,12 +22,32 @@
             Medicine Orders
           </button>
         </li>
-
         <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'labresult'" (click)="changeTab('labresult')">
+            Lab Result
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'billing'" (click)="changeTab('billing')">
+            Billing
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'messages'" (click)="changeTab('messages')">
+            Message
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" [class.active]="activeTab === 'setting'" (click)="changeTab('setting')">
+            Settings
+          </button>
+        </li>
+
+        <!-- <li class="nav-item">
           <button class="nav-link" [class.active]="activeTab === 'support'" (click)="changeTab('support')">
             Support & Help
           </button>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>
@@ -46,9 +66,23 @@
     <app-specialities (onDoctorSelected)="onDoctorSelected($event)" [specialities]="specialities"></app-specialities>
     }
 
-    } @else if (activeTab === "medicine") {
+
+    }
+    @else if(activeTab === "messages"){
+
+    <app-messages></app-messages>
+    }
+    @else if(activeTab === "labresult"){
+    <app-lab-result></app-lab-result>
+    }
+    @else if(activeTab === "billing"){
+    <app-billing></app-billing>
+
+    }
+
+    @else if (activeTab === "medicine") {
     <app-medicine-orders></app-medicine-orders>
-    } @else if (activeTab === "support") {
+    } @else if (activeTab === "setting") {
     <div class="text-center mt-5">
       <h3>Support & Help</h3>
       <p class="mt-3">For assistance, please contact our support team:</p>

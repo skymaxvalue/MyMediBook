@@ -31,11 +31,19 @@
         </div>
         <label for="dateOfBirth">Date Of Birth<span class="star">*</span></label>
         <div class="field-container">
-            <input id="dateOfBirth" formControlName="dateOfBirth" type="date" required>
+            <input id="dateOfBirth" formControlName="dateOfBirth" type="date" [max]="maxDate" required
+                (change)="onDobChange($event)">
             @if(group.get('dateOfBirth')?.touched &&
             group.get('dateOfBirth')?.hasError('required')) {
             <div class="error-message">
                 Date of Birth is required
+            </div>
+            }
+            @if(!isValidAge){
+
+            <div class="form-row mt-0 pt-0">
+                <label for="dob"></label>
+                <small class="text-danger"> {{ ageError }}</small>
             </div>
             }
         </div>
@@ -151,7 +159,7 @@
             <div class="field-with-action compact-field">
                 <select id="country" formControlName="countryId" required (change)="onCountryChange($event)">
                     <option [ngValue]="null">Enter your country</option>
-                    @for(c of countries; track c) {
+                    @for(c of countries; track c.countryId) {
                     <option [value]="c.countryId">{{ c.countryName }}</option>
                     }
                 </select>
@@ -171,7 +179,7 @@
             <div class="field-with-action compact-field">
                 <select id="state" formControlName="stateId" required (change)="onStateChange($event)">
                     <option [ngValue]="null">Enter your State</option>
-                    @for(s of states ; track s){
+                    @for(s of states ; track s.stateId){
 
                     <option [value]="s.stateId">{{s.stateName}}</option>
                     }
@@ -193,7 +201,7 @@
             <div class="field-with-action compact-field">
                 <select id="city" formControlName="cityId" required>
                     <option [ngValue]="null">Enter your city</option>
-                    @for(c of cities ; track c){
+                    @for(c of cities ; track c.cityId){
 
                     <option [value]="c.cityId">{{c.cityName}}</option>
                     }
@@ -259,9 +267,11 @@
             </div> -->
             <div class="upload-row">
 
-                <input #identityFileInput type="file" hidden (change)="onFileSelected($event)">
+                <input #identityFileInput type="file" hidden (change)="onFileSelected($event)"
+                    [disabled]="!group.get('identityDocument')?.value">
 
-                <button type="button" class="file-button" (click)="identityFileInput.click()">
+                <button type="button" class="file-button" (click)="identityFileInput.click()"
+                    [disabled]="!group.get('identityDocument')?.value">
 
                     <span class="file-button-text">
                         {{ selectedFile?.name || 'Choose File' }}

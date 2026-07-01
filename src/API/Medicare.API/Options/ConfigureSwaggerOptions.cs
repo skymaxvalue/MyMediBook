@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -22,6 +23,14 @@ namespace Medicare_API.Options
                     CreateVersionInfo(description)
                 );
             }
+
+            var scheme = GetJwtSecurityScheme();
+            options.AddSecurityDefinition("Bearer", scheme);
+
+            options.AddSecurityRequirement(options => new OpenApiSecurityRequirement
+            {
+                [new OpenApiSecuritySchemeReference("Bearer", options)] = []
+            });
         }
 
         private OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
@@ -38,6 +47,19 @@ namespace Medicare_API.Options
             }
 
             return info;    
+        }
+
+        private OpenApiSecurityScheme GetJwtSecurityScheme()
+        {
+            return new OpenApiSecurityScheme
+            {
+                BearerFormat = "JWT",
+                Name = "Authorization",
+                Description = "Enter your JWT token in the format: Bearer {your_token}",
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Type = SecuritySchemeType.Http,
+                In = ParameterLocation.Header
+            };
         }
     }
 }

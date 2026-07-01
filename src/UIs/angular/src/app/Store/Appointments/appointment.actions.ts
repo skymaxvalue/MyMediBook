@@ -15,3 +15,17 @@ export const createAppointmentFailure = createAction(
     '[Appointment] Create Appointment Failure',
     props<{ error: string }>()
 );
+export const getAgeType = createAction(
+    '[Appointment] Create Appointment',
+
+);
+
+export const getAgeTypeSuccess = createAction(
+    '[Appointment] Create Appointment Success',
+    props<{ ageType: any }>()
+);
+
+export const getAgeTypeFailure = createAction(
+    '[Appointment] Create Appointment Failure',
+    props<{ error: string }>()
+);

@@ -8,6 +8,7 @@ import { BookingSuccessfullComponent } from "../booking-successfull/booking-succ
 import { BookingFailedComponent } from "../booking-failed/booking-failed.component";
 import { Store } from "@ngrx/store";
 import * as AppintmentAction from "../../Store/Appointments/appointment.actions"
+import { getTimeSloteByDoctorID } from "src/app/Store/Doctor/doctor.action";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -49,7 +50,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   showAddbookingAppoinmentForm: boolean = false
 
   constructor(private router: Router, private store: Store) {
-    this.generateSlots(this.doctor.availableFrom, this.doctor.availableTo, 30)
+    this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
   }
 
   ngOnInit(): void {
@@ -61,10 +62,10 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
   }
   ngOnChanges(): void {
-    if (this.doctor?.availableFrom && this.doctor?.availableTo) {
+    if (this.doctor?.fromTime && this.doctor?.toTime) {
       this.generateSlots(
-        this.doctor.availableFrom,
-        this.doctor.availableTo,
+        this.doctor.fromTime,
+        this.doctor.toTime,
         30
       );
     }
@@ -93,7 +94,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
       d.setDate(d.getDate() + i);
 
       let badgeClass: 'green' | 'red' | 'beige' = 'green';
-      let text = `${this.getAmPmTime(this.doctor.availableFrom)} - ${this.getAmPmTime(this.doctor.availableTo)}`
+      let text = `${this.getAmPmTime(this.doctor.fromTime)} - ${this.getAmPmTime(this.doctor.toTime)}`
 
       if (i === 4) {
         badgeClass = 'red';
@@ -142,6 +143,15 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     this.selectedDateGlobal = item.formattedDate;
     this.selectedSlot = '';
+    // hare call API
+    console.log(this.selectedDate, this.doctor, "=====>====>")
+
+    const payload = {
+      associateId: this.doctor.associateId,
+      fromDate: this.selectedDate,
+      toDate: this.selectedDate
+    }
+    this.store.dispatch(getTimeSloteByDoctorID({ payload }))
     this.showSlotsModal = true;
 
     let bookedSlots: string[] = [];

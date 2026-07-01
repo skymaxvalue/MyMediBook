@@ -25,7 +25,6 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             var patientModel = new PatientMasterModel
                 {
-                PatientId = request.model.PatientId,
                 FirstName = request.model.FirstName,
                 MiddleName = request.model.MiddleName,
                 LastName = request.model.LastName,

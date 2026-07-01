@@ -468,7 +468,9 @@ body {
     }
 
     .navbar{
-        position:absolute; 
+       position:absolute; 
+
+
         top:120px;
         right:20px;
         left:auto;

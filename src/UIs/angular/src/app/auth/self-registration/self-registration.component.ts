@@ -46,7 +46,7 @@ export class SelfRegistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.router.url);
+    // console.log(this.router.url);
     this.formInitialization();
     this.url = this.router.url
     if (this.router.url === '/profile-update' && this.user.data) {
@@ -98,8 +98,6 @@ export class SelfRegistrationComponent implements OnInit {
       this.ageError = 'User must be 18 years or older';
       this.isValidAge = false;
     }
-
-    console.log('Age:', age);
   }
 
   get f() {
@@ -126,7 +124,7 @@ export class SelfRegistrationComponent implements OnInit {
         return;
       }
       if (this.url === '/profile-update') {
-        console.log(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId, "------------>")
+        // console.log(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId, "------------>")
         this.loadStates(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId)
 
       }
@@ -187,7 +185,7 @@ export class SelfRegistrationComponent implements OnInit {
     this.store
       .select(state => state.patient.patientDetails)
       .subscribe((response: any) => {
-        console.log(response, "---------->")
+        // console.log(response, "---------->")
         if (response?.data) {
 
           this.patientRegisterRequest = response.data;
@@ -303,7 +301,7 @@ export class SelfRegistrationComponent implements OnInit {
   }
 
   initialAPICalls() {
-    console.log('Dispatching Get Countries');
+    // console.log('Dispatching Get Countries');
     this.store.dispatch(
       AuthActions.getSecurityQuestions()
     );
@@ -316,14 +314,12 @@ export class SelfRegistrationComponent implements OnInit {
     this.store
       .select(selectSecurityQuestions)
       .subscribe((questions: any) => {
-        console.log(questions.data)
         this.securityQuestions = questions?.data;
 
       });
     this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
       if (countries.data) {
-        console.log(this.states.length)
-        console.log(countries)
+
         this.countries = countries.data;
 
         this.signupForm.get('phoneCountryCode')?.setValue(this.countries[0]?.phoneCode)
@@ -427,7 +423,6 @@ export class SelfRegistrationComponent implements OnInit {
 
     }
 
-    // console.log(this.signupForm.value);()
     this.store.select(state => state.auth.registeredPatient).subscribe((patient: any) => {
       console.log(patient)
       if (patient) {

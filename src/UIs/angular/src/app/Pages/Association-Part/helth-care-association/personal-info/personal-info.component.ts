@@ -22,11 +22,12 @@ export class PersonalInfoComponent implements OnInit {
   previewUrl: string | null = null;
   isImage = false;
   isFileUploaded = false
+  maxDate: string = '';
   @Input() group!: FormGroup;
   @Input() currentStep!: number;
-  @Input() countries!: Country[]
-  @Input() states !: any[];
-  @Input() cities !: any[];
+  @Input() countries: Country[] = []
+  @Input() states: any[] = [];
+  @Input() cities: any[] = [];
   @Output() next = new EventEmitter<any>();
   @Output() onSelectCountry = new EventEmitter<any>();
   @Output() onSelectState = new EventEmitter<any>();
@@ -40,28 +41,33 @@ export class PersonalInfoComponent implements OnInit {
     'Tamil'
   ];
   selectedLanguages: string[] = [];
+  ageError: string = "";
+  isValidAge: boolean = false;
 
 
 
   constructor(private store: Store<AppState>) {
-    console.log(this.countries, "=======")
   }
 
   ngOnInit(): void {
     console.log(this.group.value)
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 18);
 
+    this.maxDate = date.toISOString().split('T')[0];
   }
 
 
   async onCountryChange(event: any) {
     await this.onSelectCountry.emit(event.target.value)
-    this.group.get('stateId')?.enable();
+    // const stateControl = this.group.get('stateId');
+    // this.group.get('stateId')?.enable();
 
   }
 
   async onStateChange(event: any) {
     await this.onSelectState.emit(event.target.value)
-    this.group.get('cityId')?.enable();
+
 
   }
   onCheckboxChange(event: any) {
@@ -135,16 +141,59 @@ export class PersonalInfoComponent implements OnInit {
     }
   }
 
-  uploadFile(): void {
+  onDobChange(event: any) {
 
+    const value = event.target.value;
+
+    if (!value) {
+      this.ageError = 'Please select date of birth';
+      this.isValidAge = false;
+      return;
+    }
+
+    const selectedDob = new Date(value);
+    const today = new Date();
+
+    let age = today.getFullYear() - selectedDob.getFullYear();
+
+    const monthDiff = today.getMonth() - selectedDob.getMonth();
+    const dayDiff = today.getDate() - selectedDob.getDate();
+
+    // adjust age if birthday not yet occurred this year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    if (age >= 18) {
+      this.ageError = '';
+      this.isValidAge = true;
+    } else {
+      this.ageError = 'Associate must be 18 years or older';
+      this.isValidAge = false;
+    }
+
+  }
+
+  uploadFile(): void {
     if (!this.selectedFile) {
       return;
     }
 
     this.previewUrl = URL.createObjectURL(this.selectedFile);
-    this.group.get('identityFile')?.setValue(this.previewUrl);
-    this.isImage = true
-    this.isFileUploaded = true
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result as string;
+
+      this.group.get('identityFile')?.setValue(base64String);
+
+    };
+
+    reader.readAsDataURL(this.selectedFile);
+
+    this.isImage = true;
+    this.isFileUploaded = true;
 
   }
 

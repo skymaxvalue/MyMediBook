@@ -8,6 +8,14 @@ import { DoctorService } from '../../Services/doctor.service';
 @Injectable()
 export class DoctorSpecialityEffects {
 
+
+
+    constructor(
+        private actions$: Actions,
+        private doctorService: DoctorService
+    ) { }
+
+
     loadSpecialities$ = createEffect(() =>
         this.actions$.pipe(
             ofType(DoctorSpecialityActions.loadDoctorSpecialities),
@@ -33,8 +41,227 @@ export class DoctorSpecialityEffects {
         )
     );
 
-    constructor(
-        private actions$: Actions,
-        private doctorService: DoctorService
-    ) { }
+    loadAllSpecialities$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.loadAllSpecialities),
+
+            mergeMap(() =>
+                this.doctorService.getAllSpecialities().pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.loadAllSpecialitiesSuccess({
+                            allSpeciality: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.loadAllSpecialitiesFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    loadAllDepartments$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.loadAllDepartments),
+
+            mergeMap(() =>
+                this.doctorService.getAllDepartments().pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.loadAllDepartmentsSuccess({
+                            allDepartments: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.loadAllDepartmentsFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    loadAllRoles$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.loadAllRoles),
+
+            mergeMap(() =>
+                this.doctorService.getAllRoles().pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.loadAllRolesSuccess({
+                            allRoles: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.loadAllRolesFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    registerAssociate$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.registerAssociotion),
+
+            mergeMap((action) =>
+                this.doctorService.registerAssociate(action.associate).pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.registerAssociotionSuccess({
+                            associate: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.registerAssociotionFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    loadAllRoleDepSpeci$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.getRoleDepaSpecia),
+
+            mergeMap(() =>
+                this.doctorService.getAllRoleDepSpeci().pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.getRoleDepaSpeciaSuccess({
+                            allRoleDepartSpeci: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.getRoleDepaSpeciaFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    loadAllAssociateList$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.getWeekDays),
+
+            mergeMap(() =>
+                this.doctorService.getAllWeeksDays().pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.getWeekDaysSuccess({
+                            weeakDays: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.getWeekDaysFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    loadAllWeekDays$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.getAllAssociates),
+
+            mergeMap(() =>
+                this.doctorService.getAllAssociates().pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.getAllAssociatesSuccess({
+                            allAssociates: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.getAllAssociatesFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    createAssociateSchedule$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.createAssociatesSchedule),
+
+            mergeMap((action) =>
+                this.doctorService.createAssociateSchedule(action.associate).pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.createAssociatesScheduleSuccess({
+                            associateSchedule: response
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.createAssociatesScheduleFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+    getDoctorAvalableTimeSlot$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.getTimeSloteByDoctorID),
+
+            mergeMap((action) =>
+                this.doctorService.getDoctorAvalabilityTimeSlot(action.payload).pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess({
+                            doctorTimeSlot: response
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.getTimeSloteByDoctorIDFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
 }

@@ -13,7 +13,7 @@ export class SpecialitiesComponent {
   apiUrl = environment.OpenIdConnect.apiUrl
   @Input() specialities: any[] = [];
   @Output() onDoctorSelected = new EventEmitter<any>();
-  searchText: string = '';
+  searchText: any = '';
   searchedText: string = '';
   constructor(private router: Router) {
   }
@@ -23,6 +23,7 @@ export class SpecialitiesComponent {
     this.onDoctorSelected.emit(doctor);
   }
 
+  // Currently not in used due to change backend data
   getAmPmTime(time: string): string {
 
     const [hours, minutes] = time.split(':');
@@ -65,7 +66,7 @@ export class SpecialitiesComponent {
   }
 
   clearSearch() {
-    this.searchText = '';
+    this.searchText = null;
     this.searchedText = '';
   }
 }

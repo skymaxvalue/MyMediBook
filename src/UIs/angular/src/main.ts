@@ -80,7 +80,11 @@ bootstrapApplication(AppComponent, {
       // }),
       // EffectsModule.forRoot([]),
       // EffectsModule.forFeature([AuditLogEffects]),
-      ToastrModule.forRoot(),
+      ToastrModule.forRoot({
+        positionClass: 'toast-top-right',
+        preventDuplicates: true,
+        newestOnTop: true
+      }),
       MatDatepickerModule,
       MatTimepickerModule,
       MatNativeDateModule,

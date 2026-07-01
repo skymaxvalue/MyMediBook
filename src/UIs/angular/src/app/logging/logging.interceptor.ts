@@ -22,8 +22,14 @@ export class LoggingInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       tap((event: any) => {
         if (event.type === HttpEventType.Response) {
-          console.log(request.url, event.body);
-          this.toastr.success(event.body.statusMessage)
+          if (event.body.data.isSuccess === 1 || event.body.result === 1) {
+
+            console.log(request.url, event.body);
+            this.toastr.success(event.body.data.responseMessage ? event.body.data.responseMessage : event.body.statusMessage)
+          } else {
+            this.toastr.error(event.body.data.responseMessage)
+          }
+
         }
       })
     );

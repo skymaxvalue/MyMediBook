@@ -1,125 +1,104 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Patient;
 using Medicare.Application.Features.Queries.Patient;
+using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.JwtTokens;
 using Medicare.Application.Models.Patient;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Medicare.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class PatientController : Controller
+    [Authorize]
+    public class PatientController : BaseApiController
     {
         private readonly IMediator _mediator;
-        public PatientController(IMediator mediator)
+        private readonly IJwtTokenRepository _jwtTokenRepository;
+        public PatientController(IMediator mediator, IJwtTokenRepository jwtTokenRepository)
         {
             _mediator = mediator;
+            _jwtTokenRepository = jwtTokenRepository;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("LoginPatient")]
         public async Task<IActionResult> LoginPatient([FromBody] PatientAuthModel model)
         {
-            ApiResponse<PatientDetailModel> ApiResponse = new ApiResponse<PatientDetailModel>();
             PatientDetailModel response = new PatientDetailModel();
             response = await _mediator.Send(new AuthPatientCommand(model));
-            ApiResponse = new ApiResponse<PatientDetailModel>()
+            if (response.IsSuccess != 1) return HandleResponse(response); 
+            var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
             {
-                Data = response,
-                StatusMessage = "User Logged In Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+                UserId = response.UserId,
+                RefId = response.RefId,
+                UserType = response.UserType,
+                Email = response.Email,
+                Username = response.Username,
+                FullName = $"{response.FirstName} {response.LastName}",
+                RoleName = response.RoleName
+            });
+            return HandleLoginResponse(response, token);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("CreatePatientDetails")]
         public async Task<IActionResult> CreatePatientDetails([FromBody] CreatePatientRequestModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreatePatientCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>()
-            {
-                Data = response,
-                StatusMessage = "Patient Registered Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpPost]
         [Route("UpdatePatientDetails")]
         public async Task<IActionResult> UpdatePatientDetails([FromBody] UpdatePatientRequestModel model)
         {
-            ApiResponse<ResponseModel> ApiResponse = new ApiResponse<ResponseModel>();
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new UpdatePatientCommand(model));
-            ApiResponse = new ApiResponse<ResponseModel>()
-            {
-                Data = response,
-                StatusMessage = "Patient Record updated Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("GetPatientById/{Id}")]
-        public async Task<IActionResult> GetPatientById(int Id)
+        public async Task<IActionResult> GetPatientById([FromRoute] int Id)
         {
-            ApiResponse<PatientMasterModel> ApiResponse = new ApiResponse<PatientMasterModel>();
-            PatientMasterModel response = new PatientMasterModel();
+            PatientDetailModel response = new PatientDetailModel();
             response = await _mediator.Send(new GetPatientByIdQuery(Id));
-            ApiResponse = new ApiResponse<PatientMasterModel>()
-            {
-                Data = response,
-                StatusMessage = "Data Fetched Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpPost]
         [Route("GetPatientByContact/{contactNo}")]
-        public async Task<IActionResult> GetPatientByContact(string contactNo)
+        public async Task<IActionResult> GetPatientByContact([FromRoute] string contactNo)
         {
-            ApiResponse<PatientMasterModel> ApiResponse = new ApiResponse<PatientMasterModel>();
             PatientMasterModel response = new PatientMasterModel();
             response = await _mediator.Send(new GetPatientByContactQuery(contactNo));
-            ApiResponse = new ApiResponse<PatientMasterModel>()
-            {
-                Data = response,
-                StatusMessage = "Data Fetched Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            return HandleResponse(response);
         }
 
         [HttpGet]
-        [Route("GetPatientProfilesById/{patientId}")]
-        public async Task<IActionResult> GetPatientProfilesById(int patientId)
+        [Route("GetPatientProfileListById/{patientId}")]
+        public async Task<IActionResult> GetPatientProfileListById([FromRoute] int patientId)
         {
-            ApiResponse<List<PatientProfileModel>> ApiResponse = new ApiResponse<List<PatientProfileModel>>();
             List<PatientProfileModel> response = new List<PatientProfileModel>();
-            response = await _mediator.Send(new GetPatientProfilesByIdQuery(patientId));
-            ApiResponse = new ApiResponse<List<PatientProfileModel>>()
-            {
-                Data = response,
-                StatusMessage = "Data Fetched Successfully",
-                StatusCode = HttpStatusCode.OK,
-                Result = 1
-            };
-            return Ok(ApiResponse);
+            response = await _mediator.Send(new GetPatientProfileListByIdQuery(patientId));
+            return HandleListResponse(response);
+        }
+
+        [HttpGet]
+        [Route("GetPatientProfileByProfileId/{profileId}")]
+        public async Task<IActionResult> GetPatientProfileByProfileId([FromRoute] int profileId)
+        {
+            PatientProfileModel response = new PatientProfileModel();
+            response = await _mediator.Send(new GetPatientProfileByProfileIdQuery(profileId));
+            return HandleResponse(response);
         }
     }
 }

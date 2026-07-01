@@ -9,6 +9,7 @@ export const environment = {
     apiUrl: 'http://skymedibook.runasp.net/api/v1/',
     //Authority: "http://host.docker.internal:9000/",
     //Authority: "http://identityserver",
+    localBaseURL: "https://localhost:44313/api/v1/",
     ClientId: "ClassifiedAds.Angular",
   },
   ResourceServer: {

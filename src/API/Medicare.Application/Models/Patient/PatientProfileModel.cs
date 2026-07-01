@@ -1,15 +1,28 @@
-﻿namespace Medicare.Application.Models.Patient
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Patient
 {
-    public class PatientProfileModel
+    public class PatientProfileModel : IErrorHandling
     {
-        public int PatientId { get; set; }
         public int ProfileId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Relationtype { get; set; }
+        public int PatientId { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? FullName { get; set; }
+        public string? DateOfBirth { get; set; }
+        public int Age { get; set; }
+        public int AgeTypeId { get; set; }
+        public string? AgeTypeName { get; set; }   
+        public string? Gender { get; set; }
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public int RelationTypeId { get; set; }
+        public string? RelationTypeName { get; set; }   // "Self" | "Spouse" | "Child" etc.
+        public bool IsActive { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public string ResponseMessage { get; set; }
     }
 }

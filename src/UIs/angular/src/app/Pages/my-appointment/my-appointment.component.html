@@ -1,75 +1,155 @@
-<div class="dashboard-card ">
-  <table class="appointment-table">
-    <thead>
-      <tr>
-        <th (click)="sortTable('visitPurpose')">
-          Visit Purpose
-          <span class="sort-icon">{{getSortIcon('visitPurpose')}}</span>
-        </th>
+<div class="family-dashboard">
 
-        <th (click)="sortTable('patientName')">
-          Patient Name
-          <span class="sort-icon">{{getSortIcon('patientName')}}</span>
-        </th>
-
-        <th (click)="sortTable('appointmentDate')">
-          Appointment Date
-          <span class="sort-icon">{{getSortIcon('appointmentDate')}}</span>
-        </th>
-
-        <th (click)="sortTable('appointmentTime')">
-          Appointment Time
-          <span class="sort-icon">{{getSortIcon('appointmentTime')}}</span>
-        </th>
+  <!-- Search Section -->
+  <div class="search-section">
+    <h2 class="title2 py-1">Family Member Appointments</h2>
 
 
-        <th (click)="sortTable('doctorName')">
-          Dr. Name
-          <span class="sort-icon">{{getSortIcon('doctorName')}}</span>
-        </th>
 
-        <th>Status</th>
-      </tr>
-    </thead>
+  </div>
 
-    <tbody>
-      @for (item of sortedTableData(); track $index) {
-      <tr [class.highlight]="item.patientName === 'Self'">
-        <td>
-          {{ item.visitPurpose }}
-        </td>
 
-        <td>
-          {{ item.patientName }}
-        </td>
 
-        <td>
-          {{ item.appointmentDate }}
-        </td>
 
-        <td>
-          {{ item.appointmentTime }}
-        </td>
 
-        <td>
-          {{ item.doctorName }}
-        </td>
+  <div class="dashboard-card">
 
-        <td>
-          <span class="status" [ngClass]="{
+    <div class="table-header">
+
+      <div class="search-box">
+        <ng-select [items]="familyMembers" bindLabel="name" placeholder="Select family member..." [searchable]="true"
+          [clearable]="true" [ngModel]="selectedMember()" (ngModelChange)="selectedMember.set($event)">
+
+          <ng-template ng-label-tmp let-item="item">
+            {{ item.name }}
+          </ng-template>
+
+          <ng-template ng-option-tmp let-item="item">
+            <div class="member-card" [class.active]="selectedMember()?.id === item.id">
+
+              <div class="member-avatar">
+                {{ item.name.charAt(0) }}
+              </div>
+
+              <div>
+                <h4>{{ item.name }}</h4>
+                <span>{{ item.relation }}</span>
+              </div>
+
+            </div>
+          </ng-template>
+
+        </ng-select>
+        <!-- <input type="text" placeholder="Search family member..." [(ngModel)]="searchText">
+
+      <button type="button" (click)="filteredFamilyMembers()">
+        Search
+      </button> -->
+        <div>
+          @if(selectedMember()){
+
+          <div class="category">
+            Appointments Of {{ selectedMember().name }}
+          </div>
+          }
+
+        </div>
+        <button class="new-btn" (click)="goToSpecialities()">
+          📅 New Appointment
+        </button>
+
+      </div>
+
+
+
+    </div>
+
+    <table class="appointment-table">
+      <thead>
+        <tr>
+          <th (click)="sortTable('visitPurpose')">
+            Visit Purpose
+            <span class="sort-icon">{{getSortIcon('visitPurpose')}}</span>
+          </th>
+
+          <th (click)="sortTable('patientName')">
+            Patient Name
+            <span class="sort-icon">{{getSortIcon('patientName')}}</span>
+          </th>
+
+          <th (click)="sortTable('appointmentDate')">
+            Appointment Date
+            <span class="sort-icon">{{getSortIcon('appointmentDate')}}</span>
+          </th>
+
+          <th (click)="sortTable('appointmentTime')">
+            Appointment Time
+            <span class="sort-icon">{{getSortIcon('appointmentTime')}}</span>
+          </th>
+
+
+          <th (click)="sortTable('doctorName')">
+            Dr. Name
+            <span class="sort-icon">{{getSortIcon('doctorName')}}</span>
+          </th>
+
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of paginatedAppointments(); track $index) {
+        <tr [class.highlight]="item.patientName === 'Self'">
+          <td>
+            {{ item.visitPurpose }}
+          </td>
+
+          <td>
+            {{ item.patientName }}
+          </td>
+
+          <td>
+            {{ item.appointmentDate }}
+          </td>
+
+          <td>
+            {{ item.appointmentTime }}
+          </td>
+
+          <td>
+            {{ item.doctorName }}
+          </td>
+
+          <td>
+            <span class="status" [ngClass]="{
                       completed: item.status === 'Completed',
                       upcoming: item.status === 'Upcoming',
                     }">
-            {{ item.status }}
-          </span>
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
-  <div class="btn-container">
-    <button class="new-btn" (click)="goToSpecialities()">
-      📅 New Appointment
-    </button>
+              {{ item.status }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination-wrapper">
+
+      <button id="prevBtn" (click)="previousPage()" [disabled]="currentPage() === 1">
+        ←
+      </button>
+
+      <span id="pageNumber"> {{ currentPage() }}
+      </span>
+
+      <button id="nextBtn" (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+        →
+      </button>
+
+    </div>
+
   </div>
+
+
+
 </div>

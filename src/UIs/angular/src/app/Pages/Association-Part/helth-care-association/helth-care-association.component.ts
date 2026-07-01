@@ -9,6 +9,9 @@ import { Store } from '@ngrx/store';
 import * as AuthActions from "../../../Store/Auth/auth.actions";
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { getRoleDepaSpecia, loadAllDepartments, loadAllDepartmentsSuccess, loadAllRoles, loadAllSpecialities, loadDoctorSpecialities, registerAssociotion } from 'src/app/Store/Doctor/doctor.action';
+import { selectAllDepartments, selectAllRoles, selectAllSpecialities, selectGetRoleDepSpeciOfAssociate, selectRegisterAssociate } from 'src/app/Store/Doctor/doctor.selectors';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: "app-helth-care-association",
@@ -31,25 +34,16 @@ export class HelthCareAssociationComponent {
   ];
 
   associateForm!: FormGroup;
+  allSpecialities: any;
+  allDepartments: any;
+  allRoles: any;
 
   constructor(private fb: FormBuilder, private store: Store<AppState>, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
-    this.store.dispatch(
-      AuthActions.getCountries()
-    );
-    this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
-      if (countries.data) {
-        console.log(countries)
-        this.countries = countries.data;
-        this.associateForm
-          .get('personalInfo.phoneCountryCode')
-          ?.setValue(this.countries[0].phoneCode);
-        this.associateForm
-          .get('personalInfo.emergencyCode')
-          ?.setValue(this.countries[0].phoneCode);
-      }
-    });
+
+    this.InitialApiCall()
+
     this.createForm();
     this.updateStepStatus();
   }
@@ -88,7 +82,7 @@ export class HelthCareAssociationComponent {
         institutionName: ['', Validators.required],
         yearOfPassing: ['', Validators.required],
         registrationNumber: ['', Validators.required],
-        licenseExpiry: ['', Validators.required],
+        licenseExpiry: [null, Validators.required],
         additionalCertifications: [''],
         qualificationDocuments: [null, Validators.required]
 
@@ -106,13 +100,16 @@ export class HelthCareAssociationComponent {
       employmentDetails: this.fb.group({
         joiningDate: ['', Validators.required],
         employeeType: ['', Validators.required],
-        departmentName: ['', Validators.required],
-        designation: ['', Validators.required],
+        departmentId: [{ value: null, disabled: true }, Validators.required],
+        roleId: [{ value: null, disabled: false }, Validators.required],
+        specialityId: [{ value: null, disabled: true }, Validators.required],
+        designationId: [{ value: null, disabled: true }, Validators.required]
       })
     });
   }
 
   nextStep(step: number) {
+    window.scrollTo(0, 0);
     this.currentStep = step;
     this.updateStepStatus();
 
@@ -125,8 +122,11 @@ export class HelthCareAssociationComponent {
     this.store.select(state => state.auth.getStates).subscribe((states: any) => {
       if (states) {
         this.states = states.data;
+        const stateControl = this.associateForm.get('personalInfo.stateId');
+        stateControl?.enable();
+        stateControl?.reset();
       }
-    });
+    }); this.store.select
   }
   async onSelectState(stateId: number) {
     await this.store.dispatch(
@@ -135,6 +135,10 @@ export class HelthCareAssociationComponent {
     this.store.select(state => state.auth.getCities).subscribe((cities: any) => {
       if (cities) {
         this.cities = cities.data;
+        const cityControl = this.associateForm.get('personalInfo.cityId');
+
+        cityControl?.enable();
+        cityControl?.reset();
       }
     });
   }
@@ -189,6 +193,38 @@ export class HelthCareAssociationComponent {
     }) as ('pending' | 'active' | 'completed')[];
   }
 
+  InitialApiCall() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    this.store.dispatch(
+      AuthActions.getCountries()
+    );
+
+    this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
+      if (countries.data) {
+        this.countries = countries.data;
+        this.associateForm
+          .get('personalInfo.phoneCountryCode')
+          ?.setValue(this.countries[0].phoneCode);
+        this.associateForm
+          .get('personalInfo.emergencyCode')
+          ?.setValue(this.countries[0].phoneCode);
+      }
+    });
+
+    this.store.dispatch(
+      getRoleDepaSpecia());
+
+
+
+    this.store.select(selectGetRoleDepSpeciOfAssociate)
+      .subscribe((res: any) => {
+        this.allRoles = res;
+      });
+  }
+
   getStepStatus(step: number): string {
 
     const forms = [
@@ -221,10 +257,43 @@ export class HelthCareAssociationComponent {
     }
   }
 
-  submit(): void {
+  async submit() {
+
     console.log(this.associateForm.value);
-    this.toastr.success("Association added successfully")
-    this.router.navigateByUrl('association-list')
+    const payload = {
+      ...this.associateForm.value.personalInfo,
+      languagesSpoken: this.associateForm.value.personalInfo.languagesSpoken.join(','),
+      ...this.associateForm.value.employmentDetails,
+      roleId: Number(this.associateForm.value.employmentDetails.roleId),
+      specialityId: Number(this.associateForm.value.employmentDetails.specialityId),
+      departmentId: Number(this.associateForm.value.employmentDetails.departmentId),
+      cityId: Number(this.associateForm.value.personalInfo.cityId),
+      stateId: Number(this.associateForm.value.personalInfo.stateId),
+      countryId: Number(this.associateForm.value.personalInfo.countryId),
+      createdBy: this.associateForm.value.personalInfo.firstName + " " + this.associateForm.value.personalInfo.lastName,
+      designationId: Number(this.associateForm.value.employmentDetails.designationId),
+      associateQualification: {
+        ...this.associateForm.value.qualification,
+        yearOfPassing: new Date(this.associateForm.value.qualification.yearOfPassing).getFullYear()
+      },
+      associateExperience: {
+        ...this.associateForm.value.experience,
+        experienceYears: Number(this.associateForm.value.experience.experienceYears)
+      }
+    }
+    await this.store.dispatch(registerAssociotion({ associate: payload }))
+    await this.store.select(selectRegisterAssociate)
+      .subscribe((res: any) => {
+        if (res) {
+          if (res.isSuccess === 1) {
+            this.router.navigateByUrl('/association-list');
+          } else {
+            return
+          }
+
+
+        }
+      });
 
   }
 }

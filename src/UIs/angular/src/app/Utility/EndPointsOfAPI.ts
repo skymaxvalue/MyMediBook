@@ -13,6 +13,16 @@ export const APIEndpoints = {
     GET_CITIES: "Location/GetCitiesByStateList/",
     GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
     UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
-    CREATE_APPOINTMENT: "Appointment/CreateAppointment"
+    CREATE_APPOINTMENT: "Appointment/CreateAppointment",
+    GET_ROLES: "Role/GetRoleList",
+    GET_DEPARTMENT: "Department/GetDepartmentList",
+    GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
+    REGISTER_ASSOCIATION: "Associate/RegisterAssociateMaster",
+    GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
+    GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
+    GET_ASSOCIATE_LIST: "Associate/GetAssociateList",
+    CREATE_SCHEDULE_ASSOCIATE: "Associate/CreateAssociateSchedule",
+    GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
+    GET_AGE_TYPE: "Master/GetAgeTypeList"
 
 }

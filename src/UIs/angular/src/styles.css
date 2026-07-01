@@ -12,6 +12,12 @@
   font-family: "Source Sans Pro", sans-serif !important;
 }
 
+#toast-container {
+  position: fixed !important;
+  top: 12px;
+  right: 12px;
+  z-index: 999999 !important;
+}
 div.card-header {
   font-size: large;
 }

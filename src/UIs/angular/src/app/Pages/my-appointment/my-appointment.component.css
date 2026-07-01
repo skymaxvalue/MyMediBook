@@ -1,3 +1,257 @@
+
+.search-section {
+  margin-bottom: 20px;
+      text-align: center;
+    margin-top: 10px;
+ 
+}
+
+
+
+.search-box {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+      justify-content: space-between;
+}
+
+.search-box input {
+  flex: 1;
+  height: 46px;
+  padding: 0 16px;
+  border: 1px solid #cfd8ff;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #fff;
+  transition: all 0.3s ease;
+  width: 50%;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #3b5bdb;
+}
+.clear-btn {
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.clear-btn:hover {
+  opacity: 0.9;
+}
+
+.search-box button {
+  height: 46px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 10px;
+  background: #3b5bdb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-box button:hover {
+  background: #2f4acb;
+}
+
+h2{
+    display: block;
+    font-size: 1.5em;
+   
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+.title2 {
+    text-align: center;
+    margin-bottom: 20px;
+    background: #e2e7ef;
+
+}
+.category {
+    background: #3b5bdb;
+    color: white;
+    padding: 10px 30px;
+   
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+}
+
+
+::ng-deep .ng-select {
+  width:210px;
+   background: #fff;
+   position: relative;
+   z-index: 100;
+}
+
+
+::ng-deep .ng-select .ng-select-container {
+  min-height: 44px !important;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: none;
+}
+::ng-deep .ng-select.ng-select-single .ng-select-container.ng-has-value .ng-input {
+    opacity: 0;
+    pointer-events: none !important;
+}
+
+::ng-deep .ng-select.ng-select-focused .ng-select-container {
+  border-color: #2563eb;
+  outline: none !important;
+}
+
+::ng-deep .ng-dropdown-panel {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  z-index: 100;
+}
+::ng-deep .ng-select .ng-select-container {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+::ng-deep .ng-select .ng-placeholder {
+ 
+    color:#999;
+      font-size: 15px;
+}
+::ng-deep .ng-option {
+  padding: 10px 12px;
+}
+
+
+::ng-deep .ng-select .ng-value-container {
+  padding-left: 12px;
+}
+
+::ng-deep .ng-select .ng-value {
+  margin: 0 !important;
+}
+::ng-deep .ng-select .ng-value-container {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .ng-select .ng-value {
+  margin-top: 0 !important;
+}
+::ng-deep .ng-select .ng-select-container.ng-has-value .ng-placeholder {
+    display: none !important;
+}
+::ng-deep .ng-option.ng-option-selected {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.member-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.member-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.member-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.member-name {
+    font-weight: 600;
+}
+
+.member-relation {
+    font-size: 12px;
+    color: #6b7280;
+}
+/* Family Member Cards */
+.family-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.member-card {
+  min-width: 100%;
+  padding: 14px;
+  border: 1px solid #cfd8ff;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.member-card:hover {
+  border-color: #3b5bdb;
+  transform: translateY(-2px);
+}
+
+.member-card.active {
+  background: #eef2ff;
+  border-color: #3b5bdb;
+}
+
+.member-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #3b5bdb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.member-card h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #222;
+}
+
+.member-card span {
+  font-size: 13px;
+  color: #666;
+}
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.table-header h3 {
+  margin: 0;
+  color: #3b5bdb;
+  font-size: 20px;
+  font-weight: 600;
+}
 .dashboard-card {
   background: #fff;
   border-radius: 16px;
@@ -63,6 +317,7 @@
   padding: 12px 20px;
   border-radius: 10px;
   cursor: pointer;
+ border-radius: 5px;
 }
 
 .new-btn:hover {
@@ -77,4 +332,32 @@
 
 th.active {
   color: #3b5bdb;
+}
+
+
+.pagination-wrapper{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:15px;
+    margin-top:30px;
+}
+
+.pagination-wrapper button{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:10px;
+}
+
+#pageNumber{
+    width:50px;
+    height:50px;
+    background:#2157F4;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    font-weight:700;
 }
