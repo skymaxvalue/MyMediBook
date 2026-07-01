@@ -5,11 +5,19 @@ export interface AppointmentState {
     ageType: any[];
     isLoading: boolean;
     error: string | null;
+    relations: any[];
+    Appointments: any[];
+    canceledAppoint: any;
+    rescheduledAppointment: any;
 }
 
 export const initialAppointmentState: AppointmentState = {
     appointment: null,
     isLoading: false,
     error: null,
-    ageType: []
+    ageType: [],
+    relations: [],
+    Appointments: [],
+    canceledAppoint: null,
+    rescheduledAppointment: null
 };

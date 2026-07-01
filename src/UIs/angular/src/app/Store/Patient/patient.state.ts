@@ -7,6 +7,8 @@ export interface PatientState {
     isLoading: boolean;
     myappintments: any[];
     updatedPatient: any;
+    patientProfiles: any[];
+    patientProfileData: any;
 
 }
 
@@ -16,5 +18,7 @@ export const initialAuthState: PatientState = {
     isLoading: false,
     myappintments: [],
     updatedPatient: null,
+    patientProfiles: [],
+    patientProfileData: null
 
 }

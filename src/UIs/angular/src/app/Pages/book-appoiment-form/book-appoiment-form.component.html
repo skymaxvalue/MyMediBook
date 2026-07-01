@@ -8,19 +8,53 @@
         <form [formGroup]="bookingForm" (ngSubmit)="submitForm()">
             <div class="form-grid">
 
-                <label for="gender">Relation With Patient</label>
+                <label>Patient Type</label>
                 <div class="field-container">
-                    <select id="gender" formControlName="RealtionType" (change)="OnSelectRelationShip($event)">
-                        <option value="">Select relation with patient</option>
-                        <option value="Self">Self</option>
-                        <option value="Spouse">Spouse</option>
-                        <option value="Daughter">Daughter </option>
-                        <option value="Son">Son </option>
-                        <option value="Mother">Mother </option>
-                        <option value="Father">Father </option>
-                        <option value="Other">Other </option>
+                    <div class="mobile-radio-group otp-method-group">
+                        <label class="otp-option">
 
-                    </select>
+                            <input type="radio" formControlName="patientType" value="existing">
+                            <span> Select Existing Patient</span>
+                        </label>
+
+                        <label class="otp-option">
+                            <input type="radio" formControlName="patientType" value="new">
+                            <span> Add New Patient</span>
+                        </label>
+                    </div>
+
+
+                </div>
+
+                @if(bookingForm.value.patientType === 'existing'){
+
+                <label for="gender">Select Patient Profile</label>
+                <div class="field-container">
+                    <ng-select [items]="ProfileList" bindLabel="fullName" bindValue="profileId"
+                        formControlName="profileId" placeholder="Select family member" [searchable]="true"
+                        [clearable]="true" (change)="onProfileChange($event)">
+
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ item.fullName }}
+                        </ng-template>
+
+                        <ng-template ng-option-tmp let-item="item">
+                            <div class="member-card" [class.active]="selectedMember()?.profileId === item.profileId">
+
+                                <div class="member-avatar">
+                                    {{ item.fullName.charAt(0) }}
+                                </div>
+
+                                <div>
+                                    <h4>{{ item.fullName }}</h4>
+                                    <span>{{ item.relationTypeName }}</span>
+                                </div>
+
+                            </div>
+                        </ng-template>
+
+
+                    </ng-select>
 
                     @if (getErrorMessage('RealtionType')) {
                     <small class="error-message">
@@ -28,6 +62,11 @@
                     </small>
                     }
                 </div>
+                }
+
+
+
+
 
                 <!-- First Name -->
                 <label for="firstName">First Name</label>
@@ -52,6 +91,18 @@
                     </small>
                     }
                 </div>
+                <label for="lastName">Select relation with patient</label>
+                <div class="field-container">
+                    <select id="gender" formControlName="relationTypeId" (change)="OnSelectRelationShip($event)">
+                        <option value="">Select relation with patient</option>
+                        @for (item of relations; track $index) {
+                        <option [value]="item.relationTypeId">{{item.relationTypeName}}</option>
+
+                        }
+
+
+                    </select>
+                </div>
 
                 <!-- Date of Birth -->
                 <label for="dateOfBirth">Date Of Birth</label>
@@ -68,18 +119,19 @@
                 <label>Age</label>
                 <div class="field-container">
                     <div class="inline-group age-type-group">
+
                         <input id="age" type="number" formControlName="age" placeholder="Enter age"
                             style="width: 120px" />
+                        @for (item of ageType; track $index) {
 
                         <label class="age-option">
-                            <input type="radio" value="years" formControlName="ageType" />
-                            <span>Year(s)</span>
+                            <input type="radio" [value]="item?.ageTypeId" formControlName="ageTypeId" />
+                            <span>{{item.ageTypeName}}</span>
                         </label>
+                        }
 
-                        <label class="age-option">
-                            <input type="radio" value="months" formControlName="ageType" />
-                            <span>Month(s)</span>
-                        </label>
+
+
                     </div>
 
                     @if (getErrorMessage('age')) {

@@ -1,0 +1,145 @@
+/* Backdrop */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Modal */
+.custom-modal {
+    width: 480px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: popup .25s ease;
+}
+
+/* Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #ececec;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+    color: #222;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Body */
+.modal-body {
+    padding: 24px;
+}
+
+.modal-body p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #555;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Footer */
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #ececec;
+}
+
+/* Buttons */
+.btn {
+    min-width: 120px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e4e6eb;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #bb2d3b;
+}
+
+/* Close Button */
+.close-btn {
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    color: #666;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.close-btn:hover {
+    color: #dc3545;
+}
+
+.custom-modal.closing {
+    animation: popupClose .25s ease forwards;
+}
+
+.modal-backdrop.closing {
+    animation: fadeOut .25s ease forwards;
+}
+
+/* Animation */
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: scale(.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes popupClose {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(.9);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        background: rgba(0,0,0,.45);
+    }
+
+    to {
+        background: rgba(0,0,0,0);
+    }
+}

@@ -46,6 +46,42 @@ export class PatientEffects {
             )
 
         )
+    );
+
+    getProfileListPatientByID$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getPetirntProfileListById),
+            mergeMap((action) =>
+                this.patientService.getProfileListByPatientById(action.patientId).pipe(
+                    map((response: any) =>
+                        PatientAction.getPetirntProfileListByIdSuccess({ patientProfile: response })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getPetirntProfileListByIdFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
+    )
+
+    getProfileDataByProfile_ID$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getProfileDataByProfileId),
+            mergeMap((action) =>
+                this.patientService.getProfileDataByPRofile_Id(action.profileId).pipe(
+                    map((response: any) =>
+                        PatientAction.getProfileDataByProfileIdSuccess({ patientProfileData: response })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getProfileDataByProfileIdFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
     )
 
 

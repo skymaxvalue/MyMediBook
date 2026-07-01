@@ -4,7 +4,8 @@
 
     <div class="date-filter">
         <label>View Availability From:</label>
-        <input type="date" [(ngModel)]="selectedDate" [min]="minDate" (change)="onDateChange()" />
+        <input type="date" [(ngModel)]="selectedDate" [min]="minDate" [max]="maxDate" (change)="onDateChange()" />
+
     </div>
 
     <div class="availability-card">
@@ -26,9 +27,10 @@
             @for (item of schedule; track $index) {
             <div class="row">
 
-                <span class="col">{{ item.formattedDate }}</span>
+                <span class="col" [class.reschedule-date]="item.isHighlighted">{{ item.formattedDate }}</span>
 
-                <span class="badge col-5" [ngClass]="item.badgeClass" (click)="openSlotsPopup(item)">
+                <span class="badge col-5" [ngClass]="item.badgeClass" [class.reschedule-badge]="item.isHighlighted"
+                    (click)="openSlotsPopup(item)">
                     {{ item.text }}
                 </span>
             </div>
@@ -86,11 +88,9 @@
                         @for (slot of slots; track $index) {
 
                         <div class="slot" [class.booked]="slot.booked" [class.available]="!slot.booked"
-                            [class.selected]="selectedSlot === slot.time"
-                            (click)="!slot.booked && selectSlot(slot.time)">
-
+                            [class.selected]="selectedSlot.time === slot.time"
+                            (click)="!slot.booked && selectSlot(slot)">
                             {{ slot.time }}
-
                         </div>
 
                         }
@@ -106,10 +106,15 @@
                 <span><span class="dot available"></span> Available</span>
                 <span><span class="dot booked"></span> Already Booked</span>
             </div>
+            @if(!updatesheduledpatient){
 
             <button class="book-btn" (click)="goToBooking()">
                 Book Appointment
             </button>
+            }
+            @if(updatesheduledpatient){
+            <button class="book-btn" (click)="rescheduleAppointment()">Reschedule Appointment </button>
+            }
         </div>
 
     </div>

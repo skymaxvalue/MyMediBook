@@ -30,6 +30,15 @@
     display: flex;
     gap: 25px;
 }
+.reschedule-date {
+  color: #ff5722;
+  font-weight: bold;
+}
+
+.reschedule-badge {
+  border: 2px solid #ff5722;
+  box-shadow: 0 0 8px rgba(255, 87, 34, 0.4);
+}
 
 .doctor-info {
     width: 260px;

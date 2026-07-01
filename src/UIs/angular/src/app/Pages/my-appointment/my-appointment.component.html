@@ -8,48 +8,41 @@
 
   </div>
 
-
-
-
-
   <div class="dashboard-card">
 
     <div class="table-header">
 
       <div class="search-box">
-        <ng-select [items]="familyMembers" bindLabel="name" placeholder="Select family member..." [searchable]="true"
-          [clearable]="true" [ngModel]="selectedMember()" (ngModelChange)="selectedMember.set($event)">
+        <ng-select [items]="relativeList()" bindLabel="fullName" placeholder="Select family member..."
+          [searchable]="true" [clearable]="true" [ngModel]="selectedMember()"
+          (ngModelChange)="selectedMember.set($event)">
 
           <ng-template ng-label-tmp let-item="item">
-            {{ item.name }}
+            {{ item.fullName }}
           </ng-template>
 
           <ng-template ng-option-tmp let-item="item">
-            <div class="member-card" [class.active]="selectedMember()?.id === item.id">
+            <div class="member-card" [class.active]="selectedMember()?.profileId === item.profileId">
 
               <div class="member-avatar">
-                {{ item.name.charAt(0) }}
+                {{ item.fullName.charAt(0) }}
               </div>
 
               <div>
-                <h4>{{ item.name }}</h4>
-                <span>{{ item.relation }}</span>
+                <h4>{{ item.fullName }}</h4>
+                <span>{{ item.relationTypeName }}</span>
               </div>
 
             </div>
           </ng-template>
 
         </ng-select>
-        <!-- <input type="text" placeholder="Search family member..." [(ngModel)]="searchText">
 
-      <button type="button" (click)="filteredFamilyMembers()">
-        Search
-      </button> -->
         <div>
           @if(selectedMember()){
 
           <div class="category">
-            Appointments Of {{ selectedMember().name }}
+            Appointments Of {{ selectedMember().fullName }}
           </div>
           }
 
@@ -64,74 +57,90 @@
 
     </div>
 
-    <table class="appointment-table">
-      <thead>
-        <tr>
-          <th (click)="sortTable('visitPurpose')">
-            Visit Purpose
-            <span class="sort-icon">{{getSortIcon('visitPurpose')}}</span>
-          </th>
+    <div class="table-responsive">
+      <table class="appointment-table">
+        <thead>
+          <tr>
+            <th (click)="sortTable('visitPurpose')">
+              Visit Purpose
+              <span class="sort-icon">{{getSortIcon('visitPurpose')}}</span>
+            </th>
 
-          <th (click)="sortTable('patientName')">
-            Patient Name
-            <span class="sort-icon">{{getSortIcon('patientName')}}</span>
-          </th>
+            <th (click)="sortTable('patientName')">
+              Patient Name
+              <span class="sort-icon">{{getSortIcon('patientName')}}</span>
+            </th>
 
-          <th (click)="sortTable('appointmentDate')">
-            Appointment Date
-            <span class="sort-icon">{{getSortIcon('appointmentDate')}}</span>
-          </th>
+            <th (click)="sortTable('appointmentDate')">
+              Appointment Date
+              <span class="sort-icon">{{getSortIcon('appointmentDate')}}</span>
+            </th>
 
-          <th (click)="sortTable('appointmentTime')">
-            Appointment Time
-            <span class="sort-icon">{{getSortIcon('appointmentTime')}}</span>
-          </th>
+            <th (click)="sortTable('slotStartTime')">
+              Appointment Time
+              <span class="sort-icon">{{getSortIcon('slotStartTime')}}</span>
+            </th>
 
 
-          <th (click)="sortTable('doctorName')">
-            Dr. Name
-            <span class="sort-icon">{{getSortIcon('doctorName')}}</span>
-          </th>
+            <th (click)="sortTable('doctorName')">
+              Dr. Name
+              <span class="sort-icon">{{getSortIcon('doctorName')}}</span>
+            </th>
 
-          <th>Status</th>
-        </tr>
-      </thead>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        @for (item of paginatedAppointments(); track $index) {
-        <tr [class.highlight]="item.patientName === 'Self'">
-          <td>
-            {{ item.visitPurpose }}
-          </td>
+        <tbody>
+          @for (item of paginatedAppointments(); track $index) {
+          <tr [class.highlight]="item.relationTypeName === 'Self'">
+            <td>
+              {{ item.visitType }}
+            </td>
 
-          <td>
-            {{ item.patientName }}
-          </td>
+            <td>
+              {{ item.patientName }}
+            </td>
 
-          <td>
-            {{ item.appointmentDate }}
-          </td>
+            <td>
+              {{ item.appointmentDate | date:'d-MMM-yyyy' }}
+            </td>
 
-          <td>
-            {{ item.appointmentTime }}
-          </td>
+            <td>
+              {{ item.slotStartTime }}
+            </td>
 
-          <td>
-            {{ item.doctorName }}
-          </td>
+            <td>
+              {{ item.doctorName }}
+            </td>
 
-          <td>
-            <span class="status" [ngClass]="{
-                      completed: item.status === 'Completed',
-                      upcoming: item.status === 'Upcoming',
-                    }">
-              {{ item.status }}
-            </span>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(item.appointmentStatus)">
+                {{ item.appointmentStatus }}
+              </span>
+            </td>
+
+            <td>
+
+              <button class="btn btn-primary btn-sm me-2" (click)="rescheduleAppointment(item)">
+                Reschedule
+              </button>
+              @if( item.appointmentStatus !== 'Cancelled'){
+              <button class="btn btn-danger btn-sm" (click)="cancelAppointment(item)">
+                Cancel
+              </button>
+              }
+            </td>
+
+          </tr>
+
+          }
+
+        </tbody>
+      </table>
+
+    </div>
 
     <div class="pagination-wrapper">
 

@@ -90,7 +90,7 @@ h2{
 
 
 ::ng-deep .ng-select {
-  width:210px;
+  width:250px;
    background: #fff;
    position: relative;
    z-index: 100;
@@ -261,12 +261,23 @@ h2{
 }
 .appointment-table {
   width: 100%;
+   min-width: 1050px;
   border-collapse: collapse;
   font-size: 16px;
 }
 
 .appointment-table thead {
   background: #f0f2f8;
+}
+.appointment-table th,
+.appointment-table td {
+    white-space: nowrap;
+    padding: 16px;
+    vertical-align: middle;
+}
+.appointment-table td:nth-child(5) {
+    white-space: normal;
+    min-width: 180px;
 }
 
 .appointment-table th {
@@ -284,26 +295,48 @@ h2{
   background: #f9fbff;
 }
 
-.highlight {
-  background: #f3f4f7;
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.status {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
-  color: white;
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 110px;
+    height: 34px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    transition: all .3s ease;
+}
+.status-scheduled {
+    background: linear-gradient(135deg, #EEF4FF, #DCE9FF);
+    color: #2457E0;
+     border: 1px solid #BFD7FF;
 }
 
-.completed {
-  background: #25a87a;
+.status-upcoming {
+    background: linear-gradient(135deg, #FFF9E8, #FFE8A3);
+    color: #C88600;
+     border: 1px solid #FFD98C;
 }
 
-.upcoming {
-  background: #3b5bdb;
+.status-completed {
+    background: linear-gradient(135deg, #EAFBF3, #CFF5DF);
+    color: #15803D;
+    border: 1px solid #B9E8C8;
 }
 
+.status-cancelled {
+    background: linear-gradient(135deg, #FDECEC, #F8D2D2);
+    color: #B91C1C;
+     border: 1px solid #F4B7B7;
+}
 .btn-container {
   display: flex;
   justify-content: flex-end;

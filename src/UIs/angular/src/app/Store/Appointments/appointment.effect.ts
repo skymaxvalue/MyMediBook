@@ -66,4 +66,115 @@ export class AppointmentEffects {
             )
         )
     );
+    getRelationType$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getRelationType),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getRelationType()
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getRelationTypeSuccess({
+                                Relations: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getRelationTypeFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+    getMyAppointments$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getMyAppointments),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getMyAppoitmentsByPatientID(action.patientId)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getMyAppointmentsSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getMyAppointmentsFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
+    cancelMyAppointments$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.cancelMyAppointment),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .cancelAppoitmentsByPatientID(action.patientId, action.appointmentId)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.cancelMyAppointmentSuccess({
+                                canceledAppoint: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.cancelMyAppointmentFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
+
+    rescheduleMyAppointments$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.rescheduleMyAppointment),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .rescheduleAppoitmentsByPatientID({ patientId: action.patientId, appointmentId: action.appointmentId, associateId: action.associateId, slotId: action.slotId, visitPurpose: action.visitPurpose, visitType: action.visitType })
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.rescheduleMyAppointmentSuccess({
+                                rescheduledAppointment: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.rescheduleMyAppointmentFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
 }

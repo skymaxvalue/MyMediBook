@@ -141,6 +141,6 @@ export const getTimeSloteByDoctorIDSuccess = createAction(
 );
 
 export const getTimeSloteByDoctorIDFailure = createAction(
-    'Create Time Slot Failure',
+    'Create Time Schedule Failure',
     props<{ error: any }>()
 );

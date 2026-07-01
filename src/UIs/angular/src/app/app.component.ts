@@ -22,8 +22,8 @@ export class AppComponent {
     this.store.select(state => state.appointment.isLoading),
     this.store.select(state => state.patient.isLoading)
   ]).pipe(
-    map(([auth, doctor, appointment]) =>
-      auth || doctor || appointment
+    map(([auth, doctor, appointment, patient]) =>
+      auth || doctor || appointment || patient
     )
   );
 

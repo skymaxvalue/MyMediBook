@@ -264,7 +264,7 @@ export const doctorSpecialityReducer = createReducer(
         DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess,
         (state, { doctorTimeSlot }) => ({
             ...state,
-            associateSchedule: doctorTimeSlot,
+            doctorTimeSlot: doctorTimeSlot,
             isLoading: false
         })
     ),

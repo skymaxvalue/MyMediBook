@@ -50,5 +50,5 @@ export const selectCreatedAssociateSchedule = createSelector(
 );
 export const selectGetTimeSlotOfDoctor = createSelector(
     selectDoctorSpecialityState,
-    state => state.timeSlot
+    state => state.doctorTimeSlot
 )

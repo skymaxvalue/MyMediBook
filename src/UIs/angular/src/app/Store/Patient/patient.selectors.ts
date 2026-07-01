@@ -12,3 +12,11 @@ export const selectUpdatedPatientDetails = createSelector(
     selectPatientState,
     state => state.patientDetails
 );
+export const selectGetProfileListByPatientId = createSelector(
+    selectPatientState,
+    state => state.patientProfiles
+);
+export const selectGetProfileDataByProfileId = createSelector(
+    selectPatientState,
+    state => state.patientProfileData
+);

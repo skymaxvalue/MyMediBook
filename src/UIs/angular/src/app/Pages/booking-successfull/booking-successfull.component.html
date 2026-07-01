@@ -17,13 +17,13 @@
         <div class="details">
 
             <label>Patient Name</label>
-            <input [value]="bookingPatient.firstName + ' ' + bookingPatient.lastName" readonly>
+            <input [value]="patientName" readonly>
 
             <label>Date</label>
             <input [value]="selectedDate" readonly>
 
             <label>Time</label>
-            <input [value]="selectedSlot" readonly>
+            <input [value]="selectedSlot.time" readonly>
 
 
         </div>

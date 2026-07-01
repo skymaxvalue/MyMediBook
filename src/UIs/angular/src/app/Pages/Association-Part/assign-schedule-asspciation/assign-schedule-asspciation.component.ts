@@ -254,6 +254,21 @@ export class AssignScheduleAsspciationComponent implements OnInit {
     return true;
   }
 
+  convertTo24Hour(time12h: string): string {
+    const [time, modifier] = time12h.split(' ');
+    let [hours, minutes] = time.split(':');
+
+    if (hours === '12') {
+      hours = '00';
+    }
+
+    if (modifier === 'PM') {
+      hours = (parseInt(hours, 10) + 12).toString();
+    }
+
+    return `${hours.padStart(2, '0')}:${minutes}:00`;
+  }
+
   openAssociatePopup(): void {
 
     const record = this.findSelectedRecord();
@@ -307,6 +322,10 @@ export class AssignScheduleAsspciationComponent implements OnInit {
       ...this.scheduleForm.value,
       associateId: Number(this.scheduleForm.value.associateId),
       workingDays: this.selectedDays.join(","),
+      fromTime: this.convertTo24Hour(this.scheduleForm.value.fromTime),
+      toTime: this.convertTo24Hour(this.scheduleForm.value.toTime),
+      breakTimeFrom: this.convertTo24Hour(this.scheduleForm.value.breakTimeFrom),
+      breakTimeTo: this.convertTo24Hour(this.scheduleForm.value.breakTimeTo),
       otpMethod: "mobile",
       createdBy: "Created By Admin"
 
@@ -387,8 +406,12 @@ export class AssignScheduleAsspciationComponent implements OnInit {
         value: selectedDayNames
       },
       {
-        label: 'Consultation',
-        value: `${form.consultDuration}, ${form.averageCharge}`
+        label: 'Consultation Time',
+        value: `${form.consultationTime} minuts`
+      },
+      {
+        label: "Consultation Fee",
+        value: `${form.averageCharge}`
       }
     ];
   }

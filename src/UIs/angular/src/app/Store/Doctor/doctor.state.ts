@@ -10,7 +10,7 @@ export interface DoctorSpecialityState {
     weeakDays: any[];
     allAssociates: any[];
     associateSchedule: any;
-    timeSlot: any[];
+    doctorTimeSlot: any[];
 
 }
 
@@ -26,6 +26,6 @@ export const initialState: DoctorSpecialityState = {
     weeakDays: [],
     allAssociates: [],
     associateSchedule: null,
-    timeSlot: []
+    doctorTimeSlot: []
 
 };

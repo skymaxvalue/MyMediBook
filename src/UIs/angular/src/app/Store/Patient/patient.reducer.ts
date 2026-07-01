@@ -23,5 +23,37 @@ export const patientReducer = createReducer(
         error: action.error,
     })),
 
+    on(PatientActions.getPetirntProfileListById, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(PatientActions.getPetirntProfileListByIdSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        patientProfiles: action.patientProfile
+    })),
+
+    on(PatientActions.getPetirntProfileListByIdFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
+    on(PatientActions.getProfileDataByProfileId, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(PatientActions.getProfileDataByProfileIdSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        patientProfileData: action.patientProfileData
+    })),
+
+    on(PatientActions.getProfileDataByProfileIdFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
 
 )
