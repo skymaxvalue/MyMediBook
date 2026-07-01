@@ -7,12 +7,14 @@
   </div>
   <app-footer></app-footer>
   <app-notification></app-notification>
+  <app-confirmation-modal></app-confirmation-modal>
 </div>
 }@else{
 <div class="othercontainer">
   <app-navbar></app-navbar>
   <div class="container-fluid main-content ">
     <router-outlet></router-outlet>
+    <app-confirmation-modal></app-confirmation-modal>
   </div>
 </div>
 }

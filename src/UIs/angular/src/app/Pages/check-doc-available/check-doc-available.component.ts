@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, signal } from "@angular/core";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,11 +9,16 @@ import { BookingFailedComponent } from "../booking-failed/booking-failed.compone
 import { Store } from "@ngrx/store";
 import * as AppintmentAction from "../../Store/Appointments/appointment.actions"
 import { getTimeSloteByDoctorID } from "src/app/Store/Doctor/doctor.action";
+import { selectGetTimeSlotOfDoctor } from "src/app/Store/Doctor/doctor.selectors";
+import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
+import { getMyAppointments, rescheduleMyAppointment } from "../../Store/Appointments/appointment.actions";
+import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
   badgeClass: 'green' | 'red' | 'beige';
   text: string;
+  isHighlighted?: boolean;
 }
 @Component({
   selector: "app-check-doc-available",
@@ -23,10 +28,11 @@ interface ScheduleItem {
 })
 export class CheckDocAvailableComponent implements OnInit, OnChanges {
   @Input() doctor: any = {}
+  @Input() updatesheduledpatient: any = null
   @Output() backToSpecialities = new EventEmitter<void>();
 
   today: Date = new Date();
-  currentStartDate: Date = new Date();
+  currentStartDate: any;
   minDate: string = '';
   selectedDate: string = '';
   showBookingCunfermationOtp = false;
@@ -36,7 +42,8 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   showBookingFaild = false;
   showSlotsModal = false;
   selectedDateGlobal = '';
-  selectedSlot = '';
+  selectedSlot: any = null;
+  highlightDate = '';
   otpDevice: { otpDevice: string, value: string } = { otpDevice: 'email', value: '' };
 
   allSlots: string[] = [
@@ -48,32 +55,59 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
   slots: { time: string; booked: boolean }[] = [];
   showAddbookingAppoinmentForm: boolean = false
+  ProfileList: any[] = [];
+  maxDate: string = '';
 
   constructor(private router: Router, private store: Store) {
-    this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
+    // this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
   }
 
   ngOnInit(): void {
 
-    this.minDate = this.toInputDate(this.today);
-    this.selectedDate = this.minDate;
+    this.minDate = this.toInputDate(this.doctor.fromDate);
+    this.maxDate = this.toInputDate(this.doctor.toDate);
+    if (this.updatesheduledpatient) {
 
-    this.generateSchedule(this.today);
+      this.highlightDate = this.formatInputDate(
+        new Date(this.updatesheduledpatient.appointmentDate)
+      );
+
+      // this.selectedDate = this.highlightDate;
+    } else {
+
+
+
+    }
+    this.selectedDate = this.minDate;
+    // this.selectedDate = this.minDate;
+    this.currentStartDate = new Date(this.selectedDate);
+
+    this.generateSchedule(new Date(this.selectedDate));
+
 
   }
   ngOnChanges(): void {
-    if (this.doctor?.fromTime && this.doctor?.toTime) {
-      this.generateSlots(
-        this.doctor.fromTime,
-        this.doctor.toTime,
-        30
-      );
-    }
+    // if (this.doctor?.fromTime && this.doctor?.toTime) {
+    //   this.generateSlots(
+    //     this.doctor.fromTime,
+    //     this.doctor.toTime,
+    //     30
+    //   );
+    // }
   }
 
-  toInputDate(date: Date): string {
-    return date.toISOString().split('T')[0];
+  toInputDate(dateStr: string) {
+    const [day, month, year] = dateStr.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}`;
   }
+
+
 
   formatDate(date: Date): string {
     const day = date.toLocaleDateString('en-GB', { weekday: 'long' });
@@ -87,6 +121,10 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   }
 
   generateSchedule(startDate: Date): void {
+    const appointmentDate = this.updatesheduledpatient
+      ? this.formatInputDate(new Date(this.updatesheduledpatient.appointmentDate))
+      : '';
+
     this.schedule = [];
 
     for (let i = 0; i < 7; i++) {
@@ -109,19 +147,50 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
         date: d,
         formattedDate: this.formatDate(d),
         badgeClass,
-        text
+        text,
+        isHighlighted:
+          this.updatesheduledpatient &&
+          this.formatInputDate(d) ===
+          this.formatInputDate(new Date(this.updatesheduledpatient.appointmentDate))
       });
     }
   }
 
+  async rescheduleAppointment() {
+    // this.st
+    if (!this.selectedSlot) {
+      alert('Please select a time slot for rescheduling the appointment');
+      return;
+    }
+    await this.store.dispatch(rescheduleMyAppointment({
+      patientId: this.updatesheduledpatient.patientId,
+      appointmentId: this.updatesheduledpatient.appointmentId,
+      associateId: this.doctor.associateId,
+      slotId: this.selectedSlot.slotId,
+      visitPurpose: this.updatesheduledpatient.visitPurpose,
+      visitType: this.updatesheduledpatient.visitType
+    }))
+    await this.store.select(selectRescheduledAppointment).subscribe((res: any) => {
+      if (res) {
+        this.store.dispatch(getMyAppointments({ patientId: this.updatesheduledpatient.patientId }))
+        this.bookingPatient = this.updatesheduledpatient
+        this.closeSlotsModal()
+        this.showBookingSuccess = true;
+
+      }
+    })
+  }
+
   onDateChange(): void {
+    console.log(this.selectedDate)
     this.currentStartDate = new Date(this.selectedDate);
+    console.log(this.currentStartDate, "======>")
     this.generateSchedule(this.currentStartDate);
   }
 
   nextWeek(): void {
     this.currentStartDate.setDate(this.currentStartDate.getDate() + 7);
-    this.selectedDate = this.toInputDate(this.currentStartDate);
+    this.selectedDate = this.formatInputDate(this.currentStartDate);
     this.generateSchedule(this.currentStartDate);
   }
 
@@ -129,14 +198,25 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     const newDate = new Date(this.currentStartDate);
     newDate.setDate(newDate.getDate() - 7);
 
-    if (newDate >= this.today) {
+    const min = new Date(this.minDate);
+
+    if (newDate >= min) {
       this.currentStartDate = newDate;
-      this.selectedDate = this.toInputDate(this.currentStartDate);
+      this.selectedDate = this.formatInputDate(this.currentStartDate);
       this.generateSchedule(this.currentStartDate);
     }
+
+  }
+  formatInputDate(date: Date): string {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}`;
   }
 
-  openSlotsPopup(item: ScheduleItem): void {
+  async openSlotsPopup(item: ScheduleItem) {
+    console.log(item)
     if (item.badgeClass === 'beige') {
       return;
     }
@@ -148,27 +228,46 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     const payload = {
       associateId: this.doctor.associateId,
-      fromDate: this.selectedDate,
-      toDate: this.selectedDate
+      fromDate: new Date(item.date).toISOString(),
+      toDate: new Date(item.date).toISOString(),
+
     }
-    this.store.dispatch(getTimeSloteByDoctorID({ payload }))
-    this.showSlotsModal = true;
+    await this.store.dispatch(getTimeSloteByDoctorID({ payload }))
+    await this.store.select(selectGetTimeSlotOfDoctor).subscribe((res: any) => {
+      if (res?.data) {
 
-    let bookedSlots: string[] = [];
+        this.slots = res.data.map((slot: any) => ({
+          time: slot.startTime,
+          booked: slot.isBooked,
+          slotId: slot.slotId,
+          isAvailable: slot.isAvailable
 
-    if (item.badgeClass === 'red') {
-      bookedSlots = this.allSlots.slice(0, 10);
-    } else {
-      bookedSlots = this.allSlots.slice(0, 3);
-    }
 
-    // this.slots = this.allSlots.map(slot => ({
-    //   time: slot,
-    //   booked: bookedSlots.includes(slot)
-    // }));
+        }));
+
+        this.showSlotsModal = true;
+        // console.log(res, "=========>")
+        // let bookedSlots: string[] = [];
+
+        // if (item.badgeClass === 'red') {
+        //   bookedSlots = this.allSlots.slice(0, 10);
+        // } else {
+        //   bookedSlots = this.allSlots.slice(0, 3);
+        // }
+
+        // this.slots = this.allSlots.map(slot => ({
+        //   time: slot,
+        //   booked: bookedSlots.includes(slot)
+        // }));
+        // this.showSlotsModal = true;
+      }
+    })
+
+
+
   }
 
-  selectSlot(slot: string): void {
+  selectSlot(slot: any): void {
     this.selectedSlot = slot;
   }
 
@@ -177,9 +276,13 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   }
 
   goToBooking(): void {
+
     if (!this.selectedSlot) {
       alert('Please select a time slot');
       return;
+    }
+    if (this.updatesheduledpatient) {
+
     }
     this.showAddbookingAppoinmentForm = true
 
@@ -226,12 +329,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     console.log(patientDetail, this.selectedDate, this.selectedSlot, "========>")
     const payload = {
       ...patientDetail,
-      appointmentDate: this.selectedDate,
-      timeSlot: this.selectedSlot,
-
-      patientId: 0,
-      doctorId: 0,
-      slotId: 0,
+      relatonTypeId: patientDetail.relationTypeId
     }
     this.store.dispatch(
       AppintmentAction.createAppointment({

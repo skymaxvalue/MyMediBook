@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,12 +7,17 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { Store } from '@ngrx/store';
+import { getAgeType, getRelationType } from 'src/app/Store/Appointments/appointment.actions';
+import { selectAgeType, selectRelationShipType } from 'src/app/Store/Appointments/appointment.selcetors';
+import { getProfileDataByProfileId } from 'src/app/Store/Patient/patient.action';
+import { selectGetProfileDataByProfileId, selectGetProfileListByPatientId } from 'src/app/Store/Patient/patient.selectors';
 
 @Component({
   selector: 'app-book-appoiment-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './book-appoiment-form.component.html',
   styleUrl: './book-appoiment-form.component.css'
 })
@@ -21,10 +26,43 @@ export class BookAppoimentFormComponent implements OnInit {
   @Input() doctor: any;
   @Input() selectedDate: any;
   @Input() selectedSlot: any;
+  selectedMember = signal<any | null>(null);
   InsurenceValue: string = '';
-
+  familyMembers = [
+    {
+      id: 1,
+      name: 'Self',
+      relation: 'Self'
+    },
+    {
+      id: 2,
+      name: 'Ramesh',
+      relation: 'Father'
+    },
+    {
+      id: 3,
+      name: 'Sunita',
+      relation: 'Mother'
+    },
+    {
+      id: 4,
+      name: 'Rahul',
+      relation: 'Brother'
+    },
+    {
+      id: 5,
+      name: 'Raman',
+      relation: 'Son'
+    }
+  ];
+  ProfileList: any[] = [];
+  ageType: any[] = [];
+  relations: any;
+  selectMember(member: any) {
+    this.selectedMember.set(member);
+  }
   bookingForm!: FormGroup;
-
+  patientType = '';
   showInsuranceModal = false;
   showPaymentModal = false;
   loginUser: any
@@ -110,9 +148,14 @@ export class BookAppoimentFormComponent implements OnInit {
           Validators.pattern('^[a-zA-Z ]+$')
         ]
       ],
+      patientId: [this.loginUser.patientId],
+      relationTypeId: [null, Validators.required],
+      associateId: [this.doctor.associateId, Validators.required],
+      slotId: [this.selectedSlot.slotId, Validators.required],
+      profileId: [null, Validators.required],
       dateOfBirth: ['', Validators.required],
       age: ['', [Validators.required, Validators.min(0)]],
-      ageType: ['', Validators.required],
+      ageTypeId: ['', Validators.required],
       gender: ['', Validators.required],
       insurance: ['', Validators.required],
 
@@ -131,6 +174,7 @@ export class BookAppoimentFormComponent implements OnInit {
         expiry: [''],
         cvv: ['']
       }),
+      patientType: [this.patientType],
 
       address: ['', [Validators.required, Validators.minLength(5)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
@@ -138,12 +182,44 @@ export class BookAppoimentFormComponent implements OnInit {
       visitPurpose: ['', [Validators.required, Validators.minLength(5)]],
       visitType: ['', Validators.required],
       otpMethod: ['', Validators.required],
-      RealtionType: ['', Validators.required]
     });
   }
 
   InitialApiCall() {
+    this.store.dispatch(getAgeType())
+    this.store.dispatch(getRelationType())
+    this.store.select(selectAgeType).subscribe((res: any) => {
+      if (res) {
+        console.log(res.data)
+        this.ageType = res.data
+      }
+    })
+    this.store.select(selectRelationShipType).subscribe((res: any) => {
+      if (res) {
+        console.log(res.data)
+        this.relations = res.data
+      }
+    })
+    this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
+      if (res) {
+        console.log(res.data, "=======>")
+        this.ProfileList = res.data
 
+      }
+    })
+  }
+
+  async onProfileChange(event: any) {
+
+
+    this.bookingForm.patchValue(event)
+    const date = new Date(event.dateOfBirth)
+      .toISOString()
+      .split('T')[0];
+
+    this.bookingForm.patchValue({
+      dateOfBirth: date
+    });
   }
 
 
@@ -264,26 +340,29 @@ export class BookAppoimentFormComponent implements OnInit {
   }
 
   OnSelectRelationShip(event: any) {
-
-    if (event.target.value === "Self") {
-      this.bookingForm.get('firstName')?.setValue(this.loginUser.data.firstName);
-      this.bookingForm.get('lastName')?.setValue(this.loginUser.data.lastName);
-      this.bookingForm.get('email')?.setValue(this.loginUser.data.email);
-      this.bookingForm.get('gender')?.setValue(this.loginUser.data.gender);
-      this.bookingForm.get('phone')?.setValue(this.loginUser.data.phoneNumber);
-      this.bookingForm.get('address')?.setValue(`${this.loginUser.data.addressLine1}  ${this.loginUser.data.addressLine2} `);
-      const dob = this.loginUser.data.dateOfBirth
-        ? new Date(this.loginUser.data.dateOfBirth).toISOString().split('T')[0]
-        : null;
-
-      this.bookingForm.patchValue({
-        dateOfBirth: dob
-      });
-      // this.bookingForm.get('firstName')?.setValue(this.loginUser.data.firstName);
+    const select = event.target as HTMLSelectElement;
+    console.log(select)
 
 
-      console.log(this.loginUser.data)
-    }
+    // if (event.target.value === "Self") {
+    //   this.bookingForm.get('firstName')?.setValue(this.loginUser.data.firstName);
+    //   this.bookingForm.get('lastName')?.setValue(this.loginUser.data.lastName);
+    //   this.bookingForm.get('email')?.setValue(this.loginUser.data.email);
+    //   this.bookingForm.get('gender')?.setValue(this.loginUser.data.gender);
+    //   this.bookingForm.get('phone')?.setValue(this.loginUser.data.phoneNumber);
+    //   this.bookingForm.get('address')?.setValue(`${this.loginUser.data.addressLine1}  ${this.loginUser.data.addressLine2} `);
+    //   const dob = this.loginUser.data.dateOfBirth
+    //     ? new Date(this.loginUser.data.dateOfBirth).toISOString().split('T')[0]
+    //     : null;
+
+    //   this.bookingForm.patchValue({
+    //     dateOfBirth: dob
+    //   });
+    //   // this.bookingForm.get('firstName')?.setValue(this.loginUser.data.firstName);
+
+
+    //   console.log(this.loginUser.data)
+    // }
   }
   handleDobChange(): void {
     this.bookingForm.get('dateOfBirth')?.valueChanges.subscribe(() => {
@@ -300,30 +379,47 @@ export class BookAppoimentFormComponent implements OnInit {
 
     let years = today.getFullYear() - dob.getFullYear();
     let months = today.getMonth() - dob.getMonth();
+    let days = today.getDate() - dob.getDate();
 
-    if (today.getDate() < dob.getDate()) {
+    // Days adjust
+    if (days < 0) {
       months--;
+
+      const previousMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += previousMonth.getDate();
     }
 
+    // Months adjust
     if (months < 0) {
       years--;
       months += 12;
     }
 
-    if (years <= 0) {
+    console.log({
+      years,
+      months,
+      days
+    });
+
+    if (years > 0) {
+      this.bookingForm.patchValue({
+        age: years,
+        ageTypeId: this.ageType[2].ageTypeId
+      });
+    } else if (months > 0) {
       this.bookingForm.patchValue({
         age: months,
-        ageType: 'months'
+        ageTypeId: this.ageType[1].ageTypeId
       });
     } else {
       this.bookingForm.patchValue({
-        age: years,
-        ageType: 'years'
+        age: days,
+        ageTypeId: this.ageType[0].ageTypeId
       });
     }
 
     this.bookingForm.get('age')?.disable();
-    this.bookingForm.get('ageType')?.disable();
+    this.bookingForm.get('ageTypeId')?.disable();
   }
 
   allowOnlyText(event: KeyboardEvent): void {
@@ -348,20 +444,22 @@ export class BookAppoimentFormComponent implements OnInit {
   }
 
   submitForm(): void {
+    console.log(this.bookingForm, this.bookingForm.invalid)
     this.bookingForm.markAllAsTouched();
 
     if (this.bookingForm.invalid) {
       return;
     } else {
       const bookingPatient = this.bookingForm.getRawValue();
+      delete bookingPatient.patientType
       if (bookingPatient.insurance === "yes") {
         bookingPatient.insurance = true
-        delete bookingPatient.paymentData
+        // delete bookingPatient.paymentData
       }
       if (bookingPatient.insurance === "no") {
 
         bookingPatient.insurance = false
-        delete bookingPatient.insuranceData
+        // delete bookingPatient.insuranceData
       }
       const otpDeviceDetails: any = { otpDevice: this.bookingForm.value.otpMethod, value: this.bookingForm.get('otpMethod')?.value === "mobile" ? this.bookingForm.get('phone')?.value : this.bookingForm.get('email')?.value, bookingPatient: bookingPatient }
       this.backToAvailability.emit(otpDeviceDetails);

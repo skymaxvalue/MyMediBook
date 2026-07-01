@@ -16,16 +16,77 @@ export const createAppointmentFailure = createAction(
     props<{ error: string }>()
 );
 export const getAgeType = createAction(
-    '[Appointment] Create Appointment',
+    '[AgeType] get age type',
 
 );
 
 export const getAgeTypeSuccess = createAction(
-    '[Appointment] Create Appointment Success',
+    '[AgeType] get age type Success',
     props<{ ageType: any }>()
 );
 
 export const getAgeTypeFailure = createAction(
-    '[Appointment] Create Appointment Failure',
+    '[AgeType] get age type Failure',
+    props<{ error: string }>()
+);
+
+export const getRelationType = createAction(
+    '[Relation] get Relation type',
+
+);
+
+export const getRelationTypeSuccess = createAction(
+    '[Relation] get Relation type Success',
+    props<{ Relations: any }>()
+);
+
+export const getRelationTypeFailure = createAction(
+    '[Relation] get Relation type Failure',
+    props<{ error: string }>()
+);
+
+export const getMyAppointments = createAction(
+    '[Appointments] get ',
+    props<{ patientId: number }>()
+
+);
+
+export const getMyAppointmentsSuccess = createAction(
+    '[Appointments] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getMyAppointmentsFailure = createAction(
+    '[Appointments ] get  Failure',
+    props<{ error: string }>()
+);
+export const cancelMyAppointment = createAction(
+    '[Appointments Cancel] delete ',
+    props<{ appointmentId: number, patientId: number }>()
+
+);
+
+export const cancelMyAppointmentSuccess = createAction(
+    '[Appointments Cancel] delete  Success',
+    props<{ canceledAppoint: any }>()
+);
+
+export const cancelMyAppointmentFailure = createAction(
+    '[Appointments Cancel] delete  Failure',
+    props<{ error: string }>()
+);
+export const rescheduleMyAppointment = createAction(
+    '[Appointments reschedule] put ',
+    props<{ appointmentId: number, patientId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any }>()
+
+);
+
+export const rescheduleMyAppointmentSuccess = createAction(
+    '[Appointments reschedule] put  Success',
+    props<{ rescheduledAppointment: any }>()
+);
+
+export const rescheduleMyAppointmentFailure = createAction(
+    '[Appointments reschedule] put  Failure',
     props<{ error: string }>()
 );

@@ -13,6 +13,11 @@ import { AppState } from "src/app/Store/app.state";
 import { MessagesComponent } from "../messages/messages.component";
 import { LabResultComponent } from "../lab-result/lab-result.component";
 import { BillingComponent } from "../billing/billing.component";
+import { getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
+import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
+import { first } from "rxjs";
+import { getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
+import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selcetors";
 
 @Component({
   selector: "app-dashboard",
@@ -23,7 +28,9 @@ import { BillingComponent } from "../billing/billing.component";
 export class DashboardComponent implements OnInit {
   activeTab = "appointments";
   selectedDoctor: any;
-
+  user = JSON.parse(localStorage.getItem('token') || 'null')
+  patientRelativeList: any[] = []
+  updatesheduledpatient: any = null
 
 
   constructor(
@@ -36,133 +43,42 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  callInitialAPI() {
+  async callInitialAPI() {
+    console.log(this.user.patientId)
     this.store.dispatch(
       loadDoctorSpecialities());
+
+
+    if (this.user.patientId) {
+      await this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
+      this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }))
+    }
+
+    await this.store.select(selectMyAppointmentList).subscribe((res: any) => {
+      if (res) {
+        console.log(res, "========>")
+        this.appointments = res.data
+      }
+    })
+
+    this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
+      if (res) {
+        console.log(res)
+        this.patientRelativeList = res.data
+      }
+    })
 
     this.store.select(selectDoctorSpecialities)
       .subscribe((res: any) => {
         this.specialities = res;
       });
-  }
-  appointments = [
-    {
-      visitPurpose: "ENT",
-      patientName: "Ramesh",
-      appointmentDate: "Mar 31 2026",
-      appointmentTime: "11:00 AM - 11:30AM",
-      doctorName: "Dr. Vaishali",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "Fever",
-      patientName: "Self",
-      appointmentDate: "Apr 08 2026",
-      appointmentTime: "03:00 PM - 03:30PM",
-      doctorName: "Dr. Arun",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "Follow Up",
-      patientName: "Raman",
-      appointmentDate: "May 05 2026",
-      appointmentTime: "05:00 PM - 05:30PM",
-      doctorName: "Dr. Kumar",
-      status: "Upcoming",
-    },
-    {
-      visitPurpose: "ENT",
-      patientName: "Ramesh",
-      appointmentDate: "Mar 31 2026",
-      appointmentTime: "11:00 AM - 11:30 AM",
-      doctorName: "Dr. Vaishali",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "Dental Checkup",
-      patientName: "Ramesh",
-      appointmentDate: "Apr 15 2026",
-      appointmentTime: "10:00 AM - 10:30 AM",
-      doctorName: "Dr. Mehta",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "General Checkup",
-      patientName: "Self",
-      appointmentDate: "Apr 08 2026",
-      appointmentTime: "03:00 PM - 03:30 PM",
-      doctorName: "Dr. Arun",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "Eye Consultation",
-      patientName: "Self",
-      appointmentDate: "Jun 25 2026",
-      appointmentTime: "12:00 PM - 12:30 PM",
-      doctorName: "Dr. Shah",
-      status: "Upcoming",
-    },
-    {
-      visitPurpose: "Follow Up",
-      patientName: "Raman",
-      appointmentDate: "May 05 2026",
-      appointmentTime: "05:00 PM - 05:30 PM",
-      doctorName: "Dr. Kumar",
-      status: "Upcoming",
-    },
-    {
-      visitPurpose: "Cardiology",
-      patientName: "Raman",
-      appointmentDate: "Jun 20 2026",
-      appointmentTime: "09:00 AM - 09:30 AM",
-      doctorName: "Dr. Joshi",
-      status: "Current",
-    },
-    {
-      visitPurpose: "Orthopedic",
-      patientName: "Sunita",
-      appointmentDate: "Feb 18 2026",
-      appointmentTime: "02:00 PM - 02:30 PM",
-      doctorName: "Dr. Patil",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "Diabetes Review",
-      patientName: "Sunita",
-      appointmentDate: "Jul 10 2026",
-      appointmentTime: "04:00 PM - 04:30 PM",
-      doctorName: "Dr. Deshmukh",
-      status: "Upcoming",
-    },
-    {
-      visitPurpose: "Skin Allergy",
-      patientName: "Rahul",
-      appointmentDate: "Jun 19 2026",
-      appointmentTime: "11:00 AM - 11:30 AM",
-      doctorName: "Dr. Kulkarni",
-      status: "Current",
-    },
-    {
-      visitPurpose: "Dermatology",
-      patientName: "Rahul",
-      appointmentDate: "Jan 12 2026",
-      appointmentTime: "01:00 PM - 01:30 PM",
-      doctorName: "Dr. Nair",
-      status: "Completed",
-    },
-    {
-      visitPurpose: "ENT",
-      patientName: "Ramesh",
-      appointmentDate: "Mar 31 2026",
-      appointmentTime: "11:00 AM - 11:30 AM",
-      doctorName: "Dr. Vaishali",
-      status: "Completed",
-    }
 
-  ];
+  }
+  appointments = []
+
   searchText: string = '';
 
-  specialities = [
+  specialities: any[] = [
 
   ];
 
@@ -173,8 +89,27 @@ export class DashboardComponent implements OnInit {
   backToSpecialities() {
     this.selectedDoctor = null;
   }
-  goToSpecialities() {
-    this.selectedDoctor = null;
+  goToSpecialities(event?: any) {
+    console.log(event, "---->")
+    if (event) {
+      this.updatesheduledpatient = event
+      const speciality = this.specialities.find(
+        (s: any) => s.category === event.speciality
+      );
+
+      const doctor = speciality?.doctors.find(
+        (d: any) =>
+          d.associateId === event.associateId &&
+          d.name === event.doctorName
+      );
+
+      console.log(doctor);
+
+      this.selectedDoctor = doctor; // Reschedule साठी
+    } else {
+      this.selectedDoctor = null;
+    }
+
     this.activeTab = "specialities";
   }
 

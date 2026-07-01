@@ -1,0 +1,27 @@
+<div class="modal-backdrop" *ngIf="isVisible">
+    <div class="custom-modal">
+
+        <div class="modal-header">
+            <h2>{{ config.title }}</h2>
+
+            <button class="close-btn" (click)="cancel()">
+                &times;
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <p>{{ config.message }}</p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="cancel()">
+                {{ config.cancelText || 'Cancel' }}
+            </button>
+
+            <button class="btn btn-danger" (click)="confirm()">
+                {{ config.confirmText || 'OK' }}
+            </button>
+        </div>
+
+    </div>
+</div>

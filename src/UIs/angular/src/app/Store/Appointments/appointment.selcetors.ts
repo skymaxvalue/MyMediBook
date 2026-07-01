@@ -9,4 +9,20 @@ export const selectAppointmentState =
 export const selectAgeType = createSelector(
     selectAppointmentState,
     state => state.ageType
-);  
+);
+export const selectRelationShipType = createSelector(
+    selectAppointmentState,
+    state => state.relations
+);
+export const selectMyAppointmentList = createSelector(
+    selectAppointmentState,
+    state => state.Appointments
+);
+export const selectCanceledAppointment = createSelector(
+    selectAppointmentState,
+    state => state.canceledAppoint
+);
+export const selectRescheduledAppointment = createSelector(
+    selectAppointmentState,
+    state => state.rescheduledAppointment
+); 

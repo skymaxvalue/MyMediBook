@@ -5,7 +5,7 @@ export const APIEndpoints = {
     VERIFY_OTP: "Auth/VerifyOtp",
     GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
     GET_SPECIALITIES: "Doctor/GetDoctorList",
-    GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/GetMyAppointments",
+    GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/GetMyAppointments/",
     GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
     GET_SECURITY_QUESTIONS: "Auth/GetSecurityQuestionList",
     GET_COUNTRIES: "Location/GetCountriesList",
@@ -23,6 +23,11 @@ export const APIEndpoints = {
     GET_ASSOCIATE_LIST: "Associate/GetAssociateList",
     CREATE_SCHEDULE_ASSOCIATE: "Associate/CreateAssociateSchedule",
     GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
-    GET_AGE_TYPE: "Master/GetAgeTypeList"
+    GET_AGE_TYPE: "Master/GetAgeTypeList",
+    GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
+    GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
+    GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
+    CANCEL_MY_APPOINTMENT: "Appointment/CancelAppointmentById",
+    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentDetail"
 
 }

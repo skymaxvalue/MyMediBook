@@ -36,4 +36,18 @@ export class PatientService {
     );
   }
 
+  getProfileListByPatientById(patientId: any): Observable<any> {
+
+    return this.http.get<any>(
+      `${this.apiUrl}${APIEndpoints.GET_PROFILE_BASED_ON_PATIENT}${patientId}`
+    );
+  }
+
+  getProfileDataByPRofile_Id(profileId: any): Observable<any> {
+
+    return this.http.get<any>(
+      `${this.apiUrl}${APIEndpoints.GET_PROFILE_BASED_ON_PROFILEID}${profileId}`
+    );
+  }
+
 }
