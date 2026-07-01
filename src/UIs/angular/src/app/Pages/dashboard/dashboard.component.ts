@@ -56,14 +56,14 @@ export class DashboardComponent implements OnInit {
 
     await this.store.select(selectMyAppointmentList).subscribe((res: any) => {
       if (res) {
-        console.log(res, "========>")
+
         this.appointments = res.data
       }
     })
 
     this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
       if (res) {
-        console.log(res)
+
         this.patientRelativeList = res.data
       }
     })
@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
       });
 
   }
-  appointments = []
+  appointments: any = null
 
   searchText: string = '';
 
@@ -118,15 +118,10 @@ export class DashboardComponent implements OnInit {
     window.scrollTo(0, 0);
 
     this.activeTab = tab;
-
-    console.log('Tab Changed:', tab);
-
-    // Your custom event logic here
+    this.updatesheduledpatient = null
 
     if (tab === 'appointments') {
 
-      // call API
-      // refresh data
       this.selectedDoctor = null;
     }
 

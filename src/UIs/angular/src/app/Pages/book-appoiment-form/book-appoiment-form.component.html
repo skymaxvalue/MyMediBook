@@ -125,7 +125,7 @@
                         @for (item of ageType; track $index) {
 
                         <label class="age-option">
-                            <input type="radio" [value]="item.ageTypeId" formControlName="ageTypeId" />
+                            <input type="radio" [value]="item?.ageTypeId" formControlName="ageTypeId" />
                             <span>{{item.ageTypeName}}</span>
                         </label>
                         }

@@ -45,7 +45,7 @@ export class MyAppointmentComponent implements OnInit {
   set relativeListInput(value: any[]) {
     this.relativeList.set(value ?? []);
   }
-  @Output() goToSpecialitie = new EventEmitter<void>();
+  @Output() goToSpecialitie = new EventEmitter<any>();
   sortColumn = signal('');
   sortDirection = signal<'asc' | 'desc'>('asc');
 

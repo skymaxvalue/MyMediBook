@@ -155,7 +155,7 @@ export class BookAppoimentFormComponent implements OnInit {
       profileId: [null, Validators.required],
       dateOfBirth: ['', Validators.required],
       age: ['', [Validators.required, Validators.min(0)]],
-      ageTypeId: ['', Validators.required],
+      ageTypeId: [null, Validators.required],
       gender: ['', Validators.required],
       insurance: ['', Validators.required],
 
@@ -213,13 +213,35 @@ export class BookAppoimentFormComponent implements OnInit {
 
 
     this.bookingForm.patchValue(event)
-    const date = new Date(event.dateOfBirth)
-      .toISOString()
-      .split('T')[0];
+    this.bookingForm.get('phone')?.setValue(event.phoneNumber)
+    const dob = event.dateOfBirth;
+
+    const date = new Date(dob);
+
+    const formattedDate =
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     this.bookingForm.patchValue({
-      dateOfBirth: date
+      dateOfBirth: this.formatDateForInput(event.dateOfBirth)
     });
+    // const date = new Date(event.dateOfBirth)
+    //   .toISOString()
+    //   .split('T')[0];
+
+    // this.bookingForm.patchValue({
+    //   dateOfBirth: date
+    // });
+  }
+  formatDateForInput(dateString: string): string {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 
 
