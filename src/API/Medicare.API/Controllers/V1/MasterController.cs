@@ -3,6 +3,7 @@ using Medicare.Application.Features.Queries.Master;
 using Medicare.Application.Models.Master;
 using Medicare.Application.Models.MasterModels;
 using Medicare.Application.Models.Speciality;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medicare.API.Controllers.V1
@@ -10,6 +11,7 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class MasterController : BaseApiController
     {
         private readonly IMediator _mediator;

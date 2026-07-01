@@ -1,0 +1,82 @@
+﻿using Medicare.Application.Interfaces.JwtToken;
+using Medicare.Application.Models.Associate;
+using Medicare.Application.Models.JwtTokens;
+using Medicare.Application.Models.Patient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace Medicare.DAL.Services
+{
+    public class JwtService : IJwtTokenRepository
+    {
+        private readonly IConfiguration _configuration;
+        public JwtService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+        public string GenerateToken(JwtTokenClaimModel model)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claim = new[]
+           {
+                new Claim(JwtRegisteredClaimNames.Sub,          model.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email,        model.Email ?? ""),
+                new Claim(JwtRegisteredClaimNames.UniqueName,   model.Username ?? "" ),
+                new Claim(JwtRegisteredClaimNames.Jti,          Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role,                      model.RoleName),
+                new Claim("UserId",                             model.UserId.ToString()),
+                new Claim("RefId",                              model.RefId.ToString()),
+                new Claim("UserType",                              model.UserType),
+                new Claim("FullName",                           model.FullName ?? ""),
+                new Claim("TenantId",                           model.TenantId.ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claim,
+                signingCredentials: creds,
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["JwtSettings:TokenExpiryMinutes"]))
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var bytes = new byte[64];
+            using var bytesGenerator = RandomNumberGenerator.Create();
+            bytesGenerator.GetBytes(bytes);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+
+            var validation = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["JwtSettings:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["JwtSettings:Audience"],
+                ValidateLifetime = false
+            };
+
+            var principal = new JwtSecurityTokenHandler().ValidateToken(token, validation, out SecurityToken securityToken);
+          
+            if (securityToken is not JwtSecurityToken jwt || !jwt.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
+        }
+    }
+}

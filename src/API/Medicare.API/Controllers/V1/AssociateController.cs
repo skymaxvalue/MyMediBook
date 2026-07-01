@@ -3,14 +3,15 @@ using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Features.Queries.Associate;
 using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Medicare.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class AssociateController : BaseApiController
     {
         private readonly IMediator _mediator;
@@ -20,8 +21,8 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetAssociatebyId")]
-        public async Task<IActionResult> GetAssociatebyId(int associateId)
+        [Route("GetAssociatebyId/{associateId}")]
+        public async Task<IActionResult> GetAssociatebyId([FromRoute] int associateId)
         {
             AssociateDetailModel response = new AssociateDetailModel();
             response = await _mediator.Send(new GetAssociateDetailByIdQuery(associateId));

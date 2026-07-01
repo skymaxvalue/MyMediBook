@@ -4,6 +4,7 @@ using Medicare.Application.Features.Queries.RxOrder;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Orders;
 using Medicare.Application.Models.RxOrder;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medicare.API.Controllers.V1
@@ -11,6 +12,7 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class RxOrderController : BaseApiController
     {
         private readonly IMediator _mediator;

@@ -65,12 +65,6 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IAssociateRepository, AssociateRepository>();
             builder.Services.AddScoped<IMasterRepository, MasterRepository>();
 
-            // ✅ Dapper Context
-            builder.Services.AddScoped<DapperContext>();
-
-            // ✅ Connection Factory
-            builder.Services.AddScoped<IDbConnectionFactory, DapperConnectionFactory>();
-
             // ✅ Services
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IEmailJobService, EmailJobService>();

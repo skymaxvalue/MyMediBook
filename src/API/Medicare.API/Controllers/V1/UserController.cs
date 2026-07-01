@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Medicare.API.Controllers.V1;
 using Medicare.Application.Features.Queries.User;
-using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
 using Microsoft.AspNetCore.Mvc;
 

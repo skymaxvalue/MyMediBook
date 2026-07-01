@@ -36,6 +36,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
                 VisitType = result.VisitType,
                 OtpMethod = result.OtpMethod,
                 CreatedDate = result.CreatedDate,
+                Insurance = result.Insurance,
                 DoctorProfile = new DoctorProfileModel
                 {
                     AssociateId = result.AssociateId,
@@ -46,6 +47,22 @@ namespace Medicare.Application.Handlers.QueryHandlers
                     DesignationName = result.DesignationName,
                     FromTime = result.FromTime,
                     ToTime = result.ToTime
+                },
+                InsuranceData = new InsuranceData
+                {
+                    Provider = result.Provider,
+                    Policy = result.Policy,
+                    GroupId = result.GroupId,
+                    HolderName = result.HolderName,
+                    Address = result.Address
+                },
+
+                PaymentData = new PaymentData
+                {
+                    PaymentType = result.PaymentType,
+                    CardHolder = result.CardHolder,
+                    CardNumber = result.CardNumber,
+                    Expiry = result.Expiry
                 },
                 IsSuccess = result.IsSuccess,
                 Status = result.Status,

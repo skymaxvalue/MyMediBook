@@ -3,14 +3,15 @@ using Medicare.Application.Features.Commands.Appointment;
 using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Medicare.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class AppointmentController : BaseApiController
     {
         private readonly IMediator _mediator;
@@ -29,11 +30,11 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPut]
-        [Route("UpdateAppointmentDetail")]
-        public async Task<IActionResult> UpdateAppointmentDetail(UpdateAppointmentRequestModel model)
+        [Route("UpdateAppointmentSchedule")]
+        public async Task<IActionResult> UpdateAppointmentSchedule(UpdateAppointmentScheduleRequestModel model)
         {
             ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new UpdateAppointmentCommand(model));
+            response = await _mediator.Send(new UpdateAppointmentScheduleCommand(model));
             return HandleResponse(response);
         }
 
@@ -59,11 +60,11 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetMyAppointments/{patientId}")]
-        public async Task<IActionResult> GetMyAppointments(int patientId)
+        [Route("GetMyAppointmentList/{patientId}")]
+        public async Task<IActionResult> GetMyAppointmentList(int patientId)
         {
             List<PatientAppointmentModel> response = new List<PatientAppointmentModel>();
-            response = await _mediator.Send(new GetMyAppointmentsQuery(patientId));
+            response = await _mediator.Send(new GetMyAppointmentListQuery(patientId));
             return HandleListResponse(response);
         }
 

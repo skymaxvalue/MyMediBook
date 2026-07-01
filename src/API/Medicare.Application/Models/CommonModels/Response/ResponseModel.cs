@@ -13,7 +13,7 @@ namespace Medicare.Application.Models.CommonModels.ResponseModel
     }
     public class ResponseModel : IErrorHandling
     {
-        public string ResponseMessage { get; set;}
+        public string ResponseMessage { get; set; }
         public int IsSuccess { get; set; }
         public int Status { get; set; }
         public int ResponseId { get; set; }

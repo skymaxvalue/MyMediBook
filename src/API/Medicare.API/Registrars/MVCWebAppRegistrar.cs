@@ -25,6 +25,8 @@ namespace Medicare_API.Registrars
 
             app.UseCors("MyPolicy");
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapControllers();

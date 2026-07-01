@@ -20,9 +20,9 @@ namespace Medicare.DAL.Persistence.Repositories
             _errorLog = errorLog;
         }
 
-        public async Task<List<PatientAppointmentModel>> GetMyAppointmentsAsync(int patientId)
+        public async Task<List<PatientAppointmentModel>> GetMyAppointmentListAsync(int patientId)
         {
-            string procName = "USP_GetMyAppointments";
+            string procName = "USP_GetMyAppointmentList";
             List<PatientAppointmentModel> returnData = new List<PatientAppointmentModel>();
             try
             {
@@ -160,9 +160,9 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> UpdateAppointmentDetailAsync(UpdateAppointmentRequestModel model)
+        public async Task<ResponseModel> UpdateAppointmentScheduleAsync(UpdateAppointmentScheduleRequestModel model)
         {
-            string procName = "USP_UpdateAppointmentDetails";
+            string procName = "USP_UpdateAppointmentSchedule";
             ResponseModel returnData = new ResponseModel();
             try
             {
