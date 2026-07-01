@@ -26,6 +26,7 @@ export class ModalSeviceService {
   }
 
   confirm(result: boolean) {
+    console.log('Service confirm called');
     this.responseSource.next(result);
   }
 }

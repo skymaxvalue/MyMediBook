@@ -2,61 +2,12 @@
 
 <div class="container-fluid p-0 bg-light min-vh-100">
   <!-- Top Tabs -->
-  <div class="main row ">
-    <div class="col-12">
-      <ul class="nav nav-tabs border-0 custom-tabs justify-content-around ">
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'appointments'" (click)="changeTab('appointments')">
-            My Appointments
-          </button>
-        </li>
 
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'specialities'" (click)="changeTab('specialities')">
-            Specialities
-          </button>
-        </li>
-
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'medicine'" (click)="changeTab('medicine')">
-            Medicine Orders
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'labresult'" (click)="changeTab('labresult')">
-            Lab Result
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'billing'" (click)="changeTab('billing')">
-            Billing
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'messages'" (click)="changeTab('messages')">
-            Message
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'setting'" (click)="changeTab('setting')">
-            Settings
-          </button>
-        </li>
-
-        <!-- <li class="nav-item">
-          <button class="nav-link" [class.active]="activeTab === 'support'" (click)="changeTab('support')">
-            Support & Help
-          </button>
-        </li> -->
-      </ul>
-    </div>
-  </div>
 
   <!--Tab containt Representation -->
   <div class="dashboard-container">
-    @if (activeTab === "appointments" && appointments) {
-    <app-my-appointment [tableDataInput]="appointments" [relativeListInput]="patientRelativeList"
-      (goToSpecialitie)="goToSpecialities($event)">
+    @if (activeTab === "appointments") {
+    <app-my-appointment [tableDataInput]="appointments" [relativeListInput]="patientRelativeList">
     </app-my-appointment>
     } @else if (activeTab === "specialities") {
     @if(selectedDoctor){

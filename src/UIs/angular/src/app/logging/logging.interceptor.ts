@@ -19,6 +19,15 @@ export class LoggingInterceptor implements HttpInterceptor {
   ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
     return next.handle(request).pipe(
       tap((event: any) => {
         if (event.type === HttpEventType.Response) {

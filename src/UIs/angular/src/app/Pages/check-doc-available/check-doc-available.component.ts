@@ -13,6 +13,7 @@ import { selectGetTimeSlotOfDoctor } from "src/app/Store/Doctor/doctor.selectors
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import { getMyAppointments, rescheduleMyAppointment } from "../../Store/Appointments/appointment.actions";
 import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
+import { take } from "rxjs";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -66,6 +67,9 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     this.minDate = this.toInputDate(this.doctor.fromDate);
     this.maxDate = this.toInputDate(this.doctor.toDate);
+
+
+    debugger
     if (this.updatesheduledpatient) {
 
       this.highlightDate = this.formatInputDate(
@@ -172,10 +176,12 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     }))
     await this.store.select(selectRescheduledAppointment).subscribe((res: any) => {
       if (res) {
-        this.store.dispatch(getMyAppointments({ patientId: this.updatesheduledpatient.patientId }))
+        this.showSlotsModal = false;
         this.bookingPatient = this.updatesheduledpatient
-        this.closeSlotsModal()
         this.showBookingSuccess = true;
+
+        this.store.dispatch(getMyAppointments({ patientId: this.updatesheduledpatient.patientId }))
+
 
       }
     })
@@ -233,35 +239,37 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     }
     await this.store.dispatch(getTimeSloteByDoctorID({ payload }))
-    await this.store.select(selectGetTimeSlotOfDoctor).subscribe((res: any) => {
-      if (res?.data) {
+    await this.store.select(selectGetTimeSlotOfDoctor)
+      .subscribe((res: any) => {
 
-        this.slots = res.data.map((slot: any) => ({
-          time: slot.startTime,
-          booked: slot.isBooked,
-          slotId: slot.slotId,
-          isAvailable: slot.isAvailable
+        if (res?.data) {
+
+          this.slots = res.data.map((slot: any) => ({
+            time: slot.startTime,
+            booked: slot.isBooked,
+            slotId: slot.slotId,
+            isAvailable: slot.isAvailable
+          }));
+
+          this.showSlotsModal = true;
 
 
-        }));
+          // console.log(res, "=========>")
+          // let bookedSlots: string[] = [];
 
-        this.showSlotsModal = true;
-        // console.log(res, "=========>")
-        // let bookedSlots: string[] = [];
+          // if (item.badgeClass === 'red') {
+          //   bookedSlots = this.allSlots.slice(0, 10);
+          // } else {
+          //   bookedSlots = this.allSlots.slice(0, 3);
+          // }
 
-        // if (item.badgeClass === 'red') {
-        //   bookedSlots = this.allSlots.slice(0, 10);
-        // } else {
-        //   bookedSlots = this.allSlots.slice(0, 3);
-        // }
-
-        // this.slots = this.allSlots.map(slot => ({
-        //   time: slot,
-        //   booked: bookedSlots.includes(slot)
-        // }));
-        // this.showSlotsModal = true;
-      }
-    })
+          // this.slots = this.allSlots.map(slot => ({
+          //   time: slot,
+          //   booked: bookedSlots.includes(slot)
+          // }));
+          // this.showSlotsModal = true;
+        }
+      })
 
 
 

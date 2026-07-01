@@ -18,6 +18,7 @@ import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.s
 import { first } from "rxjs";
 import { getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
 import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selcetors";
+import { TabServiceService } from "src/app/Services/tab-service.service";
 
 @Component({
   selector: "app-dashboard",
@@ -28,16 +29,50 @@ import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.
 export class DashboardComponent implements OnInit {
   activeTab = "appointments";
   selectedDoctor: any;
-  user = JSON.parse(localStorage.getItem('token') || 'null')
+  user = JSON.parse(localStorage.getItem('user') || 'null')
   patientRelativeList: any[] = []
   updatesheduledpatient: any = null
 
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>, private tabService: TabServiceService
   ) { }
 
   ngOnInit(): void {
+    this.tabService.activeTab$.subscribe(tab => {
+      this.activeTab = tab;
+    });
+
+    this.tabService.reschedulePatient$.subscribe(patient => {
+
+      if (!patient) {
+        return;
+      }
+
+      debugger
+      this.updatesheduledpatient = patient;
+
+      const speciality = this.specialities.find(
+        s => s.category === patient.speciality
+      );
+
+      debugger
+      this.selectedDoctor = speciality?.doctors.find(
+        (d: any) =>
+          d.associateId === patient.associateId &&
+          d.name === patient.doctorName
+      ) ?? null;
+      if (this.selectedDoctor && this.updatesheduledpatient) {
+
+        this.tabService.changeTab('specialities');
+      }
+
+
+    });
+    this.tabService.selectedDoctor$
+      .subscribe(doctor => this.selectedDoctor = doctor);
+
+
     this.callInitialAPI()
 
 
@@ -83,35 +118,36 @@ export class DashboardComponent implements OnInit {
   ];
 
   onDoctorSelected(doctor: any): void {
-    this.selectedDoctor = doctor;
+    // this.selectedDoctor = doctor;
+    this.tabService.setSelectedDoctor(doctor);
+
     console.log('Received from child:', doctor);
   }
   backToSpecialities() {
     this.selectedDoctor = null;
   }
-  goToSpecialities(event?: any) {
-    console.log(event, "---->")
-    if (event) {
-      this.updatesheduledpatient = event
-      const speciality = this.specialities.find(
-        (s: any) => s.category === event.speciality
-      );
+  // goToSpecialities(event?: any) {
+  //   if (!event) {
+  //     this.selectedDoctor = null;
+  //     this.updatesheduledpatient = null;
+  //     this.tabService.changeTab('specialities');
+  //     return;
+  //   }
 
-      const doctor = speciality?.doctors.find(
-        (d: any) =>
-          d.associateId === event.associateId &&
-          d.name === event.doctorName
-      );
+  //   this.updatesheduledpatient = event;
 
-      console.log(doctor);
+  //   const speciality = this.specialities.find(
+  //     s => s.category === event.speciality
+  //   );
 
-      this.selectedDoctor = doctor; // Reschedule साठी
-    } else {
-      this.selectedDoctor = null;
-    }
+  //   this.selectedDoctor = speciality?.doctors.find(
+  //     (d: any) =>
+  //       d.associateId === event.associateId &&
+  //       d.name === event.doctorName
+  //   ) ?? null;
 
-    this.activeTab = "specialities";
-  }
+  //   this.tabService.changeTab('specialities');
+  // }
 
   changeTab(tab: string) {
     history.scrollRestoration = 'manual';
@@ -127,7 +163,7 @@ export class DashboardComponent implements OnInit {
 
     if (tab === 'specialities') {
 
-      this.selectedDoctor = null;
+      // this.selectedDoctor = null;
     }
   }
 }
