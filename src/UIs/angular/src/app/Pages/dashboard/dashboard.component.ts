@@ -28,7 +28,7 @@ import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.
 export class DashboardComponent implements OnInit {
   activeTab = "appointments";
   selectedDoctor: any;
-  user = JSON.parse(localStorage.getItem('token') || 'null')
+  user = JSON.parse(localStorage.getItem('user') || 'null')
   patientRelativeList: any[] = []
   updatesheduledpatient: any = null
 

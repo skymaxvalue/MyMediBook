@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
     });
 
     this.formattedDate = `${month} ${day}${this.getOrdinal(day)} ${year}`;
-    this.user = JSON.parse(localStorage.getItem('token') || 'null');
+    this.user = JSON.parse(localStorage.getItem('user') || 'null');
     console.log(this.user)
     this.username = this.user.firstName + " " + this.user.lastName
     // this.username = this.user.data.firstName + " " + this.user.data.lastName

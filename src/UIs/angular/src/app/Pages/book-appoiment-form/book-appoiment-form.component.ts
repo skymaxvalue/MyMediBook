@@ -118,7 +118,7 @@ export class BookAppoimentFormComponent implements OnInit {
   };
 
   constructor(private fb: FormBuilder, private store: Store) {
-    this.loginUser = JSON.parse(localStorage.getItem('token') || 'null')
+    this.loginUser = JSON.parse(localStorage.getItem('user') || 'null')
 
   }
 
@@ -152,7 +152,7 @@ export class BookAppoimentFormComponent implements OnInit {
       relationTypeId: [null, Validators.required],
       associateId: [this.doctor.associateId, Validators.required],
       slotId: [this.selectedSlot.slotId, Validators.required],
-      profileId: [null, Validators.required],
+      profileId: [0],
       dateOfBirth: ['', Validators.required],
       age: ['', [Validators.required, Validators.min(0)]],
       ageTypeId: [null, Validators.required],
@@ -222,27 +222,11 @@ export class BookAppoimentFormComponent implements OnInit {
       `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     this.bookingForm.patchValue({
-      dateOfBirth: this.formatDateForInput(event.dateOfBirth)
+      dateOfBirth: formattedDate
     });
-    // const date = new Date(event.dateOfBirth)
-    //   .toISOString()
-    //   .split('T')[0];
 
-    // this.bookingForm.patchValue({
-    //   dateOfBirth: date
-    // });
   }
-  formatDateForInput(dateString: string): string {
-    if (!dateString) return '';
 
-    const date = new Date(dateString);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
 
 
   get insuranceForm(): FormGroup {

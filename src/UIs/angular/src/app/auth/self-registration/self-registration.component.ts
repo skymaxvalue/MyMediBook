@@ -41,7 +41,7 @@ export class SelfRegistrationComponent implements OnInit {
     private toastr: ToastrService
 
   ) {
-    this.user = JSON.parse(localStorage.getItem('token') || 'null');
+    this.user = JSON.parse(localStorage.getItem('user') || 'null');
 
   }
 

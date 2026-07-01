@@ -86,30 +86,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
       //   localStorage.setItem("token", "userToken");
       //   this.router.navigate(["/dashboard"]);
       // }
-      localStorage.setItem('token', JSON.stringify({
-        "patientId": 5,
-        "firstName": "Admin",
-        "middleName": "Test",
-        "lastName": "Patient",
-        "dateOfBirth": "1990-05-15T00:00:00",
-        "phoneCountryCode": "+91",
-        "phoneNumber": "9876543210",
-        "email": "admin.patient@example.com",
-        "gender": "Male",
-        "addressLine1": "123 Test Street",
-        "addressLine2": "Near City Hospital",
-        "cityId": 1,
-        "zipCode": "141001",
-        "stateId": 1,
-        "countryId": 1,
-        "username": "adminpatient",
-        "securityQuestionId": 0,
-        "isActive": true,
-        "createdBy": null,
-        "createdDate": "2026-06-10T20:13:01.47",
-        "updatedBy": null,
-        "updatedDate": null
-      }))
+
       const patient =
         await this.store.dispatch(
           AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password })
@@ -118,7 +95,8 @@ export class LoginComponent implements AfterViewInit, OnInit {
         console.log(patient, "----------")
         if (patient) {
 
-          localStorage.setItem('token', JSON.stringify(patient))
+          localStorage.setItem('token', patient.tokenKey)
+          localStorage.setItem('user', JSON.stringify(patient.data))
 
           this.router.navigate(['/dashboard']);
         }

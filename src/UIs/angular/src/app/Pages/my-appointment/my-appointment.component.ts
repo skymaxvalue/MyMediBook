@@ -54,7 +54,7 @@ export class MyAppointmentComponent implements OnInit {
   selectedMember = signal<any | null>(null);
   currentPage = signal(1);
   pageSize = signal(5);
-  user = JSON.parse(localStorage.getItem('token') || 'null')
+  user = JSON.parse(localStorage.getItem('user') || 'null')
 
 
   constructor(private confirmationService: ModalSeviceService, private store: Store<AppState>) {

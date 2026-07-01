@@ -54,7 +54,7 @@
 
   <!--Tab containt Representation -->
   <div class="dashboard-container">
-    @if (activeTab === "appointments" && appointments) {
+    @if (activeTab === "appointments") {
     <app-my-appointment [tableDataInput]="appointments" [relativeListInput]="patientRelativeList"
       (goToSpecialitie)="goToSpecialities($event)">
     </app-my-appointment>
