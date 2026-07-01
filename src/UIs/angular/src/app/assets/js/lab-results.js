@@ -88,9 +88,9 @@ container.innerHTML += `
     <span><b>${item.test}</b></span>
 </div>
 
-    <!-- 3 -->
+<!-- 3 -->
 <div class="mobile-field">
-    <span><b>${formatDate(item.date)}</b></span>
+    <span><b>${item.code}</b></span>
 </div>
 
     <!-- 4 -->

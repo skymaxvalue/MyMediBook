@@ -520,3 +520,11 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
     margin-left: 4px;
 }
+
+
+.availability-block label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
