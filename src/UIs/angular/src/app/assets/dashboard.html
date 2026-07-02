@@ -43,6 +43,9 @@
                         </th>
 
                         <th>Status</th>
+
+                        <th>Reschedule</th>
+                        <th>Cancel</th>
                 </tr>
             </thead>
 
@@ -54,6 +57,8 @@
                     <td>11:00 AM - 11:30AM</td>
                     <td>Dr. Vaishali</td>
                     <td><span class="status completed">Completed</span></td>
+                    <td class="no-action">-</td>
+                    <td class="no-action">-</td>
                 </tr>
 
                 <tr class="highlight">
@@ -63,6 +68,8 @@
                     <td>03:00 PM - 03:30PM</td>
                     <td>Dr. Arun</td>
                     <td><span class="status completed">Completed</span></td>
+                      <td class="no-action">-</td>
+                    <td class="no-action">-</td>
                 </tr>
 
                  <tr>
@@ -72,6 +79,20 @@
                     <td>05:00 PM - 05:30PM</td>
                     <td>Dr. Kumar</td>
                     <td><span class="status upcoming">Upcoming</span></td>
+
+                    <td>
+                        <button class="reschedule-btn"
+                                onclick="rescheduleAppointment(this)">
+                            <img src="images/reschedule.png" alt="Reschedule">
+                        </button>
+                    </td>
+
+                    <td>
+                        <button class="cancel-btn"
+                                onclick="cancelAppointment(this)">
+                             <img src="images/trash.png" alt="Cancel">
+                        </button>
+                    </td>
                 </tr>
 
                 <tr>
@@ -81,6 +102,20 @@
                     <td>04:00 PM - 04:30PM</td>
                     <td>Dr. Ross</td>
                     <td><span class="status upcoming">Upcoming</span></td>
+
+                    <td>
+                        <button class="reschedule-btn"
+                                onclick="rescheduleAppointment(this)">
+                            <img src="images/reschedule.png" alt="Reschedule">
+                        </button>
+                    </td>
+
+                    <td>
+                        <button class="cancel-btn"
+                                onclick="cancelAppointment(this)">
+                            <img src="images/trash.png" alt="Cancel">
+                        </button>
+                    </td>
                 </tr>
                
             </tbody>
@@ -88,14 +123,229 @@
 
         <div class="btn-container">
             <button class="new-btn" onclick="goToSpecialities()">
-                📅 New Appointment
-            </button>
+                <img src="images/calendar.png" alt="">New Appointment</button>
+
+            
         </div>
 
     </div>
 
 </div>
 
+
+<div id="cancelModal" class="modal-overlay">
+
+    <div class="cancel-modal">
+
+        <button class="close-modal" onclick="closeCancelModal()">
+            <img src="images/close.png" alt="Close">
+        </button>
+
+        <!-- LEFT PANEL -->
+
+        <div class="modal-left">
+
+            <div class="modal-header">
+
+                <div class="header-icon warning-circle">
+                    <img src="images/warning.png" alt="Warning">
+                </div>
+
+                <div>
+
+                    <h2>Cancel Appointment</h2>
+
+                    <p class="modal-subtitle">
+                        Please review before you proceed.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="policy-card">
+
+                <div class="rule-item">
+
+                    <div class="rule-icon success-icon">
+                        <img src="images/check.png" alt="">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Free cancellation</h3>
+
+                        <p>
+                            Up to 24 hours before your appointment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon warning-icon">
+                         <img src="images/clock.png" alt="Clock">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Late cancellation fee may apply</h3>
+
+                        <p>
+                            If cancelled within 24 hours,
+                            a fee of Rs 100 / $50 may apply.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon danger-icon">
+                         <img src="images/close-circle.png" alt="Cannot cancel">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Cannot cancel after start time</h3>
+
+                        <p>
+                            Once the appointment has started,
+                            cancellation is not allowed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+               <a href="cancellation-policy.html"
+                class="policy-link"
+                target="_blank">
+
+                    <div class="policy-icon">
+                        <img src="images/icon-reports.png" alt="">
+                    </div>
+
+                    <span>View full cancellation policy</span>
+
+                    <img class="external-icon"
+                        src="images/arrow.png"
+                        alt="Open">
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="modal-right">
+
+            <div class="question-circle">
+                <img src="images/question.png" alt="question">
+            </div>
+
+            <h2 class="confirm-title">
+                Are you sure you want to
+                cancel this appointment?
+            </h2>
+
+            <p class="confirm-text">
+                This action cannot be undone.
+            </p>
+
+            <div class="appointment-card">
+
+                <div class="appointment-top">
+
+                    <div class="appointment-icon">
+                        <img src="images/dr-icon.png" alt="">
+                    </div>
+
+                    <div>
+
+                        <h3 id="modalDoctor">
+                            Dr. John Doe
+                        </h3>
+
+                        <span class="doctor-role">
+                            Physician
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="appointment-divider"></div>
+
+                <div class="appointment-bottom">
+
+                    <div class="appointment-icon">
+                    <img src="images/calendar2.png" alt="">
+                </div>
+
+                    <div>
+
+                        <div class="appointment-date">
+
+                            <span id="modalDate">
+                                Wed, 07 May 2026
+                            </span>
+
+                            &nbsp; • &nbsp;
+
+                            <span id="modalTime">
+                                10:30 AM
+                            </span>
+
+                        </div>
+
+                        <div class="appointment-department">
+
+                            Date & Booked Time Slot
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-buttons">
+
+                <button
+                    class="keep-btn"
+                    onclick="closeCancelModal()">
+
+                    Keep Appointment
+
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="confirmCancel()">
+
+                    Cancel Appointment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 <div id="footer-container"></div>
 
