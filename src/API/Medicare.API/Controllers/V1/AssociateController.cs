@@ -39,14 +39,6 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPost]
-        [Route("RegisterAssociateMaster")]
-        public async Task<IActionResult> RegisterAssociateMaster(RegisterAssociateModel model)
-        {
-            ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new CreateAssociateCommand(model));
-            return HandleResponse(response);
-        }
-        [HttpPost]
         [Route("CreateAssociateSchedule")]
         public async Task<IActionResult> CreateAssociateSchedule(AssociateScheduleModel model)
         {

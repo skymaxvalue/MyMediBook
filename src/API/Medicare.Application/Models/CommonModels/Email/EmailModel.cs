@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Medicare.Application.Models.CommonModels.Email
+﻿namespace Medicare.Application.Models.CommonModels.Email
 {
     public class EmailModel
     {

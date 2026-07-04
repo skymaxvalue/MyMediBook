@@ -3,25 +3,25 @@ using Medicare.Application.Features.Commands.Patient;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Medicare.Application.Handlers.CommandHandlers
 {
     public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand, ResponseModel>
     {
         private readonly IPatientRepository _patientRepository;
+        private readonly PasswordHelper _passwordHelper;
 
-        public CreatePatientCommandHandler(IPatientRepository patientRepository)
+        public CreatePatientCommandHandler(IPatientRepository patientRepository, PasswordHelper passwordHelper)
         {
             _patientRepository = patientRepository;
+            _passwordHelper = passwordHelper;
         }
 
         public async Task<ResponseModel> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
-            CreateHash(request.model.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            string passwordHash = _passwordHelper.HashPassword(request.model.Password);
 
-            CreateHash(request.model.SecurityAnswer, out byte[] answerHash, out byte[] answerSalt);
+            string answerHash = _passwordHelper.HashPassword(request.model.SecurityAnswer);
 
             var patientModel = new PatientMasterModel
                 {
@@ -41,21 +41,13 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 CountryId = request.model.CountryId,
                 Username = request.model.Username,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
                 SecurityQuestionId = request.model.SecurityQuestionId,
                 SecurityAnswerHash = answerHash,   
-                SecurityAnswerSalt = answerSalt,   
                 IsActive = request.model.IsActive,
                 CreatedBy = request.model.CreatedBy,
             };
 
             return await _patientRepository.CreatePatientDetails(patientModel);
-        }
-        private static void CreateHash(string value, out byte[] hash, out byte[] salt)
-        {
-            using var hmac = new HMACSHA512();
-            salt = hmac.Key;
-            hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(value));
         }
     }
 }

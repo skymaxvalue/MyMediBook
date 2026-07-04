@@ -1,5 +1,4 @@
 ﻿using Medicare.Application.Features.Commands.Authentication;
-using Medicare.Application.Interfaces.Dapper;
 using Medicare.Application.Interfaces.IAppointment;
 using Medicare.Application.Interfaces.IAssociate;
 using Medicare.Application.Interfaces.IAuthRepository;
@@ -10,10 +9,10 @@ using Medicare.Application.Interfaces.ILocations;
 using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
+using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Interfaces.Master;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.Email;
-using Medicare.DAL.Persistence.Dapper;
 using Medicare.DAL.Persistence.Repositories;
 using Medicare.DAL.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -64,10 +63,15 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IRxOrderRepository, RxOrderRepository>();
             builder.Services.AddScoped<IAssociateRepository, AssociateRepository>();
             builder.Services.AddScoped<IMasterRepository, MasterRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             // ✅ Services
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IEmailJobService, EmailJobService>();
+            builder.Services.AddScoped<IJwtTokenRepository, JwtService>();
+
+            // ✅ Helper
+            builder.Services.AddSingleton<PasswordHelper>();
         }
     }
 }

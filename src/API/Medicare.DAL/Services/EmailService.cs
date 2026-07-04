@@ -12,9 +12,10 @@ namespace Medicare.DAL.Services
     {
         private readonly EmailSettingsModel _settings;
         private readonly IErrorLogRepository _errorLog;
-        public EmailService(IOptions<EmailSettingsModel> settings)
+        public EmailService(IOptions<EmailSettingsModel> settings, IErrorLogRepository errorLog)
         {
             _settings = settings.Value;
+            _errorLog = errorLog;
         }   
         public async Task<bool> SendEmailAsync(EmailModel email)
         {
@@ -42,9 +43,7 @@ namespace Medicare.DAL.Services
             }
             catch (Exception ex)
             {
-                await _errorLog.InsertErrorLog(
-                    new ErrorLogModel
-                {
+                await _errorLog.InsertErrorLog(new ErrorLogModel {
                     IsDBError = false,
                     Error_Message = ex.Message,
                     Error_Procedure = "",

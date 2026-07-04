@@ -11,4 +11,11 @@
         public string RoleName { get; set; }
         public Guid? TenantId { get; set; }
     }
+    public class JwtRefreshTokenModel
+    {
+        public Guid UserId { get; set; }
+        public string UserType { get; set; }
+        public string RefreshToken { get; set; }
+        public DateTime ExpiryDate { get; set; }
+    }
 }

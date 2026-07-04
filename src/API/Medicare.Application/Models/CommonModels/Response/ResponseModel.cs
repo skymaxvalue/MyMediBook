@@ -10,6 +10,7 @@ namespace Medicare.Application.Models.CommonModels.ResponseModel
         public HttpStatusCode StatusCode { get; set; }
         public int Result { get; set; }
         public string TokenKey { get; set; }
+        public string? RefreshToken { get; set; }
     }
     public class ResponseModel : IErrorHandling
     {

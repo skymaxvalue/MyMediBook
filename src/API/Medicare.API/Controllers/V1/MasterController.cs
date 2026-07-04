@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Queries.Master;
+using Medicare.Application.Features.Queries.SecurityQuestions;
 using Medicare.Application.Models.Master;
 using Medicare.Application.Models.MasterModels;
 using Medicare.Application.Models.Speciality;
+using Medicare.Application.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -97,6 +99,15 @@ namespace Medicare.API.Controllers.V1
         {
             List<RoleHierarchyModel> response = new List<RoleHierarchyModel>();
             response = await _mediator.Send(new GetRoleDepartmentSpecialityListQuery());
+            return HandleListResponse(response);
+        }
+
+        [HttpGet]
+        [Route("GetSecurityQuestionList")]
+        public async Task<IActionResult> GetSecurityQuestionList()
+        {
+            List<SecurityQuestionDataModel> response = new List<SecurityQuestionDataModel>();
+            response = await _mediator.Send(new GetSecurityQuestionListQuery());
             return HandleListResponse(response);
         }
     }

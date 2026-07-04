@@ -22,14 +22,10 @@ namespace Medicare.Application.Models.Patient
         public int CountryId { get; set; }
         public string Username { get; set; }
         [JsonIgnore]
-        public byte[] PasswordHash { get; set; }
-        [JsonIgnore]
-        public byte[] PasswordSalt { get; set; }
+        public string PasswordHash { get; set; }
         public int SecurityQuestionId { get; set; }
         [JsonIgnore]
-        public byte[] SecurityAnswerHash { get; set; } 
-        [JsonIgnore]
-        public byte[] SecurityAnswerSalt { get; set; } 
+        public string SecurityAnswerHash { get; set; } 
         public bool IsActive { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

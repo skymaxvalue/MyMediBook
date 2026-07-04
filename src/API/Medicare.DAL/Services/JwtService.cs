@@ -1,7 +1,5 @@
 ﻿using Medicare.Application.Interfaces.JwtToken;
-using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.JwtTokens;
-using Medicare.Application.Models.Patient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,10 +27,11 @@ namespace Medicare.DAL.Services
                 new Claim(JwtRegisteredClaimNames.Email,        model.Email ?? ""),
                 new Claim(JwtRegisteredClaimNames.UniqueName,   model.Username ?? "" ),
                 new Claim(JwtRegisteredClaimNames.Jti,          Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat,          DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
                 new Claim(ClaimTypes.Role,                      model.RoleName),
                 new Claim("UserId",                             model.UserId.ToString()),
                 new Claim("RefId",                              model.RefId.ToString()),
-                new Claim("UserType",                              model.UserType),
+                new Claim("UserType",                           model.UserType),
                 new Claim("FullName",                           model.FullName ?? ""),
                 new Claim("TenantId",                           model.TenantId.ToString())
             };
@@ -42,12 +41,36 @@ namespace Medicare.DAL.Services
                 audience: _configuration["JwtSettings:Audience"],
                 claims: claim,
                 signingCredentials: creds,
+                notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["JwtSettings:TokenExpiryMinutes"]))
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public string GeneratePasswordResetToken(string userId, string employeeId)
+        {
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+
+            var claims = new[]
+            {
+                new Claim("userId",     userId),
+                new Claim("employeeId", employeeId),
+                new Claim("purpose",    "password-reset"), // prevents reuse of auth tokens
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(30), // short lived
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
         public string GenerateRefreshToken()
         {
             var bytes = new byte[64];
