@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Patient;
 using Medicare.Application.Features.Queries.Patient;
-using Medicare.Application.Interfaces.JwtToken;
-using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using Medicare.Application.Models.JwtTokens;
 using Medicare.Application.Models.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,42 +15,9 @@ namespace Medicare.API.Controllers.V1
     public class PatientController : BaseApiController
     {
         private readonly IMediator _mediator;
-        private readonly IJwtTokenRepository _jwtTokenRepository;
-        public PatientController(IMediator mediator, IJwtTokenRepository jwtTokenRepository)
+        public PatientController(IMediator mediator)
         {
             _mediator = mediator;
-            _jwtTokenRepository = jwtTokenRepository;
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("LoginPatient")]
-        public async Task<IActionResult> LoginPatient([FromBody] PatientAuthModel model)
-        {
-            PatientDetailModel response = new PatientDetailModel();
-            response = await _mediator.Send(new AuthPatientCommand(model));
-            if (response.IsSuccess != 1) return HandleResponse(response); 
-            var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
-            {
-                UserId = response.UserId,
-                RefId = response.RefId,
-                UserType = response.UserType,
-                Email = response.Email,
-                Username = response.Username,
-                FullName = $"{response.FirstName} {response.LastName}",
-                RoleName = response.RoleName
-            });
-            return HandleLoginResponse(response, token);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("CreatePatientDetails")]
-        public async Task<IActionResult> CreatePatientDetails([FromBody] CreatePatientRequestModel model)
-        {
-            ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new CreatePatientCommand(model));
-            return HandleResponse(response);
         }
 
         [HttpPost]

@@ -1,12 +1,10 @@
 ﻿using Medicare.Application.Interfaces.IErrorHandling;
-using Medicare.Application.Models.Appointment;
 
 namespace Medicare.Application.Models.Patient
 {
     public class PatientDetailModel : IErrorHandling
     {
         public Guid UserId { get; set; }
-        public int RefId { get;set; }
         public int PatientId { get; set; }
         public int ProfileId { get; set; }
         public string UserType { get; set; }

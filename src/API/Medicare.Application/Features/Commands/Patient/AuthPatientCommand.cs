@@ -4,5 +4,5 @@ using Medicare.Application.Models.Patient;
 
 namespace Medicare.Application.Features.Commands.Patient
 {
-    public record AuthPatientCommand(PatientAuthModel model) : IRequest<PatientDetailModel>;
+    public record AuthPatientCommand(AuthModel model) : IRequest<PatientDetailModel>;
 }

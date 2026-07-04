@@ -1,11 +1,17 @@
-﻿using MediatR;
+﻿using Azure;
+using MediatR;
+using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Features.Commands.Authentication;
-using Medicare.Application.Features.Queries.SecurityQuestions;
+using Medicare.Application.Features.Commands.Patient;
+using Medicare.Application.Interfaces.JwtToken;
+using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using Medicare.Application.Models.User;
+using Medicare.Application.Models.JwtTokens;
+using Medicare.Application.Models.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Medicare.API.Controllers.V1
 {
@@ -16,18 +22,133 @@ namespace Medicare.API.Controllers.V1
     public class AuthController : BaseApiController
     {
         private readonly IMediator _mediator;
-        public AuthController(IMediator mediator)
+        private readonly IJwtTokenRepository _jwtTokenRepository;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IConfiguration _config;
+        public AuthController(IMediator mediator, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository, IConfiguration config)
         {
             _mediator = mediator;
+            _jwtTokenRepository = jwtTokenRepository;
+            _refreshTokenRepository = refreshTokenRepository;
+            _config = config;
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("LoginPatient")]
+        public async Task<IActionResult> LoginPatient([FromBody] AuthModel model)
+        {
+            PatientDetailModel response = new PatientDetailModel();
+            response = await _mediator.Send(new AuthPatientCommand(model));
+            if (response.IsSuccess != 1) return HandleResponse(response);
+            var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
+            {
+                UserId = response.UserId,
+                RefId = response.PatientId,
+                UserType = response.UserType,
+                Email = response.Email,
+                Username = response.Username,
+                FullName = $"{response.FirstName} {response.LastName}",
+                RoleName = response.RoleName
+            });
+
+            string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
+            DateTime expiryDate = DateTime.UtcNow.AddDays(int.Parse(_config["JwtSettings:RefreshTokenExpDays"]));
+
+            var refreshTokenData = new JwtRefreshTokenModel
+            {
+                UserId = response.UserId,
+                UserType = response.UserType,
+                RefreshToken = refreshToken,
+                ExpiryDate = expiryDate
+            };
+
+            await _refreshTokenRepository.SaveRefreshTokenAsync(refreshTokenData);
+
+            return HandleLoginResponse(response, token, refreshToken);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("CreatePatientAccount")]
+        public async Task<IActionResult> CreatePatientAccount([FromBody] CreatePatientRequestModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new CreatePatientCommand(model));
+            return HandleResponse(response);
         }
 
         [HttpPost]
-        [Route("SignUpUser")]
-        public async Task<IActionResult> SignUpUser([FromBody] UserModel model)
+        [Route("LoginAssociate")]
+        public async Task<IActionResult> LoginAssociate([FromBody] AuthModel model)
+        {
+            AssociateDetailModel response = new AssociateDetailModel();
+            response = await _mediator.Send(new AuthAssociateCommand(model));
+            if (response.IsSuccess != 1) return HandleResponse(response);
+            var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
+            {
+                UserId = response.UserId,
+                RefId = response.AssociateId,
+                UserType = response.UserType,
+                Email = response.EmailId,
+                Username = response.EmployeeId,
+                FullName = $"{response.FirstName} {response.LastName}",
+                RoleName = response.RoleName,
+                TenantId = response.TenantId
+            });
+
+            string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
+            DateTime expiryDate = DateTime.UtcNow.AddDays(int.Parse(_config["JwtSettings:RefreshTokenExpDays"]));
+
+            var refreshTokenData = new JwtRefreshTokenModel
+            {
+                UserId = response.UserId,
+                UserType = response.UserType,
+                RefreshToken = refreshToken,
+                ExpiryDate = expiryDate
+            };
+
+            await _refreshTokenRepository.SaveRefreshTokenAsync(refreshTokenData);
+
+            return HandleLoginResponse(response, token, refreshToken);
+        }
+
+        [HttpPost]
+        [Route("RegisterAssociate")]
+        public async Task<IActionResult> RegisterAssociate(RegisterAssociateModel model)
         {
             ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new UserCommand(model));
+            response = await _mediator.Send(new CreateAssociateCommand(model));
             return HandleResponse(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel model)
+        {
+            if (string.IsNullOrEmpty(model.AccessToken) || string.IsNullOrEmpty(model.RefreshToken))
+             return BadRequest(
+                 new ApiResponse<ResponseModel> { 
+                     Data = null,    
+                     StatusMessage = "Access token and refresh token are required.", 
+                     StatusCode = HttpStatusCode.BadRequest, 
+                     Result = 0 
+                 });
+
+            RefreshTokenResponseModel response = new RefreshTokenResponseModel();
+            response = await _mediator.Send(new RefreshTokenCommand(model));
+            return HandleTokenResponse(response);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout([FromBody] string refreshToken)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _refreshTokenRepository.RevokeRefreshTokenAsync(refreshToken);
+            return HandleLoggedOutResponse(response);
         }
 
         [HttpPost]
@@ -46,16 +167,6 @@ namespace Medicare.API.Controllers.V1
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new VerifyOtpCommand(model));
             return HandleResponse(response);
-        }
-
-
-        [HttpGet]
-        [Route("GetSecurityQuestionList")]
-        public async Task<IActionResult> GetSecurityQuestionList()
-        {
-            List<SecurityQuestionDataModel> response = new List<SecurityQuestionDataModel>();
-            response = await _mediator.Send(new GetSecurityQuestionListQuery());
-            return HandleListResponse(response);
         }
     }
 }

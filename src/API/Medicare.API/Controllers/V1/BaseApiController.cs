@@ -61,7 +61,7 @@ namespace Medicare.API.Controllers.V1
             });
         }
 
-        protected IActionResult HandleLoginResponse<T>(T? data, string? token) where T : IErrorHandling
+        protected IActionResult HandleLoginResponse<T>(T? data, string? token, string? refreshToken) where T : IErrorHandling
         {
             if (data == null)
                 return StatusCode(500, new ApiResponse<T>
@@ -87,7 +87,64 @@ namespace Medicare.API.Controllers.V1
                 StatusMessage = data.ResponseMessage,
                 StatusCode = HttpStatusCode.OK,
                 Result = 1,
-                TokenKey = token
+                TokenKey = token,
+                RefreshToken = refreshToken
+            });
+        }
+        protected IActionResult HandleTokenResponse<T>(T data) where T : IErrorHandling
+        {
+            if (data == null)
+                return Unauthorized(new ApiResponse<T>
+                {
+                    Data = default,
+                    StatusMessage = "Invalid or expired refresh token.",
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Result = 0
+                });
+
+            if (data.IsSuccess != 1)
+                return Unauthorized(new ApiResponse<T>
+                {
+                    Data = data,
+                    StatusMessage = data.ResponseMessage,
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Result = 0
+                });
+
+            return Ok(new ApiResponse<T>
+            {
+                Data = data,
+                StatusMessage = "Token Refreshed Successfully",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            });
+        }
+        protected IActionResult HandleLoggedOutResponse<T>(T data) where T : IErrorHandling
+        {
+            if (data == null)
+                return BadRequest(new ApiResponse<T>
+                {
+                    Data = default,
+                    StatusMessage = "Logout failed. Invalid request.",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Result = 0
+                });
+
+            if (data.IsSuccess != 1)
+                return BadRequest(new ApiResponse<T>
+                {
+                    Data = data,
+                    StatusMessage = data.ResponseMessage,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Result = 0
+                });
+
+            return Ok(new ApiResponse<T>
+            {
+                Data = data,
+                StatusMessage = "User logged out successfully.",
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
             });
         }
     }

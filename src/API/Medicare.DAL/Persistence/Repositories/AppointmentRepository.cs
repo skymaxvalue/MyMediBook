@@ -75,6 +75,7 @@ namespace Medicare.DAL.Persistence.Repositories
             try
             {
                 var param = new DynamicParameters();
+
                 param.Add("AppointmentId", appointmentId);
 
                 returnData = await _context.QuerySingleStoredProcAsync<AppointmentDetailModelDto>(procName, param);

@@ -1,25 +1,27 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Helper.DocumentHelper;
-using Medicare.Application.Interfaces.IAssociate;
+using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.Application.Handlers.CommandHandlers
 {
     public class CreateAssociateCommandHandler : IRequestHandler<CreateAssociateCommand, ResponseModel>
     {
-        private readonly IAssociateRepository _associateRepository;
-        public CreateAssociateCommandHandler(IAssociateRepository associateRepository) 
+        private readonly IAuthRepository _authRepository;
+        private readonly PasswordHelper _passwordHelper;
+        public CreateAssociateCommandHandler(IAuthRepository authRepository, PasswordHelper passwordHelper) 
         {
-            _associateRepository = associateRepository;
+            _authRepository = authRepository;
+            _passwordHelper = passwordHelper;
         }
         public async Task<ResponseModel> Handle(CreateAssociateCommand request, CancellationToken cancellationToken)
         {
-            var result = request.model;
+            var model = request.model;
 
-            if(result.IdentityFile != null)
+            if(model.IdentityFile != null)
             {
-                var (identityDocBytes, identityErr) = DocumentHelper.ProcessDocument(result.IdentityFile);
+                var (identityDocBytes, identityErr) = DocumentHelper.ProcessDocument(model.IdentityFile);
 
                 if (identityErr != null)
                     return new ResponseModel() 
@@ -30,12 +32,12 @@ namespace Medicare.Application.Handlers.CommandHandlers
                         ResponseId = 0
                     };
 
-                result.IdentityFileBytes = identityDocBytes;
+                model.IdentityFileBytes = identityDocBytes;
             }
 
-            if (result.AssociateQualification.QualificationDocuments != null)
+            if (model.AssociateQualification.QualificationDocuments != null)
             {
-                var (qualificationDocBytes, qualErr) = DocumentHelper.ProcessDocument(result.AssociateQualification.QualificationDocuments);
+                var (qualificationDocBytes, qualErr) = DocumentHelper.ProcessDocument(model.AssociateQualification.QualificationDocuments);
 
                 if (qualErr != null)
                     return new ResponseModel() 
@@ -46,9 +48,39 @@ namespace Medicare.Application.Handlers.CommandHandlers
                         ResponseId = 0
                     };
 
-                result.AssociateQualification.QualificationDocumentBytes = qualificationDocBytes;
+                model.AssociateQualification.QualificationDocumentBytes = qualificationDocBytes;
             }
-            return await _associateRepository.RegisterAssociateAsync(request.model);
+            string tempPassword = _passwordHelper.GenerateTempPassword();
+            
+            model.Password = _passwordHelper.HashPassword(tempPassword);
+           
+            var result = await _authRepository.RegisterAssociateAsync(request.model);
+
+            if (result == null)
+                return new ResponseModel
+                {
+                    Status = 0,
+                    IsSuccess = 0,
+                    ResponseId = 0,
+                    ResponseMessage = "Registration Failed — Please Try Again"
+                };
+
+            if (result.IsSuccess != 1 || result.Status != 1)
+                return new ResponseModel
+                {
+                    Status = result.Status,
+                    IsSuccess = result.IsSuccess,
+                    ResponseId = result.ResponseId,
+                    ResponseMessage = result.ResponseMessage
+                };
+
+            return new ResponseModel
+            {
+                IsSuccess = result.IsSuccess,
+                ResponseId = result.ResponseId,
+                Status = result.Status,
+                ResponseMessage = result.ResponseMessage
+            };
         }
     }
 }

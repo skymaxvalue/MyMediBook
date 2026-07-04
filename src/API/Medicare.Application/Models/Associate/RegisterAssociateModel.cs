@@ -1,16 +1,21 @@
-﻿namespace Medicare.Application.Models.Associate
+﻿using System.Text.Json.Serialization;
+
+namespace Medicare.Application.Models.Associate
 {
     public class RegisterAssociateModel
     {
+        public Guid TenantId { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
+        [JsonIgnore]
+        public string? Password { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string IdentityDocument { get; set; }
-        public string? IdentityFile { get; set; }   
+        public string? IdentityFile { get; set; }
+        [JsonIgnore]
         public byte[]? IdentityFileBytes { get; set; }
-        public string EmployeeId { get; set; }
         public string PhoneCountryCode { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailId { get; set; }
@@ -45,7 +50,8 @@
         public string RegistrationNumber { get; set; }
         public DateTime LicenseExpiry { get; set; }
         public string AdditionalCertifications { get; set; }
-        public string? QualificationDocuments { get; set; }  
+        public string? QualificationDocuments { get; set; }
+        [JsonIgnore]
         public byte[]? QualificationDocumentBytes { get; set; }
     }
 

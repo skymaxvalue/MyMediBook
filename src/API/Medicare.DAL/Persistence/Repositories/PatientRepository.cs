@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.IPatient;
-using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
@@ -39,11 +38,9 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("StateId", model.StateId);
                 param.Add("CountryId", model.CountryId);
                 param.Add("Username", model.Username);
-                param.Add("PasswordHash", model.PasswordHash);
-                param.Add("PasswordSalt", model.PasswordSalt);
+                param.Add("Password", model.PasswordHash);
                 param.Add("SecurityQuestionId", model.SecurityQuestionId);
                 param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
-                param.Add("SecurityAnswerSalt", model.SecurityAnswerSalt);
                 param.Add("CreatedBy", model.CreatedBy);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
@@ -150,31 +147,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-        public async Task<PatientAuthDetailModel> GetPasswordByUsernameAsync(string Username)
-        {
-            string procName = "USP_GetPatientPassword";
-            PatientAuthDetailModel returnData = new PatientAuthDetailModel();
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("Username", Username);
-                returnData = await _context.QuerySingleStoredProcAsync<PatientAuthDetailModel>(procName, param);
-
-            }
-            catch (Exception ex)
-            {
-                await _errorLog.InsertErrorLog(new ErrorLogModel()
-                {
-                    IsDBError = false,
-                    Error_Message = ex.Message,
-                    Error_Procedure = procName,
-                    Error_Trace = ex.StackTrace
-                });
-            }
-
-            return returnData;
-        }
-
+      
         public async Task<PatientDetailModel> GetPatientInfoByUsername(string Username)
         {
             string procName = "USP_GetPatientAccountByUsername";
