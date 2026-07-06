@@ -1,5 +1,4 @@
-﻿using Azure;
-using MediatR;
+﻿using MediatR;
 using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Features.Commands.Patient;
@@ -119,6 +118,24 @@ namespace Medicare.API.Controllers.V1
         {
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateAssociateCommand(model));
+            return HandleResponse(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetAssociatePassword")]
+        public async Task<IActionResult> ResetAssociatePassword([FromBody] ResetPasswordModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            if (string.IsNullOrEmpty(model.Token) || string.IsNullOrEmpty(model.Password))
+                return BadRequest(new ApiResponse<object>
+                {
+                    Data = null,
+                    StatusMessage = "Token and new password are required.",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Result = 0
+                });
+            response = await _mediator.Send(new ResetPasswordCommand(model));
             return HandleResponse(response);
         }
 

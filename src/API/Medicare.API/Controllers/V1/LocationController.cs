@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Queries.Location;
 using Medicare.Application.Models.Location;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Medicare.API.Controllers.V1
@@ -9,7 +8,6 @@ namespace Medicare.API.Controllers.V1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize]
     public class LocationController : BaseApiController
     {
         private readonly IMediator _mediator;

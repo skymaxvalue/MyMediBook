@@ -102,6 +102,7 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetSecurityQuestionList")]
         public async Task<IActionResult> GetSecurityQuestionList()
