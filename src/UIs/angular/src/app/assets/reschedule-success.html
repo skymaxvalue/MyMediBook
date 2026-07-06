@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Appointment Rescheduled</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/reschedule-success.css">
+
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<div class="success-container">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1>Appointment Rescheduled Successfully</h1>
+
+        <p class="subtitle">
+            Your appointment has been updated successfully.
+        </p>
+
+        <div class="appointment-card">
+
+            <h3>Appointment Details</h3>
+
+            <div class="detail-row">
+                <span>Patient</span>
+                <strong id="patientName"></strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Doctor</span>
+                <strong id="doctorName"></strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Visit Purpose</span>
+                <strong id="visitPurpose"></strong>
+            </div>
+
+        </div>
+
+        <div class="comparison-card">
+
+            <h3>Appointment Updated</h3>
+
+            <div class="old-slot">
+
+                <label>Previous Appointment</label>
+
+                <p id="oldDate"></p>
+
+                <p id="oldTime"></p>
+
+            </div>
+
+            <div class="arrow">
+
+                ↓
+
+            </div>
+
+            <div class="new-slot">
+
+                <label>New Appointment</label>
+
+                <p id="newDate"></p>
+
+                <p id="newTime"></p>
+
+            </div>
+
+        </div>
+
+        <div class="policy-note">
+
+            <strong>Reminder</strong>
+
+            <p>
+                Please arrive at least
+                <strong>15 minutes</strong>
+                before your scheduled appointment.
+            </p>
+
+        </div>
+
+        <div class="buttons">
+
+            <div class="buttons">
+
+    <button
+        class="secondary-btn"
+        onclick="window.location.href='dashboard.html'">
+
+        Back to Dashboard
+
+    </button>
+
+    <button
+        class="primary-btn"
+        onclick="window.print()">
+
+        Download Confirmation
+
+    </button>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/reschedule-success.js"></script>
+
+</body>
+
+</html>

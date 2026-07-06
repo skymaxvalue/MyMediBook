@@ -116,7 +116,7 @@ th.active {
     display:flex;
     justify-content:center;
     align-items:center;
-    margin:0 auto;
+    margin: 5px;;        
     border:none;
     border-radius:8px;
     cursor:pointer;
@@ -161,10 +161,6 @@ th.active {
 
 
 
-/*==========================
-    OVERLAY
-==========================*/
-
 .modal-overlay{
     position:fixed;
     inset:0;
@@ -183,9 +179,7 @@ th.active {
     display:flex;
 }
 
-/*==========================
-    MODAL
-==========================*/
+
 
 .cancel-modal{
 
@@ -208,9 +202,7 @@ th.active {
     0 30px 80px rgba(15,23,42,.18);
 }
 
-/*==========================
-    COLUMNS
-==========================*/
+
 
 .modal-left{
 
@@ -234,9 +226,7 @@ th.active {
     align-items:center;
 }
 
-/*==========================
-    HEADER
-==========================*/
+
 
 .modal-header{
 
@@ -296,9 +286,7 @@ th.active {
     line-height:1.5;
 }
 
-/*==========================
-    POLICY CARD
-==========================*/
+
 
 .policy-card{
 
@@ -311,9 +299,7 @@ th.active {
     padding:12px 28px;
 }
 
-/*==========================
-    RULES
-==========================*/
+
 
 .rule-item{
 
@@ -392,9 +378,7 @@ th.active {
     color:#64748B;
 }
 
-/*==========================
-    POLICY LINK
-==========================*/
+
 
 .policy-link{
 
@@ -436,9 +420,7 @@ th.active {
     align-items:center;
 }
 
-/*==========================
-    RIGHT SIDE
-==========================*/
+
 
 .question-circle{
 
@@ -488,9 +470,7 @@ th.active {
     font-size:16px;
 }
 
-/*==========================
-    APPOINTMENT CARD
-==========================*/
+
 
 .appointment-card{
 
@@ -576,9 +556,7 @@ th.active {
     color:#64748B;
 }
 
-/*==========================
-    BUTTONS
-==========================*/
+
 
 .modal-buttons{
 
@@ -918,7 +896,7 @@ th.active {
     .keep-btn,
     .delete-btn{
         width:100%;
-        height:56px;      /* Increase from 48px */
+        height:56px;      
         min-height:56px;
         border-radius:12px;
         font-size:16px;
@@ -1043,4 +1021,120 @@ th.active {
 
     object-fit:contain;
     display:block;
+}
+
+.appointment-department{
+    margin-top:8px;
+    font-size:14px;
+    color:#64748B;
+}
+
+.action-cell{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+
+    white-space:nowrap;
+}
+
+.action-cell button{
+
+    width:40px;
+    height:40px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+
+    
+}
+
+.action-cell .reschedule-btn{
+
+    background:#EEF4FF;
+}
+
+.action-cell .reschedule-btn:hover{
+
+    background:#D9E8FF;
+}
+
+.action-cell .cancel-btn{
+
+    background:#FFF1F2;
+}
+
+.action-cell .cancel-btn:hover{
+
+    background:#FFE4E6;
+}
+
+.action-cell img{
+
+    width:22px;
+    height:22px;
+}
+
+
+
+
+
+.no-action{
+    text-align:center;
+    color:#94A3B8;
+    font-size:30px;
+    font-weight:600;
+    line-height:1;
+}
+
+.no-action span{
+
+    display:inline-flex;
+
+    justify-content:center;
+    align-items:center;
+
+    width:40px;
+    height:40px;
+
+    border-radius:8px;
+
+    background:#F8FAFC;
+    border:1px solid #EEF2F7;
+
+    color:#94A3B8;
+
+    font-size:20px;
+    font-weight:700;
+}
+
+
+.actions-header{
+    text-align:center !important;
+    padding-left:0;
+    padding-right:0;
+}
+
+
+
+
+.rescheduled{
+
+    background:#FEF3C7;
+    color:#000000;
+}
+
+.appointment-table th:nth-child(6),
+.appointment-table td:nth-child(6){
+    text-align:center;
 }

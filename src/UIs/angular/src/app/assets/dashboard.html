@@ -42,10 +42,9 @@
                             Dr. Name <span class="sort-icon">▼</span>
                         </th>
 
-                        <th>Status</th>
+                        <th class="status-header">Status</th>
 
-                        <th>Reschedule</th>
-                        <th>Cancel</th>
+                        <th class="actions-header">Actions</th>
                 </tr>
             </thead>
 
@@ -57,8 +56,9 @@
                     <td>11:00 AM - 11:30AM</td>
                     <td>Dr. Vaishali</td>
                     <td><span class="status completed">Completed</span></td>
-                    <td class="no-action">-</td>
-                    <td class="no-action">-</td>
+                    <td class="no-action">—</td>
+                    
+                   
                 </tr>
 
                 <tr class="highlight">
@@ -68,8 +68,8 @@
                     <td>03:00 PM - 03:30PM</td>
                     <td>Dr. Arun</td>
                     <td><span class="status completed">Completed</span></td>
-                      <td class="no-action">-</td>
-                    <td class="no-action">-</td>
+                      <td class="no-action">—</td>
+                    
                 </tr>
 
                  <tr>
@@ -80,19 +80,25 @@
                     <td>Dr. Kumar</td>
                     <td><span class="status upcoming">Upcoming</span></td>
 
-                    <td>
-                        <button class="reschedule-btn"
-                                onclick="rescheduleAppointment(this)">
-                            <img src="images/reschedule.png" alt="Reschedule">
-                        </button>
-                    </td>
+                    <td class="action-cell">
 
-                    <td>
-                        <button class="cancel-btn"
-                                onclick="cancelAppointment(this)">
-                             <img src="images/trash.png" alt="Cancel">
-                        </button>
-                    </td>
+    <button class="reschedule-btn"
+            onclick="rescheduleAppointment(this)"
+            title="Reschedule Appointment">
+
+        <img src="images/reschedule.png" alt="Reschedule">
+
+    </button>
+
+    <button class="cancel-btn"
+            onclick="cancelAppointment(this)"
+            title="Cancel Appointment">
+
+        <img src="images/trash.png" alt="Cancel">
+
+    </button>
+
+</td>
                 </tr>
 
                 <tr>
@@ -103,19 +109,25 @@
                     <td>Dr. Ross</td>
                     <td><span class="status upcoming">Upcoming</span></td>
 
-                    <td>
-                        <button class="reschedule-btn"
-                                onclick="rescheduleAppointment(this)">
-                            <img src="images/reschedule.png" alt="Reschedule">
-                        </button>
-                    </td>
+                    <td class="action-cell">
 
-                    <td>
-                        <button class="cancel-btn"
-                                onclick="cancelAppointment(this)">
-                            <img src="images/trash.png" alt="Cancel">
-                        </button>
-                    </td>
+    <button class="reschedule-btn"
+            onclick="rescheduleAppointment(this)"
+            title="Reschedule Appointment">
+
+        <img src="images/reschedule.png" alt="Reschedule">
+
+    </button>
+
+    <button class="cancel-btn"
+            onclick="cancelAppointment(this)"
+            title="Cancel Appointment">
+
+        <img src="images/trash.png" alt="Cancel">
+
+    </button>
+
+</td>
                 </tr>
                
             </tbody>
@@ -336,6 +348,266 @@
                     onclick="confirmCancel()">
 
                     Cancel Appointment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="rescheduleModal" class="modal-overlay">
+
+    <div class="cancel-modal">
+
+        <button class="close-modal"
+                onclick="closeRescheduleModal()">
+
+            <img src="images/close.png" alt="Close">
+
+        </button>
+
+
+
+        <div class="modal-left">
+
+            <div class="modal-header">
+
+                <div class="header-icon">
+                    <img src="images/reschedule.png"
+                         alt="Reschedule">
+                </div>
+
+                <div>
+
+                    <h2>Reschedule Appointment</h2>
+
+                    <p class="modal-subtitle">
+                        Please review before you continue.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="policy-card">
+
+                <div class="rule-item">
+
+                    <div class="rule-icon success-icon">
+                        <img src="images/check.png" alt="">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Free rescheduling</h3>
+
+                        <p>
+                            Up to 24 hours before your appointment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon warning-icon">
+                        <img src="images/clock.png" alt="">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Late reschedule fee may apply</h3>
+
+                        <p>
+                            If requested within 24 hours,
+                            a fee of Rs 100 / $50 may apply.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon warning-icon">
+                        <img src="images/reschedule.png" alt="">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Maximum of 2 reschedules</h3>
+
+                        <p>
+                            Each appointment can only be
+                            rescheduled twice.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon danger-icon">
+                        <img src="images/close-circle.png" alt="">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Cannot reschedule after start time</h3>
+
+                        <p>
+                            Once the appointment has started,
+                            rescheduling is not allowed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <a href="reschedule-policy.html"
+                   class="policy-link"
+                   target="_blank">
+
+                    <div class="policy-icon">
+                        <img src="images/icon-reports.png" alt="">
+                    </div>
+
+                    <span>View full reschedule policy</span>
+
+                    <img class="external-icon"
+                         src="images/arrow.png"
+                         alt="">
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="modal-right">
+
+            <div class="question-circle">
+                <img src="images/question.png" alt="">
+            </div>
+
+            <h2 class="confirm-title">
+                Are you sure you want to
+                reschedule this appointment?
+            </h2>
+
+            <p class="confirm-text">
+                You'll be redirected to the doctor's
+                availability page to choose a new
+                available date and time.
+            </p>
+
+            <div class="appointment-card">
+
+    <div class="appointment-top">
+
+        <div class="appointment-icon">
+            <img src="images/dr-icon.png" alt="">
+        </div>
+
+        <div>
+
+            <h3 id="rescheduleDoctor">
+                Dr. John Doe
+            </h3>
+
+            <span class="doctor-role">
+                Physician
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="appointment-divider"></div>
+
+    <div class="appointment-bottom">
+
+        <div class="appointment-icon">
+            <img src="images/calendar2.png" alt="">
+        </div>
+
+        <div>
+
+            <div class="appointment-date">
+
+                <span id="rescheduleDate">
+                    May 21 2026
+                </span>
+
+                &nbsp; • &nbsp;
+
+                <span id="rescheduleTime">
+                    04:00 PM - 04:30 PM
+                </span>
+
+            </div>
+
+            <div class="appointment-department">
+                Current Appointment
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+            <div class="policy-card"
+                 style="margin-top:18px; width:100%;">
+
+                <div style="display:flex; gap:12px; align-items:flex-start;">
+
+                    <img src="images/caution.png"
+                         width="22">
+
+                    <p id="rescheduleInfo"
+                       style="margin:0;color:#2563EB;font-weight:600;">
+
+                        You can reschedule this appointment
+                        up to 2 times.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="modal-buttons">
+
+                <button class="keep-btn"
+                        onclick="closeRescheduleModal()">
+
+                    Keep Appointment
+
+                </button>
+
+                <button class="delete-btn"
+                        style="background:#2563EB"
+                        onclick="confirmReschedule()">
+
+                    Reschedule Appointment
 
                 </button>
 
