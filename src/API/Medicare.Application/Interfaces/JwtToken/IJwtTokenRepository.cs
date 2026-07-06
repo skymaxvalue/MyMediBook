@@ -1,5 +1,4 @@
-﻿using Medicare.Application.Models.CommonModels.ResponseModel;
-using Medicare.Application.Models.JwtTokens;
+﻿using Medicare.Application.Models.JwtTokens;
 using System.Security.Claims;
 
 namespace Medicare.Application.Interfaces.JwtToken
@@ -9,6 +8,7 @@ namespace Medicare.Application.Interfaces.JwtToken
         string GenerateToken(JwtTokenClaimModel model);
         string GenerateRefreshToken();                           
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+        ClaimsPrincipal ValidatePasswordResetToken(string token);
         string GeneratePasswordResetToken(string userId, string employeeId);
     }
 }

@@ -101,5 +101,31 @@ namespace Medicare.DAL.Services
 
             return principal;
         }
+        public ClaimsPrincipal ValidatePasswordResetToken(string token)
+        {
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+
+            var validation = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["JwtSettings:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["JwtSettings:Audience"],
+                ValidateLifetime = true,  
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var principal = new JwtSecurityTokenHandler()
+                .ValidateToken(token, validation, out SecurityToken securityToken);
+
+            var purpose = principal.FindFirstValue("purpose");
+            if (purpose != "password-reset")
+                throw new SecurityTokenException("Invalid token purpose.");
+
+            return principal;
+        }
     }
 }

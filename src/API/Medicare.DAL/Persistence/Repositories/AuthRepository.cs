@@ -374,5 +374,30 @@ Medicare Team";
             }
             return returnData;
         }
+
+        public async Task<ResponseModel> ResetPasswordAsync(Guid userId, string passwordHash)
+        {
+            string procName = "USP_ResetAssociatePassword";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("UserId", userId);
+                param.Add("PasswordHash", passwordHash);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
     }
 }
