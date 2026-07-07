@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reschedule Appointment</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/reschedule.css">
+
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<div class="availability-container">
+
+    <h2>Reschedule Appointment</h2>
+
+    <div class="schedule-box">
+
+   
+
+        <div class="info-banner">
+
+            <span>ℹ</span>
+
+            <div>
+                <h3>Update Appointment Time</h3>
+                <p>
+                    Your patient information has already been verified.
+                    Only your appointment date and time can be changed.
+                </p>
+            </div>
+
+        </div>
+
+      
+
+        <div class="summary-card">
+
+            <h3>Appointment Summary</h3>
+
+            <div class="summary-grid">
+
+                <div>
+                    <label>Patient</label>
+                  <p id="patientName"></p>
+
+                </div>
+
+                <div>
+                    <label>Doctor</label>
+        <p id="doctorName"></p>
+                </div>
+
+                <div>
+                    <label>Visit Purpose</label>
+                 <p id="visitPurpose"></p>
+                </div>
+
+                <div>
+                    <label>Current Appointment</label>
+                    <p id="currentDate"></p> • <p id="currentTime"></p>
+                </div>
+
+
+
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="section">
+
+            <h3>Select New Date</h3>
+
+            <input
+                type="date"
+                id="appointmentDate"
+                required>
+
+        </div>
+
+
+
+        <div class="section">
+
+            <h3>Select New Time</h3>
+
+            <div class="time-slots">
+
+                <button>09:00 AM</button>
+                <button>09:30 AM</button>
+                <button>10:00 AM</button>
+                <button>10:30 AM</button>
+
+                <button>11:00 AM</button>
+                <button class="disabled">11:30 AM</button>
+
+                <button>12:00 PM</button>
+                <button>12:30 PM</button>
+
+            </div>
+
+            <small>
+                Current appointment time is disabled.
+            </small>
+
+        </div>
+
+     
+
+        <div class="section">
+
+            
+
+            <label><h3>Reason for Rescheduling</h3></label>
+
+<select id="reason">
+    <option value="" disabled selected>Select reason</option>
+   
+    <option value="emergency">Personal emergency</option>
+    <option value="work">Work schedule conflict</option>
+    <option value="travel">Travel plans</option>
+    <option value="family">Family commitment</option>
+   
+   
+   
+    <option value="other">Other (Please specify)</option>
+</select>
+
+<textarea
+    id="otherReason"
+    class="hidden"
+    placeholder="Please specify..."></textarea>
+        </div>
+
+       
+
+        <div class="policy">
+
+            <strong>Rescheduling Policy</strong>
+
+            <ul>
+
+                <li>Appointment can be rescheduled only twice.</li>
+
+                <li>Previous appointment will be replaced after confirmation.</li>
+
+                <li>Doctor availability may change.</li>
+
+            </ul>
+
+        </div>
+
+  
+
+        <div class="form-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="history.back()">
+
+                Cancel
+
+            </button>
+
+            <button
+    class="book-btn"
+    onclick="confirmReschedule()">
+
+    Confirm Reschedule
+
+</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/reschedule.js"></script>
+
+</body>
+
+</html>
