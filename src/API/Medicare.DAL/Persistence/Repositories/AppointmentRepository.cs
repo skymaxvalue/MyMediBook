@@ -130,6 +130,8 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("VisitPurpose", model.VisitPurpose);
                 param.Add("VisitType", model.VisitType);
                 param.Add("OtpMethod", model.OtpMethod);
+                param.Add("CreatedBy", model.CreatedBy);
+                param.Add("AssociateRole", model.AssociateRole);
 
                 param.Add("Insurance", model.Insurance);
                 param.Add("Provider", model.InsuranceData?.Provider);
@@ -174,6 +176,9 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("SlotId", model.SlotId);
                 param.Add("VisitPurpose", model.VisitPurpose);
                 param.Add("VisitType", model.VisitType);
+                param.Add("RescheduleReason", model.RescheduleReason);
+                param.Add("LastUpdatedBy", model.LastUpdatedBy);
+                param.Add("AssociateRole", model.AssociateRole);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
@@ -190,18 +195,18 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> CancelAppointmentByIdAsync(
-            int appointmentId, 
-            int patientId
-            )
+        public async Task<ResponseModel> CancelAppointmentByIdAsync(CancelAppointmentScheduleRequestModel model)
         {
             string procName = "USP_CancelAppointment";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("AppointmentId", appointmentId);
-                param.Add("PatientId", patientId);
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("PatientId", model.PatientId);
+                param.Add("CancelReason", model.CancelReason);
+                param.Add("LastUpdatedBy", model.LastUpdatedBy);
+                param.Add("AssociateRole", model.AssociateRole);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }

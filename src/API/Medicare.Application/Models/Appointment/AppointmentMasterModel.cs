@@ -22,7 +22,9 @@ namespace Medicare.Application.Models.Appointment
         public string OtpMethod { get; set; }
         public InsuranceData InsuranceData { get; set; }
         public PaymentData PaymentData { get; set; }
-       public bool Insurance {  get; set; }
+        public bool Insurance {  get; set; }
+        public string CreatedBy { get; set; }
+        public string AssociateRole { get; set; }
     }
 
     public class InsuranceData

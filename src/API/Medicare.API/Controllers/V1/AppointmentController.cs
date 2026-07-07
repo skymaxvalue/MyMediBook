@@ -40,13 +40,10 @@ namespace Medicare.API.Controllers.V1
 
         [HttpDelete]
         [Route("CancelAppointmentById")]
-        public async Task<IActionResult> CancelAppointmentById(
-            [FromQuery] int appointmentId,
-            [FromQuery] int patientId
-            )
+        public async Task<IActionResult> CancelAppointmentById(CancelAppointmentScheduleRequestModel model)
         {
             ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new DeleteAppointmentCommand(appointmentId, patientId));
+            response = await _mediator.Send(new DeleteAppointmentCommand(model));
             return HandleResponse(response);
         }
 
