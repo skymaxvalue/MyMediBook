@@ -19,9 +19,168 @@
 
 <div class="dashboard-container">
 
-              
 
-        <table class="appointment-table">
+<div class="appointments-topbar">
+
+    <div class="appointments-heading">
+
+        <div class="appointments-icon">
+            <img src="images/appointment-icon.png" alt="">
+        </div>
+
+        <div class="appointments-text">
+            <h2>My Appointments</h2>
+            <p>Manage your and family member's appointments</p>
+        </div>
+
+    </div>
+
+    <div class="patient-filter">
+
+        <label class="filter-label">Filter by Patient :</label>
+
+
+
+    <div class="custom-select">
+
+        <div class="selected-patient" id="selectedPatient">
+
+            <div class="selected-left">
+                <img src="images/user.png" alt="">
+                <span id="selectedText">All Patients</span>
+            </div>
+
+            <span class="arrow">&#9662;</span>
+
+        </div>
+
+        <div class="dropdown" id="patientDropdown">
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="patientSearch"
+                    placeholder="Search patient..."
+                >
+
+            </div>
+
+            <div class="patient-option active" data-value="all">
+    <div class="option-left">
+        <img src="images/user.png" alt="">
+        <span>All Patients</span>
+    </div>
+    <i class="fas fa-check check-icon"></i>
+</div>
+
+<div class="patient-option" data-value="Self">
+    <div class="option-left">
+        <img src="images/user.png" alt="">
+        <span>Self</span>
+    </div>
+    <i class="fas fa-check check-icon"></i>
+</div>
+
+<div class="patient-option" data-value="Ramesh">
+    <div class="option-left">
+        <img src="images/user.png" alt="">
+        <span>Ramesh</span>
+    </div>
+    <i class="fas fa-check check-icon"></i>
+</div>
+
+<div class="patient-option" data-value="Lakshmi">
+    <div class="option-left">
+        <img src="images/user.png" alt="">
+        <span>Lakshmi</span>
+    </div>
+    <i class="fas fa-check check-icon"></i>
+</div>
+
+<div class="patient-option" data-value="Raman">
+    <div class="option-left">
+        <img src="images/user.png" alt="">
+        <span>Raman</span>
+    </div>
+    <i class="fas fa-check check-icon"></i>
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <div class="status-filter">
+
+    <label class="filter-label">Filter by Status :</label>
+
+    <div class="custom-select" id="statusSelect">
+
+        <div class="selected-patient" id="selectedStatus">
+
+            <div class="selected-left">
+                <span id="selectedStatusText">All Status</span>
+            </div>
+
+            <span class="arrow">&#9662;</span>
+
+        </div>
+
+        <div class="dropdown" id="statusDropdown">
+
+            
+
+            <div class="patient-option active" data-value="all">
+                <div class="option-left">
+                    <span>🟣 All Status</span>
+                </div>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+
+            <div class="patient-option" data-value="Upcoming">
+                <div class="option-left">
+                    <span>🔵 Upcoming</span>
+                </div>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+
+            <div class="patient-option" data-value="Rescheduled">
+                <div class="option-left">
+                    <span>🟡 Rescheduled</span>
+                </div>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+
+            <div class="patient-option" data-value="Completed">
+                <div class="option-left">
+                    <span>🟢 Completed</span>
+                </div>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+
+            <div class="patient-option" data-value="Cancelled">
+                <div class="option-left">
+                    <span>🔴 Cancelled</span>
+                </div>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+  
+
+
+
+<table class="appointment-table">
             <thead>
                 <tr>
                         <th onclick="sortTable(0)">
@@ -101,6 +260,9 @@
 </td>
                 </tr>
 
+
+                
+
                 <tr>
                     <td>Visitation</td>
                     <td>Lakshmi</td>
@@ -129,7 +291,154 @@
 
 </td>
                 </tr>
-               
+
+
+
+
+
+
+
+
+
+
+                <tr>
+    <td>Dermatology</td>
+    <td>Self</td>
+    <td>Jun 02 2026</td>
+    <td>10:00 AM - 10:30 AM</td>
+    <td>Dr. Meera</td>
+    <td><span class="status rescheduled">Rescheduled</span></td>
+    <td class="action-cell">
+        <button class="reschedule-btn" onclick="rescheduleAppointment(this)">
+            <img src="images/reschedule.png" alt="">
+        </button>
+        <button class="cancel-btn" onclick="cancelAppointment(this)">
+            <img src="images/trash.png" alt="">
+        </button>
+    </td>
+</tr>
+
+<tr class="highlight">
+    <td>Dental Checkup</td>
+    <td>Ramesh</td>
+    <td>Jun 08 2026</td>
+    <td>09:30 AM - 10:00 AM</td>
+    <td>Dr. Priya</td>
+    <td><span class="status upcoming">Upcoming</span></td>
+    <td class="action-cell">
+        <button class="reschedule-btn" onclick="rescheduleAppointment(this)">
+            <img src="images/reschedule.png" alt="">
+        </button>
+        <button class="cancel-btn" onclick="cancelAppointment(this)">
+            <img src="images/trash.png" alt="">
+        </button>
+    </td>
+</tr>
+
+<tr>
+    <td>Cardiology</td>
+    <td>Lakshmi</td>
+    <td>Apr 18 2026</td>
+    <td>01:30 PM - 02:00 PM</td>
+    <td>Dr. Nair</td>
+    <td><span class="status completed">Completed</span></td>
+    <td class="no-action">—</td>
+</tr>
+
+<tr class="highlight">
+    <td>Eye Checkup</td>
+    <td>Self</td>
+    <td>Jun 12 2026</td>
+    <td>11:30 AM - 12:00 PM</td>
+    <td>Dr. Sharma</td>
+    <td><span class="status upcoming">Upcoming</span></td>
+    <td class="action-cell">
+        <button class="reschedule-btn" onclick="rescheduleAppointment(this)">
+            <img src="images/reschedule.png" alt="">
+        </button>
+        <button class="cancel-btn" onclick="cancelAppointment(this)">
+            <img src="images/trash.png" alt="">
+        </button>
+    </td>
+</tr>
+
+<tr>
+    <td>Orthopedics</td>
+    <td>Raman</td>
+    <td>May 16 2026</td>
+    <td>04:30 PM - 05:00 PM</td>
+    <td>Dr. Patel</td>
+    <td><span class="status cancelled">Cancelled</span></td>
+    <td class="no-action">—</td>
+</tr>
+
+<tr class="highlight">
+    <td>General Consultation</td>
+    <td>Self</td>
+    <td>Jun 15 2026</td>
+    <td>02:00 PM - 02:30 PM</td>
+    <td>Dr. Singh</td>
+    <td><span class="status upcoming">Upcoming</span></td>
+    <td class="action-cell">
+        <button class="reschedule-btn" onclick="rescheduleAppointment(this)">
+            <img src="images/reschedule.png" alt="">
+        </button>
+        <button class="cancel-btn" onclick="cancelAppointment(this)">
+            <img src="images/trash.png" alt="">
+        </button>
+    </td>
+</tr>
+<tr>
+    <td>Pediatrics</td>
+    <td>Ramesh</td>
+    <td>May 12 2026</td>
+    <td>09:30 AM - 10:00 AM</td>
+    <td>Dr. Sneha Kapoor</td>
+    <td><span class="status cancelled">Cancelled</span></td>
+    <td class="no-action">—</td>
+</tr>
+
+
+
+<tr>
+    <td>Neurology</td>
+    <td>Lakshmi</td>
+    <td>Jun 20 2026</td>
+    <td>03:00 PM - 03:30 PM</td>
+    <td>Dr. Iyer</td>
+    <td><span class="status rescheduled">Rescheduled</span></td>
+    <td class="action-cell">
+        <button class="reschedule-btn" onclick="rescheduleAppointment(this)">
+            <img src="images/reschedule.png" alt="">
+        </button>
+        <button class="cancel-btn" onclick="cancelAppointment(this)">
+            <img src="images/trash.png" alt="">
+        </button>
+    </td>
+</tr>
+<tr>
+    <td>Neurology</td>
+    <td>Raman</td>
+    <td>Apr 25 2026</td>
+    <td>11:30 AM - 12:00 PM</td>
+    <td>Dr. Meera Nair</td>
+    <td><span class="status cancelled">Cancelled</span></td>
+    <td class="no-action">—</td>
+</tr>
+<tr class="highlight">
+    <td>ENT Follow-up</td>
+    <td>Ramesh</td>
+    <td>May 02 2026</td>
+    <td>09:00 AM - 09:30 AM</td>
+    <td>Dr. Vaishali</td>
+    <td><span class="status completed">Completed</span></td>
+    <td class="no-action">—</td>
+</tr>
+               <tr id="noRecordsRow" style="display:none;">
+    <td colspan="7" class="no-records">
+        No matching records found.
+    </td>
+</tr>
             </tbody>
         </table>
 
@@ -208,8 +517,8 @@
                         <h3>Late cancellation fee may apply</h3>
 
                         <p>
-                            If cancelled within 24 hours,
-                            a fee of Rs 100 / $50 may apply.
+                            If cancelled after 24 hours,
+                            a cancellation fee may apply.
                         </p>
 
                     </div>

@@ -276,3 +276,214 @@ cancelModal.addEventListener("click", function (e) {
     }
 
 });
+
+
+
+
+
+// patient search functionality
+
+
+
+const customSelect =
+document.querySelector(".custom-select");
+
+const selected =
+document.getElementById("selectedPatient");
+
+const dropdown =
+document.getElementById("patientDropdown");
+
+const options =
+document.querySelectorAll(".patient-option");
+
+const selectedText =
+document.getElementById("selectedText");
+
+const search =
+document.getElementById("patientSearch");
+
+selected.onclick=()=>{
+
+    customSelect.classList.toggle("open");
+
+};
+
+options.forEach(option=>{
+
+    option.onclick=()=>{
+
+        options.forEach(o=>o.classList.remove("active"));
+
+        option.classList.add("active");
+
+        selectedText.innerText=
+        option.innerText;
+
+        customSelect.classList.remove("open");
+
+        filterAppointments(option.dataset.value);
+
+    };
+
+});
+
+document.addEventListener("click",(e)=>{
+
+    if(!customSelect.contains(e.target)){
+
+        customSelect.classList.remove("open");
+
+    }
+
+});
+
+search.addEventListener("keyup",()=>{
+
+    const value=
+    search.value.toLowerCase();
+
+    options.forEach(option=>{
+
+        option.style.display=
+
+        option.innerText
+        .toLowerCase()
+        .includes(value)
+
+        ? "flex"
+
+        : "none";
+
+    });
+
+});
+
+
+
+let selectedPatientFilter = "all";
+let selectedStatusFilter = "all";
+
+function filterAppointments(patient){
+
+    selectedPatientFilter = patient;
+
+    applyFilters();
+
+}
+
+
+
+
+
+
+
+
+
+
+const statusSelect =
+document.getElementById("statusSelect");
+
+const selectedStatus =
+document.getElementById("selectedStatus");
+
+const statusDropdown =
+document.getElementById("statusDropdown");
+
+const statusOptions =
+statusDropdown.querySelectorAll(".patient-option");
+
+const selectedStatusText =
+document.getElementById("selectedStatusText");
+
+
+
+selectedStatus.onclick = () => {
+
+    statusSelect.classList.toggle("open");
+
+};
+
+statusOptions.forEach(option => {
+
+    option.onclick = () => {
+
+        statusOptions.forEach(o =>
+            o.classList.remove("active")
+        );
+
+        option.classList.add("active");
+
+        selectedStatusText.innerText =
+            option.querySelector("span").innerText;
+
+        statusSelect.classList.remove("open");
+
+        filterStatus(option.dataset.value);
+
+    };
+
+});
+
+
+
+document.addEventListener("click", e => {
+
+    if (!statusSelect.contains(e.target)) {
+
+        statusSelect.classList.remove("open");
+
+    }
+
+});
+
+function filterStatus(status){
+
+    selectedStatusFilter = status;
+
+    applyFilters();
+
+}
+
+
+
+
+
+
+
+
+function applyFilters(){
+
+    const rows = document.querySelectorAll(".appointment-table tbody tr:not(#noRecordsRow)");
+    const noRecordsRow = document.getElementById("noRecordsRow");
+
+    let visibleRows = 0;
+
+    rows.forEach(row=>{
+
+        const patient = row.cells[1].innerText.trim();
+        const status = row.cells[5].innerText.trim();
+
+        const patientMatch =
+            selectedPatientFilter === "all" ||
+            patient === selectedPatientFilter;
+
+        const statusMatch =
+            selectedStatusFilter === "all" ||
+            status === selectedStatusFilter;
+
+        if(patientMatch && statusMatch){
+
+            row.style.display = "";
+            visibleRows++;
+
+        }else{
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+    noRecordsRow.style.display = visibleRows === 0 ? "" : "none";
+}
