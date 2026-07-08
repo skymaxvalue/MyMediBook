@@ -68,8 +68,6 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     this.minDate = this.toInputDate(this.doctor.fromDate);
     this.maxDate = this.toInputDate(this.doctor.toDate);
 
-
-    debugger
     if (this.updatesheduledpatient) {
 
       this.highlightDate = this.formatInputDate(
@@ -276,6 +274,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   }
 
   selectSlot(slot: any): void {
+    console.log(slot, "=====>")
     this.selectedSlot = slot;
   }
 
@@ -284,6 +283,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   }
 
   goToBooking(): void {
+    console.log(this.selectedSlot, this.selectedDate, this.doctor, "=====>")
 
     if (!this.selectedSlot) {
       alert('Please select a time slot');

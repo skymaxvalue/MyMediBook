@@ -127,6 +127,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.handleInsuranceChange();
     this.handleDobChange();
     this.InitialApiCall();
+    console.log(this.selectedSlot, this.selectedDate, this.doctor, "=====>")
   }
 
 
@@ -182,6 +183,9 @@ export class BookAppoimentFormComponent implements OnInit {
       visitPurpose: ['', [Validators.required, Validators.minLength(5)]],
       visitType: ['', Validators.required],
       otpMethod: ['', Validators.required],
+      createdBy: [this.loginUser.roleName],
+      associateRole: [this.doctor.department]
+
     });
   }
 
@@ -190,19 +194,19 @@ export class BookAppoimentFormComponent implements OnInit {
     this.store.dispatch(getRelationType())
     this.store.select(selectAgeType).subscribe((res: any) => {
       if (res) {
-        console.log(res.data)
+        // console.log(res.data)
         this.ageType = res.data
       }
     })
     this.store.select(selectRelationShipType).subscribe((res: any) => {
       if (res) {
-        console.log(res.data)
+        // console.log(res.data)
         this.relations = res.data
       }
     })
     this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
       if (res) {
-        console.log(res.data, "=======>")
+        // console.log(res.data, "=======>")
         this.ProfileList = res.data
 
       }

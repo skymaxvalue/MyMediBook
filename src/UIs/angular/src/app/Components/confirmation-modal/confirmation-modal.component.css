@@ -1,146 +1,798 @@
-/* Backdrop */
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
+
+
+/*==========================
+    OVERLAY
+==========================*/
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(15,23,42,.45);
+    backdrop-filter:blur(6px);
+
+    z-index:99999;
+   
+}
+.header-icon img,
+.rule-icon img,
+.policy-icon img,
+.question-circle img,
+.appointment-icon img,
+.reschedule-btn img,
+.cancel-btn img,
+
+.external-icon{
+
+    width:22px;
+    height:22px;
+    object-fit:contain;
+    display:block;
+}
+.close-modal{
+    position:absolute;
+    top:18px;
+    right:18px;
+
+    width:44px;
+    height:44px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:none;
+    border-radius:50%;
+
+    background:transparent;
+    cursor:pointer;
+
+    transition:.2s;
 }
 
-/* Modal */
-.custom-modal {
-    width: 480px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-    overflow: hidden;
-    animation: popup .25s ease;
-     z-index: 99999;
+.close-modal:hover{
+    background:#F1F5F9;
+}
+.close-modal img{
+    width:28px;
+    height:28px;
+
+    object-fit:contain;
+    display:block;
 }
 
-/* Header */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 24px;
-    border-bottom: 1px solid #ececec;
+.modal-overlay.show{
+    display:flex;
 }
 
-.modal-header h2 {
-    margin: 0;
-    font-size: 26px;
-    font-weight: 600;
-    color: #222;
-    font-family: "Segoe UI", sans-serif;
+/*==========================
+    MODAL
+==========================*/
+
+.cancel-modal{
+
+    width:1120px;
+    max-width:92vw;
+
+    background:#FFFFFF;
+
+    border-radius:24px;
+
+    padding:36px 40px;
+
+    display:flex;
+
+    gap:36px;
+
+    position:relative;
+
+    box-shadow:
+    0 30px 80px rgba(15,23,42,.18);
 }
 
-/* Body */
-.modal-body {
-    padding: 24px;
+/*==========================
+    COLUMNS
+==========================*/
+
+.modal-left{
+
+    flex:1;
+
+    padding-right:10px;
 }
 
-.modal-body p {
-    margin: 0;
-    font-size: 17px;
-    line-height: 1.6;
-    color: #555;
-    font-family: "Segoe UI", sans-serif;
+.modal-right{
+
+    flex:1;
+
+    border-left:1px solid #E5E7EB;
+
+    padding-left:40px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
 }
 
-/* Footer */
-.modal-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 16px 24px;
-    border-top: 1px solid #ececec;
+/*==========================
+    HEADER
+==========================*/
+
+.modal-header{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:18px;
+
+    margin-bottom:24px;
 }
 
-/* Buttons */
-.btn {
-    min-width: 120px;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    transition: .25s;
+.header-icon{
+
+    width:72px;
+    height:72px;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    flex-shrink:0;
 }
 
-.btn-secondary {
-    background: #f3f4f6;
-    color: #333;
+.warning-circle{
+
+    background:#FFF7ED;
+
+    color:#F59E0B;
+
+    font-size:34px;
 }
 
-.btn-secondary:hover {
-    background: #e4e6eb;
+.modal-header h2{
+
+    margin:0;
+
+    font-size:32px;
+
+    line-height:1.2;
+
+    color:#0F172A;
+
+    font-weight:700;
 }
 
-.btn-danger {
-    background: #dc3545;
-    color: #fff;
+.modal-subtitle{
+
+    margin-top:8px;
+
+    color:#64748B;
+
+    font-size:18px;
+
+    line-height:1.5;
 }
 
-.btn-danger:hover {
-    background: #bb2d3b;
+/*==========================
+    POLICY CARD
+==========================*/
+
+.policy-card{
+
+    background:#F8FAFC;
+
+    border:1px solid #EEF2F7;
+
+    border-radius:20px;
+
+    padding:12px 28px;
 }
 
-/* Close Button */
-.close-btn {
-    border: none;
-    background: transparent;
-    font-size: 28px;
-    color: #666;
-    cursor: pointer;
-    transition: .2s;
+/*==========================
+    RULES
+==========================*/
+
+.rule-item{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:flex-start;
+
+    padding:22px 0;
 }
 
-.close-btn:hover {
-    color: #dc3545;
+.rule-divider{
+
+    height:1px;
+
+    background:#E5E7EB;
 }
 
-.custom-modal.closing {
-    animation: popupClose .25s ease forwards;
+.rule-icon{
+
+    width:56px;
+    height:56px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:26px;
+
+    flex-shrink:0;
 }
 
-.modal-backdrop.closing {
-    animation: fadeOut .25s ease forwards;
+.success-icon{
+
+    background:#DDF5D9;
+
+    color:#16A34A;
 }
 
-/* Animation */
-@keyframes popup {
-    from {
-        opacity: 0;
-        transform: scale(.9);
+.warning-icon{
+
+    background:#FFF3E2;
+
+    color:#F59E0B;
+}
+
+.danger-icon{
+
+    background:#FFE3E3;
+
+    color:#EF4444;
+}
+
+.rule-content h3{
+
+    margin:0;
+
+    font-size:18px;
+
+    color:#0F172A;
+}
+
+.rule-content p{
+
+    margin-top:8px;
+
+    font-size:15px;
+
+    line-height:1.7;
+
+    color:#64748B;
+}
+
+/*==========================
+    POLICY LINK
+==========================*/
+
+.policy-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:22px 0 8px;
+
+    text-decoration:none;
+
+    color:#2563EB;
+
+    font-size:16px;
+
+    font-weight:600;
+}
+
+.policy-link:hover{
+
+    color:#1D4ED8;
+}
+
+.policy-icon{
+
+    width:48px;
+    height:48px;
+
+    border-radius:12px;
+
+    background:#EEF4FF;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+/*==========================
+    RIGHT SIDE
+==========================*/
+
+.question-circle{
+
+    width:84px;
+    height:84px;
+
+    border-radius:50%;
+
+    background:#EEF4FF;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#2563EB;
+
+    font-size:54px;
+
+    margin-bottom:24px;
+}
+
+.confirm-title{
+
+    margin:0;
+
+    max-width:430px;
+
+    text-align:center;
+
+    font-size:24px;
+
+    line-height:1.4;
+
+    color:#0F172A;
+}
+
+.confirm-text{
+
+    margin-top:10px;
+
+    margin-bottom:24px;
+
+    color:#64748B;
+
+    font-size:16px;
+}
+
+/*==========================
+    APPOINTMENT CARD
+==========================*/
+
+.appointment-card{
+
+    width:100%;
+
+    background:#F8FAFC;
+
+    border:1px solid #D7E2FF;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    margin-top:10px;
+}
+
+.appointment-top,
+.appointment-bottom{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:flex-start;
+}
+
+.appointment-divider{
+
+    height:1px;
+
+    background:#E5E7EB;
+
+    margin:20px 0;
+}
+
+.appointment-icon{
+
+    width:46px;
+    height:46px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#EEF4FF;
+
+    border-radius:12px;
+
+    font-size:22px;
+}
+
+#modalDoctor{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#0F172A;
+}
+
+.doctor-role{
+
+    font-size:15px;
+
+    color:#64748B;
+}
+
+.appointment-date{
+
+    font-size:16px;
+
+    font-weight:600;
+}
+
+.appointment-department{
+
+    margin-top:6px;
+
+    font-size:15px;
+
+    color:#64748B;
+}
+
+/*==========================
+    BUTTONS
+==========================*/
+
+.modal-buttons{
+
+    width:100%;
+
+    display:flex;
+
+    gap:16px;
+
+    margin-top:28px;
+}
+
+.keep-btn,
+.delete-btn{
+
+    flex:1;
+
+    height:54px;
+
+    border-radius:12px;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.keep-btn{
+
+    background:#FFFFFF;
+
+    border:1px solid #CBD5E1;
+
+    color:#0F172A;
+}
+
+.keep-btn:hover{
+
+    background:#F8FAFC;
+}
+
+.delete-btn{
+
+    border:none;
+
+    background:#EF4444;
+
+    color:#FFFFFF;
+}
+
+.delete-btn:hover{
+
+    background:#DC2626;
+}
+
+
+.modal-right{
+    padding-left:32px;
+}
+
+.modal-left{
+    padding-right:6px;
+}
+
+
+
+
+
+
+
+.header-icon{
+    width:60px;
+    height:60px;
+    font-size:30px;
+}
+
+.modal-header{
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+    font-size:28px;
+}
+
+.modal-subtitle{
+    font-size:16px;
+}
+
+
+
+
+
+
+
+.policy-card{
+    padding:8px 20px;
+    border-radius:18px;
+}
+
+
+
+
+
+
+.rule-item{
+    gap:16px;
+    padding:18px 0;
+}
+
+.rule-icon{
+    width:48px;
+    height:48px;
+    font-size:22px;
+}
+
+.rule-content h3{
+    font-size:17px;
+}
+
+.rule-content p{
+    font-size:15px;
+    line-height:1.55;
+}
+
+
+
+
+
+
+
+
+.question-circle{
+    width:68px;
+    height:68px;
+    font-size:44px;
+    margin-bottom:20px;
+}
+
+.confirm-title{
+    max-width:380px;
+    font-size:22px;
+}
+
+.confirm-text{
+    font-size:15px;
+    margin-bottom:20px;
+}
+
+
+
+
+
+
+
+
+
+.appointment-card{
+    padding:18px;
+    border-radius:16px;
+}
+
+.appointment-icon{
+    width:42px;
+    height:42px;
+    font-size:20px;
+}
+
+#modalDoctor{
+    font-size:18px;
+}
+
+.appointment-date{
+    font-size:15px;
+}
+
+.appointment-department{
+    font-size:14px;
+}
+
+
+
+
+
+
+
+
+
+.modal-buttons{
+    margin-top:22px;
+    gap:14px;
+}
+
+.keep-btn,
+.delete-btn{
+    height:48px;
+    font-size:16px;
+    border-radius:10px;
+}
+
+
+
+
+
+
+
+@media (max-width:768px){
+
+    .cancel-modal{
+
+        width:95%;
+        max-width:420px;
+
+        display:flex;
+        flex-direction:column;
+
+        padding:20px;
+
+        gap:22px;
+
+        border-radius:18px;
+
+        max-height:90vh;
+        overflow-y:auto;
     }
 
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-@keyframes popupClose {
-    from {
-        transform: scale(1);
-        opacity: 1;
+    .modal-left{
+
+        order:2;
+        padding:0;
     }
 
-    to {
-        transform: scale(.9);
-        opacity: 0;
+    .modal-right{
+
+        order:1;
+
+        border:none;
+
+        padding:0;
+
+        align-items:center;
     }
+
+    .modal-header{
+
+        gap:14px;
+    }
+
+    .modal-header h2{
+
+        font-size:24px;
+    }
+
+    .modal-subtitle{
+
+        font-size:15px;
+    }
+
+    .question-circle{
+
+        width:58px;
+        height:58px;
+
+        font-size:36px;
+
+        margin-bottom:16px;
+    }
+
+    .confirm-title{
+
+        font-size:22px;
+
+        max-width:100%;
+    }
+
+    .appointment-card{
+
+        width:100%;
+
+        padding:16px;
+    }
+
+    .modal-buttons{
+
+        flex-direction:column;
+
+        gap:12px;
+    }
+
+    .keep-btn,
+    .delete-btn{
+
+        width:100%;
+        height:48px;
+    }
+
+    .rule-item{
+
+        padding:16px 0;
+    }
+
+    .rule-icon{
+
+        width:44px;
+        height:44px;
+
+        font-size:20px;
+    }
+
 }
 
-@keyframes fadeOut {
-    from {
-        background: rgba(0,0,0,.45);
-    }
 
-    to {
-        background: rgba(0,0,0,0);
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -314,6 +314,10 @@ h2{
     letter-spacing: .3px;
     transition: all .3s ease;
 }
+.action-buttons{
+  display:flex;
+  gap:10px;
+}
 .status-scheduled {
     background: linear-gradient(135deg, #EEF4FF, #DCE9FF);
     color: #2457E0;
@@ -341,6 +345,74 @@ h2{
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+
+
+
+.reschedule-btn,
+.cancel-btn{
+    width:40px;
+    height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0 auto;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.header-icon img,
+.rule-icon img,
+.policy-icon img,
+.question-circle img,
+.appointment-icon img,
+.reschedule-btn img,
+.cancel-btn img,
+
+.external-icon{
+
+    width:22px;
+    height:22px;
+    object-fit:contain;
+    display:block;
+}
+
+.reschedule-btn:hover{
+    background:#d9e8ff;
+}
+
+.cancel-btn:hover{
+    background:#ffdada;
+}
+
+button:disabled {
+     opacity:.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+/* .disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    pointer-events:none;
+} */
+
+
+
+
+
+.no-action{
+    text-align: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: #555;
+    vertical-align: middle;
+}
+
+
+
+.cancelled{
+    background:#dc3545;
 }
 
 .new-btn {

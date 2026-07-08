@@ -230,13 +230,20 @@ export class MyAppointmentComponent implements OnInit {
 
     }
 
-    this.confirmationService.open({
-      title: 'Reschedule Appointment',
-      message,
-      confirmText: 'Yes, Reschedule',
-      cancelText: 'No'
-    });
+    // this.confirmationService.open({
+    //   title: 'Reschedule Appointment',
+    //   message,
+    //   confirmText: 'Yes, Reschedule',
+    //   cancelText: 'No'
+    // });
 
+    this.confirmationService.open({
+      title: 'Cancel Appointment',
+      message: 'Are you sure you want to cancel this appointment?',
+      confirmText: 'Cancel Appointment',
+      cancelText: 'Keep Appointment',
+      data: appointment
+    });
     this.confirmationService.response$
       .pipe(take(1))
       .subscribe((confirmed) => {

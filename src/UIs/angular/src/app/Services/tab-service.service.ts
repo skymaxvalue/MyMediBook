@@ -9,7 +9,9 @@ export class TabServiceService {
   activeTab$ = this.activeTabSubject.asObservable();
 
   private selectedDoctorSubject = new BehaviorSubject<any>(null);
+  private selectedTimeSlote = new BehaviorSubject<any>(null);
   selectedDoctor$ = this.selectedDoctorSubject.asObservable();
+  selectedTimeSlot$ = this.selectedTimeSlote.asObservable();
 
   private reschedulePatientSubject = new BehaviorSubject<any>(null);
   reschedulePatient$ = this.reschedulePatientSubject.asObservable();

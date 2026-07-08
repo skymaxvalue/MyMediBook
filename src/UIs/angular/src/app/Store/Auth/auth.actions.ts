@@ -49,6 +49,24 @@ export const registerPatientFailure = createAction(
     props<{ error: string }>()
 );
 
+// Refresh Token Actions
+export const refreshToken = createAction(
+    '[Auth] Refresh Token',
+    props<{ refreshToken: string }>()
+);
+
+export const refreshTokenSuccess = createAction(
+    '[Auth] Refresh Token Success',
+    props<{
+        accessToken: string;
+        refreshToken: string;
+    }>()
+);
+
+export const refreshTokenFailure = createAction(
+    '[Auth] Refresh Token Failure',
+    props<{ error: string }>()
+);
 
 
 // Get Security Questions Actions

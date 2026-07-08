@@ -4,7 +4,7 @@ import {
   HttpHeaders
 } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { Observable, Subscription, timer } from 'rxjs';
 import { PatientRegister, LoginRequest } from '../Models/Patient-Model';
 import { environment } from '../../environments/environment';
 import { APIEndpoints } from '../Utility/EndPointsOfAPI'
@@ -13,6 +13,7 @@ import { APIEndpoints } from '../Utility/EndPointsOfAPI'
   providedIn: "root",
 })
 export class AuthService {
+  private refreshSubscription?: Subscription;
 
 
   // API Base URL
@@ -26,7 +27,7 @@ export class AuthService {
   loginPatient(data: LoginRequest): Observable<any> {
 
     return this.http.post<any>(
-      `${this.apiUrl}${APIEndpoints.LOGIN}`,
+      `${this.apiUrl}${APIEndpoints.PATIENT_LOGIN}`,
       data
     );
   }
@@ -47,6 +48,41 @@ export class AuthService {
       patient
     );
   }
+
+  startRefreshTimer() {
+
+    // Previous timer cancel kara
+    this.stopRefreshTimer();
+
+    // 55 minutes
+    const refreshTime = 55 * 60 * 1000;
+
+    this.refreshSubscription = timer(refreshTime, refreshTime).subscribe(() => {
+      this.callRefreshToken();
+    });
+  }
+
+  stopRefreshTimer() {
+    this.refreshSubscription?.unsubscribe();
+  }
+
+  callRefreshToken(): Observable<any> {
+
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    return this.http.post<any>(
+      `${this.apiUrl}${APIEndpoints.REFRESH_TOKEN}`,
+      {
+        refreshToken
+      }
+    );
+
+  }
+  logout() {
+    localStorage.clear();
+
+  }
+
 
   // getQuestion API
   getSecurityQuestions(): Observable<any> {

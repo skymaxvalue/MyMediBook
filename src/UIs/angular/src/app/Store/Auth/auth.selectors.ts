@@ -15,6 +15,13 @@ export const selectLoginPatient =
         state => state.loginPatient
     );
 
+
+export const selectRefreshToken =
+    createSelector(
+        selectAuthState,
+        state => state.refreshToken
+    );
+
 // Requested otp
 export const selectRequestedOTP =
     createSelector(
