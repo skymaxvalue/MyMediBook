@@ -457,7 +457,7 @@ body {
 
 
     .hospital img{
-        content:url("/images/hospital2.png");
+        content:url("/assets/images/hospital2.png") !important;
         width:clamp(50px, 8vw, 95px);
         margin-left:30px;
         margin-right:0;
@@ -465,7 +465,7 @@ body {
     }
 
     .hospital-icon{
-        content:url("/images/hospital2.png");
+        content:url("/assets/images/hospital2.png") !important;
         position:absolute;
         right:30px;
         top:135px;

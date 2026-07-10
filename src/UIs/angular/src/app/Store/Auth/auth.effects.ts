@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../Services/auth.service';
 import * as AuthActions from './auth.actions';
-import { catchError, mergeMap, map, of } from 'rxjs';
+import { catchError, mergeMap, map, of, exhaustMap, tap } from 'rxjs';
 
 
 @Injectable()
@@ -19,12 +19,28 @@ export class AuthEffects {
         this.actions$.pipe(
             ofType(AuthActions.login),
             mergeMap((action) =>
-                this.authService.loginPatient({ username: action.username, password: action.password }).pipe(
+                this.authService.loginPatient({
+                    username: action.username,
+                    password: action.password
+                }).pipe(
+
+                    tap((response: any) => {
+
+                        localStorage.setItem('token', response.accessToken);
+                        localStorage.setItem('refreshToken', response.refreshToken);
+                        localStorage.setItem('user', JSON.stringify(response.data));
+
+                        this.authService.startRefreshTimer();
+
+                    }),
+
                     map((response: any) =>
                         AuthActions.loginSuccess({ patient: response })
                     ),
                     catchError((error) =>
-                        of(AuthActions.loginFailure({ error: error.message || 'Login Failed' }))
+                        of(AuthActions.loginFailure({
+                            error: error.message || 'Login Failed'
+                        }))
                     )
 
                 )
@@ -51,6 +67,34 @@ export class AuthEffects {
 
         )
     )
+
+    refreshToken$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.refreshToken),
+
+            mergeMap(() =>
+                this.authService.callRefreshToken().pipe(
+
+                    map((response: any) =>
+                        AuthActions.refreshTokenSuccess({
+                            accessToken: response.accessToken,
+                            refreshToken: response.refreshToken
+                        })
+                    ),
+
+                    catchError((error) =>
+                        of(
+                            AuthActions.refreshTokenFailure({
+                                error: error.message || 'Refresh Token Failed'
+                            })
+                        )
+                    )
+
+                )
+            )
+
+        )
+    );
 
     //  Register Effect
 

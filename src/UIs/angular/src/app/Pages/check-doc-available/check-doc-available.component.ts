@@ -69,7 +69,6 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     this.maxDate = this.toInputDate(this.doctor.toDate);
 
 
-    debugger
     if (this.updatesheduledpatient) {
 
       this.highlightDate = this.formatInputDate(

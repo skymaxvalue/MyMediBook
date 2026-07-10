@@ -23,6 +23,26 @@ export const authReducer = createReducer(
         error: action.error,
     })),
 
+    on(AuthActions.refreshToken, (state) => ({
+        ...state,
+        isLoading: true,
+    })),
+
+    on(AuthActions.refreshTokenSuccess, (state, { accessToken, refreshToken }) => ({
+
+        ...state,
+
+        accessToken,
+
+        refreshToken
+
+    })),
+
+    on(AuthActions.refreshTokenFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    })),
 
     // Request OTP
     on(AuthActions.requestOTP, (state) => ({

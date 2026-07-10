@@ -1,4 +1,214 @@
-<div class="modal-backdrop" *ngIf="isVisible">
+@if(isVisible){
+<div id="cancelModal" class="modal-overlay">
+
+    <div class="cancel-modal">
+
+        <button class="close-modal" (click)="closeCancelModal()">
+            <img src="assets/images/close.png" alt="Close">
+        </button>
+
+        <!-- LEFT PANEL -->
+
+        <div class="modal-left">
+
+            <div class="modal-header">
+
+                <div class="header-icon warning-circle">
+                    <img src="assets/images/warning.png" alt="Warning">
+                </div>
+
+                <div>
+
+                    <h2>Cancel Appointment</h2>
+
+                    <p class="modal-subtitle">
+                        Please review before you proceed.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="policy-card">
+
+                <div class="rule-item">
+
+                    <div class="rule-icon success-icon">
+                        <img src="assets/images/check.png" alt="">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Free cancellation</h3>
+
+                        <p>
+                            Up to 24 hours before your appointment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon warning-icon">
+                        <img src="assets/images/clock.png" alt="Clock">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Late cancellation fee may apply</h3>
+
+                        <p>
+                            If cancelled within 24 hours,
+                            a fee of Rs 100 / $50 may apply.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <div class="rule-item">
+
+                    <div class="rule-icon danger-icon">
+                        <img src="assets/images/close-circle.png" alt="Cannot cancel">
+                    </div>
+
+                    <div class="rule-content">
+
+                        <h3>Cannot cancel after start time</h3>
+
+                        <p>
+                            Once the appointment has started,
+                            cancellation is not allowed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="rule-divider"></div>
+
+                <a href="cancellation-policy.html" class="policy-link" target="_blank">
+
+                    <div class="policy-icon">
+                        <img src="assets/images/icon-reports.png" alt="">
+                    </div>
+
+                    <span>View full cancellation policy</span>
+
+                    <img class="external-icon" src="assets/images/arrow.png" alt="Open">
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="modal-right">
+
+            <div class="question-circle">
+                <img src="assets/images/question.png" alt="question">
+            </div>
+
+            <h2 class="confirm-title">
+                Are you sure you want to
+                cancel this appointment?
+            </h2>
+
+            <p class="confirm-text">
+                This action cannot be undone.
+            </p>
+
+            <div class="appointment-card">
+
+                <div class="appointment-top">
+
+                    <div class="appointment-icon">
+                        <img src="assets/images/dr-icon.png" alt="">
+                    </div>
+
+                    <div>
+
+                        <h3 id="modalDoctor">
+                            Dr. John Doe
+                        </h3>
+
+                        <span class="doctor-role">
+                            Physician
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="appointment-divider"></div>
+
+                <div class="appointment-bottom">
+
+                    <div class="appointment-icon">
+                        <img src="assets/images/calendar2.png" alt="">
+                    </div>
+
+                    <div>
+
+                        <div class="appointment-date">
+
+                            <span id="modalDate">
+                                Wed, 07 May 2026
+                            </span>
+
+                            &nbsp; • &nbsp;
+
+                            <span id="modalTime">
+                                10:30 AM
+                            </span>
+
+                        </div>
+
+                        <div class="appointment-department">
+
+                            Date & Booked Time Slot
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-buttons">
+
+                <button class="keep-btn" onclick="closeCancelModal()">
+
+                    Keep Appointment
+
+                </button>
+
+                <button class="delete-btn" onclick="confirmCancel()">
+
+                    Cancel Appointment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+<!-- <div class="modal-backdrop" *ngIf="isVisible">
+
     <div class="custom-modal">
 
         <div class="modal-header">
@@ -24,4 +234,4 @@
         </div>
 
     </div>
-</div>
+</div> -->

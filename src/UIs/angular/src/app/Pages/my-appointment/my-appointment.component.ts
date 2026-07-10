@@ -17,6 +17,7 @@ import { AppState } from "src/app/Store/app.state";
 import { cancelMyAppointment, getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
 import { selectCanceledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
 import { TabServiceService } from "src/app/Services/tab-service.service";
+import { HostListener } from '@angular/core';
 
 
 interface FamilyMember {
@@ -24,6 +25,7 @@ interface FamilyMember {
   name: string;
   relation: string;
 }
+
 @Component({
   selector: "app-my-appointment",
   standalone: true,
@@ -34,7 +36,11 @@ interface FamilyMember {
 
 
 export class MyAppointmentComponent implements OnInit {
+  isPatientDropdownOpen = false;
 
+  selectedPatientName = signal<any>('All Patients');
+
+  searchPatient = '';
   tableData = signal<any[]>([]);
   relativeList = signal<any[]>([]);
   @Input()
@@ -51,13 +57,28 @@ export class MyAppointmentComponent implements OnInit {
   sortDirection = signal<'asc' | 'desc'>('asc');
 
   searchText = '';
-
+  patientSearch = signal('');
   selectedMember = signal<any | null>(null);
   currentPage = signal(1);
   pageSize = signal(5);
+  selectedStatus = signal('');
+  statusList = [
+    { label: 'All Status', value: '' },
+    { label: 'Scheduled', value: 'Scheduled' },
+    { label: 'Upcoming', value: 'Upcoming' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Cancelled', value: 'Cancelled' }
+  ];
+  isStatusDropdownOpen = false;
+  selectedStatusName = signal('All Status');
   user = JSON.parse(localStorage.getItem('user') || 'null')
 
+  @HostListener('document:click')
+  closeDropdown() {
+    this.isPatientDropdownOpen = false;
+    this.isStatusDropdownOpen = false;
 
+  }
   constructor(private confirmationService: ModalSeviceService, private store: Store<AppState>, private tabService: TabServiceService) {
 
   }
@@ -65,6 +86,90 @@ export class MyAppointmentComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.relativeList, this.tableData, "=======>")
   }
+
+  filteredPatients = computed(() => {
+
+    const search = this.patientSearch().trim().toLowerCase();
+
+    if (!search) {
+      return this.relativeList();
+    }
+
+    return this.relativeList().filter(patient =>
+      patient.fullName.toLowerCase().includes(search) ||
+      patient.relationTypeName.toLowerCase().includes(search)
+    );
+
+  });
+  toggleStatusDropdown() {
+    this.isStatusDropdownOpen = !this.isStatusDropdownOpen;
+  }
+
+  showAllStatus() {
+    this.selectedStatus.set('');
+    this.selectedStatusName.set('All Status');
+    this.currentPage.set(1);
+    this.isStatusDropdownOpen = false;
+  }
+
+  selectStatus(status: any) {
+    this.selectedStatus.set(status.value);
+    this.selectedStatusName.set(status.label);
+    this.currentPage.set(1);
+    this.isStatusDropdownOpen = false;
+  }
+  togglePatientDropdown() {
+    this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
+  }
+  showAllPatients() {
+
+    this.selectedPatientName.set('All Patients');
+
+    this.isPatientDropdownOpen = false;
+
+  }
+  selectPatient(patient: any) {
+    this.selectedPatientName.set(patient.fullName);
+    this.isPatientDropdownOpen = false;
+  }
+  filteredAppointments = computed(() => {
+
+    let data = [...this.tableData()];
+
+    // Patient filter
+    const member = this.selectedMember();
+
+    if (member) {
+      data = data.filter(x => x.profileId === member.profileId);
+    }
+
+    // Status filter
+    if (this.selectedStatus()) {
+      data = data.filter(
+        x =>
+          (x.appointmentStatus || '').toLowerCase() ===
+          this.selectedStatus().toLowerCase()
+      );
+    }
+
+    // Sorting
+    const column = this.sortColumn();
+    const direction = this.sortDirection();
+
+    if (column) {
+      data = data.sort((a: any, b: any) => {
+
+        const valueA = (a[column] ?? '').toString().toLowerCase();
+        const valueB = (b[column] ?? '').toString().toLowerCase();
+
+        return direction === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      });
+    }
+
+    return data;
+  });
 
   paginatedAppointments = computed(() => {
     const data = this.filteredAppointments();
@@ -116,74 +221,7 @@ export class MyAppointmentComponent implements OnInit {
     }
 
   }
-  clearSelection() {
-    this.selectedMember.set(null);
-  }
 
-  filteredAppointments = computed(() => {
-
-    const member = this.selectedMember();
-
-    if (!member) {
-      return this.sortedTableData(); // Show all appointments
-    }
-
-    return this.sortedTableData().filter(
-      item => item.patientName === member.fullName
-    );
-
-  });
-
-  filteredFamilyMembers = computed(() => {
-
-    const search = this.searchText.toLowerCase();
-
-    if (!search) {
-      return this.relativeList();
-    }
-
-    return this.relativeList().filter(member =>
-      member.fullName.toLowerCase().includes(search)
-    );
-
-  });
-  selectMember(member: any) {
-    this.selectedMember.set(member);
-  }
-  sortedTableData = computed(() => {
-
-    let data = [...this.tableData()];
-
-    const member = this.selectedMember();
-
-    if (member) {
-      data = data.filter(
-        item => item.patientName === member.fullName
-      );
-    }
-
-    const column = this.sortColumn();
-    const direction = this.sortDirection();
-
-    if (!column) {
-      return data;
-    }
-
-    return data.sort((a: any, b: any) => {
-
-      const valueA =
-        a[column]?.toString().toLowerCase() || '';
-
-      const valueB =
-        b[column]?.toString().toLowerCase() || '';
-
-      return direction === 'asc'
-        ? valueA.localeCompare(valueB)
-        : valueB.localeCompare(valueA);
-
-    });
-
-  });
 
   rescheduleAppointment(appointment: any) {
     const appointmentDateTime = new Date(appointment.appointmentDate);
@@ -231,10 +269,11 @@ export class MyAppointmentComponent implements OnInit {
     }
 
     this.confirmationService.open({
-      title: 'Reschedule Appointment',
-      message,
-      confirmText: 'Yes, Reschedule',
-      cancelText: 'No'
+      title: 'Cancel Appointment',
+      message: 'Are you sure you want to cancel this appointment?',
+      confirmText: 'Cancel Appointment',
+      cancelText: 'Keep Appointment',
+      data: appointment
     });
 
     this.confirmationService.response$

@@ -33,4 +33,7 @@ export class ConfirmationModalComponent {
     this.isVisible = false;
     this.confirmationService.confirm(false);
   }
+  closeCancelModal() {
+    this.isVisible = false
+  }
 }
