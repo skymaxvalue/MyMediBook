@@ -49,14 +49,14 @@ export class DashboardComponent implements OnInit {
         return;
       }
 
-      debugger
+
       this.updatesheduledpatient = patient;
 
       const speciality = this.specialities.find(
         s => s.category === patient.speciality
       );
 
-      debugger
+
       this.selectedDoctor = speciality?.doctors.find(
         (d: any) =>
           d.associateId === patient.associateId &&
