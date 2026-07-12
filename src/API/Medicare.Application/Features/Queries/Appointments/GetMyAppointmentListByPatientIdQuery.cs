@@ -3,6 +3,6 @@ using Medicare.Application.Models.Appointment;
 
 namespace Medicare.Application.Features.Queries.Appointments
 {
-    public record GetMyAppointmentListQuery(int PatientId)
+    public record GetMyAppointmentListByPatientIdQuery(int PatientId)
        : IRequest<List<PatientAppointmentModel>>;
 }
