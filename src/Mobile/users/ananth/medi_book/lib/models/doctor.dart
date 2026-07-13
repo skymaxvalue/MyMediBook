@@ -1,7 +1,7 @@
 
 
 class Doctor {
-  final int doctorId;
+  final int associateId;
   final String name;
   final String qualification;
   final String department;
@@ -9,7 +9,7 @@ class Doctor {
   final String specialty;
 
   Doctor({
-    required this.doctorId,
+    required this.associateId,
     required this.name,
     required this.qualification,
     required this.department,
@@ -19,7 +19,8 @@ class Doctor {
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
-      doctorId: json['doctorId'] as int? ?? 0,
+      // API field is 'associateId'; fall back to legacy 'doctorId' key just in case
+      associateId:   (json['associateId'] ?? json['doctorId']) as int? ?? 0,
       name:          json['name']          as String,
       qualification: json['qualification'] as String,
       department:    json['department']    as String,

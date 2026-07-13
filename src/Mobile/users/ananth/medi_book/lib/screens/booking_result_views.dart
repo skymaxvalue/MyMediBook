@@ -36,8 +36,14 @@ class BookingSuccessView extends StatelessWidget {
               child: const Icon(Icons.check, color: Colors.white, size: 18),
             ),
             const SizedBox(width: 12),
-            const Text("Doctor's Appointment Confirmed!",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFF2E7D32))),
+            const Expanded(
+              child: Text(
+                "Doctor's Appointment Confirmed!",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFF2E7D32)),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ),
           ]),
         ),
         Expanded(
@@ -52,18 +58,29 @@ class BookingSuccessView extends StatelessWidget {
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
                 ),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Column(children: [
-                    Container(
-                      width: 60, height: 60,
-                      decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
-                      child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(doctor.name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.textDark)),
-                    Text(doctor.qualification.toUpperCase(), style: const TextStyle(fontSize: 10, color: AppColors.textGrey)),
-                    Text(doctor.department, style: const TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.w600)),
-                  ]),
-                  const SizedBox(width: 16),
+                  // Left: doctor avatar + constrained info
+                  SizedBox(
+                    width: 78,
+                    child: Column(children: [
+                      Container(
+                        width: 58, height: 58,
+                        decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
+                        child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(doctor.name,
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textDark),
+                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 2),
+                      Text(doctor.qualification.toUpperCase(),
+                        style: const TextStyle(fontSize: 9, color: AppColors.textGrey),
+                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                      Text(doctor.department,
+                        style: const TextStyle(fontSize: 9, color: AppColors.primary, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                    ]),
+                  ),
+                  const SizedBox(width: 12),
+                  // Middle: summary rows
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     SummaryRow(icon: Icons.person_outline, label: 'Patient Name', value: patientName),
                     const SizedBox(height: 10),
@@ -72,7 +89,8 @@ class BookingSuccessView extends StatelessWidget {
                     SummaryRow(icon: Icons.access_time, label: 'Time', value: selectedTime),
                   ])),
                   const SizedBox(width: 8),
-                  Icon(Icons.handshake_outlined, size: 56, color: AppColors.primary.withOpacity(0.6)),
+                  // Right: decorative icon
+                  Icon(Icons.handshake_outlined, size: 46, color: AppColors.primary.withOpacity(0.6)),
                 ]),
               ),
               const SizedBox(height: 20),
@@ -169,8 +187,14 @@ class BookingFailureView extends StatelessWidget {
               child: const Icon(Icons.close, color: Colors.white, size: 18),
             ),
             const SizedBox(width: 12),
-            const Expanded(child: Text("Doctor's Appointment Confirmation Failed",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFFB71C1C)))),
+            const Expanded(
+              child: Text(
+                "Doctor's Appointment Confirmation Failed",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFFB71C1C)),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ),
           ]),
         ),
         Expanded(
@@ -185,18 +209,29 @@ class BookingFailureView extends StatelessWidget {
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
                 ),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Column(children: [
-                    Container(
-                      width: 60, height: 60,
-                      decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
-                      child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(doctor.name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.textDark)),
-                    Text(doctor.qualification.toUpperCase(), style: const TextStyle(fontSize: 10, color: AppColors.textGrey)),
-                    Text(doctor.department, style: const TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.w600)),
-                  ]),
-                  const SizedBox(width: 16),
+                  // Left: doctor avatar + constrained info
+                  SizedBox(
+                    width: 78,
+                    child: Column(children: [
+                      Container(
+                        width: 58, height: 58,
+                        decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
+                        child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(doctor.name,
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textDark),
+                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 2),
+                      Text(doctor.qualification.toUpperCase(),
+                        style: const TextStyle(fontSize: 9, color: AppColors.textGrey),
+                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                      Text(doctor.department,
+                        style: const TextStyle(fontSize: 9, color: AppColors.primary, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                    ]),
+                  ),
+                  const SizedBox(width: 12),
+                  // Middle: summary rows
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     SummaryRow(icon: Icons.person_outline, label: 'Patient Name', value: patientName),
                     const SizedBox(height: 10),
@@ -205,9 +240,10 @@ class BookingFailureView extends StatelessWidget {
                     SummaryRow(icon: Icons.access_time, label: 'Time', value: selectedTime),
                   ])),
                   const SizedBox(width: 8),
+                  // Right: decorative error icon
                   Stack(alignment: Alignment.bottomRight, children: [
-                    Icon(Icons.lock_outline, size: 52, color: Colors.grey.withOpacity(0.5)),
-                    const Icon(Icons.error, size: 22, color: Color(0xFFF44336)),
+                    Icon(Icons.lock_outline, size: 46, color: Colors.grey.withOpacity(0.5)),
+                    const Icon(Icons.error, size: 20, color: Color(0xFFF44336)),
                   ]),
                 ]),
               ),
