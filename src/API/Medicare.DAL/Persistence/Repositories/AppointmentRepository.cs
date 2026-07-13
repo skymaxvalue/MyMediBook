@@ -4,6 +4,7 @@ using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.Patient;
 using Medicare.DAL.Persistence.Dapper;
 using System.Data;
 
@@ -20,9 +21,9 @@ namespace Medicare.DAL.Persistence.Repositories
             _errorLog = errorLog;
         }
 
-        public async Task<List<PatientAppointmentModel>> GetMyAppointmentListAsync(int patientId)
+        public async Task<List<PatientAppointmentModel>> GetMyAppointmentListByPatientIdAsync(int patientId)
         {
-            string procName = "USP_GetMyAppointmentList";
+            string procName = "USP_GetMyAppointmentListByPatientId";
             List<PatientAppointmentModel> returnData = new List<PatientAppointmentModel>();
             try
             {
@@ -209,6 +210,30 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("AssociateRole", model.AssociateRole);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<List<PatientProfileModel>> GetMyAppointmentListByAssociateIdAsync(int associateId)
+        {
+            string procName = "USP_GetMyAppointmentListByAssociateId";
+            List<PatientProfileModel> returnData = new List<PatientProfileModel>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AssociateId", associateId);
+
+                returnData = await _context.QueryStoredProcListAsync<PatientProfileModel>(procName, param);
             }
             catch (Exception ex)
             {

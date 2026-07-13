@@ -17,7 +17,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
 
         public async Task<AppointmentDetailModel> Handle(GetAppointmentByIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _appointmentRepository.GetAppointmentById(request.AppointmentId);
+            var result = await _appointmentRepository.GetAppointmentById(request.appointmentId);
             return new AppointmentDetailModel
             {
                 AppointmentId = result.AppointmentId,

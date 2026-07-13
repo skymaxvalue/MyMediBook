@@ -3,6 +3,7 @@ using Medicare.Application.Features.Commands.Appointment;
 using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,23 +56,33 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new GetAvailableAppointmentsQuery(associateId));
             return HandleListResponse(response);
         }
-
+        
         [HttpGet]
-        [Route("GetMyAppointmentList/{patientId}")]
-        public async Task<IActionResult> GetMyAppointmentList(int patientId)
+        [Route("GetAppointmentById/{appointmentId}")]
+        public async Task<IActionResult> GetAppointmentById([FromRoute] int appointmentId)
+        {
+            AppointmentDetailModel response = new AppointmentDetailModel();
+            response = await _mediator.Send(new GetAppointmentByIdQuery(appointmentId));
+            return HandleResponse(response);
+        }
+        
+        [HttpGet]
+        [Route("Patient/GetMyAppointmentList/{patientId}")]
+        public async Task<IActionResult> GetMyAppointmentListByPatientId(int patientId)
         {
             List<PatientAppointmentModel> response = new List<PatientAppointmentModel>();
-            response = await _mediator.Send(new GetMyAppointmentListQuery(patientId));
+            response = await _mediator.Send(new GetMyAppointmentListByPatientIdQuery(patientId));
             return HandleListResponse(response);
         }
 
         [HttpGet]
-        [Route("GetAppointmentById/{AppointmentId}")]
-        public async Task<IActionResult> GetAppointmentById([FromRoute] int AppointmentId)
+        [Route("Doctor/GetMyAppointmentList/{associateId}")]
+        public async Task<IActionResult> GetMyAppointmentListByAssociateId(int associateId)
         {
-            AppointmentDetailModel response = new AppointmentDetailModel();
-            response = await _mediator.Send(new GetAppointmentByIdQuery(AppointmentId));
-            return HandleResponse(response);
+            List<PatientProfileModel> response = new List<PatientProfileModel>();
+            response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
+            return HandleListResponse(response);
         }
-    } 
+
+    }
 }
