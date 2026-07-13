@@ -7,14 +7,10 @@ import '../services/api_service.dart';
 import 'home_screen.dart';
 import 'reset_password_screen.dart';
 
-
 enum OtpFlowType { login, forgotPassword }
 
 class OtpScreen extends StatefulWidget {
-  
   final String? contactInfo;
-
-
   final OtpFlowType flowType;
 
   const OtpScreen({
@@ -101,13 +97,11 @@ class _OtpScreenState extends State<OtpScreen> {
 
     if (result['success'] == true) {
       if (widget.flowType == OtpFlowType.forgotPassword) {
-    
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
         );
       } else {
-  
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -144,34 +138,37 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
-    final screenW = mq.size.width;
-    final screenH = mq.size.height;
+    final mq       = MediaQuery.of(context);
+    final screenW  = mq.size.width;
+    final screenH  = mq.size.height;
+    final isTiny   = screenH < 520;
+    final isSmall  = screenH < 640;
+    final isNarrow = screenW < 360;
 
-    final cardPadH = screenW < 360 ? 16.0 : 24.0;
-    final cardPadV = screenH < 640 ? 20.0 : (screenH < 750 ? 28.0 : 36.0);
+    // ── Fluid sizing ────────────────────────────────────────────────────────
+    final hPad    = isNarrow ? 14.0 : 20.0;
+    final vPad    = isTiny ? 12.0 : (isSmall ? 18.0 : 28.0);
+    final gapLg   = isTiny ? 12.0 : (isSmall ? 16.0 : 24.0);
+    final gapMd   = isTiny ?  8.0 : (isSmall ? 12.0 : 16.0);
+    final gapSm   = isTiny ?  6.0 : (isSmall ?  9.0 : 12.0);
+    final titleSz = isNarrow ? 17.0 : (isTiny ? 19.0 : 21.0);
+    final subSz   = isNarrow ? 11.0 : 12.5;
+    final btnSz   = isNarrow ? 14.0 : 15.5;
+    final btnH    = isTiny ? 42.0 : (isSmall ? 44.0 : 48.0);
+    final timerSz = isNarrow ? 10.5 : 12.0;
 
-    final cardInnerW = screenW - 32 - (cardPadH * 2);
-    final rawBox = (cardInnerW - (3 * 12)) / 4;
-    final boxSize = rawBox.clamp(42.0, 64.0);
-    final boxFontSize = (boxSize * 0.38).clamp(15.0, 22.0);
+    // OTP box: 4 boxes with 6px horizontal margin each, inside card inner width
+    final availW    = screenW - 32 - (hPad * 2);
+    final rawBox    = (availW - (3 * 12)) / 4;
+    final boxSz     = rawBox.clamp(38.0, 62.0);
+    final boxFontSz = (boxSz * 0.38).clamp(14.0, 22.0);
 
-    final titleSize = screenW < 360 ? 19.0 : 22.0;
-    final subSize = screenW < 360 ? 11.5 : 13.0;
-    final btnSize = screenW < 360 ? 14.0 : 15.5;
-    final timerSize = screenW < 360 ? 11.0 : 12.0;
-
-    final gapLg = screenH < 640 ? 14.0 : (screenH < 750 ? 18.0 : 24.0);
-    final gapMd = screenH < 640 ? 10.0 : 14.0;
-    final gapSm = screenH < 640 ? 8.0 : 12.0;
-    final btnH = screenH < 640 ? 44.0 : 48.0;
-
-    // Subtitle: show contact info if in forgot-password flow
+    // Subtitle copy
     final subtitle = widget.flowType == OtpFlowType.forgotPassword &&
             widget.contactInfo != null &&
             widget.contactInfo!.isNotEmpty
         ? 'Please enter the OTP sent to\n${widget.contactInfo}'
-        : 'Please enter the OTP sent to your registered\nmobile number / e-mail account.';
+        : 'Enter the OTP sent to your\nregistered mobile / e-mail.';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -179,16 +176,14 @@ class _OtpScreenState extends State<OtpScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: gapLg),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: vPad),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(
-                  horizontal: cardPadH,
-                  vertical: cardPadV,
-                ),
+                    horizontal: hPad, vertical: vPad),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -204,57 +199,58 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    
+                    // ── Title ─────────────────────────────────────────────
                     Text(
                       'OTP VERIFICATION',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: titleSize,
+                        fontSize: titleSz,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
                       ),
                     ),
                     SizedBox(height: gapSm),
 
+                    // ── Subtitle ──────────────────────────────────────────
                     Text(
                       subtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: AppColors.textGrey,
-                        fontSize: subSize,
+                        fontSize: subSz,
                         height: 1.5,
                       ),
                     ),
                     SizedBox(height: gapLg),
 
+                    // ── OTP boxes ─────────────────────────────────────────
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
-                        4,
-                        (i) => _buildOtpBox(i, boxSize, boxFontSize),
-                      ),
+                          4, (i) => _buildOtpBox(i, boxSz, boxFontSz)),
                     ),
                     SizedBox(height: gapMd),
 
+                    // ── Timer + Resend ────────────────────────────────────
                     screenW < 340
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _timerWidget(timerSize),
+                              _timerWidget(timerSz),
                               const SizedBox(height: 4),
-                              _resendWidget(timerSize),
+                              _resendWidget(timerSz),
                             ],
                           )
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _timerWidget(timerSize),
-                              _resendWidget(timerSize),
+                              _timerWidget(timerSz),
+                              _resendWidget(timerSz),
                             ],
                           ),
-
                     SizedBox(height: gapLg),
 
+                    // ── Verify button ─────────────────────────────────────
                     SizedBox(
                       width: double.infinity,
                       height: btnH,
@@ -276,18 +272,15 @@ class _OtpScreenState extends State<OtpScreen> {
                           onPressed: _isLoading ? null : _handleVerify,
                           child: _isLoading
                               ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
+                                  width: 20, height: 20,
                                   child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
+                                    color: Colors.white, strokeWidth: 2),
                                 )
                               : Text(
                                   'Verify',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: btnSize,
+                                    fontSize: btnSz,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -296,6 +289,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     SizedBox(height: gapSm),
 
+                    // ── Cancel button ─────────────────────────────────────
                     SizedBox(
                       width: double.infinity,
                       height: btnH,
@@ -310,7 +304,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           'Cancel',
-                          style: TextStyle(fontSize: btnSize),
+                          style: TextStyle(fontSize: btnSz),
                         ),
                       ),
                     ),
@@ -323,6 +317,8 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
     );
   }
+
+  // ── helpers ──────────────────────────────────────────────────────────────
 
   Widget _timerWidget(double fontSize) => Text(
         'Remaining: ${_secondsLeft.toString().padLeft(2, '0')}s',

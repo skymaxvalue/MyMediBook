@@ -26,8 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailCtrl = TextEditingController();
   String? _gender;
 
-
-  Map<String, dynamic>? _phoneCountry; // holds {countryId, countryName, phoneCode}
+  Map<String, dynamic>? _phoneCountry; // holds the selected country map (shape depends on API)
   List<Map<String, dynamic>> _allCountries = [];
 
   final _step2Key = GlobalKey<FormState>();
@@ -67,14 +66,70 @@ class _SignupScreenState extends State<SignupScreen> {
     _loadCountries();
   }
 
+  // ──────────────────────────────────────────────────────────────────────
+  //  Country / dial-code helpers
+  //
+  //  The live API's field names for country ISO code and dial code are not
+  //  guaranteed to match what we originally assumed ('countryCode',
+  //  'phoneCode'). These helpers try several common variants so the screen
+  //  keeps working even if the API uses different key names, and they log
+  //  a sample so you can see the real shape in the console.
+  // ──────────────────────────────────────────────────────────────────────
+
+  String? _countryIsoCode(Map<String, dynamic> c) {
+    return c['countryCode'] as String? ??
+        c['isoCode'] as String? ??
+        c['code'] as String? ??
+        c['countryShortCode'] as String?;
+  }
+
+  String _countryDialCode(Map<String, dynamic>? c) {
+    if (c == null) return '+91';
+    final raw = c['phoneCode'] ??
+        c['dialCode'] ??
+        c['callingCode'] ??
+        c['phoneCountryCode'];
+    if (raw == null) return '+91';
+    final str = raw.toString().trim();
+    if (str.isEmpty) return '+91';
+    return str.startsWith('+') ? str : '+$str';
+  }
+
+  String _countryName(Map<String, dynamic> c) {
+    return (c['countryName'] ?? c['name'] ?? c['country'] ?? '').toString();
+  }
+
+  /// Strips a leading dial code from the typed phone number, in case it
+  /// ended up there (e.g. via paste or autofill), so we never send the
+  /// dial code twice (once in phoneCountryCode, once baked into phoneNumber).
+  String _sanitizedPhoneNumber() {
+    var digits = _phoneCtrl.text.trim();
+    final dialDigits = _countryDialCode(_phoneCountry).replaceAll('+', '');
+    if (dialDigits.isNotEmpty &&
+        digits.startsWith(dialDigits) &&
+        digits.length > dialDigits.length) {
+      digits = digits.substring(dialDigits.length);
+    }
+    return digits;
+  }
+
   Future<void> _loadCountries() async {
     final countries = await ApiService.fetchCountries();
+
+    if (countries.isNotEmpty) {
+      // TEMP DEBUG: confirms the real field names returned by the API.
+      // Remove once you've verified the keys match what the helpers above expect.
+      debugPrint('Raw country sample: ${countries.first}');
+    } else {
+      debugPrint('fetchCountries() returned an empty list.');
+    }
+
     if (mounted) {
       setState(() {
         _allCountries = countries;
-        // Default phone country to India
+        // Default phone country to India, falling back to the first entry.
         _phoneCountry = countries.firstWhere(
-          (c) => c['countryCode'] == 'IN',
+          (c) => _countryIsoCode(c) == 'IN',
           orElse: () => countries.isNotEmpty ? countries.first : {},
         );
       });
@@ -167,25 +222,36 @@ class _SignupScreenState extends State<SignupScreen> {
     final sqId = ApiService.securityQuestionIds[_securityQuestion] ?? 0;
 
     final patientData = {
-      'firstName':          _firstNameCtrl.text,
-      'middleName':         _middleNameCtrl.text,
-      'lastName':           _lastNameCtrl.text,
-      'dob':                _dob?.toIso8601String(),
-      'phone':              (_phoneCountry?['phoneCode'] ?? '') + _phoneCtrl.text,
-      'email':              _emailCtrl.text,
-      'gender':             _gender,
-      'address1':           _addr1Ctrl.text,
-      'address2':           _addr2Ctrl.text,
-      'cityId':             _selectedCity?['cityId']       ?? 0,
-      'zip':                _zipCtrl.text,
-      'stateId':            _selectedState?['stateId']     ?? 0,
-      'countryId':          _selectedCountry?['countryId'] ?? 0,
-      'userId':             _userIdCtrl.text,
-      'password':           _passwordCtrl.text,
-      'securityQuestion':   _securityQuestion,
+      'firstName': _firstNameCtrl.text,
+      'middleName': _middleNameCtrl.text,
+      'lastName': _lastNameCtrl.text,
+
+      'dateOfBirth': _dob?.toIso8601String(),
+
+      // Use the resilient helpers so the dial code is always correct and
+      // never duplicated inside phoneNumber.
+      'phoneCountryCode': _countryDialCode(_phoneCountry),
+      'phoneNumber': _sanitizedPhoneNumber(),
+
+      'email': _emailCtrl.text,
+      'gender': _gender,
+
+      'addressLine1': _addr1Ctrl.text,
+      'addressLine2': _addr2Ctrl.text,
+
+      'cityId': _selectedCity?['cityId'] ?? 0,
+      'zipCode': _zipCtrl.text,
+      'stateId': _selectedState?['stateId'] ?? 0,
+      'countryId': _selectedCountry?['countryId'] ?? 0,
+
+      'username': _userIdCtrl.text,
+      'password': _passwordCtrl.text,
+
       'securityQuestionId': sqId,
-      'securityAnswer':     _answerCtrl.text,
+      'securityAnswer': _answerCtrl.text,
     };
+
+    debugPrint('Submitting patientData: $patientData');
 
     final result = await ApiService.registerPatient(patientData: patientData);
     setState(() => _isLoading = false);
@@ -222,8 +288,6 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +363,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-
   Widget _buildStep1({Key? key}) {
     return Form(
       key: _step1Key,
@@ -374,7 +437,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '${_phoneCountry?['phoneCode'] ?? '+?'} ',
+                              '${_countryDialCode(_phoneCountry)} ',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
@@ -461,10 +524,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: ValueListenableBuilder<String>(
                     valueListenable: search,
                     builder: (_, q, __) {
-                      final filtered = _allCountries.where((c) =>
-                        (c['countryName'] as String).toLowerCase().contains(q) ||
-                        (c['phoneCode']   as String).contains(q),
-                      ).toList();
+                      final filtered = _allCountries.where((c) {
+                        final name = _countryName(c).toLowerCase();
+                        final dial = _countryDialCode(c);
+                        return name.contains(q) || dial.contains(q);
+                      }).toList();
                       return ListView.builder(
                         controller: scrollCtrl,
                         itemCount: filtered.length,
@@ -475,10 +539,10 @@ class _SignupScreenState extends State<SignupScreen> {
                           return ListTile(
                             selected: isSelected,
                             selectedTileColor: AppColors.primary.withOpacity(0.08),
-                            leading: Text(c['phoneCode'] as String,
+                            leading: Text(_countryDialCode(c),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 14)),
-                            title: Text(c['countryName'] as String),
+                            title: Text(_countryName(c)),
                             trailing: isSelected
                                 ? Icon(Icons.check, color: AppColors.primary)
                                 : null,
@@ -499,8 +563,6 @@ class _SignupScreenState extends State<SignupScreen> {
       },
     );
   }
-
-
 
   Widget _buildStep2({Key? key}) {
     return Form(
@@ -544,7 +606,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     isExpanded: true,
                     items: _allCountries.map((c) => DropdownMenuItem(
                       value: c,
-                      child: Text(c['countryName'] as String),
+                      child: Text(_countryName(c)),
                     )).toList(),
                     onChanged: (v) { if (v != null) _onCountrySelected(v); },
                     validator: (v) => v == null ? 'Required' : null,
@@ -614,8 +676,6 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
-
- 
 
   Widget _buildStep3({Key? key}) {
     return Form(
@@ -695,7 +755,6 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
-
 
   Widget _buildCurrentStep({required Key key}) {
     switch (_currentStep) {

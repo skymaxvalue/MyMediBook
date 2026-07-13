@@ -303,26 +303,29 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: Checkbox(
-                              value: _rememberMe,
-                              activeColor: AppColors.primary,
-                              onChanged: (v) =>
-                                  setState(() => _rememberMe = v ?? false),
+                      Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: Checkbox(
+                                value: _rememberMe,
+                                activeColor: AppColors.primary,
+                                onChanged: (v) =>
+                                    setState(() => _rememberMe = v ?? false),
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Remember me',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Remember me',
+                              style: TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
-                  
                       GestureDetector(
                         onTap: _handleForgotPassword,
                         child: const Text(

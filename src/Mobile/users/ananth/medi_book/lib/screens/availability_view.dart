@@ -46,7 +46,7 @@ Future<void> _loadSlots() async {
   try {
     final data = await ApiService.fetchDoctorAvailability(
       doctorName: widget.doctor.name,
-      doctorId: widget.doctor.doctorId, // ← add this
+      associateId: widget.doctor.associateId,
     );
     if (!mounted) return;
     setState(() { _slots = data; _loading = false; });
@@ -120,16 +120,20 @@ Future<void> _loadSlots() async {
                 child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
               ),
               const SizedBox(width: 12),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Text(widget.doctor.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textDark)),
-                  const SizedBox(width: 6),
-                  Text(widget.doctor.qualification.toUpperCase(),
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textGrey)),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Expanded(
+                      child: Text(widget.doctor.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textDark), overflow: TextOverflow.ellipsis),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(widget.doctor.qualification.toUpperCase(),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textGrey)),
+                  ]),
+                  const SizedBox(height: 3),
+                  Text(widget.doctor.department, style: const TextStyle(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600)),
                 ]),
-                const SizedBox(height: 3),
-                Text(widget.doctor.department, style: const TextStyle(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600)),
-              ]),
+              ),
             ]),
           ),
         ),
@@ -316,7 +320,7 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
   List<TimeSlot>? _timeSlots;
   bool _loading = true;
   String? _error;
-  String? _selectedTime;
+  TimeSlot? _selectedSlot;   // the full TimeSlot object (carries slotId)
   bool _showForm = false;
 
   @override
@@ -325,7 +329,20 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
   Future<void> _loadSlots() async {
     setState(() { _loading = true; _error = null; });
     try {
-      final data = await ApiService.fetchTimeSlots(doctorName: widget.doctor.name, date: widget.slot.date);
+      final associateId = widget.doctor.associateId;
+      List<TimeSlot> data;
+      if (associateId != null) {
+        data = await ApiService.fetchTimeSlotsForDate(
+          associateId: associateId,
+          dateStr: widget.slot.date,
+        );
+      } else {
+        // No associateId — fall back is handled inside the service
+        data = await ApiService.fetchTimeSlotsForDate(
+          associateId: 0,
+          dateStr: widget.slot.date,
+        );
+      }
       if (!mounted) return;
       setState(() { _timeSlots = data; _loading = false; });
     } catch (e) {
@@ -336,11 +353,12 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
 
   @override
   Widget build(BuildContext context) {
-    if (_showForm && _selectedTime != null) {
+    if (_showForm && _selectedSlot != null) {
       return BookingFormView(
         doctor: widget.doctor,
         slot: widget.slot,
-        selectedTime: _selectedTime!,
+        selectedTime: _selectedSlot!.label,
+        selectedSlotId: _selectedSlot!.slotId,
         onBack: () => setState(() => _showForm = false),
         onFullComplete: widget.onFullComplete,
       );
@@ -349,6 +367,7 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── header ──────────────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(8, 14, 16, 12),
           child: Row(children: [
@@ -364,6 +383,7 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textDark)),
           ]),
         ),
+        // ── doctor card ─────────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: Container(
@@ -382,7 +402,7 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
               const SizedBox(width: 12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Text(widget.doctor.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textDark)),
+                  Flexible(child: Text(widget.doctor.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.textDark), overflow: TextOverflow.ellipsis)),
                   const SizedBox(width: 6),
                   Text(widget.doctor.qualification.toUpperCase(),
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textGrey)),
@@ -393,6 +413,7 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
             ]),
           ),
         ),
+        // ── selected date banner ─────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
           child: Container(
@@ -409,6 +430,7 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
             ]),
           ),
         ),
+        // ── time-slot grid (takes all remaining space, scrollable) ──────────
         Expanded(
           child: _loading
               ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
@@ -424,49 +446,69 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
                     ]))
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4, mainAxisSpacing: 10, crossAxisSpacing: 8, childAspectRatio: 2.4,
-                        ),
-                        itemCount: _timeSlots!.length,
-                        itemBuilder: (_, i) {
-                          final ts = _timeSlots![i];
-                          return _TimeSlotChip(
-                            timeSlot: ts,
-                            isSelected: ts.time == _selectedTime,
-                            onTap: ts.isBooked ? null : () => setState(() => _selectedTime = ts.time),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final cols = constraints.maxWidth < 300
+                              ? 3
+                              : constraints.maxWidth < 400
+                                  ? 4
+                                  : constraints.maxWidth < 600
+                                      ? 5
+                                      : 6;
+                          return GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: cols,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 8,
+                              childAspectRatio: 2.4,
+                            ),
+                            itemCount: _timeSlots!.length,
+                            itemBuilder: (_, i) {
+                              final ts = _timeSlots![i];
+                              return _TimeSlotChip(
+                                timeSlot: ts,
+                                isSelected: _selectedSlot != null &&
+                                  _selectedSlot!.slotId == ts.slotId &&
+                                  _selectedSlot!.time == ts.time,
+                                onTap: ts.isBooked ? null : () => setState(() => _selectedSlot = ts),
+                              );
+                            },
                           );
                         },
                       ),
                     ),
         ),
+        // ── legend – always visible below the grid ──────────────────────────
         if (!_loading && _error == null)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
             child: Row(children: const [
               _LegendDot(color: AppColors.primary, label: 'Available'),
               SizedBox(width: 16),
               _LegendDot(color: Color(0xFFBDBDBD), label: 'Already Booked'),
             ]),
           ),
+        // ── Book Appointment button – always visible at the bottom ──────────
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _selectedTime == null ? null : () => setState(() => _showForm = true),
+              onPressed: _selectedSlot == null ? null : () => setState(() => _showForm = true),
               icon: const Icon(Icons.calendar_month, size: 18),
               label: const Text('Book Appointment', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 disabledBackgroundColor: AppColors.primary.withOpacity(0.4),
-                foregroundColor: Colors.white, disabledForegroundColor: Colors.white70,
+                foregroundColor: Colors.white,
+                disabledForegroundColor: Colors.white70,
                 elevation: 0,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
             ),
           ),
+
         ),
       ],
     );
@@ -485,9 +527,9 @@ class _TimeSlotChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final booked = timeSlot.isBooked;
-    final Color bgColor = booked ? const Color(0xFFF5F5F5) : isSelected ? AppColors.primary : AppColors.cardBg;
+    final Color bgColor     = booked ? const Color(0xFFF5F5F5) : isSelected ? AppColors.primary : AppColors.cardBg;
     final Color borderColor = booked ? const Color(0xFFE0E0E0) : isSelected ? AppColors.primary : AppColors.primary.withOpacity(0.5);
-    final Color textColor = booked ? const Color(0xFFBDBDBD) : isSelected ? Colors.white : AppColors.primary;
+    final Color textColor   = booked ? const Color(0xFFBDBDBD) : isSelected ? Colors.white : AppColors.primary;
 
     return GestureDetector(
       onTap: onTap,
@@ -495,7 +537,11 @@ class _TimeSlotChip extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(8), border: Border.all(color: borderColor)),
         alignment: Alignment.center,
-        child: Text(timeSlot.time, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: textColor)),
+        child: Text(
+          timeSlot.label,   // shows "09:00 AM – 09:30 AM"
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: textColor),
+        ),
       ),
     );
   }
