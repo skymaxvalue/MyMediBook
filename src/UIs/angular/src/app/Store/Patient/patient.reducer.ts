@@ -55,5 +55,21 @@ export const patientReducer = createReducer(
         isLoading: false,
         error: action.error,
     })),
+    on(PatientActions.getAllMecineDetailByPatientID, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(PatientActions.getAllMecineDetailByPatientIDSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        patientMedicalData: action.patientMedicalData
+    })),
+
+    on(PatientActions.getAllMecineDetailByPatientIDFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
 
 )

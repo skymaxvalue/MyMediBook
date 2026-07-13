@@ -6,7 +6,7 @@ export const APIEndpoints = {
     REFRESH_TOKEN: "Auth/RefreshToken",
     GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
     GET_SPECIALITIES: "Doctor/GetDoctorList",
-    GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/GetMyAppointmentList/",
+    GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/Patient/GetMyAppointmentList/",
     GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
     GET_SECURITY_QUESTIONS: "Master/GetSecurityQuestionList",
     GET_COUNTRIES: "Location/GetCountriesList",
@@ -29,6 +29,77 @@ export const APIEndpoints = {
     GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
     GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
     CANCEL_MY_APPOINTMENT: "Appointment/CancelAppointmentById",
-    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentSchedule"
+    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentSchedule",
+    GET_MEDICINE_OF_PATIENT: "RxOrder/GetRxOrderByPatientProfileId"
 
+}
+
+export const cancelRules = [
+    {
+        type: 'success',
+        title: 'Free cancellation',
+        description: 'Up to 24 hours before your appointment.'
+    },
+    {
+        type: 'warning',
+        title: 'Late cancellation fee may apply',
+        description: 'If cancelled within 24 hours, a cancellation fee may apply.'
+    },
+    {
+        type: 'danger',
+        title: 'Cannot cancel after start time',
+        description: 'Once the appointment has started, cancellation is not allowed.'
+    }
+];
+
+export const rescheduleRules = [
+    {
+        type: 'success',
+        title: 'Free rescheduling',
+        description: 'Up to 24 hours before your appointment.'
+    },
+    {
+        type: 'warning',
+        title: 'Late reschedule fee may apply',
+        description: 'If requested within 24 hours, a fee may apply.'
+    },
+    {
+        type: 'info',
+        title: 'Maximum of 2 reschedules',
+        description: 'Each appointment can only be rescheduled twice.'
+    },
+    {
+        type: 'danger',
+        title: 'Cannot reschedule after start time',
+        description: 'Once the appointment has started, rescheduling is not allowed.'
+    }
+];
+
+export interface ConfirmationModalConfig {
+    type: 'cancel' | 'reschedule';
+
+
+    title: string;
+    subTitle: string;
+
+    confirmTitle: string;
+    confirmText: string;
+
+    confirmButton: string;
+    cancelButton: string;
+
+    appointment: any;
+
+    rules: ModalRule[];
+    disableConfirm?: boolean;
+    infoMessage?: string
+}
+
+export interface ModalRule {
+    title: string;
+    description: string;
+    type: 'success' | 'warning' | 'danger' | 'info';
+}
+export interface ModalResult {
+    confirmed: boolean;
 }

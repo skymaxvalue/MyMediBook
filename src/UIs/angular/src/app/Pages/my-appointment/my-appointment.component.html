@@ -163,42 +163,9 @@
     <div class="table-header">
 
       <div class="search-box">
-        <ng-select [items]="relativeList()" bindLabel="fullName" placeholder="Select family member..."
-          [searchable]="true" [clearable]="true" [ngModel]="selectedMember()"
-          (ngModelChange)="selectedMember.set($event)">
 
-          <ng-template ng-label-tmp let-item="item">
-            {{ item.fullName }}
-          </ng-template>
-
-          <ng-template ng-option-tmp let-item="item">
-            <div class="member-card" [class.active]="selectedMember()?.profileId === item.profileId">
-
-              <div class="member-avatar">
-                {{ item.fullName.charAt(0) }}
-              </div>
-
-              <div>
-                <h4>{{ item.fullName }}</h4>
-                <span>{{ item.relationTypeName }}</span>
-              </div>
-
-            </div>
-          </ng-template>
-
-        </ng-select>
-
-        <div>
-          @if(selectedMember()){
-
-          <div class="category">
-            Appointments Of {{ selectedMember().fullName }}
-          </div>
-          }
-
-        </div>
         <button class="new-btn" (click)="goToSpecialities()">
-          📅 New Appointment
+          <img src="/assets/images/calendar.png" alt=""> New Appointment
         </button>
 
       </div>
@@ -243,6 +210,8 @@
         </thead>
 
         <tbody>
+          @if (paginatedAppointments().length > 0) {
+
           @for (item of paginatedAppointments(); track $index) {
           <tr [class.highlight]="item.relationTypeName === 'Self'">
             <td>
@@ -283,6 +252,39 @@
               </button>
             </td>
 
+          </tr>
+
+          }
+          }
+          @else{
+          <tr>
+            <td colspan="7" class="no-data-row">
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  📅
+                </div>
+
+                <h3>No appointments found</h3>
+
+                <p>
+                  We couldn't find any appointments matching your selected filters.
+                </p>
+
+                <div class="empty-actions">
+
+                  <button class="clear-filter-btn" (click)="showAllPatients(); showAllStatus()">
+                    Clear Filters
+                  </button>
+
+                  <button class="book-btn" (click)="goToSpecialities()">
+                    Book Appointment
+                  </button>
+
+                </div>
+
+              </div>
+            </td>
           </tr>
 
           }

@@ -6,65 +6,7 @@
 
 /* Card */
 
-.appointment-card {
-  border-radius: 24px;
-  background: #fff;
-}
-
 /* Table */
 
-.custom-table thead {
-  background: #f1f2f6;
-}
 
-.custom-table thead th {
-  border-bottom: none;
-  padding: 22px 20px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #111827;
-}
 
-.custom-table tbody td {
-  padding: 22px 20px;
-  font-size: 17px;
-  vertical-align: middle;
-  border-top: 1px solid #ececec;
-}
-
-/* Status Badges */
-
-.completed-badge {
-  background: #21b57a;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.upcoming-badge {
-  background: #3f5bd8;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-/* Button */
-
-.appointment-btn {
-  background: #3f5bd8;
-  color: white;
-  border: none;
-  border-radius: 18px;
-  padding: 18px 34px;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.appointment-btn:hover {
-  background: #3149b8;
-  color: white;
-}

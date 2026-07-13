@@ -182,6 +182,8 @@ export class BookAppoimentFormComponent implements OnInit {
       visitPurpose: ['', [Validators.required, Validators.minLength(5)]],
       visitType: ['', Validators.required],
       otpMethod: ['', Validators.required],
+      createdBy: [this.loginUser.roleName],
+      associateRole: [this.doctor.department]
     });
   }
 

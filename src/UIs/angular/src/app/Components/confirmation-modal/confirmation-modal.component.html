@@ -13,16 +13,19 @@
 
             <div class="modal-header">
 
-                <div class="header-icon warning-circle">
-                    <img src="assets/images/warning.png" alt="Warning">
-                </div>
+                <div class="header-icon"
+                    [ngClass]="{ 'warning-circle': config.type === 'cancel', 'reschedule-circle': config.type === 'reschedule' }">
+                    <img [src]="config.type === 'cancel' ? 'assets/images/warning.png' : 'assets/images/reschedule.png'"
+                        alt="">
 
+
+                </div>
                 <div>
 
-                    <h2>Cancel Appointment</h2>
+                    <h2>{{ config.title }}</h2>
 
                     <p class="modal-subtitle">
-                        Please review before you proceed.
+                        {{ config.subTitle }}
                     </p>
 
                 </div>
@@ -31,77 +34,54 @@
 
             <div class="policy-card">
 
+                @for(rule of config.rules; track $index){
+
                 <div class="rule-item">
 
-                    <div class="rule-icon success-icon">
-                        <img src="assets/images/check.png" alt="">
+                    <div class="rule-icon" [ngClass]="{
+                    'success-icon': rule.type==='success',
+                    'warning-icon': rule.type==='warning',
+                    'danger-icon': rule.type==='danger',
+                    'info-icon': rule.type==='info'
+                }">
+
+                        <img [src]="
+                        rule.type==='success'
+                        ? 'assets/images/check.png'
+                        : rule.type==='warning'
+                        ? 'assets/images/clock.png'
+                        : rule.type==='danger'
+                        ? 'assets/images/close-circle.png'
+                        : 'assets/images/reschedule.png'
+                    ">
+
                     </div>
 
                     <div class="rule-content">
 
-                        <h3>Free cancellation</h3>
+                        <h3>{{ rule.title }}</h3>
 
-                        <p>
-                            Up to 24 hours before your appointment.
-                        </p>
+                        <p>{{ rule.description }}</p>
 
                     </div>
 
                 </div>
 
+                @if(!$last){
                 <div class="rule-divider"></div>
 
-                <div class="rule-item">
+                }
 
-                    <div class="rule-icon warning-icon">
-                        <img src="assets/images/clock.png" alt="Clock">
-                    </div>
-
-                    <div class="rule-content">
-
-                        <h3>Late cancellation fee may apply</h3>
-
-                        <p>
-                            If cancelled within 24 hours,
-                            a fee of Rs 100 / $50 may apply.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="rule-divider"></div>
-
-                <div class="rule-item">
-
-                    <div class="rule-icon danger-icon">
-                        <img src="assets/images/close-circle.png" alt="Cannot cancel">
-                    </div>
-
-                    <div class="rule-content">
-
-                        <h3>Cannot cancel after start time</h3>
-
-                        <p>
-                            Once the appointment has started,
-                            cancellation is not allowed.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="rule-divider"></div>
-
+                }
                 <a href="cancellation-policy.html" class="policy-link" target="_blank">
 
                     <div class="policy-icon">
-                        <img src="assets/images/icon-reports.png" alt="">
+                        <img src="/assets/images/icon-reports.png" alt="">
                     </div>
 
                     <span>View full cancellation policy</span>
 
-                    <img class="external-icon" src="assets/images/arrow.png" alt="Open">
+                    <img class="external-icon" src="/assets/images/arrow.png" alt="Open">
                 </a>
 
             </div>
@@ -117,12 +97,11 @@
             </div>
 
             <h2 class="confirm-title">
-                Are you sure you want to
-                cancel this appointment?
+                {{ config.confirmTitle }}
             </h2>
 
             <p class="confirm-text">
-                This action cannot be undone.
+                {{ config.confirmText }}
             </p>
 
             <div class="appointment-card">
@@ -136,11 +115,11 @@
                     <div>
 
                         <h3 id="modalDoctor">
-                            Dr. John Doe
+                            {{ config.appointment.doctorName }}
                         </h3>
 
                         <span class="doctor-role">
-                            Physician
+                            {{ config.appointment.speciality }}
                         </span>
 
                     </div>
@@ -160,20 +139,27 @@
                         <div class="appointment-date">
 
                             <span id="modalDate">
-                                Wed, 07 May 2026
+                                {{ config.appointment.appointmentDate | date:'EEE, dd MMM yyyy' }}
                             </span>
 
                             &nbsp; • &nbsp;
 
                             <span id="modalTime">
-                                10:30 AM
+                                {{ config.appointment.slotStartTime }}
+
+                                @if(config.type === 'reschedule'){
+                                &nbsp;-&nbsp;{{ config.appointment.slotEndTime }}
+                                }
                             </span>
 
                         </div>
 
                         <div class="appointment-department">
 
-                            Date & Booked Time Slot
+                            {{ config.type === 'cancel'
+                            ? 'Date & Booked Time Slot'
+                            : 'Current Appointment'
+                            }}
 
                         </div>
 
@@ -182,19 +168,32 @@
                 </div>
 
             </div>
+            @if(config.type === 'reschedule' && config.infoMessage){
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    <img src="assets/images/caution.png" alt="">
+                </div>
+
+                <span>{{ config.infoMessage }}</span>
+
+            </div>
+
+            }
 
             <div class="modal-buttons">
 
-                <button class="keep-btn" onclick="closeCancelModal()">
+                <button class="keep-btn" (click)="closeCancelModal()">
 
-                    Keep Appointment
+                    {{ config.cancelButton }}
 
                 </button>
 
-                <button class="delete-btn" onclick="confirmCancel()">
-
-                    Cancel Appointment
-
+                <button [ngClass]="config.type === 'cancel'
+        ? 'delete-btn'
+        : 'primary-btn'" [disabled]="config.disableConfirm" (click)="confirm()">
+                    {{ config.confirmButton }}
                 </button>
 
             </div>

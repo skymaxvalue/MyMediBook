@@ -13,16 +13,17 @@ import { AppState } from "src/app/Store/app.state";
 import { MessagesComponent } from "../messages/messages.component";
 import { LabResultComponent } from "../lab-result/lab-result.component";
 import { BillingComponent } from "../billing/billing.component";
-import { getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
+import { getAllMecineDetailByPatientID, getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import { first } from "rxjs";
 import { getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
 import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selcetors";
 import { TabServiceService } from "src/app/Services/tab-service.service";
+import { RouterOutlet } from "@angular/router";
 
 @Component({
   selector: "app-dashboard",
-  imports: [MyAppointmentComponent, SpecialitiesComponent, CheckDocAvailableComponent, MedicineOrdersComponent, MessagesComponent, LabResultComponent, BillingComponent],
+  imports: [RouterOutlet],
   templateUrl: "./dashboard.component.html",
   styleUrl: "./dashboard.component.css",
 })
@@ -79,34 +80,31 @@ export class DashboardComponent implements OnInit {
   }
 
   async callInitialAPI() {
-    console.log(this.user.patientId)
-    this.store.dispatch(
-      loadDoctorSpecialities());
+    // console.log(this.user.patientId)
+    
+    // this.store.dispatch(getAllMecineDetailByPatientID({ patientId: this.user.patientId }))
 
 
-    if (this.user.patientId) {
-      await this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
-      this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }))
-    }
+    // if (this.user.patientId) {
+    //   await this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
+    //   this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }))
+    // }
 
-    await this.store.select(selectMyAppointmentList).subscribe((res: any) => {
-      if (res) {
+    // await this.store.select(selectMyAppointmentList).subscribe((res: any) => {
+    //   if (res) {
 
-        this.appointments = res.data
-      }
-    })
+    //     this.appointments = res.data
+    //   }
+    // })
 
-    this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
-      if (res) {
+    // this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
+    //   if (res) {
 
-        this.patientRelativeList = res.data
-      }
-    })
+    //     this.patientRelativeList = res.data
+    //   }
+    // })
 
-    this.store.select(selectDoctorSpecialities)
-      .subscribe((res: any) => {
-        this.specialities = res;
-      });
+  
 
   }
   appointments: any = null

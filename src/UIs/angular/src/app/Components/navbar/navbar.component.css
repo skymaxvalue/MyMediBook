@@ -19,7 +19,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    z-index:10001; 
+    z-index:1000; 
 }
 
 
@@ -186,6 +186,9 @@ body {
     width: 52px;
 }
 
+a{  
+    text-decoration: none !important;
+}
 
 
 .logo-text {

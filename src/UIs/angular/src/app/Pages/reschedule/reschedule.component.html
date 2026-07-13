@@ -1,0 +1,182 @@
+<div class="availability-container">
+
+    <h2>Reschedule Appointment</h2>
+
+    <div class="schedule-box" [formGroup]="form">
+
+        <div class="info-banner">
+            <span>ℹ</span>
+
+            <div>
+                <h3>Update Appointment Time</h3>
+
+                <p>
+                    Your patient information has already been verified.
+                    Only your appointment date and time can be changed.
+                </p>
+
+            </div>
+        </div>
+
+        <div class="summary-card">
+
+            <h3>Appointment Summary</h3>
+
+            <div class="summary-grid">
+
+                <div>
+
+                    <label>Patient</label>
+
+                    <p>{{appointment?.patient}}</p>
+
+                </div>
+
+                <div>
+
+                    <label>Doctor</label>
+
+                    <p>{{appointment?.doctor}}</p>
+
+                </div>
+
+                <div>
+
+                    <label>Visit Purpose</label>
+
+                    <p>{{appointment?.purpose}}</p>
+
+                </div>
+
+                <div>
+
+                    <label>Current Appointment</label>
+
+                    <p>
+                        {{appointment?.date}} • {{appointment?.time}}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Select New Date</h3>
+
+            <input
+                type="date"
+                formControlName="appointmentDate"
+                [min]="minDate">
+
+        </div>
+
+        <div class="section">
+
+            <h3>Select New Time</h3>
+
+            <div class="time-slots">
+
+                <button
+                    type="button"
+                    *ngFor="let slot of timeSlots"
+                    [disabled]="slot.disabled"
+                    [class.disabled]="slot.disabled"
+                    [class.active]="selectedTime===slot.time"
+                    (click)="selectTime(slot)">
+
+                    {{slot.time}}
+
+                </button>
+
+            </div>
+
+            <small>
+                Current appointment time is disabled.
+            </small>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Reason for Rescheduling</h3>
+
+            <select formControlName="reason">
+
+                <option value="" disabled>
+                    Select reason
+                </option>
+
+                <option value="emergency">
+                    Personal emergency
+                </option>
+
+                <option value="work">
+                    Work schedule conflict
+                </option>
+
+                <option value="travel">
+                    Travel plans
+                </option>
+
+                <option value="family">
+                    Family commitment
+                </option>
+
+                <option value="other">
+                    Other (Please specify)
+                </option>
+
+            </select>
+
+            <textarea
+                *ngIf="form.value.reason==='other'"
+                formControlName="otherReason"
+                placeholder="Please specify...">
+            </textarea>
+
+        </div>
+
+        <div class="policy">
+
+            <strong>Rescheduling Policy</strong>
+
+            <ul>
+
+                <li>Appointment can be rescheduled only twice.</li>
+
+                <li>Previous appointment will be replaced after confirmation.</li>
+
+                <li>Doctor availability may change.</li>
+
+            </ul>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button
+                type="button"
+                class="cancel-btn"
+                (click)="cancel()">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                class="book-btn"
+                (click)="confirmReschedule()">
+
+                Confirm Reschedule
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

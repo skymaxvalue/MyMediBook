@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { ConfirmationConfig, ModalSeviceService } from "src/app/Services/modal-sevice.service";
+import {  ModalSeviceService } from "src/app/Services/modal-sevice.service";
+import { ConfirmationModalConfig } from "src/app/Utility/EndPointsOfAPI";
 
 @Component({
   selector: "app-confirmation-modal",
@@ -10,7 +11,7 @@ import { ConfirmationConfig, ModalSeviceService } from "src/app/Services/modal-s
 })
 export class ConfirmationModalComponent {
   isVisible = false;
-  config!: ConfirmationConfig;
+  config!: ConfirmationModalConfig;
 
   constructor(private confirmationService: ModalSeviceService) { }
 

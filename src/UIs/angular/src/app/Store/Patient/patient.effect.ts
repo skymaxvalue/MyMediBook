@@ -84,6 +84,24 @@ export class PatientEffects {
         )
     )
 
+    getMedicineDetailsByPatientID$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getAllMecineDetailByPatientID),
+            mergeMap((action) =>
+                this.patientService.getAllMediceneByPatientId(action.patientId).pipe(
+                    map((response: any) =>
+                        PatientAction.getAllMecineDetailByPatientIDSuccess({ patientMedicalData: response })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getAllMecineDetailByPatientIDFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
+    )
+
 
 
 }
