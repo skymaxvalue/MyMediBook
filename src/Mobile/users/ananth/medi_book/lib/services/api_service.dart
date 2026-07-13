@@ -613,7 +613,7 @@ class ApiService {
     try {
       final response = await http
           .get(
-            Uri.parse('$baseUrl/api/v1/Appointment/GetMyAppointmentList/$patientId'),
+            Uri.parse('$baseUrl/api/v1/Appointment/Patient/GetMyAppointmentList/$patientId'),
             headers: _authHeaders,
           )
           .timeout(const Duration(seconds: 30));
