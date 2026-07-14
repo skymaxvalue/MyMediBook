@@ -37,94 +37,142 @@ import { ForgetPasswordComponent } from "./auth/forget-password/forget-password.
 import { HelthCareAssociationComponent } from "./Pages/Association-Part/helth-care-association/helth-care-association.component";
 import { AssociationListComponent } from "./Pages/Association-Part/association-list/association-list.component";
 import { AssignScheduleAsspciationComponent } from "./Pages/Association-Part/assign-schedule-asspciation/assign-schedule-asspciation.component";
+import { RescheduleComponent } from "./Pages/reschedule/reschedule.component";
 
 export const routes: Routes = [
-  // Display with Navbar using Child Represtation
   {
-    path: "",
-    component: MainLayoutComponent, canActivate: [authGuard],
+    path: "patient",
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
-      // Welcome
-      { path: "", redirectTo: "dashboard", pathMatch: "full" },
-      // authentication
       {
         path: "dashboard",
         component: DashboardComponent,
-      },
-      { path: "welcome", component: WelcomeComponent },
-      { path: "oidc-login-redirect", component: OidcLoginRedirect },
-      // Products routes
-      { path: "products", component: ListProductsComponent },
-      {
-        path: "products/add",
-        component: AddProductComponent,
-        canDeactivate: [AddProductGuard],
-      },
-      {
-        path: "products/edit/:id",
-        component: EditProductComponent,
-        canDeactivate: [EditProductGuard],
-      },
-      {
-        path: "products/:id",
-        component: ProductDetailComponent,
-        canActivate: [ProductDetailGuard],
-      },
-      // Users routes
-      { path: "users", component: ListUsersComponent },
-      {
-        path: "users/add",
-        component: AddEditUserComponent,
-      },
-      {
-        path: "users/edit/:id",
-        component: AddEditUserComponent,
-      },
-      {
-        path: "users/:id",
-        component: ViewUserDetailsComponent,
-      },
-      // Files routes
-      { path: "files", component: ListFilesComponent },
-      {
-        path: "files/upload",
-        component: UploadFileComponent,
-      },
-      {
-        path: "files/edit/:id",
-        component: EditFileComponent,
-      },
-      // Settings route
-      { path: "settings", component: ConfigurationEntryListComponent },
+        children: [
 
-      // Audit logs route
-      { path: "auditlogs", component: AuditLogListComponent },
-      // Association Routs
-      {
-        path: "association", component: HelthCareAssociationComponent
-      },
-      {
-        path: "association-list", component: AssociationListComponent
-      },
-      {
-        path: "association-schedule", component: AssignScheduleAsspciationComponent
-      },
-      // Update user Ptofile patient
+          {
+            path: "",
+            redirectTo: "appointments",
+            pathMatch: "full"
+          },
 
+          // My Appointments
+          {
+            path: "appointments",
+            loadComponent: () =>
+              import("./Pages/my-appointment/my-appointment.component")
+                .then(m => m.MyAppointmentComponent)
+          },
+
+          // Specialities
+          {
+            path: "specialities",
+            loadComponent: () =>
+              import("./Pages/specialities/specialities.component")
+                .then(m => m.SpecialitiesComponent)
+            //     ,
+            //   children:[
+            //     {
+            //   path: 'doctor-availability',
+            //   loadComponent: () =>
+            //     import('./Pages/check-doc-available/check-doc-available.component')
+            //       .then(m => m.CheckDocAvailableComponent)
+            // }
+            //   ]
+          },
+
+          // Doctor Availability
+          {
+            path: "doctor-availability",
+            loadComponent: () =>
+              import("./Pages/check-doc-available/check-doc-available.component")
+                .then(m => m.CheckDocAvailableComponent)
+          },
+
+          // Medicine Orders
+          {
+            path: "medicine",
+            loadComponent: () =>
+              import("./Pages/medicine-orders/medicine-orders.component")
+                .then(m => m.MedicineOrdersComponent)
+          },
+
+          // Lab Results
+          {
+            path: "labresult",
+            loadComponent: () =>
+              import("./Pages/lab-result/lab-result.component")
+                .then(m => m.LabResultComponent)
+          },
+
+          // Billing
+          {
+            path: "billing",
+            loadComponent: () =>
+              import("./Pages/billing/billing.component")
+                .then(m => m.BillingComponent)
+          },
+
+          // Messages
+          {
+            path: "messages",
+            loadComponent: () =>
+              import("./Pages/messages/messages.component")
+                .then(m => m.MessagesComponent)
+          },
+
+          // Settings
+          // {
+          //   path: "setting",
+          //   loadComponent: () =>
+          //     import("./Pages/settings/settings.component")
+          //       .then(m => m.SettingsComponent)
+          // },
+
+          // Appointment Reschedule
+          {
+            path: "appointment-reschedule",
+            component: RescheduleComponent
+          }
+        ]
+      },
+
+      // Existing routes
       {
-        path: "profile-update", component: SelfRegistrationComponent
+        path: "association",
+        component: HelthCareAssociationComponent
+      },
+      {
+        path: "association-list",
+        component: AssociationListComponent
+      },
+      {
+        path: "association-schedule",
+        component: AssignScheduleAsspciationComponent
+      },
+      {
+        path: "profile-update",
+        component: SelfRegistrationComponent
       }
-
-    ],
+    ]
   },
 
-  // Authentication Flow routs
-  { path: "login", component: LoginComponent },
-  { path: "forgot-password", component: ForgetPasswordComponent },
+  // Authentication
+  {
+    path: "login",
+    component: LoginComponent
+  },
+  {
+    path: "forgot-password",
+    component: ForgetPasswordComponent
+  },
   {
     path: "sign-up",
-    component: SelfRegistrationComponent,
+    component: SelfRegistrationComponent
   },
 
-  { path: "**", redirectTo: "welcome", pathMatch: "full" },
+  {
+    path: "**",
+    redirectTo: "login"
+  }
 ];

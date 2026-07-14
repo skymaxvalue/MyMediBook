@@ -9,6 +9,7 @@ export interface PatientState {
     updatedPatient: any;
     patientProfiles: any[];
     patientProfileData: any;
+    patientMedicalData: any[];
 
 }
 
@@ -19,6 +20,7 @@ export const initialAuthState: PatientState = {
     myappintments: [],
     updatedPatient: null,
     patientProfiles: [],
-    patientProfileData: null
+    patientProfileData: null,
+    patientMedicalData: []
 
 }

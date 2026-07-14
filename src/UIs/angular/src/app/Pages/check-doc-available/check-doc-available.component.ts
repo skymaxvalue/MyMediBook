@@ -65,8 +65,30 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
 
-    this.minDate = this.toInputDate(this.doctor.fromDate);
-    this.maxDate = this.toInputDate(this.doctor.toDate);
+    const navigation = this.router.getCurrentNavigation();
+
+
+console.log(this.doctor);
+  if (navigation?.extras.state) {
+    
+    this.doctor = navigation.extras.state['doctor'];
+    this.updatesheduledpatient = navigation.extras.state['appointment'];
+  } else {
+  
+    this.doctor = history.state.doctor;
+    this.updatesheduledpatient = history.state.appointment;
+  }
+
+  console.log('Doctor =>', this.doctor);
+  console.log('Appointment =>', this.updatesheduledpatient);
+
+  if (!this.doctor) {
+    console.error('Doctor data not found');
+    return;
+  }
+
+  this.minDate = this.toInputDate(this.today.toLocaleDateString('en-GB'));
+  this.maxDate = this.toInputDate(this.doctor.toDate);
 
 
     if (this.updatesheduledpatient) {

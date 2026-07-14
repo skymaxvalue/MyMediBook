@@ -98,7 +98,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
           localStorage.setItem('token', patient.tokenKey)
           localStorage.setItem('user', JSON.stringify(patient.data))
 
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/patient/dashboard']);
         }
       });
 

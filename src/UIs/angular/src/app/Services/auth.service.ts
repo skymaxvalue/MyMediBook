@@ -51,16 +51,46 @@ export class AuthService {
 
   startRefreshTimer() {
 
-    // Previous timer cancel kara
-    this.stopRefreshTimer();
+  this.stopRefreshTimer();
 
-    // 55 minutes
-    const refreshTime = 55 * 60 * 1000;
+  const refreshTime = 55 * 60 * 1000;
 
-    this.refreshSubscription = timer(refreshTime, refreshTime).subscribe(() => {
-      this.callRefreshToken();
+  this.refreshSubscription = timer(refreshTime, refreshTime)
+    .subscribe(() => {
+
+      console.log('Refreshing token...');
+
+      this.callRefreshToken().subscribe({
+        next: (res) => {
+
+          console.log('Refresh Success', res);
+          alert("this is api call for refresh token")
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('refreshToken', res.refreshToken);
+
+        },
+        error: (err) => {
+
+          console.error('Refresh Failed', err);
+
+          this.logout();
+        }
+      });
+
     });
-  }
+}
+  // startRefreshTimer() {
+
+  //   // Previous timer cancel kara
+  //   this.stopRefreshTimer();
+
+  //   // 55 minutes
+  //   const refreshTime = 55 * 60 * 1000;
+
+  //   this.refreshSubscription = timer(refreshTime, refreshTime).subscribe(() => {
+  //     this.callRefreshToken();
+  //   });
+  // }
 
   stopRefreshTimer() {
     this.refreshSubscription?.unsubscribe();

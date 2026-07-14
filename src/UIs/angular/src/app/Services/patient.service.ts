@@ -50,4 +50,12 @@ export class PatientService {
     );
   }
 
+  getAllMediceneByPatientId(patientId: any): Observable<any> {
+
+    return this.http.post<any>(
+      `${this.apiUrl}${APIEndpoints.GET_MEDICINE_OF_PATIENT}`, { patientId }
+    );
+  }
+
+
 }

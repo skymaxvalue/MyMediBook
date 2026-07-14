@@ -1,26 +1,20 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { ConfirmationModalConfig } from 'src/app/Utility/EndPointsOfAPI';
 
 
-export interface ConfirmationConfig {
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  data?: any;
-}
 
 @Injectable({
   providedIn: "root",
 })
 export class ModalSeviceService {
-  private confirmationSource = new Subject<ConfirmationConfig>();
+  private confirmationSource = new Subject<ConfirmationModalConfig>();
   confirmation$ = this.confirmationSource.asObservable();
 
   private responseSource = new Subject<boolean>();
   response$ = this.responseSource.asObservable();
 
-  open(config: ConfirmationConfig) {
+  open(config: ConfirmationModalConfig) {
     console.log('Service Open', config);
     this.confirmationSource.next(config);
   }

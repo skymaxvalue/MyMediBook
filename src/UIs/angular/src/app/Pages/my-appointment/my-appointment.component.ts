@@ -15,9 +15,12 @@ import { take } from "rxjs";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
 import { cancelMyAppointment, getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
-import { selectCanceledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
+import { selectCanceledAppointment, selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selcetors";
 import { TabServiceService } from "src/app/Services/tab-service.service";
 import { HostListener } from '@angular/core';
+import { cancelRules, rescheduleRules } from "src/app/Utility/EndPointsOfAPI";
+import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
+import { getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
 
 
 interface FamilyMember {
@@ -83,9 +86,24 @@ export class MyAppointmentComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
-    console.log(this.relativeList, this.tableData, "=======>")
-  }
+ngOnInit() {
+  this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }));
+  this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }));
+
+  this.store.select(selectMyAppointmentList)
+    .subscribe((res: any) => {
+      if (res) {
+        this.tableData.set(res.data);
+      }
+    });
+
+  this.store.select(selectGetProfileListByPatientId)
+    .subscribe((res: any) => {
+      if (res) {
+        this.relativeList.set(res.data);
+      }
+    });
+}
 
   filteredPatients = computed(() => {
 
@@ -122,13 +140,13 @@ export class MyAppointmentComponent implements OnInit {
     this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
   }
   showAllPatients() {
-
+    this.selectedMember.set(null);
     this.selectedPatientName.set('All Patients');
-
+    this.currentPage.set(1);
     this.isPatientDropdownOpen = false;
-
   }
   selectPatient(patient: any) {
+    this.selectedMember.set(patient);
     this.selectedPatientName.set(patient.fullName);
     this.isPatientDropdownOpen = false;
   }
@@ -222,9 +240,12 @@ export class MyAppointmentComponent implements OnInit {
 
   }
 
+  private getAppointmentDateTime(appointment: any): Date {
 
-  rescheduleAppointment(appointment: any) {
-    const appointmentDateTime = new Date(appointment.appointmentDate);
+    const [datePart] = appointment.appointmentDate.split(' ');
+    const [month, day, year] = datePart.split('/').map(Number);
+
+    const appointmentDateTime = new Date(year, month - 1, day);
 
     const [time, period] = appointment.slotStartTime.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
@@ -239,54 +260,116 @@ export class MyAppointmentComponent implements OnInit {
 
     appointmentDateTime.setHours(hours, minutes, 0, 0);
 
+    return appointmentDateTime;
+  }
+  rescheduleAppointment(appointment: any) {
+    const rule: any[] = rescheduleRules
+    const appointmentDateTime = this.getAppointmentDateTime(appointment);
+
     const now = new Date();
 
     const diffInHours =
       (appointmentDateTime.getTime() - now.getTime()) /
       (1000 * 60 * 60);
 
+    // Appointment already started
     if (diffInHours <= 0) {
 
       this.confirmationService.open({
-        title: 'Reschedule Not Allowed',
-        message:
-          'Rescheduling is not allowed once the appointment time has started.',
-        confirmText: 'OK',
-        cancelText: ''
+        type: 'reschedule',
+
+        title: 'Reschedule Appointment',
+        subTitle: 'Please review before you continue.',
+
+        confirmTitle:
+          'Are you sure you want to reschedule this appointment?',
+
+        confirmText:
+          'This appointment has already started. Rescheduling is not allowed.',
+
+        confirmButton: 'Reschedule Appointment',
+        cancelButton: 'Close',
+
+        appointment,
+
+        rules: rule,
+
+        disableConfirm: false,
+        infoMessage: 'You can reschedule this appointment up to 2 times.'
       });
 
       return;
     }
 
-    let message =
-      'Are you sure you want to reschedule this appointment?';
-
+    // Within 24 Hours
     if (diffInHours <= 24) {
 
-      message =
-        'This appointment is within the next 24 hours. A reschedule fee of ₹50–₹100 may apply.\n\nDo you want to continue?';
+      this.confirmationService.open({
+        type: 'reschedule',
+
+        title: 'Reschedule Appointment',
+        subTitle: 'Please review before you continue.',
+
+        confirmTitle:
+          'Are you sure you want to reschedule this appointment?',
+
+        confirmText:
+          'This appointment is within the next 24 hours. A reschedule fee may apply.',
+
+        confirmButton: 'Reschedule Appointment',
+        cancelButton: 'Keep Appointment',
+
+        appointment,
+
+        rules: rule,
+
+        disableConfirm: false,
+        infoMessage: 'You can reschedule this appointment up to 2 times.'
+      });
+
+    } else {
+
+      // More than 24 Hours
+      this.confirmationService.open({
+        type: 'reschedule',
+
+        title: 'Reschedule Appointment',
+        subTitle: 'Please review before you continue.',
+
+        confirmTitle:
+          'Are you sure you want to reschedule this appointment?',
+
+        confirmText:
+          "You'll be redirected to the doctor's availability page to choose a new available date and time.",
+
+        confirmButton: 'Reschedule Appointment',
+        cancelButton: 'Keep Appointment',
+
+        appointment,
+
+        rules: rule,
+
+        disableConfirm: false,
+        infoMessage: 'You can reschedule this appointment up to 2 times.'
+      });
 
     }
-
-    this.confirmationService.open({
-      title: 'Cancel Appointment',
-      message: 'Are you sure you want to cancel this appointment?',
-      confirmText: 'Cancel Appointment',
-      cancelText: 'Keep Appointment',
-      data: appointment
-    });
 
     this.confirmationService.response$
       .pipe(take(1))
       .subscribe((confirmed) => {
-        console.log('Subscriber called');
-        if (confirmed) {
-          this.tabService.setReschedulePatient(appointment);
-          // this.tabService.changeTab('specialities');
-          // Open doctor availability page here
+
+        if (!confirmed) {
+          return;
         }
 
+        this.tabService.setReschedulePatient(appointment);
+
+        // Navigate to Specialities page
+        this.tabService.changeTab('specialities');
+
       });
+
   }
   getStatusClass(status: string): string {
     switch (status?.toLowerCase()) {
@@ -332,6 +415,125 @@ export class MyAppointmentComponent implements OnInit {
 
   //     });
   // }
+  //   cancelAppointment(appointment: any) {
+
+  //     const appointmentDateTime = new Date(appointment.appointmentDate);
+
+  //     const [time, period] = appointment.slotStartTime.split(' ');
+  //     let [hours, minutes] = time.split(':').map(Number);
+
+  //     // Convert to 24-hour format
+  //     if (period === 'PM' && hours < 12) {
+  //       hours += 12;
+  //     }
+
+  //     if (period === 'AM' && hours === 12) {
+  //       hours = 0;
+  //     }
+
+  //     // Set the appointment time
+  //     appointmentDateTime.setHours(hours, minutes, 0, 0);
+
+  //     const now = new Date();
+
+  //     const diffInHours =
+  //       (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  //     console.log('Appointment:', appointmentDateTime);
+  //     console.log('Current:', now);
+  //     console.log('Difference in Hours:', diffInHours);
+  //     // Appointment already started
+  //     if (diffInHours <= 0) {
+  // this.confirmationService.open({
+  //   type: 'cancel',
+
+  //   title: 'Cancel Appointment',
+  //   subTitle: 'Please review before you proceed.',
+
+  //   confirmTitle: 'Are you sure you want to cancel this appointment?',
+  //   confirmText: 'This action cannot be undone.',
+
+  //   confirmButton: 'Cancel Appointment',
+  //   cancelButton: 'Keep Appointment',
+
+  //   appointment,
+
+  //   rules: [
+  //     {
+  //       type: 'success',
+  //       title: 'Free cancellation',
+  //       description: 'Up to 24 hours before your appointment.'
+  //     },
+  //     {
+  //       type: 'warning',
+  //       title: 'Late cancellation fee may apply',
+  //       description:
+  //         'If cancelled after 24 hours, a cancellation fee may apply.'
+  //     },
+  //     {
+  //       type: 'danger',
+  //       title: 'Cannot cancel after start time',
+  //       description:
+  //         'Once the appointment has started, cancellation is not allowed.'
+  //     }
+  //   ]
+  // });
+  //       // this.confirmationService.open({
+  //       //   title: 'Cancellation Not Allowed',
+  //       //   message: 'Cancellation is not allowed once the appointment has started.',
+  //       //   confirmText: 'OK',
+  //       //   cancelText: '',
+  //       // });
+
+  //       this.confirmationService.response$
+  //         .pipe(take(1))
+  //         .subscribe(() => { });
+
+  //       return;
+  //     }
+
+  //     let message = 'Are you sure you want to cancel this appointment?';
+
+
+
+  //     if (diffInHours <= 24) {
+
+  //       message =
+  //         'This appointment is within the next 24 hours. A cancellation fee of ₹50–₹100 may apply.\n\nDo you want to continue?';
+  //     }
+
+  //     this.confirmationService.open({
+  //       title: 'Cancel Appointment',
+  //       message,
+  //       confirmText: 'Yes, Cancel',
+  //       cancelText: 'No'
+  //     });
+
+  //     this.confirmationService.response$
+  //       .pipe(take(1))
+  //       .subscribe(async (confirmed) => {
+
+  //         if (confirmed) {
+
+  //           await this.store.dispatch(
+  //             cancelMyAppointment({
+  //               patientId: this.user.patientId,
+  //               appointmentId: appointment.appointmentId
+  //             })
+  //           )
+  //           await this.store.select(selectCanceledAppointment).subscribe((res: any) => {
+  //             if (res) {
+  //               this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
+  //             }
+  //           })
+
+
+  //         }
+
+  //       });
+
+  //   }
+
   cancelAppointment(appointment: any) {
 
     const appointmentDateTime = new Date(appointment.appointmentDate);
@@ -339,16 +541,9 @@ export class MyAppointmentComponent implements OnInit {
     const [time, period] = appointment.slotStartTime.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
 
-    // Convert to 24-hour format
-    if (period === 'PM' && hours < 12) {
-      hours += 12;
-    }
+    if (period === 'PM' && hours < 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
 
-    if (period === 'AM' && hours === 12) {
-      hours = 0;
-    }
-
-    // Set the appointment time
     appointmentDateTime.setHours(hours, minutes, 0, 0);
 
     const now = new Date();
@@ -356,68 +551,84 @@ export class MyAppointmentComponent implements OnInit {
     const diffInHours =
       (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-    console.log('Appointment:', appointmentDateTime);
-    console.log('Current:', now);
-    console.log('Difference in Hours:', diffInHours);
+    // ---------------- Rules ----------------
+
+    const rules = cancelRules
+
+    // ---------------- Modal Data ----------------
+
+    const modalData: any = {
+      type: 'cancel',
+      title: 'Cancel Appointment',
+      subTitle: 'Please review before you proceed.',
+      confirmTitle: 'Are you sure you want to cancel this appointment?',
+      confirmText: '',
+      confirmButton: 'Cancel Appointment',
+      cancelButton: 'Keep Appointment',
+      appointment,
+      rules,
+      disableConfirm: false
+    };
+
     // Appointment already started
     if (diffInHours <= 0) {
 
-      this.confirmationService.open({
-        title: 'Cancellation Not Allowed',
-        message: 'Cancellation is not allowed once the appointment has started.',
-        confirmText: 'OK',
-        cancelText: '',
-      });
+      modalData.confirmText =
+        'This appointment has already started. Cancellation is not allowed.';
 
-      this.confirmationService.response$
-        .pipe(take(1))
-        .subscribe(() => { });
+      modalData.confirmButton = 'Cancel Appointment';
+      modalData.cancelButton = 'Close';
+      modalData.disableConfirm = true;
 
-      return;
     }
 
-    let message = 'Are you sure you want to cancel this appointment?';
+    // Within 24 Hours
+    else if (diffInHours <= 24) {
 
+      modalData.confirmText =
+        'This appointment is within the next 24 hours. A cancellation fee may apply. Do you want to continue?';
 
-
-    if (diffInHours <= 24) {
-
-      message =
-        'This appointment is within the next 24 hours. A cancellation fee of ₹50–₹100 may apply.\n\nDo you want to continue?';
     }
 
-    this.confirmationService.open({
-      title: 'Cancel Appointment',
-      message,
-      confirmText: 'Yes, Cancel',
-      cancelText: 'No'
-    });
+    // More than 24 Hours
+    else {
+
+      modalData.confirmText =
+        'You can cancel this appointment free of charge.';
+
+    }
+
+    this.confirmationService.open(modalData);
 
     this.confirmationService.response$
       .pipe(take(1))
-      .subscribe(async (confirmed) => {
+      .subscribe((confirmed) => {
 
-        if (confirmed) {
+        if (!confirmed || diffInHours <= 0) return;
 
-          await this.store.dispatch(
-            cancelMyAppointment({
-              patientId: this.user.patientId,
-              appointmentId: appointment.appointmentId
-            })
-          )
-          await this.store.select(selectCanceledAppointment).subscribe((res: any) => {
-            if (res) {
-              this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
-            }
+        this.store.dispatch(
+          cancelMyAppointment({
+            patientId: this.user.patientId,
+            appointmentId: appointment.appointmentId
           })
+        );
 
-
-        }
+        this.store
+          .select(selectCanceledAppointment)
+          .pipe(take(1))
+          .subscribe((res) => {
+            if (res) {
+              this.store.dispatch(
+                getMyAppointments({
+                  patientId: this.user.patientId
+                })
+              );
+            }
+          });
 
       });
 
   }
-
   getSortIcon(column: string): string {
 
     if (this.sortColumn() !== column) {

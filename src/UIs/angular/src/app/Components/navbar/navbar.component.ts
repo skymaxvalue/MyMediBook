@@ -20,15 +20,43 @@ export class NavbarComponent implements OnInit {
 
   activeTab = 'appointments';
 
-  navItems = [
-    { key: 'appointments', label: 'My Appointments' },
-    { key: 'specialities', label: 'Specialities' },
-    { key: 'medicine', label: 'Medicine Orders' },
-    { key: 'labresult', label: 'Lab Results' },
-    { key: 'billing', label: 'Billing' },
-    { key: 'messages', label: 'Messages' },
-    { key: 'setting', label: 'Settings' }
-  ];
+ navItems = [
+  {
+    key: 'appointments',
+    label: 'My Appointments',
+    route: '/patient/dashboard/appointments'
+  },
+  {
+    key: 'specialities',
+    label: 'Specialities',
+    route: '/patient/dashboard/specialities'
+  },
+  {
+    key: 'medicine',
+    label: 'Medicine Orders',
+    route: '/patient/dashboard/medicine'
+  },
+  {
+    key: 'labresult',
+    label: 'Lab Results',
+    route: '/patient/dashboard/labresult'
+  },
+  {
+    key: 'billing',
+    label: 'Billing',
+    route: '/patient/dashboard/billing'
+  },
+  {
+    key: 'messages',
+    label: 'Messages',
+    route: '/patient/dashboard/messages'
+  },
+  {
+    key: 'setting',
+    label: 'Settings',
+    route: '/patient/dashboard/settings'
+  }
+];
 
   constructor(private tabService: TabServiceService) { }
 
