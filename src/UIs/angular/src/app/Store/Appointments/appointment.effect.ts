@@ -127,7 +127,7 @@ export class AppointmentEffects {
 
             mergeMap((action) =>
                 this.appointmentService
-                    .cancelAppoitmentsByPatientID(action.patientId, action.appointmentId)
+                    .cancelAppoitmentsByPatientID(action.patientId, action.appointmentId, action.associateRole, action.lastUpdatedBy, action.cancelReason)
                     .pipe(
                         map((response: any) =>
                             AppointmentActions.cancelMyAppointmentSuccess({
@@ -156,7 +156,7 @@ export class AppointmentEffects {
 
             mergeMap((action) =>
                 this.appointmentService
-                    .rescheduleAppoitmentsByPatientID({ patientId: action.patientId, appointmentId: action.appointmentId, associateId: action.associateId, slotId: action.slotId, visitPurpose: action.visitPurpose, visitType: action.visitType })
+                    .rescheduleAppoitmentsByPatientID({ patientId: action.patientId, appointmentId: action.appointmentId, associateId: action.associateId, slotId: action.slotId, visitPurpose: action.visitPurpose, visitType: action.visitType, lastUpdatedBy: action.lastUpdatedBy, associateRole: action.associateRole, rescheduleReason: action.rescheduleReason })
                     .pipe(
                         map((response: any) =>
                             AppointmentActions.rescheduleMyAppointmentSuccess({

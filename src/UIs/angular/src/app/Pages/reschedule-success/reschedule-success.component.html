@@ -1,0 +1,97 @@
+<div class="success-container">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1>Appointment Rescheduled Successfully</h1>
+
+        <p class="subtitle">
+            Your appointment has been updated successfully.
+        </p>
+
+        <div class="appointment-card">
+
+            <h3>Appointment Details</h3>
+
+            <div class="detail-row">
+                <span>Patient</span>
+                <strong>{{ appointment?.patientName }}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Doctor</span>
+                <strong>{{ appointment?.doctorName }}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Visit Purpose</span>
+                <strong>{{ appointment?.visitPurpose }}</strong>
+            </div>
+
+        </div>
+
+        <div class="comparison-card">
+
+            <h3>Appointment Updated</h3>
+
+            <div class="old-slot">
+
+                <label>Previous Appointment</label>
+
+                <p>{{ appointment?.currentDate || appointment?.appointmentDate | date:'dd-MMM-yyyy'
+                    }}</p>
+
+                <p>{{ appointment?.currentTime || appointment?.slotStartTime }}</p>
+
+            </div>
+
+            <div class="arrow">
+                ↓
+            </div>
+
+            <div class="new-slot">
+
+                <label>New Appointment</label>
+
+                <p>{{ appointment?.newDate }}</p>
+
+                <p>{{ appointment?.newTime }}</p>
+
+            </div>
+
+        </div>
+
+        <div class="policy-note">
+
+            <strong>Reminder</strong>
+
+            <p>
+                Please arrive at least
+                <strong>15 minutes</strong>
+                before your scheduled appointment.
+            </p>
+
+        </div>
+
+        <div class="buttons">
+
+            <button class="secondary-btn" (click)="backToDashboard()">
+
+                Back to Dashboard
+
+            </button>
+
+            <button class="primary-btn" (click)="downloadConfirmation()">
+
+                Download Confirmation
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

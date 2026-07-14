@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -22,10 +22,14 @@ import { selectGetProfileDataByProfileId, selectGetProfileListByPatientId } from
   styleUrl: './book-appoiment-form.component.css'
 })
 export class BookAppoimentFormComponent implements OnInit {
+  isPatientDropdownOpen = false;
+  selectedPatientName = signal<any | null>(null)
   @Output() backToAvailability = new EventEmitter<void>();
+  patientSearch = signal('');
   @Input() doctor: any;
   @Input() selectedDate: any;
   @Input() selectedSlot: any;
+  relativeList = signal<any[]>([]);
   selectedMember = signal<any | null>(null);
   InsurenceValue: string = '';
   familyMembers = [
@@ -55,7 +59,7 @@ export class BookAppoimentFormComponent implements OnInit {
       relation: 'Son'
     }
   ];
-  ProfileList: any[] = [];
+
   ageType: any[] = [];
   relations: any;
   selectMember(member: any) {
@@ -187,6 +191,9 @@ export class BookAppoimentFormComponent implements OnInit {
     });
   }
 
+  togglePatientDropdown() {
+    this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
+  }
   InitialApiCall() {
     this.store.dispatch(getAgeType())
     this.store.dispatch(getRelationType())
@@ -205,7 +212,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
       if (res) {
         console.log(res.data, "=======>")
-        this.ProfileList = res.data
+        this.relativeList.set(res.data)
 
       }
     })
@@ -257,6 +264,20 @@ export class BookAppoimentFormComponent implements OnInit {
 
     return '';
   }
+  filteredPatients = computed(() => {
+
+    const search = this.patientSearch().trim().toLowerCase();
+
+    if (!search) {
+      return this.relativeList();
+    }
+
+    return this.relativeList().filter(patient =>
+      patient.fullName.toLowerCase().includes(search) ||
+      patient.relationTypeName.toLowerCase().includes(search)
+    );
+
+  });
 
   getNestedError(
     groupName: 'insuranceData' | 'paymentData',

@@ -21,6 +21,7 @@ import { HostListener } from '@angular/core';
 import { cancelRules, rescheduleRules } from "src/app/Utility/EndPointsOfAPI";
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import { getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
+import { Router } from "@angular/router";
 
 
 interface FamilyMember {
@@ -82,28 +83,28 @@ export class MyAppointmentComponent implements OnInit {
     this.isStatusDropdownOpen = false;
 
   }
-  constructor(private confirmationService: ModalSeviceService, private store: Store<AppState>, private tabService: TabServiceService) {
+  constructor(private confirmationService: ModalSeviceService, private store: Store<AppState>, private tabService: TabServiceService, private router: Router) {
 
   }
 
-ngOnInit() {
-  this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }));
-  this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }));
+  ngOnInit() {
+    this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }));
+    this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }));
 
-  this.store.select(selectMyAppointmentList)
-    .subscribe((res: any) => {
-      if (res) {
-        this.tableData.set(res.data);
-      }
-    });
+    this.store.select(selectMyAppointmentList)
+      .subscribe((res: any) => {
+        if (res) {
+          this.tableData.set(res.data);
+        }
+      });
 
-  this.store.select(selectGetProfileListByPatientId)
-    .subscribe((res: any) => {
-      if (res) {
-        this.relativeList.set(res.data);
-      }
-    });
-}
+    this.store.select(selectGetProfileListByPatientId)
+      .subscribe((res: any) => {
+        if (res) {
+          this.relativeList.set(res.data);
+        }
+      });
+  }
 
   filteredPatients = computed(() => {
 
@@ -363,10 +364,19 @@ ngOnInit() {
           return;
         }
 
-        this.tabService.setReschedulePatient(appointment);
+        this.router.navigate(
+          ['/patient/dashboard/appointment-reschedule'],
+          {
+            state: {
+              appointment
+            }
+          }
+        );
 
-        // Navigate to Specialities page
-        this.tabService.changeTab('specialities');
+        // this.tabService.setReschedulePatient(appointment);
+
+        // // Navigate to Specialities page
+        // this.tabService.changeTab('specialities');
 
       });
 
@@ -551,11 +561,9 @@ ngOnInit() {
     const diffInHours =
       (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-    // ---------------- Rules ----------------
 
     const rules = cancelRules
 
-    // ---------------- Modal Data ----------------
 
     const modalData: any = {
       type: 'cancel',
@@ -605,11 +613,17 @@ ngOnInit() {
       .subscribe((confirmed) => {
 
         if (!confirmed || diffInHours <= 0) return;
+        const payload = {
+          appointmentId: appointment.appointmentId,
+          patientId: this.user.patientId,
+          cancelReason: "string",
+          lastUpdatedBy: this.user.firstName + " " + this.user.lastName,
+          associateRole: this.user.userType
+        }
 
         this.store.dispatch(
           cancelMyAppointment({
-            patientId: this.user.patientId,
-            appointmentId: appointment.appointmentId
+            ...payload
           })
         );
 
@@ -642,7 +656,7 @@ ngOnInit() {
   }
   goToSpecialities() {
     // Implement navigation to the specialities page
-    this.tabService.changeTab('specialities');
+    this.router.navigate(['/patient/dashboard/specialities'])
   }
 
 

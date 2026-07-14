@@ -29,7 +29,61 @@
                 @if(bookingForm.value.patientType === 'existing'){
 
                 <label for="gender">Select Patient Profile</label>
-                <div class="field-container">
+                <div class="custom-select" (click)="$event.stopPropagation()" [class.open]="isPatientDropdownOpen">
+
+                    <div class="selected-patient" id="selectedPatient" (click)="togglePatientDropdown()">
+
+                        <div class="selected-left">
+                            <img src="/assets/images/user.png" alt="">
+                            <span>{{ selectedPatientName() }}</span>
+                        </div>
+
+                        <span class="arrow">&#9662;</span>
+
+                    </div>
+                    @if(isPatientDropdownOpen){
+
+                    <div class="dropdown" id="patientDropdown">
+
+                        <div class="search-box">
+
+                            <input type="text" id="patientSearch" placeholder="Search patient..."
+                                [ngModel]="patientSearch()" (ngModelChange)="patientSearch.set($event)"
+                                [ngModelOptions]=" {standalone: true}" (click)="$event.stopPropagation()" />
+
+                        </div>
+
+                        @for (patient of filteredPatients(); track patient.profileId) {
+                        <div class="patient-option" [attr.data-value]="patient.profileId"
+                            (click)="onProfileChange(patient)">
+                            <div class="option-left">
+                                <img src="/assets/images/user.png" alt="">
+                                <div>
+                                    <h4>{{ patient.fullName }}</h4>
+                                    <span>{{ patient.relationTypeName }}</span>
+
+                                </div>
+                            </div>
+                            <i class="fas fa-check check-icon"></i>
+                        </div>
+                        }
+
+                        @if(filteredPatients().length === 0){
+
+                        <div class="no-data">
+                            No patient found
+                        </div>
+
+                        }
+
+                    </div>
+                    }
+
+
+
+
+                </div>
+                <!-- <div class="field-container">
                     <ng-select [items]="ProfileList" bindLabel="fullName" bindValue="profileId"
                         formControlName="profileId" placeholder="Select family member" [searchable]="true"
                         [clearable]="true" (change)="onProfileChange($event)">
@@ -61,7 +115,7 @@
                         {{ getErrorMessage('RealtionType') }}
                     </small>
                     }
-                </div>
+                </div> -->
                 }
 
 

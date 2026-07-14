@@ -28,7 +28,7 @@
 
                     <label>Patient</label>
 
-                    <p>{{appointment?.patient}}</p>
+                    <p>{{appointment?.patientName}}</p>
 
                 </div>
 
@@ -36,7 +36,7 @@
 
                     <label>Doctor</label>
 
-                    <p>{{appointment?.doctor}}</p>
+                    <p>{{appointment?.doctorName}}</p>
 
                 </div>
 
@@ -44,7 +44,7 @@
 
                     <label>Visit Purpose</label>
 
-                    <p>{{appointment?.purpose}}</p>
+                    <p>{{appointment?.visitPurpose}}</p>
 
                 </div>
 
@@ -53,7 +53,7 @@
                     <label>Current Appointment</label>
 
                     <p>
-                        {{appointment?.date}} • {{appointment?.time}}
+                        {{appointment?.appointmentDate | date:'dd-MMM-yyyy'}} <br> • <br> {{appointment?.slotStartTime}}
                     </p>
 
                 </div>
@@ -66,10 +66,7 @@
 
             <h3>Select New Date</h3>
 
-            <input
-                type="date"
-                formControlName="appointmentDate"
-                [min]="minDate">
+            <input type="date" formControlName="appointmentDate" [min]="minDate" (change)="onDateSelect($event)">
 
         </div>
 
@@ -79,12 +76,8 @@
 
             <div class="time-slots">
 
-                <button
-                    type="button"
-                    *ngFor="let slot of timeSlots"
-                    [disabled]="slot.disabled"
-                    [class.disabled]="slot.disabled"
-                    [class.active]="selectedTime===slot.time"
+                <button type="button" *ngFor="let slot of timeSlots" [disabled]="slot.booked"
+                    [class.disabled]=" slot.booked" [class.active]="selectedTime===slot.time"
                     (click)="selectTime(slot)">
 
                     {{slot.time}}
@@ -131,11 +124,24 @@
 
             </select>
 
-            <textarea
-                *ngIf="form.value.reason==='other'"
-                formControlName="otherReason"
-                placeholder="Please specify...">
+            <textarea *ngIf="form.value.reason==='other'" formControlName="otherReason" placeholder="Please specify...">
             </textarea>
+            <h3 for="visitPurpose">Dr. Visit Purpose</h3>
+
+            <textarea id="visitPurpose" formControlName="visitPurpose"
+                placeholder="Enter visit purpose / symptoms"></textarea>
+
+
+
+            <!-- Visit Type -->
+            <h3 for="visitType">Type Of Visit</h3><br>
+            <select id="visitType" formControlName="visitType">
+                <option value="">Select type of visit</option>
+                <option value="Consultation">Consultation</option>
+                <option value="Follow-up">Follow-up</option>
+            </select>
+
+
 
         </div>
 
@@ -157,19 +163,13 @@
 
         <div class="form-actions">
 
-            <button
-                type="button"
-                class="cancel-btn"
-                (click)="cancel()">
+            <button type="button" class="cancel-btn" (click)="cancel()">
 
                 Cancel
 
             </button>
 
-            <button
-                type="button"
-                class="book-btn"
-                (click)="confirmReschedule()">
+            <button type="button" class="book-btn" (click)="confirmReschedule()">
 
                 Confirm Reschedule
 

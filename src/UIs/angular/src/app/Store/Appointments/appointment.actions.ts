@@ -62,7 +62,7 @@ export const getMyAppointmentsFailure = createAction(
 );
 export const cancelMyAppointment = createAction(
     '[Appointments Cancel] delete ',
-    props<{ appointmentId: number, patientId: number }>()
+    props<{ appointmentId: number, patientId: number, cancelReason: string, lastUpdatedBy: string, associateRole: string }>()
 
 );
 
@@ -77,7 +77,7 @@ export const cancelMyAppointmentFailure = createAction(
 );
 export const rescheduleMyAppointment = createAction(
     '[Appointments reschedule] put ',
-    props<{ appointmentId: number, patientId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any }>()
+    props<{ appointmentId: number, patientId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any, associateRole?: string, rescheduleReason?: string, lastUpdatedBy?: string }>()
 
 );
 
