@@ -31,10 +31,12 @@ export class AppoinmentService {
   getMyAppoitmentsByPatientID(patientId: number) {
     return this.http.get(`${this.apiUrl}${APIEndpoints.GET_MYAPPOINTMENTS_BY_PATIONT_ID}${patientId}`)
   }
-  cancelAppoitmentsByPatientID(patientId: number, appointmentId: number) {
-    return this.http.delete(`${this.apiUrl}${APIEndpoints.CANCEL_MY_APPOINTMENT}?appointmentId=${appointmentId}&patientId=${patientId}`)
+  cancelAppoitmentsByPatientID(patientId: number, appointmentId: number, associateRole: string, lastUpdatedBy: string, cancelReason: string) {
+    return this.http.delete(`${this.apiUrl}${APIEndpoints.CANCEL_MY_APPOINTMENT}`, {
+      body: { patientId, appointmentId, associateRole, lastUpdatedBy, cancelReason }
+    })
   }
-  rescheduleAppoitmentsByPatientID({ patientId, appointmentId, associateId, slotId, visitPurpose, visitType }: { patientId: number, appointmentId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any }) {
-    return this.http.put(`${this.apiUrl}${APIEndpoints.RESCHEULE_MY_APPOINTMENT}`, { patientId, appointmentId, associateId, slotId, visitPurpose, visitType })
+  rescheduleAppoitmentsByPatientID({ patientId, appointmentId, associateId, slotId, visitPurpose, visitType, lastUpdatedBy, associateRole, rescheduleReason }: { patientId: number, appointmentId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any, lastUpdatedBy: any, associateRole: any, rescheduleReason: any }) {
+    return this.http.put(`${this.apiUrl}${APIEndpoints.RESCHEULE_MY_APPOINTMENT}`, { patientId, appointmentId, associateId, slotId, visitPurpose, visitType, lastUpdatedBy, associateRole, rescheduleReason })
   }
 }

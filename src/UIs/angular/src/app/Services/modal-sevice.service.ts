@@ -13,14 +13,17 @@ export class ModalSeviceService {
 
   private responseSource = new Subject<boolean>();
   response$ = this.responseSource.asObservable();
+  private resData = new Subject<boolean>();
+  resData$ = this.responseSource.asObservable();
 
   open(config: ConfirmationModalConfig) {
     console.log('Service Open', config);
     this.confirmationSource.next(config);
   }
 
-  confirm(result: boolean) {
+  confirm(result: boolean, data?: any) {
     console.log('Service confirm called');
     this.responseSource.next(result);
+    this.resData.next(data)
   }
 }

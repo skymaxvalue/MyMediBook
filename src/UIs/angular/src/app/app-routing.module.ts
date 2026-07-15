@@ -38,6 +38,7 @@ import { HelthCareAssociationComponent } from "./Pages/Association-Part/helth-ca
 import { AssociationListComponent } from "./Pages/Association-Part/association-list/association-list.component";
 import { AssignScheduleAsspciationComponent } from "./Pages/Association-Part/assign-schedule-asspciation/assign-schedule-asspciation.component";
 import { RescheduleComponent } from "./Pages/reschedule/reschedule.component";
+import { RescheduleSuccessComponent } from "./Pages/reschedule-success/reschedule-success.component";
 
 export const routes: Routes = [
   {
@@ -133,6 +134,10 @@ export const routes: Routes = [
           {
             path: "appointment-reschedule",
             component: RescheduleComponent
+          },
+          {
+            path: "appointment-reschedule-successfull",
+            component: RescheduleSuccessComponent
           }
         ]
       },

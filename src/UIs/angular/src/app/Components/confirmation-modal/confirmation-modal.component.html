@@ -178,8 +178,13 @@
 
                 <span>{{ config.infoMessage }}</span>
 
+
             </div>
 
+            }
+            @if(config.type === 'cancel'){
+            <label>Cancel Reason</label>
+            <textarea></textarea>
             }
 
             <div class="modal-buttons">
