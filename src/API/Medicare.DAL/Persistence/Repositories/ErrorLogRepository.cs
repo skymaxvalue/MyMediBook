@@ -7,8 +7,8 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class ErrorLogRepository : IErrorLogRepository
     {
-        private readonly DapperContext _context;
-        public ErrorLogRepository(DapperContext context)
+        private readonly IDapperContext _context;
+        public ErrorLogRepository(IDapperContext context)
         {
             _context = context;
         }

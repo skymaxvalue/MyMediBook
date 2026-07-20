@@ -1,4 +1,5 @@
 ﻿using Medicare.Application.Features.Commands.Authentication;
+using Medicare.Application.Interfaces.BackgroundJob.IAppointmentReminder;
 using Medicare.Application.Interfaces.IAppointment;
 using Medicare.Application.Interfaces.IAssociate;
 using Medicare.Application.Interfaces.IAuthRepository;
@@ -13,8 +14,10 @@ using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Interfaces.Master;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.Email;
+using Medicare.DAL.Persistence.Dapper;
 using Medicare.DAL.Persistence.Repositories;
 using Medicare.DAL.Services;
+using Medicare.DAL.Services.Appointment;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 
@@ -69,6 +72,10 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IEmailJobService, EmailJobService>();
             builder.Services.AddScoped<IJwtTokenRepository, JwtService>();
+            builder.Services.AddScoped<IAppointmentReminderRepository, AppointmentReminderRepository>();
+
+            builder.Services.AddScoped<AppointmentReminderJobService>();
+            builder.Services.AddScoped<AppointmentSlotReleaseJobService>();
 
             // ✅ Helper
             builder.Services.AddSingleton<PasswordHelper>();

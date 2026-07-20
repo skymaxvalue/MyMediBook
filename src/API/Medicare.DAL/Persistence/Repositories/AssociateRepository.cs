@@ -11,10 +11,10 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class AssociateRepository : IAssociateRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
         private readonly IDoctorRepository _doctorRepository;
-        public AssociateRepository(DapperContext context, IErrorLogRepository errorLogRepository, IDoctorRepository doctorRepository)
+        public AssociateRepository(IDapperContext context, IErrorLogRepository errorLogRepository, IDoctorRepository doctorRepository)
         {
             _context = context;
             _errorLog = errorLogRepository;
