@@ -4,7 +4,7 @@
     <div class="cancel-modal">
 
         <button class="close-modal" (click)="closeCancelModal()">
-            <img src="assets/images/close.png" alt="Close">
+            <img src="/assets/images/close.png" alt="Close">
         </button>
 
         <!-- LEFT PANEL -->
@@ -31,180 +31,193 @@
                 </div>
 
             </div>
+            <div class="left-content">
 
-            <div class="policy-card">
+                <div class="policy-card">
 
-                @for(rule of config.rules; track $index){
+                    @for(rule of config.displayRules; track $index){
 
-                <div class="rule-item">
+                    <div class="rule-item">
 
-                    <div class="rule-icon" [ngClass]="{
-                    'success-icon': rule.type==='success',
-                    'warning-icon': rule.type==='warning',
-                    'danger-icon': rule.type==='danger',
-                    'info-icon': rule.type==='info'
-                }">
+                        <div class="rule-icon" [ngClass]="{
+                         'success-icon': rule.type==='success',
+                         'warning-icon': rule.type==='warning',
+                         'danger-icon': rule.type==='danger',
+                         'info-icon': rule.type==='info'
+                     }">
 
-                        <img [src]="
-                        rule.type==='success'
-                        ? 'assets/images/check.png'
-                        : rule.type==='warning'
-                        ? 'assets/images/clock.png'
-                        : rule.type==='danger'
-                        ? 'assets/images/close-circle.png'
-                        : 'assets/images/reschedule.png'
-                    ">
+                            <img [src]="
+                             rule.type==='success'
+                             ? 'assets/images/check.png'
+                             : rule.type==='warning'
+                             ? 'assets/images/clock.png'
+                             : rule.type==='danger'
+                             ? 'assets/images/close-circle.png'
+                             : 'assets/images/reschedule.png'
+                         ">
+
+                        </div>
+
+                        <div class="rule-content">
+
+                            <h3>{{ rule.title }}</h3>
+
+                            <p>{{ rule.description }}</p>
+
+                        </div>
 
                     </div>
 
-                    <div class="rule-content">
+                    @if(!$last){
+                    <div class="rule-divider"></div>
 
-                        <h3>{{ rule.title }}</h3>
+                    }
 
-                        <p>{{ rule.description }}</p>
+                    }
+                    <a href="cancellation-policy.html" class="policy-link" target="_blank" (click)="openPolicy()">
 
-                    </div>
+                        <div class="policy-icon">
+                            <img src="/assets/images/icon-reports.png" alt="">
+                        </div>
+
+                        <span>View full {{config.type}} policy</span>
+
+                        <img class="external-icon" src="/assets/images/arrow.png" alt="Open">
+                    </a>
 
                 </div>
-
-                @if(!$last){
-                <div class="rule-divider"></div>
-
-                }
-
-                }
-                <a href="cancellation-policy.html" class="policy-link" target="_blank">
-
-                    <div class="policy-icon">
-                        <img src="/assets/images/icon-reports.png" alt="">
-                    </div>
-
-                    <span>View full cancellation policy</span>
-
-                    <img class="external-icon" src="/assets/images/arrow.png" alt="Open">
-                </a>
-
             </div>
+
 
         </div>
 
         <!-- RIGHT PANEL -->
 
         <div class="modal-right">
+            <div class="right-content">
 
-            <div class="question-circle">
-                <img src="assets/images/question.png" alt="question">
-            </div>
 
-            <h2 class="confirm-title">
-                {{ config.confirmTitle }}
-            </h2>
-
-            <p class="confirm-text">
-                {{ config.confirmText }}
-            </p>
-
-            <div class="appointment-card">
-
-                <div class="appointment-top">
-
-                    <div class="appointment-icon">
-                        <img src="assets/images/dr-icon.png" alt="">
-                    </div>
-
-                    <div>
-
-                        <h3 id="modalDoctor">
-                            {{ config.appointment.doctorName }}
-                        </h3>
-
-                        <span class="doctor-role">
-                            {{ config.appointment.speciality }}
-                        </span>
-
-                    </div>
-
+                <div class="question-circle">
+                    <img src="assets/images/question.png" alt="question">
                 </div>
 
-                <div class="appointment-divider"></div>
+                <h2 class="confirm-title">
+                    {{ config.confirmTitle }}
+                </h2>
 
-                <div class="appointment-bottom">
+                <p class="confirm-text" [innerHTML]="config.confirmText">
 
-                    <div class="appointment-icon">
-                        <img src="assets/images/calendar2.png" alt="">
-                    </div>
+                </p>
 
-                    <div>
+                <div class="appointment-card">
 
-                        <div class="appointment-date">
+                    <div class="appointment-top">
 
-                            <span id="modalDate">
-                                {{ config.appointment.appointmentDate | date:'EEE, dd MMM yyyy' }}
-                            </span>
+                        <div class="appointment-icon">
+                            <img src="assets/images/dr-icon.png" alt="">
+                        </div>
 
-                            &nbsp; • &nbsp;
+                        <div>
 
-                            <span id="modalTime">
-                                {{ config.appointment.slotStartTime }}
+                            <h3 id="modalDoctor">
+                                {{ config.appointment.doctorName }}
+                            </h3>
 
-                                @if(config.type === 'reschedule'){
-                                &nbsp;-&nbsp;{{ config.appointment.slotEndTime }}
-                                }
+                            <span class="doctor-role">
+                                {{ config.appointment.speciality }}
                             </span>
 
                         </div>
 
-                        <div class="appointment-department">
+                    </div>
 
-                            {{ config.type === 'cancel'
-                            ? 'Date & Booked Time Slot'
-                            : 'Current Appointment'
-                            }}
+                    <div class="appointment-divider"></div>
+
+                    <div class="appointment-bottom">
+
+                        <div class="appointment-icon">
+                            <img src="assets/images/calendar2.png" alt="">
+                        </div>
+
+                        <div>
+
+                            <div class="appointment-date">
+
+                                <span id="modalDate">
+                                    {{ config.appointment.appointmentDate | date:'EEE, dd MMM yyyy' }}
+                                </span>
+
+                                &nbsp; • &nbsp;
+
+                                <span id="modalTime">
+                                    {{ config.appointment.slotStartTime }}
+
+                                    @if(config.type === 'reschedule'){
+                                    &nbsp;-&nbsp;{{ config.appointment.slotEndTime }}
+                                    }
+                                </span>
+
+                            </div>
+
+                            <div class="appointment-department">
+
+                                {{ config.type === 'cancel'
+                                ? 'Date & Booked Time Slot'
+                                : 'Current Appointment'
+                                }}
+
+                            </div>
 
                         </div>
 
                     </div>
 
                 </div>
+                @if(config.type === 'reschedule' && config.infoMessage){
 
-            </div>
-            @if(config.type === 'reschedule' && config.infoMessage){
+                <div class="info-card">
 
-            <div class="info-card">
+                    <div class="info-icon">
+                        <img src="assets/images/caution.png" alt="">
+                    </div>
 
-                <div class="info-icon">
-                    <img src="assets/images/caution.png" alt="">
+                    <span>{{ config.infoMessage }}</span>
+
+
                 </div>
 
-                <span>{{ config.infoMessage }}</span>
+                }
+                @if(config.type === 'cancel'){
+                <label>Cancel Reason</label>
+                <textarea [(ngModel)]="cancelReason" class="cancel-reason"></textarea>
+                }
 
+                <div class="modal-buttons">
 
-            </div>
+                    <button class="keep-btn" (click)="closeCancelModal()">
 
-            }
-            @if(config.type === 'cancel'){
-            <label>Cancel Reason</label>
-            <textarea></textarea>
-            }
+                        {{ config.cancelButton }}
 
-            <div class="modal-buttons">
+                    </button>
 
-                <button class="keep-btn" (click)="closeCancelModal()">
+                    @if(config.type === 'cancel'){
 
-                    {{ config.cancelButton }}
+                    <button class="delete-btn" [disabled]="config.disableConfirm" (click)="confirm()">
+                        {{ config.confirmButton }}
+                    </button>
+                    }
+                    @if(config.type === 'reschedule'){
+                    <button class="primary-btn" [disabled]="config.disableConfirm" (click)="reschedulConfirm()">
+                        {{ config.confirmButton }}
+                    </button>
 
-                </button>
+                    }
 
-                <button [ngClass]="config.type === 'cancel'
-        ? 'delete-btn'
-        : 'primary-btn'" [disabled]="config.disableConfirm" (click)="confirm()">
-                    {{ config.confirmButton }}
-                </button>
+                </div>
 
             </div>
 
         </div>
-
     </div>
 
 </div>

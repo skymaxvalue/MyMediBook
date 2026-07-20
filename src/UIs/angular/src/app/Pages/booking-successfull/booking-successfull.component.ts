@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-booking-successfull",
@@ -13,7 +14,7 @@ export class BookingSuccessfullComponent implements OnInit {
   @Input() selectedSlot: any;
   @Input() bookingPatient: any;
   patientName: any = '';
-  constructor() {
+  constructor(private router: Router) {
     console.log(this.doctor, this.selectedDate, this.selectedSlot, this.bookingPatient)
   }
   ngOnInit() {
@@ -26,7 +27,7 @@ export class BookingSuccessfullComponent implements OnInit {
     }
   }
   goBack() {
-    window.location.reload();
+    this.router.navigate(['/patient/dashboard/appointments'])
   }
 
 }

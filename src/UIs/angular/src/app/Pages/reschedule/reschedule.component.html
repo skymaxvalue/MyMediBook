@@ -76,9 +76,12 @@
 
             <div class="time-slots">
 
-                <button type="button" *ngFor="let slot of timeSlots" [disabled]="slot.booked"
-                    [class.disabled]=" slot.booked" [class.active]="selectedTime===slot.time"
-                    (click)="selectTime(slot)">
+                <button *ngFor="let slot of timeSlots" type="button" [disabled]="slot.disabled || slot.booked"
+                    [class.disabled]="slot.disabled" [ngClass]="{
+    'expired-slot': slot.disabled,
+    'booked-slot': slot.booked,
+    'active': selectedTime === slot.time
+  }" (click)="selectTime(slot)">
 
                     {{slot.time}}
 

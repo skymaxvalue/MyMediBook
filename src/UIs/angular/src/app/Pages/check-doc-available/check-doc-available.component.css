@@ -110,7 +110,10 @@
 }
 
 .green { background: #1f7a3f; }
-.red { background: #d11a1a; }
+.red { background: #d11a1a;
+cursor: not-allowed !important;
+pointer-events: none;
+}
 
 .beige {
     background: #e7c29f;
@@ -399,7 +402,7 @@
 }
 
 .red {
-    cursor: pointer;
+    cursor: not-allowed;
 }
 
 .beige {

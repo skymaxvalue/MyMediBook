@@ -33,6 +33,7 @@ export class SelfRegistrationComponent implements OnInit {
   dob: string = '';
   ageError: string = '';
   isValidAge: boolean = false;
+  maxDate: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +50,10 @@ export class SelfRegistrationComponent implements OnInit {
     // console.log(this.router.url);
     this.formInitialization();
     this.url = this.router.url
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 18);
+
+    this.maxDate = date.toISOString().split('T')[0];
     if (this.router.url === '/profile-update' && this.user.data) {
       queueMicrotask(() => {
         this.initialAPICalls();

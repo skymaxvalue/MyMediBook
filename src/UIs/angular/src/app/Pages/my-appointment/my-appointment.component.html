@@ -241,11 +241,11 @@
             <td class="action-buttons">
 
               <button class="reschedule-btn" (click)="rescheduleAppointment(item)"
-                [disabled]="item.appointmentStatus === 'Cancelled'">
+                [disabled]="item.appointmentStatus === 'Cancelled' || isPastAppointment(item.appointmentDate)">
                 <img src="assets/images/reschedule.png" alt="Reschedule">
               </button>
               <button class="cancel-btn" (click)="cancelAppointment(item)"
-                [disabled]="item.appointmentStatus === 'Cancelled'">
+                [disabled]="item.appointmentStatus === 'Cancelled' || isPastAppointment(item.appointmentDate)">
                 <img src="assets/images/trash.png" alt="Cancel">
               </button>
             </td>
@@ -254,7 +254,7 @@
 
           }
           }
-          @else{
+          @if(tableData().length > 0 && paginatedAppointments().length === 0){
           <tr>
             <td colspan="7" class="no-data-row">
               <div class="empty-state">
@@ -286,11 +286,44 @@
           </tr>
 
           }
+          @if(tableData().length === 0){
+
+          <tr>
+            <td colspan="7" class="no-data-row">
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  📅
+                </div>
+
+                <h3>No Appointments Yet</h3>
+
+                <p>
+                  You haven't booked any appointments yet.<br>
+                  Schedule your first appointment with one of our doctors.
+                </p>
+
+                <div class="empty-actions">
+
+
+
+                  <button class="book-btn" (click)="goToSpecialities()">
+                    Book Appointment
+                  </button>
+
+                </div>
+
+              </div>
+            </td>
+          </tr>
+          }
 
         </tbody>
       </table>
 
     </div>
+
+    @if(filteredAppointments().length > 0){
 
     <div class="pagination-wrapper">
 
@@ -306,6 +339,7 @@
       </button>
 
     </div>
+    }
 
   </div>
 

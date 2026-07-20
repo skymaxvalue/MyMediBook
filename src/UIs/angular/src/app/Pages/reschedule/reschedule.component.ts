@@ -38,9 +38,12 @@ export class RescheduleComponent implements OnInit {
   //   { time: '12:30 PM', disabled: false }
   // ];
 
-  constructor(private fb: FormBuilder, private router: Router, private store: Store<AppState>) { }
+  constructor(private fb: FormBuilder, private router: Router, private store: Store<AppState>) {
 
-  async ngOnInit(): Promise<void> {
+
+  }
+
+  ngOnInit() {
     const navigation = this.router.currentNavigation();
     console.log(history.state);
     if (history.state) {
@@ -52,16 +55,24 @@ export class RescheduleComponent implements OnInit {
 
       const localDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00`;
 
+      this.form = this.fb.group({
+        appointmentDate: [localDate.split('T')[0], Validators.required],
+        reason: ['', Validators.required],
+        otherReason: [''],
+        visitPurpose: [this.appointment.visitPurpose, Validators.required],
+        visitType: [this.appointment.visitType, Validators.required]
 
-      // Create local midnight (IST)
+
+      });
+
       const payload = {
         associateId: this.appointment.associateId,
         fromDate: localDate,
         toDate: localDate,
 
       }
-      await this.store.dispatch(getTimeSloteByDoctorID({ payload }))
-      await this.store.select(selectGetTimeSlotOfDoctor)
+      this.store.dispatch(getTimeSloteByDoctorID({ payload }))
+      this.store.select(selectGetTimeSlotOfDoctor)
         .subscribe((res: any) => {
 
           if (res?.data) {
@@ -70,8 +81,12 @@ export class RescheduleComponent implements OnInit {
               time: slot.startTime,
               booked: slot.isBooked,
               slotId: slot.slotId,
-              isAvailable: slot.isAvailable
+              isAvailable: slot.isAvailable,
+              disabled: false
             }));
+            if (this.isToday(localDate)) {
+              this.disablePastSlots();
+            }
 
             // this.showSlotsModal = true;
 
@@ -94,26 +109,32 @@ export class RescheduleComponent implements OnInit {
         })
     }
 
-    this.form = this.fb.group({
-      appointmentDate: ['', Validators.required],
-      reason: ['', Validators.required],
-      otherReason: [''],
-      visitPurpose: [this.appointment.visitPurpose, Validators.required],
-      visitType: [this.appointment.visitType, Validators.required]
-
-
-    });
 
     // const data = localStorage.getItem('appointmentToReschedule');
 
 
-    // this.appointment = JSON.parse(data);
 
-    const currentDate = new Date(this.appointment.date);
+    const currentDate = new Date(this.appointment.appointmentDate);
+
+    if (!isNaN(currentDate.getTime())) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      currentDate.setDate(currentDate.getDate() + 1);
+      this.minDate = today.toISOString().split('T')[0];
+    }
+
+
+
+
 
     currentDate.setDate(currentDate.getDate() + 1);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    this.minDate = today.toISOString().split('T')[0];
 
-    this.minDate = currentDate.toISOString().split('T')[0];
+    // const currentDate = new Date(this.appointment.date);
+
+
 
     this.form.get('reason')?.valueChanges.subscribe(value => {
 
@@ -128,8 +149,10 @@ export class RescheduleComponent implements OnInit {
 
       otherControl?.updateValueAndValidity();
     });
-
   }
+
+
+
 
   selectTime(slot: any): void {
 
@@ -138,13 +161,16 @@ export class RescheduleComponent implements OnInit {
     }
     this.selectedSlot = slot
     this.selectedTime = slot.time;
+
   }
 
   async onDateSelect(event: any) {
+    this.selectedTime = ""
+    const selectedDate = `${event.target.value}T00:00:00`
     const payload = {
       associateId: this.appointment.associateId,
-      fromDate: new Date(`${event.target.value}T00:00:00`).toISOString(),
-      toDate: new Date(`${event.target.value}T00:00:00`).toISOString()
+      fromDate: selectedDate,
+      toDate: selectedDate
     };
     await this.store.dispatch(getTimeSloteByDoctorID({ payload }))
     await this.store.select(selectGetTimeSlotOfDoctor)
@@ -154,32 +180,22 @@ export class RescheduleComponent implements OnInit {
             time: slot.startTime,
             booked: slot.isBooked,
             slotId: slot.slotId,
-            isAvailable: slot.isAvailable
+            isAvailable: slot.isAvailable,
+            disabled: false
           }));
+          console.log("Selected Value:", new Date(event.target.value));
+          const date: any = new Date(event.target.value);
+          if (this.isToday(event.target.value)) {
+            this.disablePastSlots();
+          }
 
-          // this.showSlotsModal = true;
-
-
-          // console.log(res, "=========>")
-          // let bookedSlots: string[] = [];
-
-          // if (item.badgeClass === 'red') {
-          //   bookedSlots = this.allSlots.slice(0, 10);
-          // } else {
-          //   bookedSlots = this.allSlots.slice(0, 3);
-          // }
-
-          // this.slots = this.allSlots.map(slot => ({
-          //   time: slot,
-          //   booked: bookedSlots.includes(slot)
-          // }));
-          // this.showSlotsModal = true;
         }
       })
   }
   async confirmReschedule() {
 
     if (this.form.invalid) {
+      alert("Please select reschedule reason")
       this.form.markAllAsTouched();
       return;
     }
@@ -189,7 +205,7 @@ export class RescheduleComponent implements OnInit {
       return;
     }
 
-    this.appointment.currentDate = this.appointment.date;
+    this.appointment.currentDate = this.appointment.date ? this.appointment.date : this.appointment.appointmentDate;
     this.appointment.currentTime = this.appointment.time;
 
     this.appointment.date = this.formatDate(
@@ -198,7 +214,7 @@ export class RescheduleComponent implements OnInit {
 
     this.appointment.time = this.selectedTime;
 
-    this.appointment.newDate = this.appointment.date;
+    this.appointment.newDate = this.appointment.date ? this.appointment.date : this.appointment.appointmentDate;;
     this.appointment.newTime = this.selectedTime;
 
     this.appointment.reason = this.form.value.reason;
@@ -248,11 +264,71 @@ export class RescheduleComponent implements OnInit {
   }
 
   cancel(): void {
+    localStorage.removeItem('appointmentToReschedule')
     history.back();
+  }
+  disablePastSlots() {
+    console.log("disablePastSlots called");
+    const now = new Date();
+
+    this.timeSlots.forEach((slot: any) => {
+
+      const slotDate = this.convertToDate(slot.time);
+
+      slot.disabled =
+        slot.booked ||
+        !slot.isAvailable ||
+        slotDate <= now;
+
+    });
+
+  }
+  private isToday(date: string): boolean {
+
+    const today = new Date();
+
+
+    const todayString =
+      `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    return todayString === date;
+  }
+  private convertToDate(time: string): Date {
+
+    const now = new Date();
+
+    const [timePart, meridian] = time.trim().split(' ');
+
+    let [hours, minutes] = timePart.split(':').map(Number);
+
+    if (meridian === 'PM' && hours !== 12) {
+      hours += 12;
+    }
+
+    if (meridian === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+    return new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hours,
+      minutes,
+      0
+    );
   }
 
   formatDate(date: string): string {
+    if (!date) {
+      return '';
+    }
 
+    const d = new Date(date);
+
+    if (isNaN(d.getTime())) {
+      return '';
+    }
     return new Date(date).toLocaleDateString('en-GB', {
       day: '2-digit',
       month: 'short',

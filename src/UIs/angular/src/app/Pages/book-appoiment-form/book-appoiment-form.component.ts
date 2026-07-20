@@ -7,23 +7,22 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { Store } from '@ngrx/store';
 import { getAgeType, getRelationType } from 'src/app/Store/Appointments/appointment.actions';
 import { selectAgeType, selectRelationShipType } from 'src/app/Store/Appointments/appointment.selcetors';
-import { getProfileDataByProfileId } from 'src/app/Store/Patient/patient.action';
+import { getPetirntProfileListById, getProfileDataByProfileId } from 'src/app/Store/Patient/patient.action';
 import { selectGetProfileDataByProfileId, selectGetProfileListByPatientId } from 'src/app/Store/Patient/patient.selectors';
 
 @Component({
   selector: 'app-book-appoiment-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './book-appoiment-form.component.html',
   styleUrl: './book-appoiment-form.component.css'
 })
 export class BookAppoimentFormComponent implements OnInit {
   isPatientDropdownOpen = false;
-  selectedPatientName = signal<any | null>(null)
+  selectedPatientName = signal<any | null>('Select Patient')
   @Output() backToAvailability = new EventEmitter<void>();
   patientSearch = signal('');
   @Input() doctor: any;
@@ -168,7 +167,7 @@ export class BookAppoimentFormComponent implements OnInit {
         policy: [''],
         groupId: [0],
         holderName: [''],
-        address: ['']
+        address: []
       }),
 
       paymentData: this.fb.group({
@@ -195,6 +194,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
   }
   InitialApiCall() {
+    this.store.dispatch(getPetirntProfileListById({ patientId: this.loginUser.patientId }));
     this.store.dispatch(getAgeType())
     this.store.dispatch(getRelationType())
     this.store.select(selectAgeType).subscribe((res: any) => {
@@ -211,6 +211,7 @@ export class BookAppoimentFormComponent implements OnInit {
     })
     this.store.select(selectGetProfileListByPatientId).subscribe((res: any) => {
       if (res) {
+        console.log("Profile List", '============++++++++', res);
         console.log(res.data, "=======>")
         this.relativeList.set(res.data)
 
@@ -220,9 +221,10 @@ export class BookAppoimentFormComponent implements OnInit {
 
   async onProfileChange(event: any) {
 
-
+    this.selectedPatientName.set(event.fullName)
     this.bookingForm.patchValue(event)
     this.bookingForm.get('phone')?.setValue(event.phoneNumber)
+    this.bookingForm.get('insuranceData')?.get('holderName')?.setValue(event.fullName)
     const dob = event.dateOfBirth;
 
     const date = new Date(dob);
@@ -233,6 +235,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.bookingForm.patchValue({
       dateOfBirth: formattedDate
     });
+    this.isPatientDropdownOpen = false
 
   }
 

@@ -85,14 +85,15 @@ export interface ConfirmationModalConfig {
     confirmTitle: string;
     confirmText: string;
 
-    confirmButton: string;
+    confirmButton?: string;
     cancelButton: string;
 
     appointment: any;
 
-    rules: ModalRule[];
+
     disableConfirm?: boolean;
-    infoMessage?: string
+    infoMessage?: string;
+    displayRules: any[]
 }
 
 export interface ModalRule {

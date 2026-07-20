@@ -39,6 +39,8 @@ import { AssociationListComponent } from "./Pages/Association-Part/association-l
 import { AssignScheduleAsspciationComponent } from "./Pages/Association-Part/assign-schedule-asspciation/assign-schedule-asspciation.component";
 import { RescheduleComponent } from "./Pages/reschedule/reschedule.component";
 import { RescheduleSuccessComponent } from "./Pages/reschedule-success/reschedule-success.component";
+import { ViewResheduleRulesComponent } from "./Components/view-reshedule-rules/view-reshedule-rules.component";
+import { ViewCancelsheduleRulesComponent } from "./Components/view-cancelshedule-rules/view-cancelshedule-rules.component";
 
 export const routes: Routes = [
   {
@@ -89,6 +91,7 @@ export const routes: Routes = [
               import("./Pages/check-doc-available/check-doc-available.component")
                 .then(m => m.CheckDocAvailableComponent)
           },
+
 
           // Medicine Orders
           {
@@ -151,6 +154,7 @@ export const routes: Routes = [
         path: "association-list",
         component: AssociationListComponent
       },
+
       {
         path: "association-schedule",
         component: AssignScheduleAsspciationComponent
@@ -174,6 +178,14 @@ export const routes: Routes = [
   {
     path: "sign-up",
     component: SelfRegistrationComponent
+  },
+  {
+    path: "reschedullation-policy",
+    component: ViewResheduleRulesComponent
+  },
+  {
+    path: "cancellation-policy",
+    component: ViewCancelsheduleRulesComponent
   },
 
   {

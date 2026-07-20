@@ -103,7 +103,7 @@ body{
 .table-header{
     background:#F4F4F6;
     border-radius:16px;
-    padding:25px 18px;
+    
     display:grid;
    grid-template-columns:
 220px   /* Patient */
@@ -149,21 +149,12 @@ body{
 .bill-card{
     margin-top:18px;
     border:1px solid #E8EAF0;
-    border-radius:20px;
+    border-radius:20px 0px 0px 20px;
     padding:20px 18px;
     display:grid;
- grid-template-columns:
-/* 1.8fr
-1fr
-1fr
-1.5fr
-1fr
-1fr
-1.2fr
-1.2fr
-1fr
-1fr
-1fr; */
+    grid-template-columns:
+
+
 220px   /* Patient */
 140px   /* Visit Date */
 140px   /* Doctor */
@@ -178,7 +169,9 @@ body{
     gap:12px;
     align-items:center;
 }
-
+/* .bill-card > div{
+    
+} */
 
 .table-header div,
 .bill-card > div {
@@ -190,19 +183,16 @@ body{
 
 .table-header div:last-child,
 .bill-card > div:last-child {
-    /* position: sticky;
-    right: 0;
-    background: #fff;
-    z-index: 10;
-    text-align: center; */
+   
     width:170px;
     min-width:170px;
     position:sticky;
     right:0;
-    background:#F4F4F6;
+  
+    background-color: #fff;
     /* border-radius:16px; */
     z-index:100;
-    border-left:1px solid #ddd;
+   
     display:flex;
     align-items:center;
     justify-content:center;
@@ -216,15 +206,12 @@ body{
     background:#F4F4F6;
     /* border-radius:16px; */
     z-index:100;
-    border-left:1px solid #ddd;
+    /* border-left:1px solid #ddd; */
     display:flex;
     align-items:center;
     justify-content:center;
 }
-.table-header div:last-child,
-.bill-card > div:last-child {
-    box-shadow: -8px 0 12px rgba(0,0,0,0.08);
-}
+
 .details-btn{
     min-width:130px;
     white-space:nowrap;
@@ -439,6 +426,13 @@ body{
     align-items:center;
     gap:6px;
     transition:.3s;
+    padding:25px 18px;
+}
+
+.table-header > div,
+.order-card > div{
+    padding:18px;
+    flex-shrink:0;
 }
 
 

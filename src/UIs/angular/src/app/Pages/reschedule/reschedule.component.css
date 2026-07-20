@@ -157,6 +157,25 @@ select{
     font-size:16px;
     margin-bottom: 5px;
 }
+.time-slots button.expired-slot {
+  background: #f1f3f5;
+  border: 1px dashed #adb5bd;
+  color: #868e96;
+  cursor: not-allowed;
+  opacity: 1;
+}
+.time-slots button.booked-slot {
+  background: #ffe5e5;
+  border: 1px solid #ff6b6b;
+  color: #c92a2a;
+  cursor: not-allowed;
+  opacity: 1;             /* Keep color visible */
+}
+.time-slots button.active {
+  background: #4361ee;
+  color: #fff;
+  border-color: #4361ee;
+}
 
 select:hover , input[type=date] :hover{
 border-color: #3B5BDB;
@@ -220,15 +239,22 @@ input[type=date]:focus{
 
     transition:.25s;
 }
+.time-slots button:not(.active):not(.booked-slot):not(.expired-slot):hover {
+    background: #3B5BDB;
+    color: #fff;
+    border-color: #3B5BDB;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 91, 219, 0.25);
+}
 
-.time-slots button:hover{
+/* .time-slots button.active:hover{
 
     background:#3B5BDB;
 
     color:#fff;
 
     border-color:#3B5BDB;
-}
+} */
 
 .time-slots button.active{
 

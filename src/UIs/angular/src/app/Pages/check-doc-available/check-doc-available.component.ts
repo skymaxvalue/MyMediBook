@@ -68,27 +68,27 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     const navigation = this.router.getCurrentNavigation();
 
 
-console.log(this.doctor);
-  if (navigation?.extras.state) {
-    
-    this.doctor = navigation.extras.state['doctor'];
-    this.updatesheduledpatient = navigation.extras.state['appointment'];
-  } else {
-  
-    this.doctor = history.state.doctor;
-    this.updatesheduledpatient = history.state.appointment;
-  }
+    console.log(this.doctor);
+    if (navigation?.extras.state) {
 
-  console.log('Doctor =>', this.doctor);
-  console.log('Appointment =>', this.updatesheduledpatient);
+      this.doctor = navigation.extras.state['doctor'];
+      this.updatesheduledpatient = navigation.extras.state['appointment'];
+    } else {
 
-  if (!this.doctor) {
-    console.error('Doctor data not found');
-    return;
-  }
+      this.doctor = history.state.doctor;
+      this.updatesheduledpatient = history.state.appointment;
+    }
 
-  this.minDate = this.toInputDate(this.today.toLocaleDateString('en-GB'));
-  this.maxDate = this.toInputDate(this.doctor.toDate);
+    console.log('Doctor =>', this.doctor);
+    console.log('Appointment =>', this.updatesheduledpatient);
+
+    if (!this.doctor) {
+      console.error('Doctor data not found');
+      return;
+    }
+
+    this.minDate = this.toInputDate(this.today.toLocaleDateString('en-GB'));
+    this.maxDate = this.toInputDate(this.doctor.toDate);
 
 
     if (this.updatesheduledpatient) {
@@ -319,7 +319,7 @@ console.log(this.doctor);
   }
 
   goBack(): void {
-    this.backToSpecialities.emit();
+    this.router.navigate(['/patient/dashboard/specialities'])
   }
   getAmPmTime(time: string): string {
 
