@@ -94,7 +94,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
       await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
         console.log(patient, "----------")
         if (patient) {
-
+          localStorage.setItem('loginTime', new Date().getTime().toString());
           localStorage.setItem('token', patient.tokenKey)
           localStorage.setItem('user', JSON.stringify(patient.data))
 

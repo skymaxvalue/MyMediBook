@@ -1,6 +1,5 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, formatDate } from "@angular/common";
 import { FormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
 import {
   Component,
   computed,
@@ -11,7 +10,7 @@ import {
   signal
 } from "@angular/core";
 import { ModalSeviceService } from "src/app/Services/modal-sevice.service";
-import { take } from "rxjs";
+import { take, filter } from "rxjs";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
 import { cancelMyAppointment, getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
@@ -33,7 +32,7 @@ interface FamilyMember {
 @Component({
   selector: "app-my-appointment",
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: "./my-appointment.component.html",
   styleUrl: "./my-appointment.component.css",
 })
@@ -93,9 +92,7 @@ export class MyAppointmentComponent implements OnInit {
 
     this.store.select(selectMyAppointmentList)
       .subscribe((res: any) => {
-        if (res) {
-          this.tableData.set(res.data);
-        }
+        this.tableData.set(Array.isArray(res?.data) ? res.data : []);
       });
 
     this.store.select(selectGetProfileListByPatientId)
@@ -150,6 +147,17 @@ export class MyAppointmentComponent implements OnInit {
     this.selectedMember.set(patient);
     this.selectedPatientName.set(patient.fullName);
     this.isPatientDropdownOpen = false;
+  }
+  isPastAppointment(appointmentDate: string | Date): boolean {
+    const appointment = new Date(appointmentDate);
+
+    // Remove time part
+    appointment.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return appointment < today;
   }
   filteredAppointments = computed(() => {
 
@@ -264,6 +272,33 @@ export class MyAppointmentComponent implements OnInit {
     return appointmentDateTime;
   }
   rescheduleAppointment(appointment: any) {
+    const formattedDate = formatDate(
+      appointment.appointmentDate,
+      'dd MMM yyyy',
+      'en-US'
+    );
+    const modalData: any = {
+      type: 'reschedule',
+
+      title: 'Reschedule Appointment',
+      subTitle: 'Please review before you continue.',
+
+      confirmTitle:
+        'Reschedule not allowed.',
+
+      confirmText:
+        'This appointment has already started. Rescheduling is not allowed.',
+
+      // confirmButton: 'Reschedule Appointment',
+      cancelButton: 'Close',
+
+      appointment,
+
+      displayRules: [rescheduleRules[3]],
+
+      disableConfirm: true,
+      infoMessage: 'You can reschedule this appointment up to 2 times.'
+    }
     const rule: any[] = rescheduleRules
     const appointmentDateTime = this.getAppointmentDateTime(appointment);
 
@@ -274,30 +309,9 @@ export class MyAppointmentComponent implements OnInit {
       (1000 * 60 * 60);
 
     // Appointment already started
-    if (diffInHours <= 0) {
+    if (diffInHours <= 0 || diffInHours <= 1) {
 
-      this.confirmationService.open({
-        type: 'reschedule',
-
-        title: 'Reschedule Appointment',
-        subTitle: 'Please review before you continue.',
-
-        confirmTitle:
-          'Are you sure you want to reschedule this appointment?',
-
-        confirmText:
-          'This appointment has already started. Rescheduling is not allowed.',
-
-        confirmButton: 'Reschedule Appointment',
-        cancelButton: 'Close',
-
-        appointment,
-
-        rules: rule,
-
-        disableConfirm: false,
-        infoMessage: 'You can reschedule this appointment up to 2 times.'
-      });
+      this.confirmationService.open(modalData);
 
       return;
     }
@@ -305,28 +319,48 @@ export class MyAppointmentComponent implements OnInit {
     // Within 24 Hours
     if (diffInHours <= 24) {
 
-      this.confirmationService.open({
-        type: 'reschedule',
+      // this.confirmationService.open({
+      //   type: 'reschedule',
 
-        title: 'Reschedule Appointment',
-        subTitle: 'Please review before you continue.',
+      //   title: 'Reschedule Appointment',
+      //   subTitle: 'Late Reschedule Policy',
 
-        confirmTitle:
-          'Are you sure you want to reschedule this appointment?',
+      //   confirmTitle:
+      //     'Would you like to proceed?',
 
-        confirmText:
-          'This appointment is within the next 24 hours. A reschedule fee may apply.',
+      //   confirmText:
+      //     `This appointment is less than 24 hours away. Rescheduling now will apply a late-change fee of <b> 400</b> as per clinic policy.`,
 
-        confirmButton: 'Reschedule Appointment',
-        cancelButton: 'Keep Appointment',
 
-        appointment,
+      //   cancelButton: 'Keep Appointment',
 
-        rules: rule,
+      //   appointment,
 
-        disableConfirm: false,
-        infoMessage: 'You can reschedule this appointment up to 2 times.'
-      });
+      //   displayRules: [rescheduleRules[1]],
+
+
+      //   disableConfirm: false,
+      //   infoMessage: 'You can reschedule this appointment up to 2 times.'
+      // });
+      if (appointment?.letFee) {
+        modalData.confirmText = `This appointment is less than 24 hours away. Rescheduling now will apply a late‑change fee of ,<b> 400</b> as per clinic policy.
+`;
+        modalData.confirmButton = 'Reschedule & Apply Fee';
+        modalData.confirmTitle = 'Do you want to continue rescheduling?'
+        modalData.cancelButton = "Keep Appointment"
+        modalData.displayRules = [rescheduleRules[1]];
+        modalData.disableConfirm = false;
+
+      } else {
+        modalData.confirmText = ` Your appointment is scheduled for <strong>${formattedDate}</strong> at
+  <strong>${appointment.slotStartTime}</strong>, which is now less than 24 hours away. Rescheduling at this time may result in limited availability and could be subject to our late‑change policy.`;
+        modalData.confirmButton = 'Yes, Reschedule Appointment';
+        modalData.confirmTitle = 'Do you want to continue rescheduling?';
+        modalData.displayRules = [rescheduleRules[1]]
+        modalData.disableConfirm = false;
+      }
+
+      this.confirmationService.open(modalData)
 
     } else {
 
@@ -341,14 +375,15 @@ export class MyAppointmentComponent implements OnInit {
           'Are you sure you want to reschedule this appointment?',
 
         confirmText:
-          "You'll be redirected to the doctor's availability page to choose a new available date and time.",
+          "Your appointment is more than 24 hours away. You can reschedule without any fees or limitations. Select a new available time slot to continue.",
 
         confirmButton: 'Reschedule Appointment',
         cancelButton: 'Keep Appointment',
 
         appointment,
 
-        rules: rule,
+        displayRules: [rescheduleRules[0]],
+
 
         disableConfirm: false,
         infoMessage: 'You can reschedule this appointment up to 2 times.'
@@ -361,6 +396,7 @@ export class MyAppointmentComponent implements OnInit {
       .subscribe((confirmed) => {
 
         if (!confirmed) {
+
           return;
         }
 
@@ -400,151 +436,14 @@ export class MyAppointmentComponent implements OnInit {
         return 'status-default';
     }
   }
-  // cancelAppointment(appointment: any) {
-
-  //   this.confirmationService.open({
-  //     title: 'Cancel Appointment',
-  //     message: 'Are you sure you want to cancel this appointment?',
-  //     confirmText: 'Yes, Cancel',
-  //     cancelText: 'No'
-  //   });
-
-  //   this.confirmationService.response$
-  //     .pipe(take(1))
-  //     .subscribe((confirmed) => {
-
-  //       if (confirmed) {
-  //         // this.cancelAppointmentApi(appointment.id);
-  //         this.store.dispatch(cancelMyAppointment({ patientId: this.user.patientId, appointmentId: appointment.appointmentId }))
-  //         this.store.select(selectCanceledAppointment).subscribe((res: any) => {
-  //           if (res) {
-  //             this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
-  //           }
-  //         })
-  //       }
-
-  //     });
-  // }
-  //   cancelAppointment(appointment: any) {
-
-  //     const appointmentDateTime = new Date(appointment.appointmentDate);
-
-  //     const [time, period] = appointment.slotStartTime.split(' ');
-  //     let [hours, minutes] = time.split(':').map(Number);
-
-  //     // Convert to 24-hour format
-  //     if (period === 'PM' && hours < 12) {
-  //       hours += 12;
-  //     }
-
-  //     if (period === 'AM' && hours === 12) {
-  //       hours = 0;
-  //     }
-
-  //     // Set the appointment time
-  //     appointmentDateTime.setHours(hours, minutes, 0, 0);
-
-  //     const now = new Date();
-
-  //     const diffInHours =
-  //       (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-  //     console.log('Appointment:', appointmentDateTime);
-  //     console.log('Current:', now);
-  //     console.log('Difference in Hours:', diffInHours);
-  //     // Appointment already started
-  //     if (diffInHours <= 0) {
-  // this.confirmationService.open({
-  //   type: 'cancel',
-
-  //   title: 'Cancel Appointment',
-  //   subTitle: 'Please review before you proceed.',
-
-  //   confirmTitle: 'Are you sure you want to cancel this appointment?',
-  //   confirmText: 'This action cannot be undone.',
-
-  //   confirmButton: 'Cancel Appointment',
-  //   cancelButton: 'Keep Appointment',
-
-  //   appointment,
-
-  //   rules: [
-  //     {
-  //       type: 'success',
-  //       title: 'Free cancellation',
-  //       description: 'Up to 24 hours before your appointment.'
-  //     },
-  //     {
-  //       type: 'warning',
-  //       title: 'Late cancellation fee may apply',
-  //       description:
-  //         'If cancelled after 24 hours, a cancellation fee may apply.'
-  //     },
-  //     {
-  //       type: 'danger',
-  //       title: 'Cannot cancel after start time',
-  //       description:
-  //         'Once the appointment has started, cancellation is not allowed.'
-  //     }
-  //   ]
-  // });
-  //       // this.confirmationService.open({
-  //       //   title: 'Cancellation Not Allowed',
-  //       //   message: 'Cancellation is not allowed once the appointment has started.',
-  //       //   confirmText: 'OK',
-  //       //   cancelText: '',
-  //       // });
-
-  //       this.confirmationService.response$
-  //         .pipe(take(1))
-  //         .subscribe(() => { });
-
-  //       return;
-  //     }
-
-  //     let message = 'Are you sure you want to cancel this appointment?';
 
 
-
-  //     if (diffInHours <= 24) {
-
-  //       message =
-  //         'This appointment is within the next 24 hours. A cancellation fee of ₹50–₹100 may apply.\n\nDo you want to continue?';
-  //     }
-
-  //     this.confirmationService.open({
-  //       title: 'Cancel Appointment',
-  //       message,
-  //       confirmText: 'Yes, Cancel',
-  //       cancelText: 'No'
-  //     });
-
-  //     this.confirmationService.response$
-  //       .pipe(take(1))
-  //       .subscribe(async (confirmed) => {
-
-  //         if (confirmed) {
-
-  //           await this.store.dispatch(
-  //             cancelMyAppointment({
-  //               patientId: this.user.patientId,
-  //               appointmentId: appointment.appointmentId
-  //             })
-  //           )
-  //           await this.store.select(selectCanceledAppointment).subscribe((res: any) => {
-  //             if (res) {
-  //               this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }))
-  //             }
-  //           })
-
-
-  //         }
-
-  //       });
-
-  //   }
-
-  cancelAppointment(appointment: any) {
+  async cancelAppointment(appointment: any) {
+    const formattedDate = formatDate(
+      appointment.appointmentDate,
+      'dd MMM yyyy',
+      'en-US'
+    );
 
     const appointmentDateTime = new Date(appointment.appointmentDate);
 
@@ -571,7 +470,7 @@ export class MyAppointmentComponent implements OnInit {
       subTitle: 'Please review before you proceed.',
       confirmTitle: 'Are you sure you want to cancel this appointment?',
       confirmText: '',
-      confirmButton: 'Cancel Appointment',
+      // confirmButton: 'Cancel Appointment',
       cancelButton: 'Keep Appointment',
       appointment,
       rules,
@@ -584,17 +483,38 @@ export class MyAppointmentComponent implements OnInit {
       modalData.confirmText =
         'This appointment has already started. Cancellation is not allowed.';
 
-      modalData.confirmButton = 'Cancel Appointment';
+      // modalData.confirmButton = 'Yes, Cancel Appointment';
       modalData.cancelButton = 'Close';
       modalData.disableConfirm = true;
+      modalData.displayRules = [cancelRules[2]];
 
     }
 
     // Within 24 Hours
     else if (diffInHours <= 24) {
+      if (appointment.letfee) {
+        modalData.confirmText = `Your appointment is scheduled for <strong>${formattedDate}</strong> at
+  <strong>${appointment.slotStartTime}</strong>, which is now less than 24 hours away. Canceling at this time will incur a late-cancellation fee of <strong>400</strong> as per our clinic policy.
 
-      modalData.confirmText =
-        'This appointment is within the next 24 hours. A cancellation fee may apply. Do you want to continue?';
+ <br><br>
+  <strong>Would you like to continue with cancellation?</strong>?`
+        modalData.confirmButton = "Yes, Cancel & Apply Fee"
+        modalData.cancelButton = "Keep Appointment"
+
+      } else {
+        modalData.confirmText = `Your appointment is scheduled for   <strong>${formattedDate}</strong> at
+  <strong>${appointment.slotStartTime}</strong>,
+ , which is now less than 24 hours away. You can still cancel, but please note that last-minute cancellations may affect availability for other patients. 
+  <br><br>
+  <strong>Would you like to continue with cancellation?</strong> `;
+        modalData.confirmButton = "Yes, Cancel Appointment"
+
+      }
+
+      // modalData.confirmText =
+      //   'This appointment is within the next 24 hours. A cancellation fee may apply. Do you want to continue?';
+      modalData.disableConfirm = false;
+      modalData.displayRules = [cancelRules[1]];
 
     }
 
@@ -602,7 +522,11 @@ export class MyAppointmentComponent implements OnInit {
     else {
 
       modalData.confirmText =
-        'You can cancel this appointment free of charge.';
+        'Your appointment is more than 24 hours away. You can still cancel without any charges. Would you like to continue with cancellation?';
+      modalData.message = "Your appointment is more than 24 hours away. You can still cancel without any charges.  <br><br> <strong>Would you like to continue with cancellation?</strong>"
+      modalData.displayRules = [cancelRules[1]];
+      modalData.confirmButton = "Yes, Cancel Appointment";
+      modalData.cancelButton = "Keep Appointment"
 
     }
 
@@ -610,7 +534,7 @@ export class MyAppointmentComponent implements OnInit {
 
     this.confirmationService.response$
       .pipe(take(1))
-      .subscribe((confirmed) => {
+      .subscribe(async (confirmed) => {
 
         if (!confirmed || diffInHours <= 0) return;
         const payload = {
@@ -621,24 +545,19 @@ export class MyAppointmentComponent implements OnInit {
           associateRole: this.user.userType
         }
 
-        this.store.dispatch(
+        await this.store.dispatch(
           cancelMyAppointment({
             ...payload
           })
         );
 
-        this.store
-          .select(selectCanceledAppointment)
-          .pipe(take(1))
-          .subscribe((res) => {
-            if (res) {
-              this.store.dispatch(
-                getMyAppointments({
-                  patientId: this.user.patientId
-                })
-              );
-            }
-          });
+        await this.store.select(selectCanceledAppointment).subscribe((res) => {
+          if (res) {
+            window.location.reload()
+          }
+        })
+
+
 
       });
 

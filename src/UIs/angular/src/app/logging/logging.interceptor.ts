@@ -6,19 +6,23 @@ import {
   HttpInterceptor,
   HttpEventType,
   HTTP_INTERCEPTORS,
+  HttpErrorResponse
 } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { tap, catchError } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
-
+import { Router } from "@angular/router";
 
 @Injectable()
 export class LoggingInterceptor implements HttpInterceptor {
+
   constructor(
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) { }
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -28,19 +32,98 @@ export class LoggingInterceptor implements HttpInterceptor {
         }
       });
     }
+
     return next.handle(request).pipe(
+
+      // Success Response
       tap((event: any) => {
+
         if (event.type === HttpEventType.Response) {
-          if (event.body.data.isSuccess === 1 || event.body.result === 1) {
 
-            console.log(request.url, event.body);
-            this.toastr.success(event.body.data.responseMessage ? event.body.data.responseMessage : event.body.statusMessage)
-          } else {
-            this.toastr.error(event.body.data.responseMessage)
+          if (
+            event.body?.data?.isSuccess === 1 ||
+            event.body?.result === 1
+          ) {
+
+            this.toastr.success(
+              event.body?.data?.responseMessage ||
+              event.body?.responseMessage ||
+              event.body?.statusMessage ||
+              'Success'
+            );
           }
-
         }
+      }),
+
+      // Error Response
+      catchError((error: HttpErrorResponse) => {
+
+        let message = 'Something went wrong.';
+
+        switch (error.status) {
+
+          case 0:
+            message = 'Unable to connect to server. Please check your internet connection.';
+            break;
+
+          case 400:
+            message =
+              error.error?.data?.responseMessage ||
+              error.error?.responseMessage ||
+              error.error?.statusMessage ||
+              'Bad Request';
+            break;
+
+          case 401:
+            message = 'Session expired. Please login again.';
+
+            localStorage.clear();
+            this.router.navigate(['/login']);
+            break;
+
+          case 403:
+            message = 'You are not authorized to perform this action.';
+            break;
+
+          case 404:
+            message = 'Requested resource not found.';
+            break;
+
+          case 409:
+            message =
+              error.error?.responseMessage ||
+              'Conflict occurred.';
+            break;
+
+          case 422:
+            message =
+              error.error?.responseMessage ||
+              'Validation failed.';
+            break;
+
+          case 500:
+            message = 'Internal Server Error.';
+            break;
+
+          case 503:
+            message = 'Service is temporarily unavailable.';
+            break;
+
+          default:
+            message =
+              error.error?.data?.responseMessage ||
+              error.error?.responseMessage ||
+              error.error?.statusMessage ||
+              error.message ||
+              'Unexpected error occurred.';
+        }
+
+        this.toastr.error(message);
+
+        return throwError(() => error);
+
       })
+
     );
   }
 }

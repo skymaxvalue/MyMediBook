@@ -4,6 +4,9 @@ import { FormsModule } from "@angular/forms";
 import { MedicineOrder } from "src/app/Models/Patient-Model";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/Store/app.state";
+import { getAllMecineDetailByPatientID } from "src/app/Store/Patient/patient.action";
 
 @Component({
   selector: "app-medicine-orders",
@@ -17,7 +20,7 @@ export class MedicineOrdersComponent {
   isShowDetailMedicin: boolean = false;
   searchText = '';
   sortValue = '';
-
+  loginUser = JSON.parse(localStorage.getItem('user') || "null")
   selectedOrder: MedicineOrder | null = null;
 
   orders: MedicineOrder[] = [
@@ -155,9 +158,13 @@ export class MedicineOrdersComponent {
 
   filteredOrders: MedicineOrder[] = [];
 
+  constructor(private store: Store<AppState>) {
+
+  }
   ngOnInit(): void {
     this.filteredOrders = [...this.orders];
     this.applyFilters();
+    this.store.dispatch(getAllMecineDetailByPatientID({ patientId: this.loginUser.patientId }))
   }
 
   get pagedOrders(): MedicineOrder[] {

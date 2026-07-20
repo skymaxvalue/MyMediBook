@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, HostListener, OnInit } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
+import { AuthService } from "src/app/Services/auth.service";
 import { TabServiceService } from "src/app/Services/tab-service.service";
 
 @Component({
@@ -20,45 +21,45 @@ export class NavbarComponent implements OnInit {
 
   activeTab = 'appointments';
 
- navItems = [
-  {
-    key: 'appointments',
-    label: 'My Appointments',
-    route: '/patient/dashboard/appointments'
-  },
-  {
-    key: 'specialities',
-    label: 'Specialities',
-    route: '/patient/dashboard/specialities'
-  },
-  {
-    key: 'medicine',
-    label: 'Medicine Orders',
-    route: '/patient/dashboard/medicine'
-  },
-  {
-    key: 'labresult',
-    label: 'Lab Results',
-    route: '/patient/dashboard/labresult'
-  },
-  {
-    key: 'billing',
-    label: 'Billing',
-    route: '/patient/dashboard/billing'
-  },
-  {
-    key: 'messages',
-    label: 'Messages',
-    route: '/patient/dashboard/messages'
-  },
-  {
-    key: 'setting',
-    label: 'Settings',
-    route: '/patient/dashboard/settings'
-  }
-];
+  navItems = [
+    {
+      key: 'appointments',
+      label: 'My Appointments',
+      route: '/patient/dashboard/appointments'
+    },
+    {
+      key: 'specialities',
+      label: 'Specialities',
+      route: '/patient/dashboard/specialities'
+    },
+    {
+      key: 'medicine',
+      label: 'Medicine Orders',
+      route: '/patient/dashboard/medicine'
+    },
+    {
+      key: 'labresult',
+      label: 'Lab Results',
+      route: '/patient/dashboard/labresult'
+    },
+    {
+      key: 'billing',
+      label: 'Billing',
+      route: '/patient/dashboard/billing'
+    },
+    {
+      key: 'messages',
+      label: 'Messages',
+      route: '/patient/dashboard/messages'
+    },
+    {
+      key: 'setting',
+      label: 'Settings',
+      route: '/patient/dashboard/settings'
+    }
+  ];
 
-  constructor(private tabService: TabServiceService) { }
+  constructor(private tabService: TabServiceService, private authService: AuthService) { }
 
   ngOnInit() {
     const today = new Date();
@@ -142,7 +143,7 @@ export class NavbarComponent implements OnInit {
 
   logout() {
 
-    localStorage.clear();
+    this.authService.logout()
 
     // router navigate
 

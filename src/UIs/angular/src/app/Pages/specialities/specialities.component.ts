@@ -20,27 +20,32 @@ export class SpecialitiesComponent implements OnInit {
   @Output() onDoctorSelected = new EventEmitter<any>();
   searchText: any = '';
   searchedText: string = '';
-  constructor(private router: Router, private tabService: TabServiceService,private store:Store<AppState>) {
+  constructor(private router: Router, private tabService: TabServiceService, private store: Store<AppState>) {
   }
   ngOnInit(): void {
     this.store.dispatch(
       loadDoctorSpecialities());
     // throw new Error("Method not implemented.");
-      this.store.select(selectDoctorSpecialities)
+    this.store.select(selectDoctorSpecialities)
       .subscribe((res: any) => {
         this.specialities = res;
       });
   }
 
   goToAvailability(doctor: any, ocId: any) {
-    this.router.navigate(
-    ['/patient/dashboard/doctor-availability'],
-    {
-      state: {
-        doctor
-      }
+    if (doctor.fromDate && doctor.fromTime || doctor.toDate && doctor.toTime) {
+
+      this.router.navigate(
+        ['/patient/dashboard/doctor-availability'],
+        {
+          state: {
+            doctor
+          }
+        }
+      );
+    } else {
+      alert("Doctor is not available")
     }
-  );
   }
 
   // Currently not in used due to change backend data
