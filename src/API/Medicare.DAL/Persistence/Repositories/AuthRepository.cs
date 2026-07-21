@@ -15,11 +15,11 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
         private readonly IEmailService _emailService;
         private readonly IJwtTokenRepository _jwtTokenRepository;
-        public AuthRepository(DapperContext context, IErrorLogRepository errorLog, IEmailService emailService, IJwtTokenRepository jwtTokenRepository)
+        public AuthRepository(IDapperContext context, IErrorLogRepository errorLog, IEmailService emailService, IJwtTokenRepository jwtTokenRepository)
         {
             _context = context;
             _errorLog = errorLog;

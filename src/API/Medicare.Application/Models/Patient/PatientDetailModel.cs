@@ -7,7 +7,7 @@ namespace Medicare.Application.Models.Patient
         public Guid UserId { get; set; }
         public int PatientId { get; set; }
         public int ProfileId { get; set; }
-        public string UserType { get; set; }
+        public string UserType { get; set; } = "Patient";
         public string? RoleName { get; set; } = "Patient";
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }

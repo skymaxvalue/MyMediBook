@@ -60,7 +60,7 @@ namespace Medicare.Application.Models.Appointment
         public bool? Insurance { get; set; }
         public string? Provider { get; set; }
         public string? Policy { get; set; }
-        public int? GroupId { get; set; }
+        public string? GroupId { get; set; }
         public string? HolderName { get; set; }
         public string? Address { get; set; }
         public string? PaymentType { get; set; }

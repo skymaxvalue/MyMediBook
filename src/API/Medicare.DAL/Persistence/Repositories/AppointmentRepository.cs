@@ -12,10 +12,10 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
 
-        public AppointmentRepository(DapperContext context, IErrorLogRepository errorLog)
+        public AppointmentRepository(IDapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;

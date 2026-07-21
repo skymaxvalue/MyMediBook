@@ -9,9 +9,9 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class PatientRepository : IPatientRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public PatientRepository(DapperContext context, IErrorLogRepository errorLog) 
+        public PatientRepository(IDapperContext context, IErrorLogRepository errorLog) 
         {
             _context = context;
             _errorLog = errorLog;
@@ -147,7 +147,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-      
+     
         public async Task<PatientDetailModel> GetPatientInfoByUsername(string Username)
         {
             string procName = "USP_GetPatientAccountByUsername";
@@ -196,16 +196,16 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<PatientProfileModel> GetPatientProfileByProfileIdAsync(int profileId)
+        public async Task<PatientProfileModelDto> GetPatientProfileByProfileIdAsync(int profileId)
         {
             string procName = "USP_GetPatientProfileByProfileId";
-            PatientProfileModel returnData = new PatientProfileModel();
+            PatientProfileModelDto returnData = new PatientProfileModelDto();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("ProfileId", profileId);
 
-                returnData = await _context.QuerySingleStoredProcAsync<PatientProfileModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<PatientProfileModelDto>(procName, param);
             }
             catch (Exception ex)
             {

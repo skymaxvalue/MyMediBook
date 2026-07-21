@@ -47,7 +47,7 @@ namespace Medicare.API.Controllers.V1
                 {
                     Data = new List<T>(),
                     StatusMessage = "No records found.",
-                    StatusCode = HttpStatusCode.NotFound,
+                    StatusCode = HttpStatusCode.OK,
                     Result = 0
                 });
             }

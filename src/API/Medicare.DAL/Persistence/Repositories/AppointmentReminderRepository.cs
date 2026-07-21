@@ -1,36 +1,34 @@
 ﻿using Dapper;
+using Medicare.Application.Interfaces.BackgroundJob.IAppointmentReminder;
 using Medicare.Application.Interfaces.IErrorLog;
-using Medicare.Application.Interfaces.IOrders;
+using Medicare.Application.Models.BackgroundJob.Appointment;
+using Medicare.Application.Models.BackgroundJob.ReminderLog;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using Medicare.Application.Models.Orders;
-using Medicare.Application.Models.RxOrder;
 using Medicare.DAL.Persistence.Dapper;
 
 namespace Medicare.DAL.Persistence.Repositories
 {
-    public class RxOrderRepository : IRxOrderRepository
+    public class AppointmentReminderRepository : IAppointmentReminderRepository
     {
-        private readonly IDapperContext _context;
+        private readonly  IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
 
-        public RxOrderRepository(IDapperContext context, IErrorLogRepository errorLog)
+        public AppointmentReminderRepository(IDapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;
         }
-
-        public async Task<List<RxOrderDetailModel>> GetRxOrderByPatientIdAsync(GetRxOrderRequestModel model)
+        public async Task<List<ReleaseableAppointmentModel>> GetReleasableAppointmentsAsync(Guid tenantId)
         {
-            string procName = "USP_GetRxOrdersByPatientId";
-            List<RxOrderDetailModel> returnData = new List<RxOrderDetailModel>();
+            string procName = "USP_GetReleaseableAppointment";
+            List<ReleaseableAppointmentModel> returnData = new List<ReleaseableAppointmentModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("PatientId", model.PatientId);
-                param.Add("ProfileId", model.ProfileId);
+                param.Add("TenantId", tenantId);
 
-                returnData = await _context.QueryStoredProcListAsync<RxOrderDetailModel>(procName, param);
+                returnData = await _context.QueryStoredProcListAsync<ReleaseableAppointmentModel>(procName, param);
             }
             catch (Exception ex)
             {
@@ -45,16 +43,16 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<RxOrderDetailModel> GetRxOrderByOrderIdAsync(int orderId)
+        public async Task<List<StaleAppointmentModel>> GetStaleAppointmentListAsync(StaleAppointmentRequestModel model)
         {
-            string procName = "USP_GetRxOrderByOrderId";
-            RxOrderDetailModel returnData = new RxOrderDetailModel();
+            string procName = "USP_GetStaleAppointments";
+            List<StaleAppointmentModel> returnData = new List<StaleAppointmentModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("OrderId", orderId);
-
-                returnData = await _context.QuerySingleStoredProcAsync<RxOrderDetailModel>(procName, param);
+                param.Add("TenantId", model.TenantId);
+                param.Add("ThresholdMin", model.ThresholdMin);
+                returnData = await _context.QueryStoredProcListAsync<StaleAppointmentModel>(procName);
             }
             catch (Exception ex)
             {
@@ -69,25 +67,23 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> CreateRxOrderAsync(CreateRxOrderRequestModel model)
+        public async Task<ResponseModel> LogReminderAsync(ReminderLogModel model)
         {
-            string procName = "USP_CreateRxOrder";
+            string procName = "USP_LogAppointmentReminder";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("TenantId", model.TenantId);
+                param.Add("OtpTypeId", model.OtpTypeId);
                 param.Add("PatientId", model.PatientId);
-                param.Add("ProfileId", model.ProfileId);
-                param.Add("AssociateId", model.AssociateId);
-                param.Add("PharmacyId", model.PharmacyId);
-                param.Add("DrugName", model.DrugName);
-                param.Add("Dosage", model.Dosage);
-                param.Add("Frequency", model.Frequency);
-                param.Add("DurationDays", model.DurationDays);
-                param.Add("Instructions", model.Instructions);
-                param.Add("ExpiryDate", model.ExpiryDate);
+                param.Add("ReminderType", model.ReminderType);
+                param.Add("NotificationChannel", model.NotificationChannel);
+                param.Add("IsSuccess", model.IsSuccess);
+                param.Add("SentTo", model.SentTo);
 
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName);
             }
             catch (Exception ex)
             {
@@ -102,18 +98,17 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> CancelRxOrderAsync(CancelRxOrderRequestModel model)
+        public async Task<ResponseModel> ReleaseAppointmentSlotAsync(ReleaseAppointmentRequestModel model)
         {
-            string procName = "USP_CancelRxOrder";
+            string procName = "USP_LogAppointmentReminder";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("OrderId", model.OrderId);
-                param.Add("PatientId", model.PatientId);
-                param.Add("CancelReason", model.CancelReason);
-               
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("SlotId", model.SlotId);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName);
             }
             catch (Exception ex)
             {
@@ -128,24 +123,17 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<ResponseModel> UpdateRxOrderAsync(UpdateRxOrderRequestModel model)
+        public async Task<ResponseModel> UpdateReminderInfoAsync(UpdateAppointmentRequestModel model)
         {
-            string procName = "USP_UpdateRxOrder";
+            string procName = "USP_UpdateReminderInfo";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("OrderId", model.OrderId);
-                param.Add("PatientId", model.PatientId);
-                param.Add("PharmacyId", model.PharmacyId);
-                param.Add("DrugName", model.DrugName);
-                param.Add("Dosage", model.Dosage);
-                param.Add("Frequency", model.Frequency);
-                param.Add("DurationDays", model.DurationDays);
-                param.Add("Instructions", model.Instructions);
-                param.Add("ExpiryDate", model.ExpiryDate);
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("CleanupAfterHours", model.CleanupAfterHours);
 
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName);
             }
             catch (Exception ex)
             {

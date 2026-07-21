@@ -8,9 +8,9 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class SecurityQuestionRepository : ISecurityQuestionRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public SecurityQuestionRepository(DapperContext context, IErrorLogRepository errorLog)
+        public SecurityQuestionRepository(IDapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;

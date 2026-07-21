@@ -11,6 +11,6 @@ namespace Medicare.Application.Interfaces.IPatient
         Task<PatientDetailModel> GetPatientById(int Id);
         Task<PatientDetailModel> GetPatientInfoByUsername(string Username);
         Task<List<PatientProfileModel>> GetPatientProfileListByIdAsync(int patientId);
-        Task<PatientProfileModel> GetPatientProfileByProfileIdAsync(int profileId);
+        Task<PatientProfileModelDto> GetPatientProfileByProfileIdAsync(int profileId);
     }
 }

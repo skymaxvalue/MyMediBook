@@ -6,7 +6,7 @@ using Medicare.Application.Models.CommonModels.ErrorLog;
 
 namespace Medicare.DAL.Persistence.Dapper
 {
-    public class DapperContext
+    public class DapperContext : IDapperContext
     {
         private readonly IDbConnectionFactory _factory;
         private readonly ILogger<DapperContext> _logger;
@@ -65,20 +65,29 @@ namespace Medicare.DAL.Persistence.Dapper
         Func<IDbConnection, Task<TResult>> operation,
         string procName,
         object param)
-    {
-        try
         {
-            using var connection = _factory.CreateConnection(); 
-            if (connection.State == ConnectionState.Closed)
-                connection.Open();
+            try
+            {
+                using var connection = _factory.CreateConnection();
+                if (connection.State == ConnectionState.Closed)
+                    connection.Open();
 
-            return await operation(connection);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database operation failed. ProcName: {ProcName}. Params: {@Params}", procName, param);
-            throw;
+                return await operation(connection);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Database operation failed. ProcName: {ProcName}. Params: {@Params}", procName, param);
+                throw;
+            }
         }
     }
+    public interface IDapperContext
+    {
+        Task<IEnumerable<T>> QueryAsync<T>(string sql, object param = null);
+        Task<T> QuerySingleAsync<T>(string sql, object param = null);
+        Task<IEnumerable<T>> QueryStoredProcAsync<T>(string procName, object param = null);
+        Task<T> QuerySingleStoredProcAsync<T>(string procName, object param = null);
+        Task<List<T>> QueryStoredProcListAsync<T>(string procName, object param = null);
+        Task<int> ExecuteStoredProcAsync(string procName, object param = null);
     }
 }

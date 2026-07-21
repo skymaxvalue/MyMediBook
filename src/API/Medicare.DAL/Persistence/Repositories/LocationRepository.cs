@@ -9,10 +9,10 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class LocationRepository : ILocationRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
 
-        public LocationRepository(DapperContext context, IErrorLogRepository errorLog)
+        public LocationRepository(IDapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;

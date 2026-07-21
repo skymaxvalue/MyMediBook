@@ -11,9 +11,9 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class MasterRepository : IMasterRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public MasterRepository(DapperContext context, IErrorLogRepository errorLogRepository)
+        public MasterRepository(IDapperContext context, IErrorLogRepository errorLogRepository)
         {
             _context = context;
             _errorLog = errorLogRepository;

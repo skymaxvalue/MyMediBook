@@ -83,6 +83,14 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
             return HandleListResponse(response);
         }
+        [HttpPut]
+        [Route("UpdateAppointmentStatus/{appointmentId}")]
+        public async Task<IActionResult> UpdateAppointmentStatus(int associateId)
+        {
+            List<PatientProfileModel> response = new List<PatientProfileModel>();
+            response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
+            return HandleListResponse(response);
+        }
 
     }
 }

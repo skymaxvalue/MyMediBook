@@ -37,7 +37,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
                     ToTime = d.ToTime,
                     FromDate = d.FromDate,
                     ToDate = d.ToDate,
-                    AvailableWeekDays = d.AvailableWeekDates?.Split(',').Select(x => x.Trim()).ToList() ?? new List<string>()
+                    AvailableWeekDays = d.AvailableWeekDays?.Split(',').Select(x => x.Trim()).ToList() ?? new List<string>()
                 }).ToList()
             })
             .ToList();
