@@ -37,7 +37,7 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new GetAssociateListQuery());
             return HandleListResponse(response);
         }
-
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("CreateAssociateSchedule")]
         public async Task<IActionResult> CreateAssociateSchedule(AssociateScheduleModel model)

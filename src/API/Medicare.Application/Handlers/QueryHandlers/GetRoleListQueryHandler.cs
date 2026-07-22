@@ -15,7 +15,15 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<List<RoleDataModel>> Handle(GetRoleListQuery request, CancellationToken cancellationToken)
         {
-            return await _masterRepository.GetRoleListAsync();
+            var excludedRole = request.role switch
+            {
+                "Admin" => new[] { 1, 2 },
+                _       => new[] { 1,2 } 
+            };
+
+            var result = await _masterRepository.GetRoleListAsync();
+
+            return result.Where(r => !excludedRole.Contains(r.RoleId)).ToList();
         }
     }
 }
