@@ -131,10 +131,10 @@ export class AuthService {
   logout() {
     this.stopRefreshTimer(); // Timer stop karo
 
-    localStorage.clear();    // Token aur user data remove karo
+    // localStorage.clear();    // Token aur user data remove karo
 
     // Login page par redirect karo
-    window.location.href = '/login';
+    // window.location.href = '/login';
   }
 
   // getQuestion API

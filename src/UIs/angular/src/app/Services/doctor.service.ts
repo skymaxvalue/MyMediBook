@@ -1,8 +1,9 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpContext } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { APIEndpoints } from "../Utility/EndPointsOfAPI";
 import { AssociateRequest, CreateScheduleRequest } from "../Models/Association-model";
+import { USE_ASSOCIATION_TOKEN } from "../logging/http-context-tokens";
 
 @Injectable({
   providedIn: "root",
@@ -57,7 +58,13 @@ export class DoctorService {
 
   getAllAssociates() {
     return this.http.get(
-      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_ASSOCIATE_LIST}`
+      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_ASSOCIATE_LIST}`,
+      {
+        context: new HttpContext().set(
+          USE_ASSOCIATION_TOKEN,
+          true
+        )
+      }
     )
   }
 

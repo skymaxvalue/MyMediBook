@@ -18,7 +18,7 @@ export const APIEndpoints = {
     GET_ROLES: "Role/GetRoleList",
     GET_DEPARTMENT: "Department/GetDepartmentList",
     GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
-    REGISTER_ASSOCIATION: "Associate/RegisterAssociateMaster",
+    REGISTER_ASSOCIATION: "Auth/RegisterAssociate",
     GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
     GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
     GET_ASSOCIATE_LIST: "Associate/GetAssociateList",

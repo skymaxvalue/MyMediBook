@@ -12,6 +12,7 @@ import { Observable, throwError } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
+import { USE_ASSOCIATION_TOKEN } from './http-context-tokens';
 
 @Injectable()
 export class LoggingInterceptor implements HttpInterceptor {
@@ -23,7 +24,11 @@ export class LoggingInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const isAssociation = request.context.get(USE_ASSOCIATION_TOKEN);
+    const token = isAssociation
+      ? localStorage.getItem('associationToken')
+      : localStorage.getItem('token');
 
     if (token) {
       request = request.clone({
