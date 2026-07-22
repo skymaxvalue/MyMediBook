@@ -77,6 +77,7 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("LoginAssociate")]
         public async Task<IActionResult> LoginAssociate([FromBody] AuthModel model)
@@ -112,10 +113,13 @@ namespace Medicare.API.Controllers.V1
             return HandleLoginResponse(response, token, refreshToken);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("RegisterAssociate")]
         public async Task<IActionResult> RegisterAssociate(RegisterAssociateModel model)
         {
+            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
+            model.TenantId = tenantId;
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateAssociateCommand(model));
             return HandleResponse(response);
