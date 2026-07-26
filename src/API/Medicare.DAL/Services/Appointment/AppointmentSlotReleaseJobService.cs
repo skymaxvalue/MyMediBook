@@ -1,5 +1,7 @@
 ﻿using Medicare.Application.Interfaces.BackgroundJob.IAppointmentReminder;
+using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.BackgroundJob.Appointment;
+using Medicare.Application.Models.CommonModels.ErrorLog;
 
 namespace Medicare.DAL.Services.Appointment
 {
@@ -7,9 +9,12 @@ namespace Medicare.DAL.Services.Appointment
     {
         private readonly IAppointmentReminderRepository _reminderRepository;
 
-        public AppointmentSlotReleaseJobService(IAppointmentReminderRepository reminderRepository)
+        private readonly IErrorLogRepository _errorLog;
+
+        public AppointmentSlotReleaseJobService(IAppointmentReminderRepository reminderRepository, IErrorLogRepository errorLog)
         {
             _reminderRepository = reminderRepository;
+            _errorLog = errorLog;
         }
 
         // Processes every 60 mins 
@@ -21,13 +26,26 @@ namespace Medicare.DAL.Services.Appointment
 
             foreach (var appointment in releasable)
             {
-                var releaseAppointmentModel = new ReleaseAppointmentRequestModel
+                try
                 {
-                    AppointmentId = appointment.AppointmentId,
-                    SlotId = appointment.SlotId,
-                };
+                    var releaseAppointmentModel = new ReleaseAppointmentRequestModel
+                    {
+                        AppointmentId = appointment.AppointmentId,
+                        SlotId = appointment.SlotId,
+                    };
 
-                await _reminderRepository.ReleaseAppointmentSlotAsync(releaseAppointmentModel);
+                    await _reminderRepository.ReleaseAppointmentSlotAsync(releaseAppointmentModel);
+                }
+                catch (Exception ex)
+                {
+                    await _errorLog.InsertErrorLog(new ErrorLogModel
+                    {
+                        IsDBError = false,
+                        Error_Message = $"{ex.Message}; AppointmentId: {appointment.AppointmentId}",
+                        Error_Procedure = "",
+                        Error_Trace = ex.StackTrace
+                    });
+                }
             }
         }
     }

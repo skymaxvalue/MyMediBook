@@ -2,7 +2,6 @@
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using System.Security.Cryptography;
 
 namespace Medicare.Application.Handlers.CommandHandlers
 {
@@ -10,12 +9,12 @@ namespace Medicare.Application.Handlers.CommandHandlers
     {
         private const int MaxAttempts = 3;
         private readonly IAuthRepository _authRepository;
-
-        public VerifyOtpCommandHandler(IAuthRepository authRepository)
+        private readonly PasswordHelper _passwordHelper;
+        public VerifyOtpCommandHandler(IAuthRepository authRepository, PasswordHelper passwordHelper)
         {
             _authRepository = authRepository;
+            _passwordHelper = passwordHelper;
         }
-
         public async Task<ResponseModel> Handle(VerifyOtpCommand request, CancellationToken ct)
         {
             var otpDetail = await _authRepository.GetOtpDetailAsync(request.model.Email);
@@ -25,7 +24,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 {
                     IsSuccess = 0,
                     ResponseMessage = "No OTP request found for this email."
-                }; 
+                };
 
             if (otpDetail.OtpAttempts >= MaxAttempts)
                 return new ResponseModel
@@ -34,19 +33,16 @@ namespace Medicare.Application.Handlers.CommandHandlers
                     ResponseMessage = "OTP locked. Please request a new one."
                 };
 
-            if (DateTime.UtcNow > otpDetail.Expiry)
+            if (DateTime.UtcNow > otpDetail.OtpExpiry)
                 return new ResponseModel
                 {
                     IsSuccess = 0,
                     ResponseMessage = "OTP has expired. Please request a new one."
                 };
 
-            using var hmac = new HMACSHA512(otpDetail.OtpSalt);
-            var computedHash = hmac.ComputeHash(
-                System.Text.Encoding.UTF8.GetBytes(request.model.OtpCode)
-            );
+            var validOtp = _passwordHelper.VerifyPassword(request.model.OtpCode, otpDetail.OtpHash);
 
-            if (!CryptographicOperations.FixedTimeEquals(computedHash, otpDetail.OtpHash))
+            if (!validOtp)
             {
                 await _authRepository.IncrementOtpAttemptsAsync(otpDetail.Email);
                 return new ResponseModel
@@ -57,9 +53,9 @@ namespace Medicare.Application.Handlers.CommandHandlers
             }
 
             await _authRepository.ClearOtpAsync(request.model.Email);
-            
-            await _authRepository.ResetFailedAttemptsAsync(request.model.Email);  
-            
+
+            await _authRepository.ResetFailedAttemptsAsync(request.model.Email);
+
             return new ResponseModel()
             {
                 Status = 1,

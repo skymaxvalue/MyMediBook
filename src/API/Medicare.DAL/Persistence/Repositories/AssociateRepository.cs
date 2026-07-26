@@ -109,16 +109,16 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<List<AssociateDetailDto>> GetAssociateInfoByUsername(string Username)
+        public async Task<AssociateDetailDto> GetAssociateInfoByUsername(string Username)
         {
             string procName = "USP_GetAssociateAccountByUsername";
-            List<AssociateDetailDto> returnData = new List<AssociateDetailDto>();
+            AssociateDetailDto returnData = new AssociateDetailDto();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("Username", Username);
 
-                returnData = await _context.QueryStoredProcListAsync<AssociateDetailDto>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<AssociateDetailDto>(procName, param);
             }
             catch (Exception ex)
             {

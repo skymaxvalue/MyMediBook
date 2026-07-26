@@ -4,6 +4,7 @@ using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
+using Medicare.DAL.Services.Appointment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,12 @@ namespace Medicare.API.Controllers.V1
     public class AppointmentController : BaseApiController
     {
         private readonly IMediator _mediator;
-        public AppointmentController(IMediator mediator)
+        private readonly AppointmentReminderJobService _reminder;
+
+        public AppointmentController(IMediator mediator, AppointmentReminderJobService reminder)
         {
             _mediator = mediator;
+            _reminder = reminder;
         }
 
         [HttpPost]
@@ -91,6 +95,5 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
             return HandleListResponse(response);
         }
-
     }
 }
