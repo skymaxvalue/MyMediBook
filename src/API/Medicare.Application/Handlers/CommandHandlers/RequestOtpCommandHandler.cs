@@ -15,11 +15,13 @@ namespace Medicare.Application.Handlers.CommandHandlers
         private readonly IAuthRepository _authRepository;
         private readonly IEmailJobService _emailJobService;
         private readonly IUserRepository _userRepository;
-        public RequestOtpCommandHandler(IAuthRepository authRepository, IEmailJobService emailJobService, IUserRepository userRepository)
+        private readonly PasswordHelper _passwordHelper;
+        public RequestOtpCommandHandler(IAuthRepository authRepository, IEmailJobService emailJobService, IUserRepository userRepository, PasswordHelper passwordHelper)
         {
             _authRepository = authRepository;
             _emailJobService = emailJobService;
             _userRepository = userRepository;
+            _passwordHelper = passwordHelper;
         }
 
         public async Task<ResponseModel> Handle(RequestOtpCommand request, CancellationToken ct)
@@ -32,10 +34,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
             // Generate OTP
             var rawOtp = GenerateOtp();
 
-            //Hash OTP 
-            using var hmac = new HMACSHA512();
-            var otpSalt = hmac.Key;
-            var otpHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawOtp));
+            var otpHash = _passwordHelper.HashPassword(rawOtp);
 
             var expiry = DateTime.UtcNow.AddMinutes(5);
 
@@ -43,8 +42,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
             {
                 Email = request.Model.Email,
                 OtpHash = otpHash,
-                OtpSalt = otpSalt,
-                Expiry = expiry,
+                OtpExpiry = expiry,
                 OtpAttempts = 0
             };
 

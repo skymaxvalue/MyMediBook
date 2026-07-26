@@ -34,21 +34,22 @@ namespace Medicare.API.Controllers.V1
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("LoginPatient")]
-        public async Task<IActionResult> LoginPatient([FromBody] AuthModel model)
+        [Route("doLogin")]
+        public async Task<IActionResult> doLogin([FromBody] AuthModel model)
         {
-            PatientDetailModel response = new PatientDetailModel();
-            response = await _mediator.Send(new AuthPatientCommand(model));
+            AuthResultModel response = new AuthResultModel();
+            response = await _mediator.Send(new AuthCommand(model));
             if (response.IsSuccess != 1) return HandleResponse(response);
             var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
             {
                 UserId = response.UserId,
-                RefId = response.PatientId,
+                RefId = response.RefId,
                 UserType = response.UserType,
                 Email = response.Email,
                 Username = response.Username,
-                FullName = $"{response.FirstName} {response.LastName}",
-                RoleName = response.RoleName
+                FullName = response.FullName,
+                RoleName = response.RoleName,
+                TenantId = response.TenantId,
             });
 
             string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
@@ -75,42 +76,6 @@ namespace Medicare.API.Controllers.V1
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreatePatientCommand(model));
             return HandleResponse(response);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("LoginAssociate")]
-        public async Task<IActionResult> LoginAssociate([FromBody] AuthModel model)
-        {
-            AssociateDetailModel response = new AssociateDetailModel();
-            response = await _mediator.Send(new AuthAssociateCommand(model));
-            if (response.IsSuccess != 1) return HandleResponse(response);
-            var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
-            {
-                UserId = response.UserId,
-                RefId = response.AssociateId,
-                UserType = response.UserType,
-                Email = response.EmailId,
-                Username = response.EmployeeId,
-                FullName = $"{response.FirstName} {response.LastName}",
-                RoleName = response.RoleName,
-                TenantId = response.TenantId
-            });
-
-            string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
-            DateTime expiryDate = DateTime.UtcNow.AddDays(int.Parse(_config["JwtSettings:RefreshTokenExpDays"]));
-
-            var refreshTokenData = new JwtRefreshTokenModel
-            {
-                UserId = response.UserId,
-                UserType = response.UserType,
-                RefreshToken = refreshToken,
-                ExpiryDate = expiryDate
-            };
-
-            await _refreshTokenRepository.SaveRefreshTokenAsync(refreshTokenData);
-
-            return HandleLoginResponse(response, token, refreshToken);
         }
 
         [Authorize(Roles ="Admin")]

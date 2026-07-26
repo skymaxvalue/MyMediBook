@@ -2,7 +2,6 @@
 using Medicare.Application.Interfaces.IEmail;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.BackgroundJob.Appointment;
-using Medicare.Application.Models.BackgroundJob.ReminderLog;
 using Medicare.Application.Models.CommonModels.Email;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +35,7 @@ namespace Medicare.DAL.Services.Appointment
             var sAppointmentModel = new StaleAppointmentRequestModel
             {
                 TenantId = tenantId,
-                ThresholdMin = thresholdMins
+                ThresholdMins = thresholdMins
             };
 
             var sAppointmentList = await _reminderRepository.GetStaleAppointmentListAsync(sAppointmentModel);
@@ -64,7 +63,7 @@ namespace Medicare.DAL.Services.Appointment
                     await _errorLog.InsertErrorLog(new ErrorLogModel
                     {
                         IsDBError = false,
-                        Error_Message = ex.Message,
+                        Error_Message = $"{ ex.Message }; AppointmentId: { appointment.AppointmentId }; AppointmentDate: { appointment.AppointmentDate }",
                         Error_Procedure = "",
                         Error_Trace = ex.StackTrace
                     });
@@ -73,25 +72,30 @@ namespace Medicare.DAL.Services.Appointment
                 var updateAppointmentModel = new UpdateAppointmentRequestModel
                 {
                     AppointmentId = appointment.AppointmentId,
-                    CleanupAfterHours = cleanupAfterHrs
+                    CleanupAfterHours = cleanupAfterHrs,
+                    NotificationChannel = appointment.NotificationChannel,
+                    ReminderType = "2Hr"
                 };
 
                 // Update Reminder 
-                await _reminderRepository.UpdateReminderInfoAsync(updateAppointmentModel);
+                await UpdateAppointmentReminderInfo(updateAppointmentModel);
+            }
+        }
 
-                // Log the Reminder 
-                await _reminderRepository.LogReminderAsync(new ReminderLogModel
+        private async Task UpdateAppointmentReminderInfo(UpdateAppointmentRequestModel model)
+        {
+            try
+            {
+                await _reminderRepository.UpdateReminderInfoAsync(model);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel
                 {
-                    AppointmentId = appointment.AppointmentId,
-                    TenantId = appointment.TenantId,
-                    PatientId = appointment.PatientId,
-                    OtpTypeId = appointment.OtpTypeId,
-                    ReminderType = "StaleReminder",
-                    NotificationChannel = appointment.NotificationChannel,
-                    SentTo = appointment.NotificationChannel == "EMAIL"
-                                          ? appointment.PatientEmail
-                                          : appointment.PatientPhone,
-                    IsSuccess = success,
+                    IsDBError = false,
+                    Error_Message = $"{ex.Message}; AppointmentId: {model.AppointmentId}",
+                    Error_Procedure = "",
+                    Error_Trace = ex.StackTrace
                 });
             }
         }

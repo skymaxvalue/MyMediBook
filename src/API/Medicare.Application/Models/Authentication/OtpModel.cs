@@ -6,10 +6,8 @@ namespace Medicare.Application.Models.Authentication
     {
         public string Email { get; set; }
         [JsonIgnore]
-        public byte[] OtpHash { get; set; }   // store hash, not raw OTP
-        [JsonIgnore]
-        public byte[] OtpSalt { get; set; }
-        public DateTime Expiry { get; set; }
+        public string OtpHash { get; set; }   // store hash
+        public DateTime OtpExpiry { get; set; }
         public int OtpAttempts { get; set; }
     }
     public class RequestOtpModel
