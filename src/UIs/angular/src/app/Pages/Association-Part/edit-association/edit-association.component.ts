@@ -6,6 +6,10 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
+import { getAssociatesByID } from 'src/app/Store/Doctor/doctor.action';
+import { selectGetAssociateDetailsByItID } from 'src/app/Store/Doctor/doctor.selectors';
 
 interface AssociateSchedule {
 
@@ -66,6 +70,7 @@ export class EditAssociationComponent implements OnInit {
   readonly SELECTED_KEY = 'associateScheduleSelected';
 
   form!: FormGroup;
+  associate: any = null
 
   selectedIndex = signal(0);
   daysDisabled = true;
@@ -174,6 +179,7 @@ export class EditAssociationComponent implements OnInit {
     return this.roleData[deptId] ?? [];
 
   });
+  associateId: any;
   back() {
 
     this.router.navigate(['association/dashboard/association-list']);
@@ -185,11 +191,23 @@ export class EditAssociationComponent implements OnInit {
 
     private route: ActivatedRoute,
 
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
 
   ) { }
 
   ngOnInit() {
+    this.associateId = Number(
+      this.route.snapshot.paramMap.get('associateId')
+    );
+    if (this.associateId) {
+      this.store.dispatch(getAssociatesByID({ associateId: this.associateId }))
+      this.store.select(selectGetAssociateDetailsByItID).subscribe((res) => {
+        if (res) {
+          this.associate = res
+        }
+      })
+    }
 
     this.createForm();
 
@@ -201,10 +219,12 @@ export class EditAssociationComponent implements OnInit {
   createForm() {
 
     this.form = this.fb.group({
-      name: [{ value: '', disabled: true }],
-      dept: [{ value: '', disabled: true }],
-      role: [{ value: '', disabled: true }],
-      spec: [{ value: '', disabled: true }],
+      firstName: [{ value: '', disabled: true }],
+      lastName: [{ value: '', disabled: true }],
+      middleName: [{ value: '', disabled: true }],
+      departmentId: [{ value: '', disabled: true }],
+      roleId: [{ value: '', disabled: true }],
+      specialityId: [{ value: '', disabled: true }],
 
       from: [{ value: '', disabled: true }],
       to: [{ value: '', disabled: true }],
@@ -223,8 +243,8 @@ export class EditAssociationComponent implements OnInit {
       deptId: ['10'],
       deptName: [''],
       roleDeptId: ['10'],
-      roleId: [''],
-      roleName: ['']
+
+
     });
 
   }

@@ -22,6 +22,22 @@ export const authReducer = createReducer(
         isLoading: false,
         error: action.error,
     })),
+    on(AuthActions.associateLogin, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(AuthActions.associateLoginSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        associate: action.associate
+    })),
+
+    on(AuthActions.associateLoginFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
 
     on(AuthActions.refreshToken, (state) => ({
         ...state,

@@ -51,4 +51,10 @@ export const selectCreatedAssociateSchedule = createSelector(
 export const selectGetTimeSlotOfDoctor = createSelector(
     selectDoctorSpecialityState,
     state => state.doctorTimeSlot
+);
+export const selectGetAssociateDetailsByItID = createSelector(
+    selectDoctorSpecialityState,
+    state => state.accociateDetails
 )
+
+

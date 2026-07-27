@@ -1,37 +1,57 @@
 export const APIEndpoints = {
-    PATIENT_REGISTER: "Auth/CreatePatientAccount",
-    PATIENT_LOGIN: "Auth/LoginPatient",
-    REQUEST_OTP: "Auth/RequestOtp",
-    VERIFY_OTP: "Auth/VerifyOtp",
-    REFRESH_TOKEN: "Auth/RefreshToken",
-    GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
     GET_SPECIALITIES: "Doctor/GetDoctorList",
-    GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/Patient/GetMyAppointmentList/",
     GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
-    GET_SECURITY_QUESTIONS: "Master/GetSecurityQuestionList",
+    GET_DEPARTMENT: "Department/GetDepartmentList",
+    GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
+    GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
+    GET_ROLES: "Role/GetRoleList",
+
+}
+export const MedicineOrderEndPoints = {
+    GET_MEDICINE_OF_PATIENT: "RxOrder/GetRxOrderByPatientProfileId"
+}
+export const AppointmentApiEndPoint = {
+    CANCEL_MY_APPOINTMENT: "Appointment/CancelAppointmentById",
+    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentSchedule",
+    CREATE_APPOINTMENT: "Appointment/CreateAppointment",
+    GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
+    GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/Patient/GetMyAppointmentList/",
+}
+export const PatientApiEndPoint = {
+    UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
+    GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
+    GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
+    GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
+}
+
+export const AssociateApiEndPoint = {
+    GET_ASSOCIATE_LIST: "Associate/GetAssociateList",
+    CREATE_SCHEDULE_ASSOCIATE: "Associate/CreateAssociateSchedule",
+    GET_ASSOCIATE_BY_ITS_ID: "Associate/GetAssociatebyId/"
+}
+
+
+export const LocationAPIEndPoint = {
     GET_COUNTRIES: "Location/GetCountriesList",
     GET_STAETES: "Location/GetStatesByCountryList/",
     GET_CITIES: "Location/GetCitiesByStateList/",
-    GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
-    UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
-    CREATE_APPOINTMENT: "Appointment/CreateAppointment",
-    GET_ROLES: "Role/GetRoleList",
-    GET_DEPARTMENT: "Department/GetDepartmentList",
-    GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
-    REGISTER_ASSOCIATION: "Auth/RegisterAssociate",
+}
+export const MasterAPIEndPoints = {
+    GET_SECURITY_QUESTIONS: "Master/GetSecurityQuestionList",
+    GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
     GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
     GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
-    GET_ASSOCIATE_LIST: "Associate/GetAssociateList",
-    CREATE_SCHEDULE_ASSOCIATE: "Associate/CreateAssociateSchedule",
-    GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
     GET_AGE_TYPE: "Master/GetAgeTypeList",
-    GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
-    GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
-    GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
-    CANCEL_MY_APPOINTMENT: "Appointment/CancelAppointmentById",
-    RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentSchedule",
-    GET_MEDICINE_OF_PATIENT: "RxOrder/GetRxOrderByPatientProfileId"
 
+}
+export const AuthEndPoints = {
+    PATIENT_REGISTER: "Auth/CreatePatientAccount",
+    PATIENT_LOGIN: "Auth/doLogin",
+    REQUEST_OTP: "Auth/RequestOtp",
+    VERIFY_OTP: "Auth/VerifyOtp",
+    REFRESH_TOKEN: "Auth/RefreshToken",
+    REGISTER_ASSOCIATION: "Auth/RegisterAssociate",
+    ASSOCIATE_LOGIN: "Auth/doLogin"
 }
 
 export const cancelRules = [

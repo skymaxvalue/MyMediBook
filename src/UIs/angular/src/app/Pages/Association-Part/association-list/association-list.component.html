@@ -20,22 +20,22 @@
                 </thead>
                 <tbody>
 
-                    @for(row of schedules(); track row.id; let i = $index) {
+                    @for(row of schedules(); track row.associateId; let i = $index) {
 
 
                     <tr>
 
-                        <td>{{row.name}}</td>
+                        <td>{{row.firstName}} {{row.lastName}}</td>
+                        <td>{{row.roleName}}</td>
+                        <td>{{row.departmentName}}</td>
 
-                        <td>{{row.dept}}</td>
+                        <td>{{row.specialityName}}</td>
 
-                        <td>{{row.spec}}</td>
 
-                        <td>{{row.from}}</td>
 
-                        <td>{{row.to}}</td>
+                        <td>{{row.firstName}}</td>
 
-                        <td>{{row.time}}</td>
+                        <td>{{row.firstName}}</td>
 
                         <td>
                             <div class="action-buttons">
@@ -47,7 +47,7 @@
                                 <button >
                                     Delete
                                 </button> -->
-                                <button class="action-btn edit" type="button" (click)="edit(row,i)">
+                                <button class="action-btn edit" type="button" (click)="edit(row.associateId,i)">
                                     <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
                                         <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
                                             stroke-width="1.8" stroke-linejoin="round" />
@@ -80,7 +80,7 @@
 
                     <p>
 
-                        Delete {{deleteRow?.name}} ?
+                        Delete {{deleteRow?.firstName}} {{deleteRow?.lastName}} ?
 
                     </p>
 

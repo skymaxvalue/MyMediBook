@@ -4,7 +4,7 @@ import { PatientRegister } from "../../Models/Patient-Model";
 // Login Actions
 export const login = createAction(
     '[Auth] Login',
-    props<{ username: string; password: string }>()
+    props<{ username: string; password: string, role: string }>()
 );
 
 export const loginSuccess = createAction(
@@ -128,6 +128,25 @@ export const refreshTokenSuccess = createAction(
 
 export const refreshTokenFailure = createAction(
     '[Auth] Refresh Token Failure',
+    props<{ error: string }>()
+);
+
+
+// Associate login
+
+// Login Actions
+export const associateLogin = createAction(
+    '[Auth] Associate Login',
+    props<{ username: string; password: string, role: string }>()
+);
+
+export const associateLoginSuccess = createAction(
+    '[Auth] Associate Login Success',
+    props<{ associate: any }>()
+);
+
+export const associateLoginFailure = createAction(
+    '[Auth] Associate Login Failure',
     props<{ error: string }>()
 );
 

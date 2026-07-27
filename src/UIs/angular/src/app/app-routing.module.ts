@@ -175,7 +175,12 @@ export const routes: Routes = [
         children: [
 
 
+          {
+            path: "",
+            redirectTo: "association-list",
+            pathMatch: "full"
 
+          },
           // My Appointments
           {
             path: "registration",
@@ -199,7 +204,7 @@ export const routes: Routes = [
 
           },
           {
-            path: "update-association",
+            path: "update-association/:associateId",
             loadComponent: () =>
               import("./Pages/Association-Part/edit-association/edit-association.component")
                 .then(m => m.EditAssociationComponent)
@@ -290,7 +295,11 @@ export const routes: Routes = [
 
   // Authentication
   {
-    path: "login",
+    path: "patient-login",
+    component: LoginComponent
+  },
+  {
+    path: "admin-login",
     component: LoginComponent
   },
   {

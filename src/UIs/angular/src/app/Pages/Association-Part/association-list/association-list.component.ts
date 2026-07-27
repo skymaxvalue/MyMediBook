@@ -4,15 +4,23 @@ import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
 import { getAllAssociates } from "src/app/Store/Doctor/doctor.action";
+import { selectGelAllAssociate } from "src/app/Store/Doctor/doctor.selectors";
 
 interface AssociateSchedule {
-  id: number;
-  name: string;
-  dept: string;
-  spec: string;
-  from: string;
-  to: string;
-  time: string;
+  associateId: number;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  dateOfBirth: string;
+  roleId: number;
+  roleName: string;
+  departmentId: number;
+  departmentName: string;
+  specialityId: number;
+  specialityName: string;
+  designationId: number;
+  designationName: string;
+  isActive: boolean;
 }
 
 
@@ -37,12 +45,16 @@ export class AssociationListComponent implements OnInit {
 
   sortDirection: { [key: number]: boolean } = {};
 
-  constructor(private router: Router, private store: Store<AppState>) { }
+  constructor(private router: Router, private store: Store<AppState>) {
+    this.store.dispatch(getAllAssociates())
+  }
 
   ngOnInit(): void {
-    // this.store.dispatch(getAllAssociates())
+
     this.loadRows();
+    this.getSelectorData()
   }
+
 
   sortedSchedules = computed(() => {
     const rows = [...this.schedules()];
@@ -55,34 +67,41 @@ export class AssociationListComponent implements OnInit {
 
     return rows;
   });
+  getSelectorData() {
+    this.store.select(selectGelAllAssociate).subscribe((res: any) => {
+      if (res) {
+        this.schedules.set(res)
+      }
+    })
+  }
   loadRows() {
 
-    const defaultRows: AssociateSchedule[] = [
-      {
-        id: 1,
-        name: 'Kumar Sekhar',
-        dept: 'Cardiology',
-        spec: 'EP',
-        from: '2026-04-24',
-        to: '2026-05-24',
-        time: '64 Hours'
-      },
-      {
-        id: 2,
-        name: 'Julia Doe',
-        dept: 'Neurology',
-        spec: 'Epilepsy',
-        from: '2026-04-24',
-        to: '2026-05-24',
-        time: '90 Hours'
-      }
-    ];
+    // const defaultRows: AssociateSchedule[] = [
+    //   {
+    //     associateId: 1,
+    //     name: 'Kumar Sekhar',
+    //     dept: 'Cardiology',
+    //     spec: 'EP',
+    //     from: '2026-04-24',
+    //     to: '2026-05-24',
+    //     time: '64 Hours'
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'Julia Doe',
+    //     dept: 'Neurology',
+    //     spec: 'Epilepsy',
+    //     from: '2026-04-24',
+    //     to: '2026-05-24',
+    //     time: '90 Hours'
+    //   }
+    // ];
 
     const data = localStorage.getItem(this.STORAGE_KEY);
 
-    const rows = data ? JSON.parse(data) : defaultRows;
+    // const rows = data ? JSON.parse(data) : defaultRows;
 
-    this.schedules.set(rows);
+    // this.schedules.set(rows);
   }
   saveRows() {
     localStorage.setItem(
@@ -91,17 +110,22 @@ export class AssociationListComponent implements OnInit {
     );
   }
 
-  edit(row: AssociateSchedule, index: number) {
+  edit(id: any, index: number) {
+    // this.router.navigate([
+    //   '/associate/dashboard/update-association',
+    //   row.associateId
+    // ]);
 
-    localStorage.setItem(
-      'associateScheduleSelected',
-      JSON.stringify({
-        ...row,
-        index
-      })
-    );
+    this.router.navigate([`/associate/dashboard/update-association/`, id]);
+    // localStorage.setItem(
+    //   'associateScheduleSelected',
+    //   JSON.stringify({
+    //     ...row,
+    //     index
+    //   })
+    // );
 
-    this.router.navigate(['/associate/dashboard/update-association']);
+    // this.router.navigate(['/associate/dashboard/update-association']);
   }
 
   openDelete(row: AssociateSchedule) {
@@ -115,7 +139,7 @@ export class AssociationListComponent implements OnInit {
 
     if (!this.deleteRow) return;
     this.schedules.update(rows =>
-      rows.filter(x => x.id !== this.deleteRow!.id)
+      rows.filter((x: any) => x.associateId !== this.deleteRow!.associateId)
     );
 
     this.saveRows();
