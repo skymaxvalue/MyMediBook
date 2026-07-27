@@ -264,4 +264,28 @@ export class DoctorSpecialityEffects {
             )
         )
     );
+    loadAssociateByAssociateID$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.getAssociatesByID),
+
+            mergeMap((action) =>
+                this.doctorService.getAssociateByAssociateID({ associateId: action.associateId }).pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.getAssociatesByIDSuccess({
+                            accociateDetails: response.data
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.getAssociatesByIDFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
 }

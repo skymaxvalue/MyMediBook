@@ -222,6 +222,32 @@ export const doctorSpecialityReducer = createReducer(
         })
     )
     ,
+    on(
+        DoctorSpecialityActions.getAssociatesByID,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getAssociatesByIDSuccess,
+        (state, { accociateDetails }) => ({
+            ...state,
+            accociateDetails: accociateDetails,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.getAssociatesByIDFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    ),
 
     on(
         DoctorSpecialityActions.createAssociatesSchedule,

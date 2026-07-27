@@ -87,8 +87,8 @@ export class MyAppointmentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(getMyAppointments({ patientId: this.user.patientId }));
-    this.store.dispatch(getPetirntProfileListById({ patientId: this.user.patientId }));
+    this.store.dispatch(getMyAppointments({ patientId: this.user.userId }));
+    this.store.dispatch(getPetirntProfileListById({ patientId: this.user.userId }));
 
     this.store.select(selectMyAppointmentList)
       .subscribe((res: any) => {
@@ -539,7 +539,7 @@ export class MyAppointmentComponent implements OnInit {
         if (!confirmed || diffInHours <= 0) return;
         const payload = {
           appointmentId: appointment.appointmentId,
-          patientId: this.user.patientId,
+          patientId: this.user.userId,
           cancelReason: "string",
           lastUpdatedBy: this.user.firstName + " " + this.user.lastName,
           associateRole: this.user.userType

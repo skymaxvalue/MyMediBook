@@ -7,7 +7,7 @@ import {
 import { Observable, Subscription, timer } from 'rxjs';
 import { PatientRegister, LoginRequest } from '../Models/Patient-Model';
 import { environment } from '../../environments/environment';
-import { APIEndpoints } from '../Utility/EndPointsOfAPI';
+import { AuthEndPoints, MasterAPIEndPoints, LocationAPIEndPoint } from '../Utility/EndPointsOfAPI';
 
 
 @Injectable({
@@ -24,16 +24,23 @@ export class AuthService {
   ) { }
 
   // Login API
-  loginPatient(data: LoginRequest): Observable<any> {
+  loginPatient(data: LoginRequest, userRole: string): Observable<any> {
+    if (userRole === 'patient') {
+      return this.http.post<any>(
+        `${this.apiUrl}${AuthEndPoints.PATIENT_LOGIN}`,
+        data
+      );
+    } else {
+      return this.http.post<any>(
+        `${this.apiUrl}${AuthEndPoints.ASSOCIATE_LOGIN}`,
+        data
+      );
+    }
 
-    return this.http.post<any>(
-      `${this.apiUrl}${APIEndpoints.PATIENT_LOGIN}`,
-      data
-    );
   }
   requestOTP(email: any) {
     return this.http.post<any>(
-      `${this.apiUrl}${APIEndpoints.REQUEST_OTP}`,
+      `${this.apiUrl}${AuthEndPoints.REQUEST_OTP}`,
       email
     );
   }
@@ -44,7 +51,7 @@ export class AuthService {
   ): Observable<any> {
 
     return this.http.post<any>(
-      `${this.apiUrl}${APIEndpoints.PATIENT_REGISTER}`,
+      `${this.apiUrl}${AuthEndPoints.PATIENT_REGISTER}`,
       patient
     );
   }
@@ -119,7 +126,7 @@ export class AuthService {
     const accessToken = localStorage.getItem('token')
 
     return this.http.post<any>(
-      `${this.apiUrl}${APIEndpoints.REFRESH_TOKEN}`,
+      `${this.apiUrl}${AuthEndPoints.REFRESH_TOKEN}`,
       {
 
         refreshToken,
@@ -131,16 +138,16 @@ export class AuthService {
   logout() {
     this.stopRefreshTimer(); // Timer stop karo
 
-    localStorage.clear();    // Token aur user data remove karo
+    // localStorage.clear();    // Token aur user data remove karo
 
     // Login page par redirect karo
-    window.location.href = '/login';
+    // window.location.href = '/login';
   }
 
   // getQuestion API
   getSecurityQuestions(): Observable<any> {
     return this.http.get<any>(
-      `${this.apiUrl}${APIEndpoints.GET_SECURITY_QUESTIONS}`
+      `${this.apiUrl}${MasterAPIEndPoints.GET_SECURITY_QUESTIONS}`
     );
 
   }
@@ -148,21 +155,21 @@ export class AuthService {
   // getCountries API
   getCountries(): Observable<any> {
     return this.http.get<any>(
-      `${this.apiUrl}${APIEndpoints.GET_COUNTRIES}`
+      `${this.apiUrl}${LocationAPIEndPoint.GET_COUNTRIES}`
     );
   }
 
   // getStates API
   getStates(countryId: number): Observable<any> {
     return this.http.get<any>(
-      `${this.apiUrl}${APIEndpoints.GET_STAETES}${countryId}`
+      `${this.apiUrl}${LocationAPIEndPoint.GET_STAETES}${countryId}`
     );
   }
 
   // getCities API
   getCities(stateId: number): Observable<any> {
     return this.http.get<any>(
-      `${this.apiUrl}${APIEndpoints.GET_CITIES}${stateId}`
+      `${this.apiUrl}${LocationAPIEndPoint.GET_CITIES}${stateId}`
     );
   }
 

@@ -6,12 +6,13 @@ import { AsyncPipe } from "@angular/common";
 import { Store } from "@ngrx/store";
 import { AppState } from "./Store/app.state";
 import { AuthService } from "./Services/auth.service";
+import { ToastComponent } from './Components/Toaster/toast.component';
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
   standalone: true,
-  imports: [RouterOutlet, AsyncPipe],
+  imports: [RouterOutlet, AsyncPipe, ToastComponent],
 })
 export class AppComponent implements OnInit {
   constructor(private store: Store<AppState>, private authService: AuthService) {

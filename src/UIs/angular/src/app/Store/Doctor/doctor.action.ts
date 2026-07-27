@@ -74,6 +74,7 @@ export const registerAssociotionFailure = createAction(
 export const getRoleDepaSpecia = createAction(
     'Get RoleDepaSpecia',
 
+
 );
 
 export const getRoleDepaSpeciaSuccess = createAction(
@@ -112,6 +113,22 @@ export const getAllAssociatesSuccess = createAction(
 
 export const getAllAssociatesFailure = createAction(
     'Get Associates Failure',
+    props<{ error: any }>()
+);
+
+export const getAssociatesByID = createAction(
+    'Get Associates By ID',
+    props<{ associateId: any }>()
+
+);
+
+export const getAssociatesByIDSuccess = createAction(
+    'Get Associates By ID Success',
+    props<{ accociateDetails: any }>()
+);
+
+export const getAssociatesByIDFailure = createAction(
+    'Get Associates By ID Failure',
     props<{ error: any }>()
 );
 export const createAssociatesSchedule = createAction(

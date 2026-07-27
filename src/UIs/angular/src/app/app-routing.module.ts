@@ -165,10 +165,141 @@ export const routes: Routes = [
       }
     ]
   },
+  {
+    path: "associate",
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: "dashboard",
+        component: DashboardComponent,
+        children: [
+
+
+          {
+            path: "",
+            redirectTo: "association-list",
+            pathMatch: "full"
+
+          },
+          // My Appointments
+          {
+            path: "registration",
+            loadComponent: () =>
+              import("./Pages/Association-Part/helth-care-association/helth-care-association.component")
+                .then(m => m.HelthCareAssociationComponent)
+          },
+          {
+            path: "assign-schedule",
+            loadComponent: () =>
+              import("./Pages/Association-Part/assign-schedule-asspciation/assign-schedule-asspciation.component")
+                .then(m => m.AssignScheduleAsspciationComponent)
+          },
+
+          // Specialities
+          {
+            path: "association-list",
+            loadComponent: () =>
+              import("./Pages/Association-Part/association-list/association-list.component")
+                .then(m => m.AssociationListComponent)
+
+          },
+          {
+            path: "update-association/:associateId",
+            loadComponent: () =>
+              import("./Pages/Association-Part/edit-association/edit-association.component")
+                .then(m => m.EditAssociationComponent)
+
+          },
+
+          // Doctor Availability
+          {
+            path: "doctor-availability",
+            loadComponent: () =>
+              import("./Pages/check-doc-available/check-doc-available.component")
+                .then(m => m.CheckDocAvailableComponent)
+          },
+
+
+          // Medicine Orders
+          {
+            path: "medicine",
+            loadComponent: () =>
+              import("./Pages/medicine-orders/medicine-orders.component")
+                .then(m => m.MedicineOrdersComponent)
+          },
+
+          // Lab Results
+          {
+            path: "labresult",
+            loadComponent: () =>
+              import("./Pages/lab-result/lab-result.component")
+                .then(m => m.LabResultComponent)
+          },
+
+          // Billing
+          {
+            path: "billing",
+            loadComponent: () =>
+              import("./Pages/billing/billing.component")
+                .then(m => m.BillingComponent)
+          },
+
+          // Messages
+          {
+            path: "messages",
+            loadComponent: () =>
+              import("./Pages/messages/messages.component")
+                .then(m => m.MessagesComponent)
+          },
+
+          // Settings
+          // {
+          //   path: "setting",
+          //   loadComponent: () =>
+          //     import("./Pages/settings/settings.component")
+          //       .then(m => m.SettingsComponent)
+          // },
+
+          // Appointment Reschedule
+          {
+            path: "appointment-reschedule",
+            component: RescheduleComponent
+          },
+          {
+            path: "appointment-reschedule-successfull",
+            component: RescheduleSuccessComponent
+          }
+        ]
+      },
+
+      // Existing routes
+      {
+        path: "association",
+        component: HelthCareAssociationComponent
+      },
+      {
+        path: "association-list",
+        component: AssociationListComponent
+      },
+
+      {
+        path: "association-schedule",
+        component: AssignScheduleAsspciationComponent
+      },
+      {
+        path: "profile-update",
+        component: SelfRegistrationComponent
+      }
+    ]
+  },
 
   // Authentication
   {
-    path: "login",
+    path: "patient-login",
+    component: LoginComponent
+  },
+  {
+    path: "admin-login",
     component: LoginComponent
   },
   {

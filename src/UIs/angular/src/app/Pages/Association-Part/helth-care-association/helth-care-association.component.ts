@@ -261,6 +261,7 @@ export class HelthCareAssociationComponent {
 
     console.log(this.associateForm.value);
     const payload = {
+      tenantId: "442178DD-60CD-4A6C-8DDD-AC3EE992B954",
       ...this.associateForm.value.personalInfo,
       languagesSpoken: this.associateForm.value.personalInfo.languagesSpoken.join(','),
       ...this.associateForm.value.employmentDetails,

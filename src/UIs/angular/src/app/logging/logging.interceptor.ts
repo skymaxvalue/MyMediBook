@@ -12,18 +12,24 @@ import { Observable, throwError } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
+import { USE_ASSOCIATION_TOKEN } from './http-context-tokens';
+import { ToastService } from "../Components/Toaster/toast.service"
 
 @Injectable()
 export class LoggingInterceptor implements HttpInterceptor {
 
   constructor(
-    private toastr: ToastrService,
+    private toast: ToastService,
     private router: Router
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
+    const isAssociation = request.context.get(USE_ASSOCIATION_TOKEN);
+    const token = isAssociation
+      ? localStorage.getItem('associationToken')
+      : localStorage.getItem('token');
 
     if (token) {
       request = request.clone({
@@ -45,7 +51,7 @@ export class LoggingInterceptor implements HttpInterceptor {
             event.body?.result === 1
           ) {
 
-            this.toastr.success(
+            this.toast.success('Success',
               event.body?.data?.responseMessage ||
               event.body?.responseMessage ||
               event.body?.statusMessage ||
@@ -118,7 +124,7 @@ export class LoggingInterceptor implements HttpInterceptor {
               'Unexpected error occurred.';
         }
 
-        this.toastr.error(message);
+        this.toast.error('Error', message);
 
         return throwError(() => error);
 

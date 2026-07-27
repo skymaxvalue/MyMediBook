@@ -14,6 +14,7 @@ export interface AuthState {
     getCities?: any[];
     requestedOtp: any;
     refreshToken: string | null;
+    associate: any;
 }
 
 export const initialAuthState: AuthState = {
@@ -28,5 +29,6 @@ export const initialAuthState: AuthState = {
     getCities: [],
     loginPatient: null,
     requestedOtp: null,
-    refreshToken: null
+    refreshToken: null,
+    associate: null
 }

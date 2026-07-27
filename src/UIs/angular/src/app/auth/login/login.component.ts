@@ -22,17 +22,29 @@ export class LoginComponent implements AfterViewInit, OnInit {
   showPassword = false;
   clientId = environment.ResourceServer.GoogleClientID;
   loginForm!: FormGroup;
+  isShowPatientLogin: boolean = false;
+  isShowAdminLogin: boolean = false
   constructor(
     public auth: AuthService,
     private form_builder: FormBuilder,
     private router: Router,
     private store: Store<AppState>
-  ) { }
+  ) {
+
+    alert(this.router.url)
+    if (this.router.url === "/patient-login") {
+      this.isShowPatientLogin = true
+    }
+    if (this.router.url === "/admin-login") {
+      this.isShowAdminLogin = true
+    }
+  }
 
   ngAfterViewInit(): void {
     this.waitForGoogle();
   }
   ngOnInit(): void {
+
     this.loginForm = this.form_builder.group({
       username: ["", [Validators.required]],
       password: ["", [Validators.required]],
@@ -80,32 +92,59 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
 
   async onSubmit() {
-    if (this.loginForm.valid) {
-      // Process login form value here
-      // if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
-      //   localStorage.setItem("token", "userToken");
-      //   this.router.navigate(["/dashboard"]);
-      // }
-
-      const patient =
-        await this.store.dispatch(
-          AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password })
-        );
-      await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
-        console.log(patient, "----------")
-        if (patient) {
-          localStorage.setItem('loginTime', new Date().getTime().toString());
-          localStorage.setItem('token', patient.tokenKey)
-          localStorage.setItem('user', JSON.stringify(patient.data))
-
-          this.router.navigate(['/patient/dashboard']);
-        }
-      });
+    if (this.isShowPatientLogin) {
+      if (this.loginForm.valid) {
 
 
-    } else {
-      this.loginForm.markAllAsTouched();
+        const patient =
+          await this.store.dispatch(
+            AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password, role: "patient" })
+          );
+        await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
+          console.log(patient, "----------")
+          if (patient) {
+            localStorage.setItem('loginTime', new Date().getTime().toString());
+            localStorage.setItem('token', patient.tokenKey)
+            localStorage.setItem('user', JSON.stringify(patient.data))
+
+            this.router.navigate(['/patient/dashboard']);
+          }
+        });
+
+
+      } else {
+        this.loginForm.markAllAsTouched();
+      }
     }
+    if (this.isShowAdminLogin) {
+      if (this.loginForm.valid) {
+        // Process login form value here
+        // if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
+        //   localStorage.setItem("token", "userToken");
+        //   this.router.navigate(["/dashboard"]);
+        // }
+
+        const patient =
+          await this.store.dispatch(
+            AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password, role: "admin" })
+          );
+        await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
+          console.log(patient, "----------")
+          if (patient) {
+            localStorage.setItem('loginTime', new Date().getTime().toString());
+            localStorage.setItem('token', patient.tokenKey)
+            localStorage.setItem('user', JSON.stringify(patient.data))
+
+            this.router.navigate(['/associate/dashboard']);
+          }
+        });
+
+
+      } else {
+        this.loginForm.markAllAsTouched();
+      }
+    }
+
   }
   get f() {
     return this.loginForm.controls;
