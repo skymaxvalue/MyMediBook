@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Medicare.API.Options;
 using Medicare.Application.Models.Hospital;
 using Medicare.DAL.Persistence.Dapper;
 using Medicare.DAL.Services.Appointment;
@@ -12,8 +13,11 @@ namespace Medicare.API.Registrars
         {
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                // TODO: Replace with [Authorize] when auth middleware is added
-                //Authorization = new[] { new () }
+                Authorization = new[]
+               {
+                   new ConfigureHangfireAuthOptions(
+                       app.Services.GetRequiredService<IWebHostEnvironment>())
+               }
             });
 
             //Scheduling Jobs per Tenant

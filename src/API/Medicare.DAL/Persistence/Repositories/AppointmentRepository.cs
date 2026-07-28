@@ -1,11 +1,15 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IAppointment;
 using Medicare.Application.Interfaces.IErrorLog;
+using Medicare.Application.Interfaces.INotificationRepository;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.Notification;
 using Medicare.Application.Models.Patient;
+using Medicare.DAL.Helper.Hubs;
 using Medicare.DAL.Persistence.Dapper;
+using Microsoft.AspNetCore.SignalR;
 using System.Data;
 
 namespace Medicare.DAL.Persistence.Repositories
@@ -14,11 +18,14 @@ namespace Medicare.DAL.Persistence.Repositories
     {
         private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-
-        public AppointmentRepository(IDapperContext context, IErrorLogRepository errorLog)
+        private readonly INotificationRepository _notifRepository;
+        private readonly IHubContext<NotificationHub> _notifhub;
+        public AppointmentRepository(IDapperContext context, IErrorLogRepository errorLog, INotificationRepository notifRepository, IHubContext<NotificationHub> notifHub)
         {
             _context = context;
             _errorLog = errorLog;
+            _notifRepository = notifRepository;
+            _notifhub = notifHub;
         }
 
         public async Task<List<PatientAppointmentModel>> GetMyAppointmentListByPatientIdAsync(int patientId)
@@ -150,6 +157,44 @@ namespace Medicare.DAL.Persistence.Repositories
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(appointmentProc, param);
 
+                if(returnData.IsSuccess == 1 && returnData.ResponseId > 0)
+                {
+                    try
+                    {
+                        var title = "Appointment Created";
+                        var message = "Your appointment has been Scheduled. A confirmation mail will be shared soon.";
+
+                        await _notifRepository.CreateAsync(new SaveNotificationModel
+                        {
+                            RefId = model.PatientId,
+                            UserType = "Patient",
+                            Title = title,
+                            Message = message,
+                            NotifType = "AppointmentCreated",
+                            ReferenceId = returnData.ResponseId
+                        });
+
+                        await _notifhub.Clients
+                                       .Group($"user-{model.PatientId}")
+                                       .SendAsync("ReceiveNotification", new
+                                       {
+                                           RefId = model.PatientId,
+                                           Message = message,
+                                           Title = title,
+                                           NotifType = "AppointmentCreated",
+                                       });
+                    }
+                    catch (Exception ex)
+                    {
+                        await _errorLog.InsertErrorLog(new ErrorLogModel
+                        {
+                            IsDBError = false,
+                            Error_Message = ex.Message,
+                            Error_Procedure = "USP_SaveNotification",
+                            Error_Trace = ex.StackTrace
+                        });
+                        }
+                    }
             }
             catch (Exception ex)
             {

@@ -104,7 +104,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("LicenseExpiry", model.AssociateQualification.LicenseExpiry);
                 param.Add("AdditionalCertifications", model.AssociateQualification.AdditionalCertifications);
                 param.Add("QualificationDocuments", model.AssociateQualification.QualificationDocumentBytes);
-
                 param.Add("ExperienceYears", model.AssociateExperience.ExperienceYears);
                 param.Add("OrganizationName", model.AssociateExperience.OrganizationName);
                 param.Add("DesignationRole", model.AssociateExperience.DesignationRole);
