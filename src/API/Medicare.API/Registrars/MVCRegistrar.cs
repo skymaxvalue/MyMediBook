@@ -7,6 +7,8 @@ using Medicare.Application.Interfaces.IDoctor;
 using Medicare.Application.Interfaces.IEmail;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.ILocations;
+using Medicare.Application.Interfaces.IMessage;
+using Medicare.Application.Interfaces.INotificationRepository;
 using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
@@ -14,7 +16,6 @@ using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Interfaces.Master;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.Email;
-using Medicare.DAL.Persistence.Dapper;
 using Medicare.DAL.Persistence.Repositories;
 using Medicare.DAL.Services;
 using Medicare.DAL.Services.Appointment;
@@ -67,13 +68,16 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IAssociateRepository, AssociateRepository>();
             builder.Services.AddScoped<IMasterRepository, MasterRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
             // ✅ Services
+            builder.Services.AddSignalR();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IEmailJobService, EmailJobService>();
             builder.Services.AddScoped<IJwtTokenRepository, JwtService>();
             builder.Services.AddScoped<IAppointmentReminderRepository, AppointmentReminderRepository>();
 
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<AppointmentReminderJobService>();
             builder.Services.AddScoped<AppointmentSlotReleaseJobService>();
 

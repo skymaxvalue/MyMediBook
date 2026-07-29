@@ -6,7 +6,7 @@ namespace Medicare.Application.Interfaces.IAssociate
     public interface IAssociateRepository
     {
         Task<ResponseModel> CreateAssociateScheduleAsync(AssociateScheduleModel model); 
-        Task<AssociateDetailModel> GetAssociateDetailByIdAsync(int associateId);
+        Task<List<AssociateDetailDto>> GetAssociateDetailByIdAsync(int associateId);
         Task<List<AssociateListModel>> GetAssociateListAsync();
         Task<AssociateDetailDto> GetAssociateInfoByUsername(string username);
     }
