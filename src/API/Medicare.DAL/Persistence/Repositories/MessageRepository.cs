@@ -23,7 +23,10 @@ namespace Medicare.DAL.Persistence.Repositories
             string procName = "USP_GetMessageListById";
             try
             {
-                returnData = await _context.QueryStoredProcListAsync<MessageResponseModel>(procName, id);
+                var param = new DynamicParameters();
+                param.Add("Id", id);
+
+                returnData = await _context.QueryStoredProcListAsync<MessageResponseModel>(procName, param);
             }
             catch (Exception ex)
             {
