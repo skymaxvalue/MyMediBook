@@ -48,9 +48,8 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
-
         [Authorize(Roles = "Admin")]    
-        [HttpPost]
+        [HttpPut]
         [Route("UpdateAssociateDetail")]
         public async Task<IActionResult> UpdateAssociateDetail(UpdateAssociateRequestModel model)
         {
@@ -60,7 +59,7 @@ namespace Medicare.API.Controllers.V1
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpDelete]
         [Route("DeleteAssociate")]
         public async Task<IActionResult> DeleteAssociate(DeleteAssociateRequestModel model)
         {
