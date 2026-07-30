@@ -81,7 +81,7 @@ namespace Medicare.API.Controllers.V1
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("RegisterAssociate")]
-        public async Task<IActionResult> RegisterAssociate(RegisterAssociateModel model)
+        public async Task<IActionResult> RegisterAssociate(CreateAssociateRequestModel model)
         {
             var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
             model.TenantId = tenantId;

@@ -8,7 +8,7 @@ namespace Medicare.Application.Interfaces.IAuthRepository
     public interface IAuthRepository
     {
         Task<ResponseModel> RegisterUserAsync(UserModel Model);
-        Task<AssociateResponseModel> RegisterAssociateAsync(RegisterAssociateModel model);
+        Task<AssociateResponseModel> RegisterAssociateAsync(CreateAssociateRequestModel model);
         Task<AuthDetailModel> GetPasswordByUsernameAsync(string username);
         Task<ResponseModel> SendOtpEmailAsync(string toEmail, string toName, string otpCode);
         Task<ResponseModel> SaveOtpAsync(OtpDetailModel model);

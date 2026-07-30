@@ -59,7 +59,7 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<AssociateResponseModel> RegisterAssociateAsync(RegisterAssociateModel model)
+        public async Task<AssociateResponseModel> RegisterAssociateAsync(CreateAssociateRequestModel model)
         {
             string procName = "USP_RegisterAssociate";
             AssociateResponseModel returnData = new AssociateResponseModel();

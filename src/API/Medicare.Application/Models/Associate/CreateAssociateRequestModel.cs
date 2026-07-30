@@ -2,7 +2,7 @@
 
 namespace Medicare.Application.Models.Associate
 {
-    public class RegisterAssociateModel
+    public class CreateAssociateRequestModel
     {
         public Guid TenantId { get; set; }
         public string FirstName { get; set; }

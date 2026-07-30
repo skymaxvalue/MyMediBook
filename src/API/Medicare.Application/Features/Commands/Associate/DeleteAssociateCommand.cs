@@ -4,5 +4,5 @@ using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.Application.Features.Commands.Associate
 {
-    public record CreateAssociateCommand(CreateAssociateRequestModel model) : IRequest<ResponseModel>;
+    public record DeleteAssociateCommand(DeleteAssociateRequestModel model) : IRequest<ResponseModel>;
 }
