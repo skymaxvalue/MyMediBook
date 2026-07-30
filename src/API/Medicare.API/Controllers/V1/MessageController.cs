@@ -1,10 +1,7 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Message;
-using Medicare.Application.Features.Queries.Master;
 using Medicare.Application.Features.Queries.Notification;
-using Medicare.Application.Interfaces.INotificationRepository;
 using Medicare.Application.Models.CommonModels.ResponseModel;
-using Medicare.Application.Models.Master;
 using Medicare.Application.Models.Message;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +15,6 @@ namespace Medicare.API.Controllers.V1
     public class MessageController : BaseApiController
     {
         private readonly IMediator _mediator;
-        private readonly INotificationRepository _notifRepository;
         public MessageController(IMediator mediator)
         {
             _mediator = mediator;

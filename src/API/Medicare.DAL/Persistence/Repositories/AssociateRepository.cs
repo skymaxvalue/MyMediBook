@@ -132,5 +132,68 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
+
+        public async Task<ResponseModel> UpdateAssociateDetailAsync(UpdateAssociateRequestModel model)
+        {
+            string procName = "USP_UpdateAssociateDetail";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AssociateId", model.AssociateId);
+                param.Add("RoleId", model.RoleId);
+                param.Add("DepartmentId", model.DepartmentId);
+                param.Add("SpecialityId", model.SpecialityId);
+                param.Add("FromDate", model.FromDate);
+                param.Add("ToDate", model.ToDate);
+                param.Add("FromTime", model.FromTime);
+                param.Add("ToTime", model.ToTime);
+                param.Add("BreakTimeFrom", model.BreakTimeFrom);
+                param.Add("BreakTimeTo", model.BreakTimeTo);
+                param.Add("WorkingDays", model.WorkingDays);
+                param.Add("AverageCharge", model.AverageCharge);
+                param.Add("ConsultationTime", model.ConsultationTime);
+                param.Add("UpdatedBy", model.UpdatedBy);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<ResponseModel> DeleteAssociateAsync(DeleteAssociateRequestModel model)
+        {
+            string procName = "USP_DeleteAssociate";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AssociateId", model.AssociateId);
+                param.Add("IsActive", model.IsActive);
+                param.Add("UpdatedBy", model.UpdatedBy);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
     }
 }
