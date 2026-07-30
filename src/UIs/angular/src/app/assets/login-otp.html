@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Verification - My Medi Book</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login-otp.css">
+</head>
+<body>
+
+<div class="otp-wrapper">
+
+    <div class="otp-card">
+
+        <div class="logo">
+            <img src="images/logo.png" alt="Logo">
+            <span>My <strong>Medi</strong> Book</span>
+        </div>
+
+        <h1>LOGIN VERIFICATION</h1>
+
+        <p class="otp-subtext">
+            We've sent a 4-digit verification code to your registered
+            mobile number/email. Please enter it below.
+        </p>
+
+        <div class="otp-box">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+            <input type="text" maxlength="1" class="otp-input">
+        </div>
+
+     <div class="otp-info">
+
+   <span class="timer">
+        Expires in <b id="timer">00:59</b>
+    </span>
+
+    <button
+        type="button"
+        id="resendBtn"
+        class="resend-btn">
+
+        Resend OTP
+
+    </button>
+
+</div>
+        <button id="verifyBtn" class="btn-primary">
+            Verify
+        </button>
+
+        <button class="btn-outline" onclick="window.location.href='login.html'">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<script src="js/login-otp.js"></script>
+
+</body>
+</html>

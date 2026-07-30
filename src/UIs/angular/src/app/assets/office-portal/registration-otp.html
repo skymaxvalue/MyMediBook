@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>OTP Verification | My Medi Book</title>
+
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/registration-otp.css">
+
+</head>
+
+<body>
+
+ 
+
+    <div id="navbar-container"></div>
+
+  
+
+    <main class="dashboard-container">
+
+
+
+        <section class="breadcrumb">
+
+            <a href="dashboard.html">
+
+                Dashboard
+
+            </a>
+
+            <span class="separator">
+
+                <img src="images/right-arrow-blue.png"
+                     alt="Arrow">
+
+            </span>
+
+            <a href="patient-registration.html">
+
+                Patient Registration
+
+            </a>
+
+            <span class="separator">
+
+                <img src="images/right-arrow-blue.png"
+                     alt="Arrow">
+
+            </span>
+
+            <span class="active">
+
+                OTP Verification
+
+            </span>
+
+        </section>
+
+ 
+
+        <section class="otp-card">
+
+            <div class="otp-logo">
+
+                <img src="images/logo.png"
+                     alt="My Medi Book">
+
+            </div>
+
+
+            <h1>
+
+                OTP Verification
+
+            </h1>
+
+            <p class="otp-description">
+
+                Enter the 4-digit verification code sent to
+
+            </p>
+
+            <h3 id="otpSentTo">
+
+                +91 ******2541
+
+            </h3>
+
+
+            <form id="otpForm">
+
+
+                <div class="otp-inputs">
+
+                    <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input"
+                        id="otp1"
+                        autocomplete="off"
+                        inputmode="numeric">
+
+                    <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input"
+                        id="otp2"
+                        autocomplete="off"
+                        inputmode="numeric">
+
+                    <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input"
+                        id="otp3"
+                        autocomplete="off"
+                        inputmode="numeric">
+
+                    <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input"
+                        id="otp4"
+                        autocomplete="off"
+                        inputmode="numeric">
+
+                </div>
+
+
+                <div class="timer-wrapper">
+
+                    <span>
+
+                        OTP expires in
+
+                    </span>
+
+                    <span id="countdown">
+
+                        00:59
+
+                    </span>
+
+                </div>
+
+
+                <div class="resend-wrapper">
+
+                    Didn't receive the code?
+
+                    <button
+                        type="button"
+                        id="resendOtpBtn">
+
+                        Resend OTP
+
+                    </button>
+
+                </div>
+
+
+                <div class="otp-actions">
+
+                    <button
+                        type="submit"
+                        class="verify-btn">
+
+                        Verify &amp; Book Appointment
+
+                        <img src="images/right-arrow-white.png"
+                             alt="Arrow">
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        id="cancelOtp">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="security-card">
+
+                    <div class="security-icon">
+
+                        <img src="images/shield.png"
+                             alt="Security">
+
+                    </div>
+
+                    <div class="security-content">
+
+                        <h4>
+
+                            Your Security Matters
+
+                        </h4>
+
+                        <p>
+
+                            Never share your OTP with anyone. Our
+                            hospital staff will never ask for your
+                            verification code over phone, email, or
+                            message.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+
+    <div id="footer-container"></div>
+
+
+    <script src="js/navbar.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/registration-otp.js"></script>
+
+</body>
+
+</html>

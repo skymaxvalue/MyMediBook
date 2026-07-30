@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Search Patient | My Medi Book</title>
+
+
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+  
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/search-patient.css">
+
+</head>
+
+<body>
+
+
+
+    <div id="navbar-container"></div>
+
+
+    <main class="dashboard-container">
+
+
+
+<section class="breadcrumb">
+
+    <a href="dashboard.html">Dashboard</a>
+
+    <span class="separator">
+
+        <img src="images/right-arrow-blue.png"
+             alt="Arrow">
+
+    </span>
+
+    <span class="active">
+
+        Search Patient
+
+    </span>
+
+</section>
+
+
+
+<section class="search-panel">
+
+    <div class="search-panel-header">
+
+        <div class="panel-title">
+
+            <img src="images/search.png"
+                 alt="Filter">
+
+            <h2>Search Filters</h2>
+
+        </div>
+
+        <button
+            id="clearFilters"
+            class="clear-btn">
+
+            <img src="images/refresh.png"
+                 alt="Clear">
+
+            Clear All
+
+        </button>
+
+    </div>
+
+
+
+    <div class="filter-grid">
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                First Name
+
+            </label>
+
+            <div class="input-box">
+
+                <img src="images/profile.png"
+                     alt="Patient">
+
+                <input
+                    type="text"
+                    id="firstName"
+                    placeholder="Enter first name">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                Last Name
+
+            </label>
+
+            <div class="input-box">
+
+                <img src="images/profile.png"
+                     alt="Patient">
+
+                <input
+                    type="text"
+                    id="lastName"
+                    placeholder="Enter last name">
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+
+                Date of Birth
+
+            </label>
+
+            <div class="input-box">
+
+               
+
+                <input
+                    type="date"
+                    id="dob">
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                Phone Number
+
+            </label>
+
+            <div class="input-box">
+
+                <img src="images/phone.png"
+                     alt="Phone">
+
+                <input
+                    type="text"
+                    id="phone"
+                    placeholder="Enter phone number">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="search-button-wrapper">
+
+            <button
+                id="searchPatientBtn"
+                class="search-btn">
+
+                <img src="images/search-white.png"
+                     alt="Search">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="search-results">
+
+    <div class="results-header">
+
+        <div class="results-left">
+
+            <div class="results-icon">
+
+                <img src="images/search-patient.png"
+                     alt="Search">
+
+            </div>
+
+            <div>
+
+                <h2>
+
+                    Search Results
+
+                    <span class="result-count">
+
+                        245 Patients Found
+
+                    </span>
+
+                </h2>
+
+                <p>
+
+                    Showing 1 to 25 of 245 results
+
+                </p>
+
+            </div>
+
+        </div>
+
+   
+
+    </div>
+
+
+
+    <div class="table-wrapper">
+
+        <table class="patient-table">
+
+            <thead>
+
+<tr>
+
+    <th>Sl. No</th>
+
+    <th>Patient Name</th>
+
+    <th>D.O.B.</th>
+
+    <th>Gender</th>
+
+    <th>Phone Number</th>
+
+    <th>Email Address</th>
+
+    <th>Address</th>
+
+    <th>Last Visit</th>
+
+    <th>Action</th>
+
+</tr>
+
+            </thead>
+
+            <tbody id="patientTableBody">
+
+
+
+                <tr>
+
+                    <td>1</td>
+
+                    <td>
+
+                        <div class="patient-cell">
+
+                            <div class="avatar blue">
+
+                                RK
+
+                            </div>
+
+                            <div>
+
+                                <h4>Ravi Kumar</h4>
+
+                                <span>Age: 25 Years</span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                   <td>01/04/2001</td>
+
+<td>
+    <span class="gender male">
+        Male
+    </span>
+</td>
+
+<td>+91 98765 43210</td>
+
+<td>ravi.kumar@email.com</td>
+
+<td>123 MG Road, Delhi</td>
+
+<td>10 Jul 2026</td>
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <button class="view-btn">
+
+                                <img src="images/view.png">
+
+                                View
+
+                            </button>
+
+                            <button class="menu-btn">
+
+                                <img src="images/menu.png">
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+
+                <tr>
+
+                    <td>2</td>
+
+                    <td>
+
+                        <div class="patient-cell">
+
+                            <div class="avatar green">
+
+                                LP
+
+                            </div>
+
+                            <div>
+
+                                <h4>Lakshmi Patel</h4>
+
+                                <span>Age: 24 Years</span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>04/01/2001</td>
+
+<td>
+    <span class="gender female">
+        Female
+    </span>
+</td>
+
+<td>+91 91234 56789</td>
+
+<td>lakshmi.patel@email.com</td>
+
+<td>45 Park Street, Mumbai</td>
+
+<td>08 Jul 2026</td>
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <button class="view-btn">
+
+                                <img src="images/view.png">
+
+                                View
+
+                            </button>
+
+                            <button class="menu-btn">
+
+                                <img src="images/menu.png">
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>3</td>
+
+                    <td>
+
+                        <div class="patient-cell">
+
+                            <div class="avatar purple">
+
+                                RS
+
+                            </div>
+
+                            <div>
+
+                                <h4>Rahul Singh</h4>
+
+                                <span>Age: 28 Years</span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>15/06/1998</td>
+
+<td>
+    <span class="gender male">
+        Male
+    </span>
+</td>
+
+<td>+91 99887 76655</td>
+
+<td>rahul.singh@email.com</td>
+
+<td>78 Civil Lines, Kanpur</td>
+
+<td>07 Jul 2026</td>
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <button class="view-btn">
+
+                                <img src="images/view.png">
+
+                                View
+
+                            </button>
+
+                            <button class="menu-btn">
+
+                                <img src="images/menu.png">
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <div class="table-footer">
+
+        <div class="entries">
+
+            Show
+
+            <select>
+
+                <option>25</option>
+
+                <option>50</option>
+
+                <option>100</option>
+
+            </select>
+
+            entries
+
+        </div>
+
+        <div class="pagination">
+
+            <button>&lt;</button>
+
+            <button class="active">1</button>
+
+            <button>2</button>
+
+            <button>3</button>
+
+            <button>4</button>
+
+            <button>5</button>
+
+            <span>...</span>
+
+            <button>10</button>
+
+            <button>&gt;</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+    </main>
+
+
+
+    <div id="footer-container"></div>
+
+
+
+    <script src="js/navbar.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/search-patient.js"></script>
+
+</body>
+
+</html>

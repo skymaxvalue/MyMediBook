@@ -1,10 +1,7 @@
-if (localStorage.getItem("isLoggedIn")) {
+
+if (localStorage.getItem("isLoggedIn") === "true") {
     window.location.href = "dashboard.html";
 }
-
-
-
-
 
 const form = document.getElementById("loginForm");
 const username = document.getElementById("username");
@@ -23,7 +20,6 @@ toggle.addEventListener("click", function () {
     }
 });
 
-
 form.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -35,15 +31,13 @@ form.addEventListener("submit", function (e) {
         return;
     }
 
-    
     if (user === "admin" && pass === "1234") {
 
-        // 🔥 SAVE SESSION
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("username", user);
+        // Save user temporarily
+        localStorage.setItem("pendingUser", user);
 
-        // REDIRECT
-        window.location.href = "dashboard.html";
+        // Go to OTP page
+        window.location.href = "login-otp.html";
 
     } else {
         alert("Invalid username or password");

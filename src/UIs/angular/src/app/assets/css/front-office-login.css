@@ -1,0 +1,29 @@
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
+body{background:#f5f7fb}
+.split{display:grid;grid-template-columns:46% 54%;min-height:100vh}
+.hero{background:linear-gradient(180deg,#2454e6,#3d69f0);color:#fff;display:flex}
+.overlay{padding:50px;display:flex;flex-direction:column;width:100%}
+.hospital-brand{text-align:center}
+.hospital-logo{width:90px;margin-bottom:12px}
+.hospital-brand h1{font-size:54px;line-height:1}
+.hospital-brand h2{margin:22px 0 10px;font-size:44px}
+.hero-image{width:100%;max-width:620px;margin:auto}
+.hero-footer{display:flex;gap:10px;justify-content:center;align-items:center;font-size:20px}
+.hero-footer img{width:28px}
+.login-side{padding:40px;background:#f5f7fb}
+.top-logos{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.logo{height:42px}
+.card{background:#fff;border-radius:34px;padding:44px;max-width:650px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.08)}
+.card h1{font-size:64px}
+.card>p{color:#7c84a3;margin:8px 0 36px}
+label{display:block;font-weight:700;margin:18px 0 8px}
+.field{display:flex;align-items:center;border:1px solid #d7dcec;border-radius:12px;height:62px;padding:0 16px}
+.field img{width:22px}
+.field input{border:none;outline:none;flex:1;padding:0 12px;font-size:20px}
+.field button{background:none;border:none;cursor:pointer}
+.row{display:flex;justify-content:space-between;margin:22px 0}
+.login-btn{width:100%;height:64px;border:none;border-radius:12px;background:linear-gradient(90deg,#3159d4,#4168f5);color:#fff;font-size:24px;font-weight:700;cursor:pointer}
+.secure{text-align:center;margin:28px 0;color:#6d7597}
+.secure img{width:24px;vertical-align:middle;margin-right:8px}
+.support{text-align:center;color:#444;margin-top:26px}
+@media(max-width:992px){.split{grid-template-columns:1fr}.hero{display:none}.card h1{font-size:46px}}
