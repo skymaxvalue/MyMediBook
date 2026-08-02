@@ -35,7 +35,7 @@ export class AuthEffects {
                     }),
 
                     map((response: any) =>
-                        AuthActions.loginSuccess({ patient: response })
+                        AuthActions.loginSuccess({ user: response })
                     ),
                     catchError((error) =>
                         of(AuthActions.loginFailure({
@@ -181,39 +181,7 @@ export class AuthEffects {
     )
 
 
-    associateLogin$ = createEffect(() =>
-        this.actions$.pipe(
-            ofType(AuthActions.associateLogin),
-            mergeMap((action) =>
-                this.authService.loginPatient({
-                    username: action.username,
-                    password: action.password
-                }, action.role).pipe(
 
-                    tap((response: any) => {
-
-                        localStorage.setItem('token', response.accessToken);
-                        localStorage.setItem('refreshToken', response.refreshToken);
-                        localStorage.setItem('user', JSON.stringify(response.data));
-
-                        this.authService.startRefreshTimer();
-
-                    }),
-
-                    map((response: any) =>
-                        AuthActions.associateLoginSuccess({ associate: response })
-                    ),
-                    catchError((error) =>
-                        of(AuthActions.associateLoginFailure({
-                            error: error.message || 'Login Failed'
-                        }))
-                    )
-
-                )
-            )
-
-        )
-    )
 
 
 

@@ -11,29 +11,20 @@ export const authReducer = createReducer(
         isLoading: true
     })),
 
-    on(AuthActions.loginSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        loginPatient: action.patient
-    })),
+    on(AuthActions.loginSuccess, (state, action) => {
+
+        return {
+            ...state,
+            isLoading: false,
+            loginUser: action.user,
+            user: action.user.data,
+            token: action.user.accessToken ?? action.user.tokenKey,
+
+            refreshToken: action.user.refreshToken
+        };
+    }),
 
     on(AuthActions.loginFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
-    on(AuthActions.associateLogin, (state) => ({
-        ...state,
-        isLoading: true
-    })),
-
-    on(AuthActions.associateLoginSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        associate: action.associate
-    })),
-
-    on(AuthActions.associateLoginFailure, (state, action) => ({
         ...state,
         isLoading: false,
         error: action.error,
@@ -47,9 +38,8 @@ export const authReducer = createReducer(
     on(AuthActions.refreshTokenSuccess, (state, { accessToken, refreshToken }) => ({
 
         ...state,
-
+        token: accessToken,
         accessToken,
-
         refreshToken
 
     })),

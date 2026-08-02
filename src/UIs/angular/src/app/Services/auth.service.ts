@@ -25,19 +25,13 @@ export class AuthService {
 
   // Login API
   loginPatient(data: LoginRequest, userRole: string): Observable<any> {
-    if (userRole === 'patient') {
-      return this.http.post<any>(
-        `${this.apiUrl}${AuthEndPoints.PATIENT_LOGIN}`,
-        data
-      );
-    } else {
-      return this.http.post<any>(
-        `${this.apiUrl}${AuthEndPoints.ASSOCIATE_LOGIN}`,
-        data
-      );
-    }
 
+    return this.http.post<any>(
+      `${this.apiUrl}${AuthEndPoints.doLOGIN}`,
+      data
+    );
   }
+
   requestOTP(email: any) {
     return this.http.post<any>(
       `${this.apiUrl}${AuthEndPoints.REQUEST_OTP}`,
@@ -65,7 +59,7 @@ export class AuthService {
     if (!loginTime) {
       return;
     }
-    const refreshAfter = 55 * 60 * 1000; // 55 minutes
+    const refreshAfter = 55 * 60 * 1000;
     const elapsed = Date.now() - loginTime;
     const remaining = refreshAfter - elapsed;
 
@@ -73,13 +67,12 @@ export class AuthService {
 
       this.callRefreshToken().subscribe({
         next: (res) => {
-
+          alert("Refresh Token Response" + JSON.stringify(res))
+          console.log('Refresh Token Response', res);
           localStorage.setItem('token', res.data.accessToken);
           localStorage.setItem('refreshToken', res.data.refreshToken);
-
           localStorage.setItem('loginTime', Date.now().toString());
 
-          // Restart timer
           this.startRefreshTimer();
         },
         error: () => {
@@ -94,15 +87,17 @@ export class AuthService {
         this.callRefreshToken().subscribe({
           next: (res) => {
 
-            localStorage.setItem('token', res.token);
-            localStorage.setItem('refreshToken', res.refreshToken);
+            console.log('Refresh Token Response', res);
+
+            localStorage.setItem('token', res.data.accessToken);
+            localStorage.setItem('refreshToken', res.data.refreshToken);
 
             localStorage.setItem('loginTime', Date.now().toString());
 
-            // Restart timer
             this.startRefreshTimer();
           },
-          error: () => {
+          error: (err) => {
+            console.error('Refresh Token Error', err);
             this.logout();
           }
         });
@@ -124,6 +119,7 @@ export class AuthService {
     // alert("abc")
     const refreshToken = localStorage.getItem('refreshToken');
     const accessToken = localStorage.getItem('token')
+
 
     return this.http.post<any>(
       `${this.apiUrl}${AuthEndPoints.REFRESH_TOKEN}`,

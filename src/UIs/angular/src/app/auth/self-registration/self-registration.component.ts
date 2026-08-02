@@ -429,7 +429,7 @@ export class SelfRegistrationComponent implements OnInit {
     }
 
     this.store.select(state => state.auth.registeredPatient).subscribe((patient: any) => {
-      console.log(patient)
+
       if (patient) {
 
       }

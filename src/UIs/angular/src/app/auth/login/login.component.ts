@@ -5,10 +5,11 @@ import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "src/environments/environment";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { selectLoginPatient } from "src/app/Store/Auth/auth.selectors";
+import { selectLoginUser } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
 import * as AuthActions from "../../Store/Auth/auth.actions"
+import { filter, take } from 'rxjs/operators';
 
 declare const google: any;
 
@@ -24,6 +25,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   loginForm!: FormGroup;
   isShowPatientLogin: boolean = false;
   isShowAdminLogin: boolean = false
+  loginRole: string = '';
   constructor(
     public auth: AuthService,
     private form_builder: FormBuilder,
@@ -31,12 +33,25 @@ export class LoginComponent implements AfterViewInit, OnInit {
     private store: Store<AppState>
   ) {
 
-    alert(this.router.url)
+    // alert(this.router.url)
     if (this.router.url === "/patient-login") {
-      this.isShowPatientLogin = true
+
+      this.isShowPatientLogin = true;
+      this.loginRole = "Patient";
+
     }
+
     if (this.router.url === "/admin-login") {
-      this.isShowAdminLogin = true
+
+      this.isShowAdminLogin = true;
+      this.loginRole = "Admin";
+
+    }
+
+    if (this.router.url === "/associate-login") {
+
+      this.loginRole = "Associate";
+
     }
   }
 
@@ -50,6 +65,33 @@ export class LoginComponent implements AfterViewInit, OnInit {
       password: ["", [Validators.required]],
       remember: [false],
     });
+    this.store.select(selectLoginUser)
+      .pipe(
+        filter(response => !!response),
+        take(1)
+      )
+      .subscribe((response: any) => {
+        localStorage.setItem('loginTime', Date.now().toString());
+        localStorage.setItem('token', response.tokenKey);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        localStorage.setItem('user', JSON.stringify(response.data));
+
+        switch (response.data.roleName) {
+
+          case 'Patient':
+            this.router.navigate(['/patient/dashboard']);
+            break;
+
+          case 'Associate':
+            this.router.navigate(['/associate/dashboard']);
+            break;
+
+          case 'Admin':
+            this.router.navigate(['/associate/dashboard']);
+            break;
+        }
+
+      });
   }
 
   waitForGoogle() {
@@ -95,21 +137,17 @@ export class LoginComponent implements AfterViewInit, OnInit {
     if (this.isShowPatientLogin) {
       if (this.loginForm.valid) {
 
+        this.store.dispatch(
+          AuthActions.login({
 
-        const patient =
-          await this.store.dispatch(
-            AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password, role: "patient" })
-          );
-        await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
-          console.log(patient, "----------")
-          if (patient) {
-            localStorage.setItem('loginTime', new Date().getTime().toString());
-            localStorage.setItem('token', patient.tokenKey)
-            localStorage.setItem('user', JSON.stringify(patient.data))
+            username: this.loginForm.value.username,
 
-            this.router.navigate(['/patient/dashboard']);
-          }
-        });
+            password: this.loginForm.value.password,
+
+            role: this.loginRole
+
+          })
+        );
 
 
       } else {
@@ -125,19 +163,23 @@ export class LoginComponent implements AfterViewInit, OnInit {
         // }
 
         const patient =
-          await this.store.dispatch(
-            AuthActions.login({ username: this.loginForm.value.username, password: this.loginForm.value.password, role: "admin" })
+          this.store.dispatch(
+            AuthActions.login({
+              username: this.loginForm.value.username,
+              password: this.loginForm.value.password,
+              role: this.loginRole
+            })
           );
-        await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
-          console.log(patient, "----------")
-          if (patient) {
-            localStorage.setItem('loginTime', new Date().getTime().toString());
-            localStorage.setItem('token', patient.tokenKey)
-            localStorage.setItem('user', JSON.stringify(patient.data))
+        // await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
+        //   console.log(patient, "----------")
+        //   if (patient) {
+        //     localStorage.setItem('loginTime', new Date().getTime().toString());
+        //     localStorage.setItem('token', patient.tokenKey)
+        //     localStorage.setItem('user', JSON.stringify(patient.data))
 
-            this.router.navigate(['/associate/dashboard']);
-          }
-        });
+        //     this.router.navigate(['/associate/dashboard']);
+        //   }
+        // });
 
 
       } else {

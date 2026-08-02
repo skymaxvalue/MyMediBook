@@ -41,6 +41,7 @@ import { RescheduleComponent } from "./Pages/reschedule/reschedule.component";
 import { RescheduleSuccessComponent } from "./Pages/reschedule-success/reschedule-success.component";
 import { ViewResheduleRulesComponent } from "./Components/view-reshedule-rules/view-reshedule-rules.component";
 import { ViewCancelsheduleRulesComponent } from "./Components/view-cancelshedule-rules/view-cancelshedule-rules.component";
+import { loginGuard } from "./auth/guards/login.guard";
 
 export const routes: Routes = [
   {
@@ -168,6 +169,7 @@ export const routes: Routes = [
   {
     path: "associate",
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: "dashboard",
@@ -296,11 +298,13 @@ export const routes: Routes = [
   // Authentication
   {
     path: "patient-login",
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [loginGuard]
   },
   {
     path: "admin-login",
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [loginGuard]
   },
   {
     path: "forgot-password",
@@ -321,6 +325,6 @@ export const routes: Routes = [
 
   {
     path: "**",
-    redirectTo: "login"
+    redirectTo: "patient-login"
   }
 ];

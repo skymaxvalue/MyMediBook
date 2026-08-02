@@ -4,7 +4,7 @@ import { PatientRegister } from "../../Models/Patient-Model"
 export interface AuthState {
     user: any,
     token: string | null,
-    loginPatient: any | null,
+    loginUser: any | null,
     registeredPatient: PatientRegister | null;
     isLoading: boolean;
     error: string | null;
@@ -27,7 +27,7 @@ export const initialAuthState: AuthState = {
     getCountries: [],
     getStates: [],
     getCities: [],
-    loginPatient: null,
+    loginUser: null,
     requestedOtp: null,
     refreshToken: null,
     associate: null
