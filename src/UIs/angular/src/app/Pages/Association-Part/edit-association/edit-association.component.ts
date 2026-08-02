@@ -8,8 +8,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/Store/app.state';
-import { getAssociatesByID } from 'src/app/Store/Doctor/doctor.action';
-import { selectGetAssociateDetailsByItID } from 'src/app/Store/Doctor/doctor.selectors';
+import { getAssociatesByID, getRoleDepaSpecia } from 'src/app/Store/Doctor/doctor.action';
+import { selectGetAssociateDetailsByItID, selectGetRoleDepSpeciOfAssociate } from 'src/app/Store/Doctor/doctor.selectors';
 
 interface AssociateSchedule {
 
@@ -180,6 +180,7 @@ export class EditAssociationComponent implements OnInit {
 
   });
   associateId: any;
+  allRoles: any[] = [];
   back() {
 
     this.router.navigate(['association/dashboard/association-list']);
@@ -197,14 +198,27 @@ export class EditAssociationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.store.dispatch(
+      getRoleDepaSpecia());
     this.associateId = Number(
       this.route.snapshot.paramMap.get('associateId')
     );
+    this.store.select(selectGetRoleDepSpeciOfAssociate)
+      .subscribe((res: any) => {
+        this.allRoles = res;
+
+
+      });
     if (this.associateId) {
       this.store.dispatch(getAssociatesByID({ associateId: this.associateId }))
       this.store.select(selectGetAssociateDetailsByItID).subscribe((res) => {
         if (res) {
           this.associate = res
+          // this.form.patchValue(res)
+          const selectedRole = this.allRoles.find(
+            (x) => x.roleId == this.associate.roleId
+          );
+          console.log(selectedRole, "=========>")
         }
       })
     }

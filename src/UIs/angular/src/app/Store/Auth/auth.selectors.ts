@@ -9,10 +9,10 @@ export const selectRegisteredPatient =
         selectAuthState,
         state => state.registeredPatient
     );
-export const selectLoginPatient =
+export const selectLoginUser =
     createSelector(
         selectAuthState,
-        state => state.loginPatient
+        state => state.loginUser
     );
 
 

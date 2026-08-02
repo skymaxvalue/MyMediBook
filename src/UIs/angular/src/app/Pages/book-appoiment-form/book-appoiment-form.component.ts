@@ -194,7 +194,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.isPatientDropdownOpen = !this.isPatientDropdownOpen;
   }
   InitialApiCall() {
-    this.store.dispatch(getPetirntProfileListById({ patientId: this.loginUser.patientId }));
+    this.store.dispatch(getPetirntProfileListById({ patientId: this.loginUser.refId }));
     this.store.dispatch(getAgeType())
     this.store.dispatch(getRelationType())
     this.store.select(selectAgeType).subscribe((res: any) => {

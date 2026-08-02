@@ -46,12 +46,13 @@ export const MasterAPIEndPoints = {
 }
 export const AuthEndPoints = {
     PATIENT_REGISTER: "Auth/CreatePatientAccount",
-    PATIENT_LOGIN: "Auth/doLogin",
+    // PATIENT_LOGIN: "Auth/doLogin",
     REQUEST_OTP: "Auth/RequestOtp",
     VERIFY_OTP: "Auth/VerifyOtp",
     REFRESH_TOKEN: "Auth/RefreshToken",
     REGISTER_ASSOCIATION: "Auth/RegisterAssociate",
-    ASSOCIATE_LOGIN: "Auth/doLogin"
+    // ASSOCIATE_LOGIN: "Auth/doLogin",
+    doLOGIN: "Auth/doLogin",
 }
 
 export const cancelRules = [

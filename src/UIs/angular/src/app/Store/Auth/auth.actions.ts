@@ -9,7 +9,7 @@ export const login = createAction(
 
 export const loginSuccess = createAction(
     '[Auth] Login Success',
-    props<{ patient: any }>()
+    props<{ user: any }>()
 );
 
 export const loginFailure = createAction(
@@ -135,19 +135,19 @@ export const refreshTokenFailure = createAction(
 // Associate login
 
 // Login Actions
-export const associateLogin = createAction(
-    '[Auth] Associate Login',
-    props<{ username: string; password: string, role: string }>()
-);
+// export const associateLogin = createAction(
+//     '[Auth] Associate Login',
+//     props<{ username: string; password: string, role: string }>()
+// );
 
-export const associateLoginSuccess = createAction(
-    '[Auth] Associate Login Success',
-    props<{ associate: any }>()
-);
+// export const associateLoginSuccess = createAction(
+//     '[Auth] Associate Login Success',
+//     props<{ associate: any }>()
+// );
 
-export const associateLoginFailure = createAction(
-    '[Auth] Associate Login Failure',
-    props<{ error: string }>()
-);
+// export const associateLoginFailure = createAction(
+//     '[Auth] Associate Login Failure',
+//     props<{ error: string }>()
+// );
 
 
