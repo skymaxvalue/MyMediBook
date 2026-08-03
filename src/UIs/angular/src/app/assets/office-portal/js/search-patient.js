@@ -1,8 +1,105 @@
+let hasSearched = false;
 
+
+
+
+const patients=[
+
+    {
+
+        firstName:"Ravi",
+
+        lastName:"Kumar",
+
+        age:25,
+
+        dob:"01/04/2001",
+
+        gender:"Male",
+
+        phone:"+91 98765 43210",
+
+        email:"ravi.kumar@email.com",
+
+        address:"123 MG Road, Delhi",
+
+        lastVisit:"10 Jul 2026",
+
+        avatar:"RK",
+
+        avatarColor:"blue"
+
+    },
+
+    {
+
+        firstName:"Lakshmi",
+
+        lastName:"Patel",
+
+        age:24,
+
+        dob:"04/01/2001",
+
+        gender:"Female",
+
+        phone:"+91 91234 56789",
+
+        email:"lakshmi.patel@email.com",
+
+        address:"45 Park Street, Mumbai",
+
+        lastVisit:"08 Jul 2026",
+
+        avatar:"LP",
+
+        avatarColor:"green"
+
+    },
+
+    {
+
+        firstName:"Rahul",
+
+        lastName:"Singh",
+
+        age:28,
+
+        dob:"15/06/1998",
+
+        gender:"Male",
+
+        phone:"+91 99887 76655",
+
+        email:"rahul.singh@email.com",
+
+        address:"78 Civil Lines, Kanpur",
+
+        lastVisit:"07 Jul 2026",
+
+        avatar:"RS",
+
+        avatarColor:"purple"
+
+    }
+
+];
+
+let filteredPatients=[...patients];
+
+const rowsPerPage=25;
+
+let currentPage=1;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    initializeSearchPatient();
+filteredPatients = [];
+
+renderPatients(filteredPatients);
+
+updateResultCount(0);
+
+updatePagination();
 
     const params =
     new URLSearchParams(window.location.search);
@@ -26,6 +123,35 @@ function initializeSearchPatient(){
     setupSearch();
 
     setupClearFilters();
+    setupEnterKeySearch();
+
+}
+
+
+
+function setupEnterKeySearch(){
+
+    const filterInputs=document.querySelectorAll(
+
+        "#firstName,#lastName,#dob,#phone"
+
+    );
+
+    filterInputs.forEach(input=>{
+
+        input.addEventListener("keydown",function(event){
+
+            if(event.key==="Enter"){
+
+                event.preventDefault();
+
+                searchPatients();
+
+            }
+
+        });
+
+    });
 
 }
 
@@ -45,89 +171,105 @@ function setupSearch(){
 
 }
 
-
-
 function searchPatients(){
 
-    const firstName =
-        document.getElementById("firstName").value
+    hasSearched = true;
+
+    const firstName=
+        document.getElementById("firstName")
+        .value
         .trim()
         .toLowerCase();
 
-    const lastName =
-        document.getElementById("lastName").value
+    const lastName=
+        document.getElementById("lastName")
+        .value
         .trim()
         .toLowerCase();
 
-    const dob =
-        document.getElementById("dob").value;
+    const dob=
+        document.getElementById("dob")
+        .value;
 
-    const phone =
-        document.getElementById("phone").value
+    const phone=
+        document.getElementById("phone")
+        .value
         .trim()
         .toLowerCase();
 
-    const rows =
-        document.querySelectorAll("#patientTableBody tr");
+    filteredPatients=patients.filter(patient=>{
 
-    let visibleCount = 0;
+        let show=true;
 
-    rows.forEach(row => {
+        if(
 
-        const name =
-            row.cells[1].innerText.toLowerCase();
+            firstName &&
 
-        const dobText =
-            row.cells[3].innerText.toLowerCase();
+            !patient.firstName
+            .toLowerCase()
+            .includes(firstName)
 
-        const phoneText =
-            row.cells[5].innerText.toLowerCase();
+        ){
 
-        let show = true;
-
-        if(firstName && !name.includes(firstName)){
-
-            show = false;
+            show=false;
 
         }
 
-        if(lastName && !name.includes(lastName)){
+        if(
 
-            show = false;
+            lastName &&
+
+            !patient.lastName
+            .toLowerCase()
+            .includes(lastName)
+
+        ){
+
+            show=false;
 
         }
 
-        if(phone && !phoneText.includes(phone)){
+        if(
 
-            show = false;
+            phone &&
+
+            !patient.phone
+            .toLowerCase()
+            .includes(phone)
+
+        ){
+
+            show=false;
 
         }
 
         if(dob){
 
-            const selected =
-                formatDateForCompare(dob);
+            if(
 
-            if(!dobText.includes(selected)){
+                patient.dob!==
 
-                show = false;
+                formatDateForCompare(dob)
+
+            ){
+
+                show=false;
 
             }
 
         }
 
-        row.style.display =
-            show ? "" : "none";
-
-        if(show){
-
-            visibleCount++;
-
-        }
+        return show;
 
     });
 
-    updateResultCount(visibleCount);
+    currentPage=1;
+
+   renderPatients(filteredPatients);
+
+    updateResultCount(filteredPatients.length);
+
+    updatePagination();
 
 }
 
@@ -147,10 +289,331 @@ function updateResultCount(count){
 
 }
 
+function updatePagination(){
+
+    const totalPages=
+
+        Math.max(
+
+            1,
+
+            Math.ceil(
+
+                filteredPatients.length/
+
+                rowsPerPage
+
+            )
+
+        );
+
+    document.getElementById(
+
+        "pageNumber"
+
+    ).textContent=
+
+        `Page ${currentPage} of ${totalPages}`;
+
+    document.getElementById(
+
+        "previousPage"
+
+    ).disabled=
+
+        currentPage===1;
+
+    document.getElementById(
+
+        "nextPage"
+
+    ).disabled=
+
+        currentPage===totalPages;
+
+    updateShowingResults();
+
+}
+
+
+function updateShowingResults(){
+
+    const showing=
+
+        document.getElementById(
+
+            "showingResults"
+
+        );
+
+    if(filteredPatients.length===0){
+
+        showing.textContent=
+
+            "Showing 0 to 0 of 0 results";
+
+        return;
+
+    }
+
+    const start=
+
+        (currentPage-1)*rowsPerPage+1;
+
+    const end=
+
+        Math.min(
+
+            currentPage*rowsPerPage,
+
+            filteredPatients.length
+
+        );
+
+    showing.textContent=
+
+        `Showing ${start} to ${end} of ${filteredPatients.length} results`;
+
+}
+
+
+function previousPage(){
+
+    if(currentPage===1){
+
+        return;
+
+    }
+
+    currentPage--;
+
+    renderPatients(filteredPatients);
+
+    updatePagination();
+
+}
+
+
+function nextPage(){
+
+    const totalPages=
+
+        Math.max(
+
+            1,
+
+            Math.ceil(
+
+                filteredPatients.length/
+
+                rowsPerPage
+
+            )
+
+        );
+
+    if(currentPage>=totalPages){
+
+        return;
+
+    }
+
+    currentPage++;
+
+    renderPatients(filteredPatients);
+
+    updatePagination();
+
+}
+
+
+function renderPatients(patientList){
+
+    const tbody=
+        document.getElementById(
+            "patientTableBody"
+        );
+
+    tbody.innerHTML="";
+
+    if(patientList.length===0){
+
+        tbody.innerHTML=`
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="empty-state">
+
+                    <img
+                        src="images/search.png">
+
+                   <h3>
+
+    ${hasSearched
+        ? "No Matching Records Found"
+        : "Search to View Results"}
+
+</h3>
+
+<p>
+
+    ${hasSearched
+        ? "Try modifying your search criteria and search again."
+        : "Enter one or more search criteria above and click Search to view matching patient records."}
+
+</p>
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    
+    const start =
+    (currentPage - 1) * rowsPerPage;
+
+const end =
+    start + rowsPerPage;
+
+patientList
+    .slice(start, end)
+    .forEach((patient, index) => {
+
+        tbody.innerHTML+=`
+
+            <tr>
+
+                <td>
+
+                    ${start+index+1}
+
+                </td>
+
+                <td>
+
+                    <div class="patient-cell">
+
+                        <div class="avatar ${patient.avatarColor}">
+
+                            ${patient.avatar}
+
+                        </div>
+
+                        <div>
+
+                            <h4>
+
+                                ${patient.firstName}
+
+                                ${patient.lastName}
+
+                            </h4>
+
+                            <span>
+
+                                Age: ${patient.age} Years
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+                <td>
+
+                    ${patient.dob}
+
+                </td>
+
+                <td>
+
+                    <span class="gender ${patient.gender.toLowerCase()}">
+
+                        ${patient.gender}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    ${patient.phone}
+
+                </td>
+
+                <td>
+
+                    ${patient.email}
+
+                </td>
+
+                <td>
+
+                    ${patient.address}
+
+                </td>
+
+                <td>
+
+                    ${patient.lastVisit}
+
+                </td>
+
+                <td>
+
+                    <div class="action-buttons">
+
+                        <button
+    class="view-btn"
+    data-index="${start+index}">
+
+                            <img
+    src="images/view.png"
+    alt="View">
+
+                            View
+
+                        </button>
+
+                        <button
+    class="menu-btn"
+    data-index="${start+index}">
+
+                           <img
+    src="images/menu.png"
+    alt="More">
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
 
 
 
 function setupClearFilters(){
+
+
+
 
     const clearButton = document.getElementById("clearFilters");
 
@@ -167,27 +630,27 @@ function setupClearFilters(){
 
 function clearFilters(){
 
-    document.getElementById("firstName").value = "";
+    document.getElementById("firstName").value="";
 
-    document.getElementById("lastName").value = "";
+    document.getElementById("lastName").value="";
 
-    document.getElementById("dob").value = "";
+    document.getElementById("dob").value="";
 
-    document.getElementById("phone").value = "";
+    document.getElementById("phone").value="";
 
-    const rows =
-        document.querySelectorAll("#patientTableBody tr");
+    filteredPatients = [];
 
-    rows.forEach(row=>{
+    currentPage=1;
 
-        row.style.display="";
+    hasSearched = false;
 
-    });
+    renderPatients(filteredPatients);
 
-    updateResultCount(rows.length);
+updateResultCount(filteredPatients.length);
+
+updatePagination();
 
 }
-
 
 
 function formatDateForCompare(date){
@@ -217,6 +680,8 @@ filterInputs.forEach(input=>{
     input.addEventListener("keydown",function(event){
 
         if(event.key==="Enter"){
+
+            event.preventDefault();
 
             searchPatients();
 
@@ -290,35 +755,26 @@ if(columnButton){
 
 }
 
+document.getElementById(
 
-const paginationButtons=document.querySelectorAll(
+    "previousPage"
 
-    ".pagination button"
+).addEventListener(
+
+    "click",
+
+    previousPage
 
 );
 
-paginationButtons.forEach(button=>{
+document.getElementById(
 
-    button.addEventListener("click",function(){
+    "nextPage"
 
-        paginationButtons.forEach(btn=>{
+).addEventListener(
 
-            btn.classList.remove("active");
+    "click",
 
-        });
+    nextPage
 
-        if(
-
-            this.textContent!=="<" &&
-
-            this.textContent!==">"
-
-        ){
-
-            this.classList.add("active");
-
-        }
-
-    });
-
-});
+);

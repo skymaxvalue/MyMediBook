@@ -640,3 +640,150 @@ body{
 }
 
 
+
+
+
+.pagination{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+}
+
+.pagination button{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:44px;
+
+    height:44px;
+
+    border:1px solid #DCE5F1;
+
+    border-radius:8px;
+
+    background:#FFFFFF;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    padding:0;
+
+}
+
+.pagination button:hover{
+
+    border-color:#2457E5;
+
+    background:#EEF4FF;
+
+}
+
+.pagination button:disabled{
+
+    opacity:.45;
+
+    cursor:not-allowed;
+
+    pointer-events:none;
+
+}
+
+.pagination button img{
+
+    width:18px;
+
+    height:18px;
+
+    object-fit:contain;
+
+}
+
+#pageNumber{
+
+    min-width:110px;
+
+    text-align:center;
+
+    color:#64748B;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    user-select:none;
+
+}
+
+
+
+
+
+
+
+
+
+
+.empty-state{
+
+    padding:40px 20px;
+
+    text-align:center;
+
+    vertical-align:middle;
+
+}
+
+.empty-state img{
+
+    width:72px;
+
+    height:72px;
+
+    margin-bottom:16px;
+
+}
+
+.empty-state h3{
+
+    margin:0 0 10px;
+
+    font-size:26px;
+
+    font-weight:700;
+
+    color:#163B73;
+
+    line-height:1.2;
+
+}
+
+.empty-state p{
+
+    margin:0 auto;
+
+    max-width:520px;
+
+    font-size:18px;
+
+    line-height:30px;
+
+    color:#6E7D97;
+
+}
+
+.empty-state td{
+
+    padding:48px 20px;
+
+    border-bottom:none;
+
+}
