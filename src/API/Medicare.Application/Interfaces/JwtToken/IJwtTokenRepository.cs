@@ -10,5 +10,7 @@ namespace Medicare.Application.Interfaces.JwtToken
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
         ClaimsPrincipal ValidatePasswordResetToken(string token);
         string GeneratePasswordResetToken(string userId, string employeeId);
+        string GenerateAppointmentConfirmationToken(int appointmentId);
+        int? ValidateAppointmentConfirmationToken(string token);
     }
 }

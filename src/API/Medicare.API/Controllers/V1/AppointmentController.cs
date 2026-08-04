@@ -87,6 +87,7 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
             return HandleListResponse(response);
         }
+
         [HttpPut]
         [Route("UpdateAppointmentStatus/{appointmentId}")]
         public async Task<IActionResult> UpdateAppointmentStatus(int associateId)
@@ -94,6 +95,16 @@ namespace Medicare.API.Controllers.V1
             List<PatientProfileModel> response = new List<PatientProfileModel>();
             response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
             return HandleListResponse(response);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ConfirmAppointmentStatus")]
+        public async Task<IActionResult> ConfirmAppointmentStatus([FromQuery] string token)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new UpdateAppointmentStatusQuery(token));
+            return HandleResponse(response);
         }
     }
 }

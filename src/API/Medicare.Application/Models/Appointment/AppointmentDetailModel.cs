@@ -37,6 +37,7 @@ namespace Medicare.Application.Models.Appointment
         public int ProfileId { get; set; }
         public int SlotId { get; set; }
         public string PatientName { get; set; }
+        public string PatientEmail { get; set; }
         public string DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string RelationTypeName { get; set; }
@@ -57,6 +58,7 @@ namespace Medicare.Application.Models.Appointment
         public string DesignationName { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
+        public string? HospitalName { get; set; }
         public bool? Insurance { get; set; }
         public string? Provider { get; set; }
         public string? Policy { get; set; }

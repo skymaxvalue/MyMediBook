@@ -49,7 +49,7 @@ namespace Medicare.API.Registrars
                 // Reminder job — every 30 mins per tenant
                 RecurringJob.AddOrUpdate<AppointmentReminderJobService>(
                     $"appointment-reminder-{tenantId}",
-                    job => job.ProcessRemindersAsync(tenantId),
+                    job => job.ProcessScheduledRemindersAsync(tenantId),
                     "*/30 * * * *"
                 );
 

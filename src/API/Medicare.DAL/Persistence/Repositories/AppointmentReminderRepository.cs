@@ -50,16 +50,46 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<List<StaleAppointmentModel>> GetStaleAppointmentListAsync(StaleAppointmentRequestModel model)
+        public async Task<List<AppointmentBackgroundJobModel>> GetScheduledReminderListAsync(ScheduledReminderRequestModel model)
         {
-            string procName = "USP_GetStaleAppointments";
-            List<StaleAppointmentModel> returnData = new List<StaleAppointmentModel>();
+            string procName = "USP_GetPendingReminders";
+            List<AppointmentBackgroundJobModel> returnData = new List<AppointmentBackgroundJobModel>();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("TenantId", model.TenantId);
-                param.Add("ThresholdMins", model.ThresholdMins);
-                returnData = await _context.QueryStoredProcListAsync<StaleAppointmentModel>(procName, param);
+                param.Add("ReminderType", model.ReminderType);
+                
+                returnData = await _context.QueryStoredProcListAsync<AppointmentBackgroundJobModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<ResponseModel> LogReminderAsync(AppointmentReminderLogRequestModel model)
+        {
+            string procName = "USP_LogAppointmentReminder";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("ReminderType", model.ReminderType);
+                param.Add("NotificationChannel", model.NotificationChannel);
+                param.Add("Reminder24HrSent", model.Reminder24HrSent);
+                param.Add("Reminder1WeekSent", model.Reminder1WeekSent);
+                param.Add("SentTo", model.SentTo);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
             catch (Exception ex)
             {
@@ -139,33 +169,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 });
             }
 
-            return returnData;
-        }
-
-        public async Task<ResponseModel> UpdateReminderInfoAsync(UpdateAppointmentRequestModel model)
-        {
-            string procName = "USP_UpdateAppointmentReminderInfo";
-            ResponseModel returnData = new ResponseModel();
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("AppointmentId", model.AppointmentId);
-                param.Add("CleanupAfterHours", model.CleanupAfterHours);
-                param.Add("ReminderType", model.ReminderType);
-                param.Add("NotificationChannel", model.NotificationChannel);
-
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
-            }
-            catch (Exception ex)
-            {
-                await _errorLog.InsertErrorLog(new ErrorLogModel()
-                {
-                    IsDBError = false,
-                    Error_Message = ex.Message,
-                    Error_Procedure = procName,
-                    Error_Trace = ex.StackTrace
-                });
-            }
             return returnData;
         }
     }

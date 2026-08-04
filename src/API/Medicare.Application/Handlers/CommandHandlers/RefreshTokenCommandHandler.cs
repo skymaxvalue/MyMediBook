@@ -3,7 +3,6 @@ using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.JwtTokens;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 using System.Security.Claims;
 
 namespace Medicare.Application.Handlers.CommandHandlers
@@ -32,7 +31,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 throw new UnauthorizedAccessException("Invalid refresh token.");
             }
 
-            string accessToken = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
+            string accessToken = _jwtTokenRepository.   GenerateToken(new JwtTokenClaimModel
             {
                 UserId = userIdClaim,
                 RefId = int.Parse(principal.FindFirst("RefId")?.Value ?? "0"),

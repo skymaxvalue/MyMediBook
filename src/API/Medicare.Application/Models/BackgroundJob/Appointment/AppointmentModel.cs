@@ -1,6 +1,6 @@
 ﻿namespace Medicare.Application.Models.BackgroundJob.Appointment
 {
-    public class StaleAppointmentModel
+    public class AppointmentBackgroundJobModel
     {
         public int AppointmentId { get; set; }
         public int PatientId { get; set; }
