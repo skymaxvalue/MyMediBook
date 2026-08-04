@@ -17,23 +17,47 @@ function initializeDashboard(){
 
 function setupSearch(){
 
-    const searchInput = document.getElementById("dashboardSearch");
+    const searchInput =
+        document.getElementById(
+            "dashboardSearch"
+        );
 
-    if(!searchInput){
+    const searchButton =
+        document.getElementById(
+            "dashboardSearchBtn"
+        );
 
-        return;
+    if(searchInput){
+
+        searchInput.addEventListener(
+
+            "keydown",
+
+            function(event){
+
+                if(event.key === "Enter"){
+
+                    openSearchPage();
+
+                }
+
+            }
+
+        );
 
     }
 
-    searchInput.addEventListener("keydown",function(event){
+    if(searchButton){
 
-        if(event.key==="Enter"){
+        searchButton.addEventListener(
 
-            openSearchPage();
+            "click",
 
-        }
+            openSearchPage
 
-    });
+        );
+
+    }
 
 }
 
@@ -61,3 +85,4 @@ function openSearchPage(){
         encodeURIComponent(value);
 
 }
+
