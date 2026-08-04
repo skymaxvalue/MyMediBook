@@ -4,7 +4,6 @@ using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.BackgroundJob.Appointment;
 using Medicare.Application.Models.CommonModels.Email;
 using Medicare.Application.Models.CommonModels.ErrorLog;
-using Microsoft.Extensions.Configuration;
 
 namespace Medicare.DAL.Services.Appointment
 {
@@ -12,105 +11,97 @@ namespace Medicare.DAL.Services.Appointment
     {
         private readonly IAppointmentReminderRepository _reminderRepository;
         private readonly IEmailService _emailService;
-        private readonly IConfiguration _configuration;
         private readonly IErrorLogRepository _errorLog;
         public AppointmentReminderJobService(
             IAppointmentReminderRepository reminderRepository,
             IEmailService emailService,
-            IConfiguration configuration,
             IErrorLogRepository errorLog)
         {
             _reminderRepository = reminderRepository;
             _emailService = emailService;
-            _configuration = configuration;
             _errorLog = errorLog;
         }
-
-        // Processes every 30 mins 
-        public async Task ProcessRemindersAsync(Guid tenantId)
+        public async Task ProcessScheduledRemindersAsync(Guid tenantId)
         {
-            int thresholdMins = int.Parse(_configuration["ReminderSettings:ThresholdMins"] ?? "30");
-            int cleanupAfterHrs = int.Parse(_configuration["ReminderSettings:CleanupAfterHours"] ?? "2");
-
-            var sAppointmentModel = new StaleAppointmentRequestModel
-            {
-                TenantId = tenantId,
-                ThresholdMins = thresholdMins
-            };
-
-            var sAppointmentList = await _reminderRepository.GetStaleAppointmentListAsync(sAppointmentModel);
-
-            if (sAppointmentList == null || !sAppointmentList.Any()) return;
-
-            foreach (var appointment in sAppointmentList)
-            {
-                bool success = false;
-                string error = null;
-
-                try
+            // 24hr reminder 
+            var appointments24Hr = await _reminderRepository.GetScheduledReminderListAsync(
+                new ScheduledReminderRequestModel
                 {
-                    // Route to OTP channel 
-                    success = appointment.NotificationChannel switch
-                    {
-                        "EMAIL" => await SendEmailReminderAsync(appointment),
-                        //"SMS" => await SendSmsReminderAsync(appointment),
-                        //"WHATSAPP" => await SendWhatsAppReminderAsync(appointment),
-                        _ => await SendEmailReminderAsync(appointment)
-                    };
-                }
-                catch (Exception ex)
-                {
-                    await _errorLog.InsertErrorLog(new ErrorLogModel
-                    {
-                        IsDBError = false,
-                        Error_Message = $"{ ex.Message }; AppointmentId: { appointment.AppointmentId }; AppointmentDate: { appointment.AppointmentDate }",
-                        Error_Procedure = "",
-                        Error_Trace = ex.StackTrace
-                    });
-                }
+                    TenantId = tenantId,
+                    ReminderType = "24Hr"
+                });
 
-                var updateAppointmentModel = new UpdateAppointmentRequestModel
-                {
-                    AppointmentId = appointment.AppointmentId,
-                    CleanupAfterHours = cleanupAfterHrs,
-                    NotificationChannel = appointment.NotificationChannel,
-                    ReminderType = "2Hr"
-                };
+            if (appointments24Hr?.Any() == true)
+                foreach (var appt in appointments24Hr)
+                    await SendScheduledReminderAsync(appt, "24Hr");
 
-                // Update Reminder 
-                await UpdateAppointmentReminderInfo(updateAppointmentModel);
-            }
+            // 1-Week reminder 
+            var appointments1Week = await _reminderRepository.GetScheduledReminderListAsync(
+                new ScheduledReminderRequestModel
+                {
+                    TenantId = tenantId,
+                    ReminderType = "1Week"
+                });
+
+            if (appointments1Week?.Any() == true)
+                foreach (var appt in appointments1Week)
+                    await SendScheduledReminderAsync(appt, "1Week");
         }
 
-        private async Task UpdateAppointmentReminderInfo(UpdateAppointmentRequestModel model)
+        private async Task SendScheduledReminderAsync(AppointmentBackgroundJobModel appointment, string reminderType)
         {
+            bool success = false;
             try
             {
-                await _reminderRepository.UpdateReminderInfoAsync(model);
+                success = appointment.NotificationChannel switch
+                {
+                    "EMAIL" => await SendScheduledReminderEmailAsync(appointment, reminderType),
+                    //"SMS" => await SendSmsReminderAsync(appointment),
+                    //"WHATSAPP" => await SendWhatsAppReminderAsync(appointment),
+                    _ => await SendScheduledReminderEmailAsync(appointment, reminderType)
+                };
             }
             catch (Exception ex)
             {
                 await _errorLog.InsertErrorLog(new ErrorLogModel
                 {
                     IsDBError = false,
-                    Error_Message = $"{ex.Message}; AppointmentId: {model.AppointmentId}",
+                    Error_Message = $"{ex.Message}, {reminderType} Reminder | AppointmentId: {appointment.AppointmentId})",
                     Error_Procedure = "",
                     Error_Trace = ex.StackTrace
-                });
+                }); ;
             }
+            
+            // Log to AppointmentReminderLog — prevents duplicate sends
+            await _reminderRepository.LogReminderAsync(new AppointmentReminderLogRequestModel
+            {
+                AppointmentId = appointment.AppointmentId,
+                ReminderType = reminderType,
+                NotificationChannel = appointment.NotificationChannel,
+                SentTo = appointment.PatientEmail,  
+                Reminder24HrSent = reminderType == "24Hr" ? 1 : 0,
+                Reminder1WeekSent = reminderType == "1Week" ? 1 : 0
+            });
         }
 
-        private async Task<bool> SendEmailReminderAsync(StaleAppointmentModel model)
+        private async Task<bool> SendScheduledReminderEmailAsync(AppointmentBackgroundJobModel model, string reminderType)
         {
+            bool is24Hr = reminderType == "24Hr";
+            var headerBg = is24Hr ? "#0066cc" : "#1a8a1a";
+            var headerText = is24Hr ? "Your appointment is tomorrow" : "Your appointment is in 7 days";
+            var subject = is24Hr
+                ? $"Reminder: Your appointment tomorrow with {model.DoctorName}"
+                : $"Reminder: Your appointment next week with {model.DoctorName}";
+
             var body = $"""
                 <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;">
-                  <div style="background:#0066cc;padding:24px;text-align:center;">
-                    <h1 style="color:white;margin:0;">Action Required</h1>
-                    <p style="color:#cce5ff;margin:8px 0 0;">Please confirm your appointment</p>
+                  <div style="background:{headerBg};padding:24px;text-align:center;">
+                    <h1 style="color:white;margin:0;">Appointment Reminder</h1>
+                    <p style="color:#cce5ff;margin:8px 0 0;">{headerText}</p>
                   </div>
                   <div style="padding:24px;">
                     <p>Hi <strong>{model.PatientName}</strong>,</p>
-                    <p>Your appointment is <strong>pending OTP confirmation</strong>. Please verify your OTP to secure your slot.</p>
+                    <p>This is a reminder for your upcoming appointment.</p>
                     <table style="width:100%;border-collapse:collapse;margin:16px 0;">
                       <tr style="background:#f5f5f5;">
                         <td style="padding:10px;font-weight:bold;width:40%;">Doctor</td>
@@ -120,48 +111,48 @@ namespace Medicare.DAL.Services.Appointment
                         <td style="padding:10px;font-weight:bold;">Hospital</td>
                         <td style="padding:10px;">{model.HospitalName}</td>
                       </tr>
-                      <tr style="background:#f5f5f5;">
+                      <tr>
                         <td style="padding:10px;font-weight:bold;">Date</td>
                         <td style="padding:10px;">{model.AppointmentDate}</td>
                       </tr>
-                      <tr>
-                        <td style="padding:10px;font-weight:bold;">Time</td>
+                      <tr style="background:#f5f5f5;">
+                        <td style="padding:10px;font-weight:bold;">Appointment At</td>
                         <td style="padding:10px;">{model.SlotStartTime}</td>
                       </tr>
-                      <tr style="background:#f5f5f5;">
+                      <tr>
                         <td style="padding:10px;font-weight:bold;">Visit Type</td>
                         <td style="padding:10px;">{model.VisitType}</td>
                       </tr>
                     </table>
-                    <div style="text-align:center;margin:24px 0;">
-                      <p style="color:#e65c00;font-weight:bold;">⚠️ Your slot will be released if OTP is not verified within 2 hours.</p>
-                    </div>
                     <p style="color:#666;font-size:13px;">
-                      If you did not book this appointment, please ignore this email.
+                      Please arrive 10 minutes early. If you need to cancel or reschedule,
+                      please do so at least 24 hours before your appointment to avoid any cancellation fees.
                     </p>
                   </div>
                   <div style="background:#f5f5f5;padding:16px;text-align:center;">
                     <p style="color:#999;font-size:12px;margin:0;">MediBook — Your Health, Our Priority</p>
                   </div>
                 </div>
-            """;
+                """;
+
             return await _emailService.SendEmailAsync(new EmailModel
             {
                 ToEmail = model.PatientEmail,
                 ToName = model.PatientName,
-                Subject = $"Action Required: Confirm your appointment with {model.DoctorName}",
+                Subject = subject,
                 Body = body,
                 IsHtml = true
             });
         }
-        private Task<bool> SendSmsReminderAsync(StaleAppointmentModel a)
+
+        private Task<bool> SendSmsReminderAsync(AppointmentBackgroundJobModel a)
         {
             // Integrate SMS provider (Twilio / AWS SNS / MSG91)
             // var message = $"Hi {a.PatientName}, your appointment with {a.DoctorName} on {a.AppointmentDate} at {a.SlotStartTime} is pending confirmation. Please verify your OTP to confirm.";
             // return await _smsService.SendAsync(a.PatientPhone, message);
             return Task.FromResult(false);
         }
-        private Task<bool> SendWhatsAppReminderAsync(StaleAppointmentModel a)
+        private Task<bool> SendWhatsAppReminderAsync(AppointmentBackgroundJobModel a)
         {
             // Integrate WhatsApp provider (Twilio / Meta Cloud API)
             return Task.FromResult(false);

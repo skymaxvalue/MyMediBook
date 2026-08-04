@@ -377,7 +377,7 @@ namespace Medicare.DAL.Persistence.Repositories
                     ToName = toName,
                     Subject = "Your Medicare Login OTP",
                     Body = BuildOtpEmailBody(toName, otpCode),
-                    IsHtml = false
+                    IsHtml = true
                 };
 
                 await _emailService.SendEmailAsync(email);
