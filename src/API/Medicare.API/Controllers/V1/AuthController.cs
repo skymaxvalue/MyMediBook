@@ -137,6 +137,7 @@ namespace Medicare.API.Controllers.V1
             return HandleLoggedOutResponse(response);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("RequestOtp")]
         public async Task<IActionResult> RequestOtp([FromBody] RequestOtpModel model)
@@ -146,6 +147,7 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("VerifyOtp")]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpModel model)
