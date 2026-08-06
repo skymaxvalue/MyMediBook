@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { ToastService } from "src/app/Components/Toaster/toast.service";
 import { AppState } from "src/app/Store/app.state";
 import { rescheduleMyAppointment } from "src/app/Store/Appointments/appointment.actions";
 import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
@@ -38,7 +39,7 @@ export class RescheduleComponent implements OnInit {
   //   { time: '12:30 PM', disabled: false }
   // ];
 
-  constructor(private fb: FormBuilder, private router: Router, private store: Store<AppState>) {
+  constructor(private fb: FormBuilder, private router: Router, private store: Store<AppState>, private toast: ToastService) {
 
 
   }
@@ -195,13 +196,13 @@ export class RescheduleComponent implements OnInit {
   async confirmReschedule() {
 
     if (this.form.invalid) {
-      alert("Please select reschedule reason")
+      this.toast.error('Error', "Please select reschedule reason")
       this.form.markAllAsTouched();
       return;
     }
 
     if (!this.selectedTime) {
-      alert('Please select a new appointment time.');
+      this.toast.error('Error', 'Please select a new appointment time.');
       return;
     }
 

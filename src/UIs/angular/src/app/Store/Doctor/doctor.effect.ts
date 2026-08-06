@@ -288,4 +288,53 @@ export class DoctorSpecialityEffects {
             )
         )
     );
+
+    updateAssociateSchedule$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.updateAssociatesAndItsSchedule),
+
+            mergeMap((action) =>
+                this.doctorService.updateAssociateSchedule(action.associate).pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess({
+                            associateSchedule: response
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.updateAssociatesAndItsScheduleFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
+    deleteAssociateSchedule$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(DoctorSpecialityActions.deleteAssociatesAndItsSchedule),
+
+            mergeMap((action: any) =>
+                this.doctorService.deleteAssociateSchedule(action.associate).pipe(
+
+                    map((response: any) =>
+                        DoctorSpecialityActions.deleteAssociatesAndItsScheduleSuccess({
+                            associate: response
+                        })
+                    ),
+
+                    catchError(error =>
+                        of(
+                            DoctorSpecialityActions.deleteAssociatesAndItsScheduleFailure({
+                                error
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
 }

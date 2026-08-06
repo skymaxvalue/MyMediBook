@@ -11,6 +11,7 @@ import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
 import * as AuthActions from "../../Store/Auth/auth.actions";
+import { ToastService } from "src/app/Components/Toaster/toast.service";
 
 @Component({
   selector: "app-forget-password",
@@ -39,7 +40,7 @@ export class ForgetPasswordComponent {
   showPassword: boolean = false;
   OtpData: any;
 
-  constructor(private router: Router, private store: Store<AppState>, private cdr: ChangeDetectorRef) {
+  constructor(private router: Router, private store: Store<AppState>, private cdr: ChangeDetectorRef, private toast: ToastService,) {
 
   }
   moveNext(event: Event, index: number): void {
@@ -94,7 +95,7 @@ export class ForgetPasswordComponent {
   }
   sendOtp() {
 
-    alert("OTP sent successfully!");
+    this.toast.success('Success', 'OTP sent successfully!');
     this.store.dispatch(AuthActions.requestOTP({ email: this.emailOrMobile }))
 
 

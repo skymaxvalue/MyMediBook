@@ -10,6 +10,7 @@ import {
   Input,
   ChangeDetectorRef
 } from '@angular/core';
+import { ToastService } from 'src/app/Components/Toaster/toast.service';
 @Component({
   selector: "app-booking-otp-verificatin",
   imports: [],
@@ -34,7 +35,7 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
 
   interval: any;
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef, private toast: ToastService) { }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -92,7 +93,7 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
         this.cdr.detectChanges();
       } else {
         clearInterval(this.interval);
-        alert('OTP Expired');
+        this.toast.error('Error', 'OTP Expired');
       }
 
     }, 1000);
@@ -104,7 +105,7 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
 
     this.startTimer();
 
-    alert('OTP Resent Successfully');
+    this.toast.success('Success', 'OTP Resent Successfully');
   }
 
   verifyOtp() {
@@ -113,7 +114,7 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
 
     if (finalOtp.length !== 4) {
 
-      alert('Please enter complete OTP');
+      this.toast.error('Error', 'Please enter complete OTP');
 
       return;
     }
@@ -135,7 +136,7 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
 
     // localStorage.removeItem('tempAppointment');
 
-    alert('Appointment Booked Successfully');
+    // alert('Appointment Booked Successfully');
     clearInterval(this.interval);
     this.VerifyOTP.emit(this.bookingPatient);
   }

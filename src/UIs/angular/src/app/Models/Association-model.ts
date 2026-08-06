@@ -30,6 +30,29 @@ export interface AssociateRequest {
     associateQualification: AssociateQualification;
     associateExperience: AssociateExperience;
 }
+export interface UpdateAssociateScheduleRequest {
+    associateId: number;
+    roleId: number;
+    departmentId: number;
+    specialityId: number;
+
+    fromDate: string;
+    toDate: string;
+
+    fromTime: string;
+    toTime: string;
+
+    breakTimeFrom: string;
+    breakTimeTo: string;
+
+    workingDays: string;
+
+    consultationTime: number;
+    averageCharge: number;
+    designationId?: number;
+
+    updatedBy: string;
+}
 
 export interface AssociateQualification {
     highestDegree: string;

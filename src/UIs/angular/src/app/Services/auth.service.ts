@@ -67,8 +67,6 @@ export class AuthService {
 
       this.callRefreshToken().subscribe({
         next: (res) => {
-          alert("Refresh Token Response" + JSON.stringify(res))
-          console.log('Refresh Token Response', res);
           localStorage.setItem('token', res.data.accessToken);
           localStorage.setItem('refreshToken', res.data.refreshToken);
           localStorage.setItem('loginTime', Date.now().toString());

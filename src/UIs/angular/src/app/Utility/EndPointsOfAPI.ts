@@ -1,3 +1,5 @@
+import { UPDATE } from "@ngrx/store"
+
 export const APIEndpoints = {
     GET_SPECIALITIES: "Doctor/GetDoctorList",
     GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
@@ -27,7 +29,9 @@ export const PatientApiEndPoint = {
 export const AssociateApiEndPoint = {
     GET_ASSOCIATE_LIST: "Associate/GetAssociateList",
     CREATE_SCHEDULE_ASSOCIATE: "Associate/CreateAssociateSchedule",
-    GET_ASSOCIATE_BY_ITS_ID: "Associate/GetAssociatebyId/"
+    GET_ASSOCIATE_BY_ITS_ID: "Associate/GetAssociatebyId/",
+    UPDATE_ASSOCIATE_BY_ITS_ID: "Associate/UpdateAssociateDetail",
+    DELETE_ASSOCIATE_BY_ITS_ID: "Associate/DeleteAssociate"
 }
 
 

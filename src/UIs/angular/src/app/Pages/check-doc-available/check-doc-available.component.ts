@@ -14,6 +14,7 @@ import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.s
 import { getMyAppointments, rescheduleMyAppointment } from "../../Store/Appointments/appointment.actions";
 import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
 import { take } from "rxjs";
+import { ToastService } from "src/app/Components/Toaster/toast.service";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -59,7 +60,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   ProfileList: any[] = [];
   maxDate: string = '';
 
-  constructor(private router: Router, private store: Store) {
+  constructor(private router: Router, private store: Store, private toast: ToastService) {
     // this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
   }
 
@@ -184,7 +185,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   async rescheduleAppointment() {
     // this.st
     if (!this.selectedSlot) {
-      alert('Please select a time slot for rescheduling the appointment');
+      this.toast.error('Error', 'Please select a time slot for rescheduling the appointment');
       return;
     }
     await this.store.dispatch(rescheduleMyAppointment({
@@ -307,7 +308,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   goToBooking(): void {
 
     if (!this.selectedSlot) {
-      alert('Please select a time slot');
+      this.toast.error('Error', 'Please select a time slot');
       return;
     }
     if (this.updatesheduledpatient) {

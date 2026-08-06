@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas';
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
 import { getAllMecineDetailByPatientID } from "src/app/Store/Patient/patient.action";
+import { ToastService } from "src/app/Components/Toaster/toast.service";
 
 @Component({
   selector: "app-medicine-orders",
@@ -158,7 +159,7 @@ export class MedicineOrdersComponent {
 
   filteredOrders: MedicineOrder[] = [];
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private toast: ToastService) {
 
   }
   ngOnInit(): void {
@@ -241,7 +242,7 @@ export class MedicineOrdersComponent {
   }
 
   requestRefill(order: MedicineOrder): void {
-    alert(`Refill request submitted for ${order.medicine}`);
+    this.toast.info('Info', `Refill request submitted for ${order.medicine}`);
   }
 
   openMap(address: string): void {

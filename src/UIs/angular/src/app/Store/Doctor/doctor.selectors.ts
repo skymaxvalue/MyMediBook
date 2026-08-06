@@ -56,5 +56,10 @@ export const selectGetAssociateDetailsByItID = createSelector(
     selectDoctorSpecialityState,
     state => state.accociateDetails
 )
+export const selectUpdateAssociateDetailsByItID = createSelector(
+    selectDoctorSpecialityState,
+    state => state.updatedAssociate
+)
+
 
 

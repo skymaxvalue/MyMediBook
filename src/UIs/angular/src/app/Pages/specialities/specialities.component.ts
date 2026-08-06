@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { ToastService } from "src/app/Components/Toaster/toast.service";
 import { TabServiceService } from "src/app/Services/tab-service.service";
 import { AppState } from "src/app/Store/app.state";
 import { loadDoctorSpecialities } from "src/app/Store/Doctor/doctor.action";
@@ -20,7 +21,7 @@ export class SpecialitiesComponent implements OnInit {
   @Output() onDoctorSelected = new EventEmitter<any>();
   searchText: any = '';
   searchedText: string = '';
-  constructor(private router: Router, private tabService: TabServiceService, private store: Store<AppState>) {
+  constructor(private router: Router, private toast: ToastService, private store: Store<AppState>) {
   }
   ngOnInit(): void {
     this.store.dispatch(
@@ -44,7 +45,7 @@ export class SpecialitiesComponent implements OnInit {
         }
       );
     } else {
-      alert("Doctor is not available")
+      this.toast.info('Info', "Doctor is not available")
     }
   }
 

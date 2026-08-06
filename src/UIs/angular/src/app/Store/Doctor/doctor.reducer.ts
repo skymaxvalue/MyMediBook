@@ -302,5 +302,57 @@ export const doctorSpecialityReducer = createReducer(
             error,
             isLoading: false
         })
+    ),
+    on(
+        DoctorSpecialityActions.updateAssociatesAndItsSchedule,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess,
+        (state, { associateSchedule }) => ({
+            ...state,
+            associateSchedule: associateSchedule,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.updateAssociatesAndItsScheduleFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
+    ),
+    on(
+        DoctorSpecialityActions.deleteAssociatesAndItsSchedule,
+        state => ({
+            ...state,
+            isLoading: true,
+            error: null
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.deleteAssociatesAndItsScheduleSuccess,
+        (state, { associate }) => ({
+            ...state,
+            associate: associate,
+            isLoading: false
+        })
+    ),
+
+    on(
+        DoctorSpecialityActions.deleteAssociatesAndItsScheduleFailure,
+        (state, { error }) => ({
+            ...state,
+            error,
+            isLoading: false
+        })
     )
 );

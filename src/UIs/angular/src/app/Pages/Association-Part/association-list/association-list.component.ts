@@ -3,7 +3,7 @@ import { Component, computed, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
-import { getAllAssociates } from "src/app/Store/Doctor/doctor.action";
+import { deleteAssociatesAndItsSchedule, getAllAssociates } from "src/app/Store/Doctor/doctor.action";
 import { selectGelAllAssociate } from "src/app/Store/Doctor/doctor.selectors";
 
 interface AssociateSchedule {
@@ -138,6 +138,12 @@ export class AssociationListComponent implements OnInit {
   deleteConfirmed() {
 
     if (!this.deleteRow) return;
+    const payload = {
+      associateId: this.deleteRow.associateId,
+      isActive: this.deleteRow.isActive ? 1 : 0,
+      updatedBy: JSON.parse(localStorage.getItem('user') || '{}')?.fullName
+    }
+    this.store.dispatch(deleteAssociatesAndItsSchedule({ associate: payload }))
     this.schedules.update(rows =>
       rows.filter((x: any) => x.associateId !== this.deleteRow!.associateId)
     );

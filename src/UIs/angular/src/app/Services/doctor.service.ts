@@ -2,7 +2,7 @@ import { HttpClient, HttpContext } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { APIEndpoints, AssociateApiEndPoint, AuthEndPoints, MasterAPIEndPoints } from "../Utility/EndPointsOfAPI";
-import { AssociateRequest, CreateScheduleRequest } from "../Models/Association-model";
+import { AssociateRequest, CreateScheduleRequest, UpdateAssociateScheduleRequest } from "../Models/Association-model";
 import { USE_ASSOCIATION_TOKEN } from "../logging/http-context-tokens";
 
 @Injectable({
@@ -75,5 +75,16 @@ export class DoctorService {
 
   getAssociateByAssociateID(associateId: any) {
     return this.http.get(`${environment.OpenIdConnect.apiUrl}${AssociateApiEndPoint.GET_ASSOCIATE_BY_ITS_ID}${associateId.associateId}`)
+  }
+  updateAssociateSchedule(data: UpdateAssociateScheduleRequest) {
+    return this.http.post(
+      `${environment.OpenIdConnect.apiUrl}${AssociateApiEndPoint.UPDATE_ASSOCIATE_BY_ITS_ID}`, data
+    );
+  }
+
+  deleteAssociateSchedule(data: UpdateAssociateScheduleRequest) {
+    return this.http.post(
+      `${environment.OpenIdConnect.apiUrl}${AssociateApiEndPoint.DELETE_ASSOCIATE_BY_ITS_ID}`, data
+    );
   }
 }

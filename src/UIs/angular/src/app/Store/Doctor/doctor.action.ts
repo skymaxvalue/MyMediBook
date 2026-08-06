@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AssociateRequest } from 'src/app/Models/Association-model';
+import { AssociateRequest, UpdateAssociateScheduleRequest } from 'src/app/Models/Association-model';
 
 export const loadDoctorSpecialities = createAction(
     '[Doctor Speciality] Load'
@@ -87,7 +87,7 @@ export const getRoleDepaSpeciaFailure = createAction(
     props<{ error: any }>()
 );
 export const getWeekDays = createAction(
-    'Get RoleDepaSpecia',
+    'Get WeekDays',
 
 );
 
@@ -159,5 +159,35 @@ export const getTimeSloteByDoctorIDSuccess = createAction(
 
 export const getTimeSloteByDoctorIDFailure = createAction(
     'Create Time Schedule Failure',
+    props<{ error: any }>()
+);
+export const updateAssociatesAndItsSchedule = createAction(
+    'Update Associates Schedule',
+    props<{ associate: UpdateAssociateScheduleRequest }>()
+
+);
+
+export const updateAssociatesAndItsScheduleSuccess = createAction(
+    'Update Associates Schedule Success',
+    props<{ associateSchedule: any }>()
+);
+
+export const updateAssociatesAndItsScheduleFailure = createAction(
+    'Update Associates Schedule Failure',
+    props<{ error: any }>()
+);
+export const deleteAssociatesAndItsSchedule = createAction(
+    'Delete Associates Schedule',
+    props<{ associate: {} }>()
+
+);
+
+export const deleteAssociatesAndItsScheduleSuccess = createAction(
+    'Delete Associates Schedule Success',
+    props<{ associate: any }>()
+);
+
+export const deleteAssociatesAndItsScheduleFailure = createAction(
+    'Delete Associates Schedule Failure',
     props<{ error: any }>()
 );
