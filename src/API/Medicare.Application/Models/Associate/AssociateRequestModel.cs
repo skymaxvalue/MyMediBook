@@ -6,10 +6,10 @@
         public int RoleId { get; set; }
         public int DepartmentId { get; set; }
         public int SpecialityId { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
-        public TimeSpan FromTime { get; set; }
-        public TimeSpan ToTime { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public TimeSpan? FromTime { get; set; }
+        public TimeSpan? ToTime { get; set; }
         public TimeSpan? BreakTimeFrom { get; set; }
         public TimeSpan? BreakTimeTo { get; set; }
         public string WorkingDays { get; set; }

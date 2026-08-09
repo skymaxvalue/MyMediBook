@@ -60,7 +60,7 @@ namespace Medicare.API.Controllers.V1
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpDelete]
         [Route("DeleteAssociate")]
         public async Task<IActionResult> DeleteAssociate(DeleteAssociateRequestModel model)
         {
