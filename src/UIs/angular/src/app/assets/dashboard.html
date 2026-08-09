@@ -812,6 +812,232 @@
 
 </div>
 
+
+<div id="cancelSuccessModal" class="cancel-success-popup-overlay">
+
+    <div class="cancel-success-popup-container">
+
+    <button
+        class="cancel-success-popup-close"
+        onclick="closeCancelSuccessModal()">
+
+        <img
+            src="images/close.png"
+            alt="Close">
+
+    </button>
+
+    <div class="cancel-success-popup-header">
+
+        <div class="cancel-success-popup-icon">
+
+            <img
+                src="images/cancel-success.png"
+                alt="Cancelled">
+
+        </div>
+
+        <h2>
+
+            Appointment Cancelled Successfully
+
+        </h2>
+
+        <p>
+
+            Your appointment has been cancelled.<br>
+
+            We have sent a cancellation confirmation to your email.
+
+        </p>
+
+    </div>
+
+    <section class="cancel-success-popup-card">
+
+        <div class="cancel-success-popup-card-header">
+
+            <div class="cancel-success-popup-title">
+
+                <img
+                    src="images/calendar-red.png"
+                    alt="Calendar">
+
+                <span>
+
+                    Cancelled Appointment Details
+
+                </span>
+
+            </div>
+
+            <div class="cancel-success-popup-status">
+
+                <span class="cancel-success-popup-dot"></span>
+
+                Cancelled
+
+            </div>
+
+        </div>
+
+        <div class="cancel-success-popup-body">
+
+            <div class="cancel-success-popup-row">
+
+                <div class="cancel-success-popup-label">
+
+                    <img
+                        src="images/profile.png"
+                        alt="Patient">
+
+                    <span>
+
+                        Patient
+
+                    </span>
+
+                </div>
+
+                <strong id="cancelSuccessPatient">
+
+                    Self
+
+                </strong>
+
+            </div>
+
+            <div class="cancel-success-popup-row">
+
+                <div class="cancel-success-popup-label">
+
+                    <img
+                        src="images/doctor-icon2.png"
+                        alt="Doctor">
+
+                    <span>
+
+                        Doctor
+
+                    </span>
+
+                </div>
+
+                <strong id="cancelSuccessDoctor">
+
+                    Dr. Meera
+
+                </strong>
+
+            </div>
+
+            <div class="cancel-success-popup-row">
+
+                <div class="cancel-success-popup-label">
+
+                    <img
+                        src="images/stethoscope.png"
+                        alt="Purpose">
+
+                    <span>
+
+                        Visit Purpose
+
+                    </span>
+
+                </div>
+
+                <strong id="cancelSuccessPurpose">
+
+                    Dermatology
+
+                </strong>
+
+            </div>
+
+            <div class="cancel-success-popup-row">
+
+                <div class="cancel-success-popup-label">
+
+                    <img
+                        src="images/calendar-blue.png"
+                        alt="Date">
+
+                    <span>
+
+                        Date & Time
+
+                    </span>
+
+                </div>
+
+                <strong>
+
+                    <span id="cancelSuccessDate">
+
+                        Jun 02 2026
+
+                    </span>
+
+                    &nbsp;&nbsp;•&nbsp;&nbsp;
+
+                    <span id="cancelSuccessTime">
+
+                        10:00 AM - 10:30 AM
+
+                    </span>
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="cancel-success-popup-info">
+
+        <img
+            src="images/info-blue.png"
+            alt="Info">
+
+        <span>
+
+            You can book a new appointment anytime.
+
+        </span>
+
+    </div>
+
+    <div class="cancel-success-popup-actions">
+
+        <button
+            class="cancel-success-popup-book-btn"
+            onclick="goToSpecialities()">
+
+            <img
+                src="images/calendar2.png"
+                alt="Calendar">
+
+            Book New Appointment
+
+        </button>
+
+        <button
+            class="cancel-success-popup-done-btn"
+            onclick="closeCancelSuccessModal()">
+
+            Done
+
+        </button>
+
+    </div>
+
+    </div>
+
+</div>
+
+
 <div id="footer-container"></div>
 
 <script src="js/footer.js"></script>

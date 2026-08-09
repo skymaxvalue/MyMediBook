@@ -418,3 +418,426 @@ textarea:focus{
 #otherReason{
     margin-top:16px;
 }
+
+
+
+
+
+.reschedule-validation-overlay{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:rgba(15,23,42,.38);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+}
+
+.reschedule-validation-overlay.show{
+    display:flex;
+}
+
+
+
+.reschedule-validation-dialog{
+    position:relative;
+
+    width:480px;
+    max-width:100%;
+
+    padding:38px 44px 34px;
+
+    background:#FFFFFF;
+    border-radius:16px;
+
+    box-shadow:0 24px 60px rgba(15,23,42,.18);
+
+    text-align:center;
+
+    animation:rescheduleValidationIn .22s ease-out;
+}
+
+@keyframes rescheduleValidationIn{
+
+    from{
+        opacity:0;
+        transform:translateY(12px) scale(.98);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+}
+
+
+
+.date-reminder-overlay,
+.time-reminder-overlay{
+    position:fixed;
+    inset:0;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:rgba(15,23,42,.38);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+
+    z-index:99999;
+}
+
+.date-reminder-overlay.show,
+.time-reminder-overlay.show{
+    display:flex;
+}
+
+
+
+
+.date-reminder-dialog,
+.time-reminder-dialog{
+    position:relative;
+
+    width:480px;
+    max-width:100%;
+
+    padding:38px 44px 34px;
+
+    background:#fff;
+    border-radius:16px;
+
+    box-shadow:0 24px 60px rgba(15,23,42,.18);
+
+    text-align:center;
+
+    animation:reminderPopupIn .22s ease-out;
+}
+
+@keyframes reminderPopupIn{
+
+    from{
+        opacity:0;
+        transform:translateY(12px) scale(.98);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+}
+
+
+
+
+.date-reminder-close,
+.time-reminder-close{
+    position:absolute;
+
+    top:16px;
+    right:16px;
+
+    width:34px;
+    height:34px;
+
+    border:0;
+    border-radius:50%;
+
+    background:#F8FAFC;
+    color:#64748B;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+}
+
+.date-reminder-close span,
+.time-reminder-close span{
+    font-size:29px;
+    line-height:1;
+    font-weight:400;
+}
+
+
+
+
+.date-reminder-icon,
+.time-reminder-icon{
+    width:100px;
+    height:100px;
+
+    margin:0 auto 14px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#EEF4FF;
+}
+
+.date-reminder-icon img,
+.time-reminder-icon img{
+    width:52px;
+    height:52px;
+
+    object-fit:contain;
+}
+
+
+
+
+.date-reminder-dialog h2,
+.time-reminder-dialog h2{
+    margin:0;
+
+    color:#172B4D;
+
+    font-family:"Source Sans Pro",sans-serif;
+
+    font-size:27px;
+    font-weight:700;
+
+    line-height:1.2;
+}
+
+
+
+
+.date-reminder-divider,
+.time-reminder-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:10px;
+
+    margin:18px auto 20px;
+}
+
+.date-reminder-divider span,
+.time-reminder-divider span{
+    width:40px;
+    height:2px;
+
+    background:#4D83F7;
+}
+
+.date-reminder-divider b,
+.time-reminder-divider b{
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#2563EB;
+}
+
+
+
+
+.date-reminder-message,
+.time-reminder-message{
+    display:flex;
+    align-items:center;
+
+    gap:16px;
+
+    padding:17px 18px;
+
+    background:#F5F9FF;
+
+    border:1px solid #DCE8FF;
+    border-radius:11px;
+
+    text-align:left;
+}
+
+
+
+
+.date-reminder-message-icon,
+.time-reminder-message-icon{
+    width:54px;
+    height:54px;
+
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#E6EEFF;
+}
+
+.date-reminder-message-icon img,
+.time-reminder-message-icon img{
+    width:30px;
+    height:30px;
+
+    object-fit:contain;
+}
+
+
+
+
+.date-reminder-message strong,
+.time-reminder-message strong{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:#172B4D;
+
+    font-family:"Source Sans Pro",sans-serif;
+
+    font-size:14px;
+    font-weight:700;
+
+    line-height:20px;
+}
+
+.date-reminder-message p,
+.time-reminder-message p{
+    margin:0;
+
+    color:#647A9C;
+
+    font-family:"Source Sans Pro",sans-serif;
+
+    font-size:14px;
+    line-height:22px;
+}
+
+
+
+
+.date-reminder-ok,
+.time-reminder-ok{
+    width:100%;
+    height:52px;
+
+    margin-top:26px;
+
+    border:0;
+    border-radius:9px;
+
+    background:#2563EB;
+    color:#fff;
+
+    font-family:"Source Sans Pro",sans-serif;
+
+    font-size:16px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    transition:.2s ease;
+}
+
+.date-reminder-ok span,
+.time-reminder-ok span{
+    width:20px;
+    height:20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:2px solid rgba(255,255,255,.9);
+    border-radius:50%;
+
+    font-size:12px;
+    line-height:1;
+}
+
+.date-reminder-ok:hover,
+.time-reminder-ok:hover{
+    background:#1D4ED8;
+}
+
+.date-reminder-ok:active,
+.time-reminder-ok:active{
+    transform:scale(.98);
+}
+
+
+
+
+@media(max-width:768px){
+
+    .date-reminder-dialog,
+    .time-reminder-dialog{
+        width:440px;
+        padding:34px 30px 30px;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .date-reminder-dialog,
+    .time-reminder-dialog{
+        width:100%;
+        padding:30px 20px 24px;
+        border-radius:14px;
+    }
+
+    .date-reminder-icon,
+    .time-reminder-icon{
+        width:82px;
+        height:82px;
+    }
+
+    .date-reminder-icon img,
+    .time-reminder-icon img{
+        width:44px;
+        height:44px;
+    }
+
+    .date-reminder-dialog h2,
+    .time-reminder-dialog h2{
+        font-size:23px;
+    }
+
+    .date-reminder-message,
+    .time-reminder-message{
+        padding:14px;
+        gap:12px;
+    }
+
+    .date-reminder-message-icon,
+    .time-reminder-message-icon{
+        width:46px;
+        height:46px;
+    }
+
+    .date-reminder-message-icon img,
+    .time-reminder-message-icon img{
+        width:25px;
+        height:25px;
+    }
+
+}

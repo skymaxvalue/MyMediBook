@@ -68,39 +68,69 @@ function confirmReschedule() {
 
     if (!selectedDate.value) {
 
-        alert("Please select a new appointment date.");
-        return;
+        showDateReminder();
 
+        return;
     }
 
     if (!newTime) {
 
-        alert("Please select a new appointment time.");
-        return;
+        showTimeReminder();
 
+        return;
     }
 
-   
     appointment.currentDate = appointment.date;
     appointment.currentTime = appointment.time;
 
-   
     appointment.date = formatDate(selectedDate.value);
     appointment.time = newTime;
 
-  
     appointment.newDate = appointment.date;
     appointment.newTime = appointment.time;
 
-   
     localStorage.setItem(
         "appointmentToReschedule",
         JSON.stringify(appointment)
     );
 
     window.location.href = "reschedule-success.html";
-
 }
+
+
+
+function showDateReminder(){
+
+    document
+        .getElementById("dateReminderModal")
+        .classList.add("show");
+}
+
+
+function closeDateReminder(){
+
+    document
+        .getElementById("dateReminderModal")
+        .classList.remove("show");
+}
+
+
+function showTimeReminder(){
+
+    document
+        .getElementById("timeReminderModal")
+        .classList.add("show");
+}
+
+
+function closeTimeReminder(){
+
+    document
+        .getElementById("timeReminderModal")
+        .classList.remove("show");
+}
+
+
 
 
 

@@ -1093,3 +1093,12 @@ input:focus{
     }
 }
 
+.action-card:focus-visible,
+.service-card:focus-visible,
+.billing-card:focus-visible{
+
+    outline:3px solid rgba(36,87,229,.25);
+
+    outline-offset:3px;
+
+}
