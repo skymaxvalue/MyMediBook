@@ -3,20 +3,6 @@ let rescheduleCount = {};
 let selectedRow = null;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function goToSpecialities() {
     window.location.href = "specialities.html";
 }
@@ -178,6 +164,8 @@ function confirmReschedule() {
 }
 
 
+
+
 function closeCancelModal(){
 
     document
@@ -185,22 +173,71 @@ function closeCancelModal(){
         .classList.remove("show");
 }
 
-function confirmCancel(){
+function closeCancelSuccessModal(){
 
-    selectedRow.querySelector(".status").innerText="Cancelled";
+    document
+        .getElementById(
+            "cancelSuccessModal"
+        )
+        .classList.remove("show");
 
-    selectedRow.querySelector(".status").className=
-    "status cancelled";
-
-    selectedRow.querySelector(".cancel-btn").disabled=true;
-    selectedRow.querySelector(".cancel-btn").classList.add("disabled");
-
-    selectedRow.querySelector(".reschedule-btn").disabled=true;
-    selectedRow.querySelector(".reschedule-btn").classList.add("disabled");
-
-    closeCancelModal();
 }
 
+
+
+function openCancelSuccessModal(){
+
+    document
+        .getElementById(
+            "cancelSuccessModal"
+        )
+        .classList.add("show");
+
+}
+
+
+
+
+function confirmCancel(){
+
+    document.getElementById("cancelSuccessPatient").innerText =
+        selectedRow.cells[1].innerText.trim();
+
+    document.getElementById("cancelSuccessDoctor").innerText =
+        selectedRow.cells[4].innerText.trim();
+
+    document.getElementById("cancelSuccessPurpose").innerText =
+        selectedRow.cells[0].innerText.trim();
+
+    document.getElementById("cancelSuccessDate").innerText =
+        selectedRow.cells[2].innerText.trim();
+
+    document.getElementById("cancelSuccessTime").innerText =
+        selectedRow.cells[3].innerText.trim();
+
+    selectedRow.querySelector(".status").innerText =
+        "Cancelled";
+
+    selectedRow.querySelector(".status").className =
+        "status cancelled";
+
+    selectedRow.querySelector(".cancel-btn").disabled =
+        true;
+
+    selectedRow.querySelector(".cancel-btn")
+        .classList.add("disabled");
+
+    selectedRow.querySelector(".reschedule-btn").disabled =
+        true;
+
+    selectedRow.querySelector(".reschedule-btn")
+        .classList.add("disabled");
+
+    closeCancelModal();
+
+    openCancelSuccessModal();
+
+}
 
 
 
@@ -487,3 +524,22 @@ function applyFilters(){
 
     noRecordsRow.style.display = visibleRows === 0 ? "" : "none";
 }
+
+
+const cancelSuccessModal =
+    document.getElementById(
+        "cancelSuccessModal"
+    );
+
+cancelSuccessModal.addEventListener(
+    "click",
+    function(event){
+
+        if(event.target===this){
+
+            closeCancelSuccessModal();
+
+        }
+
+    }
+);
