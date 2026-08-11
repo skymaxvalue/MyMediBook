@@ -153,17 +153,6 @@ body{
     text-decoration:underline;
 }
 
-@keyframes fadeUp{
-    from{
-        opacity:0;
-        transform:translateY(24px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
 .otp-group{
     display:flex;
     justify-content:center;
@@ -192,10 +181,7 @@ body{
         background .25s ease;
 }
 
-.otp-input:hover{
-    border-color:#8db8ef;
-}
-
+.otp-input:hover,
 .otp-input:focus,
 .otp-input:focus-visible{
     border-color:#1976d2;
@@ -257,7 +243,7 @@ body{
 }
 
 .resend-btn:hover{
-    color:#1256a5;
+    color:#1976d2;
 }
 
 .resend-btn:disabled{
@@ -358,82 +344,12 @@ body{
     color:#c62828;
 }
 
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
 .shake{
     animation:shake .45s ease;
 }
 
-@keyframes shake{
-    0%{
-        transform:translateX(0);
-    }
-    20%{
-        transform:translateX(-8px);
-    }
-    40%{
-        transform:translateX(8px);
-    }
-    60%{
-        transform:translateX(-6px);
-    }
-    80%{
-        transform:translateX(6px);
-    }
-    100%{
-        transform:translateX(0);
-    }
-}
-
 .success-pop{
     animation:successPop .35s ease;
-}
-
-@keyframes successPop{
-    0%{
-        opacity:.6;
-        transform:scale(.92);
-    }
-    100%{
-        opacity:1;
-        transform:scale(1);
-    }
-}
-
-@keyframes fadeInput{
-    from{
-        opacity:0;
-        transform:translateY(10px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-::selection{
-    color:#fff;
-    background:#1976d2;
-}
-
-::-webkit-scrollbar{
-    width:8px;
-}
-
-::-webkit-scrollbar-track{
-    background:#edf2f7;
-}
-
-::-webkit-scrollbar-thumb{
-    background:#b8c8dc;
-    border-radius:20px;
-}
-
-::-webkit-scrollbar-thumb:hover{
-    background:#8fa8c8;
 }
 
 .text-center{
@@ -464,6 +380,97 @@ body{
 .w-100{
     width:100%;
 }
+
+::selection{
+    color:#fff;
+    background:#1976d2;
+}
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-track{
+    background:#edf2f7;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#b8c8dc;
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:#94a9c2;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(24px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes shake{
+    0%{
+        transform:translateX(0);
+    }
+
+    20%{
+        transform:translateX(-8px);
+    }
+
+    40%{
+        transform:translateX(8px);
+    }
+
+    60%{
+        transform:translateX(-6px);
+    }
+
+    80%{
+        transform:translateX(6px);
+    }
+
+    100%{
+        transform:translateX(0);
+    }
+}
+
+@keyframes successPop{
+    0%{
+        opacity:.6;
+        transform:scale(.92);
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@keyframes fadeInput{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
 @media (max-width:768px){
 
     .otp-page{
@@ -512,7 +519,6 @@ body{
         gap:12px;
         text-align:center;
     }
-
 }
 
 @media (max-width:480px){
@@ -570,7 +576,6 @@ body{
         height:50px;
         font-size:16px;
     }
-
 }
 
 button:focus-visible,
@@ -596,5 +601,4 @@ a:focus-visible{
     .resend-btn{
         display:none;
     }
-
 }

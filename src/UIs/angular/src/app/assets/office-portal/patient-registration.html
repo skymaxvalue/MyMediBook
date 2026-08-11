@@ -465,7 +465,7 @@
 
                     <div class="section-title">
 
-                        <img src="images/shield.png"
+                        <img src="images/security-icon.png"
                              alt="Verification">
 
                         <h2>
@@ -486,74 +486,83 @@
 
                         </label>
 
-                        <div class="radio-group">
+                       <div class="radio-group">
 
-                            <label>
+    <label>
+        <input
+            type="radio"
+            name="otp"
+            value="mobile"
+            required>
 
-                                <input type="radio"
-                                       name="otp"
-                                       value="mobile"
-                                       checked>
+        <span>
+            Mobile Number
+        </span>
+    </label>
 
-                                <span>
+    <label>
+        <input
+            type="radio"
+            name="otp"
+            value="email">
 
-                                    Mobile Number
+        <span>
+            Email Address
+        </span>
+    </label>
 
-                                </span>
+    <label>
+        <input
+            type="radio"
+            name="otp"
+            value="none">
 
-                            </label>
+        <span>
+            None
+        </span>
+    </label>
 
-                            <label>
-
-                                <input type="radio"
-                                       name="otp"
-                                       value="email">
-
-                                <span>
-
-                                    Email Address
-
-                                </span>
-
-                            </label>
-
-                        </div>
+</div>
 
                     </div>
 
-                </section>
-        </form>
+                       </section>
 
-        </section>
+        <div class="form-actions">
 
-    </main>
-            
+            <button
+                type="submit"
+                class="primary-btn">
 
-                <div class="form-actions">
+                Continue
 
-                    <button type="submit"
-                            class="primary-btn">
+                <img
+                    src="images/arrow-right.png"
+                    alt="Arrow">
 
-                        Continue
+            </button>
 
-                        <img src="images/right-arrow-white.png"
-                             alt="Arrow">
+            <button
+                type="reset"
+                class="secondary-btn">
 
-                    </button>
+                Clear
 
-                    <button type="reset"
-                            class="secondary-btn">
+                <img
+                    src="images/clear-blue.png"
+                    alt="Refresh">
 
-                        Clear
+            </button>
 
-                        <img src="images/refresh-blue.png"
-                             alt="Refresh">
+        </div>
 
-                    </button>
+    </form>
 
-                </div>
+</section>
 
+</main>
     
+
 
     <div id="footer-container"></div>
 
@@ -575,7 +584,7 @@
 
             <div class="insurance-icon">
 
-                <img src="images/shield.png"
+                <img src="images/security-icon.png"
                      alt="Insurance">
 
             </div>
@@ -596,7 +605,7 @@
 
                 <label>
 
-                    <img src="images/hospital.png">
+                    <img src="images/provider.png">
 
                     Provider Name
                     <span>*</span>
@@ -728,7 +737,7 @@
 
             <div class="payment-icon">
 
-                <img src="images/payment.png"
+                <img src="images/card.png"
                      alt="Payment">
 
             </div>
@@ -750,7 +759,7 @@
 
                 <label>
 
-                    <img src="images/payment.png">
+                    <img src="images/card.png">
 
                     Payment Type
                     <span>*</span>
@@ -819,7 +828,7 @@
 
                 <label>
 
-                    <img src="images/calendar.png">
+                    <img src="images/calendar2.png">
 
                     Expiry Date
                     <span>*</span>

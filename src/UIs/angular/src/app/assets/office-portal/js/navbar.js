@@ -130,24 +130,35 @@ function setupProfileDropdown() {
 }
 
 
-
 function setupNavigation() {
 
-    const navItems = document.querySelectorAll(".nav-item");
+    const navItems =
+        document.querySelectorAll(".nav-item");
+
+    /* Set active item based on current page */
+    const currentPage =
+        window.location.pathname
+            .split("/")
+            .pop()
+            .replace(".html", "");
 
     navItems.forEach(item => {
 
+        const page =
+            item.dataset.page;
+
+        if (page === currentPage) {
+            item.classList.add("active");
+        } else {
+            item.classList.remove("active");
+        }
+
+
+        /* Navigation */
         item.addEventListener("click", function () {
 
-            navItems.forEach(nav => {
-
-                nav.classList.remove("active");
-
-            });
-
-            this.classList.add("active");
-
-            const page = this.dataset.page;
+            const page =
+                this.dataset.page;
 
             navigate(page);
 
@@ -156,7 +167,6 @@ function setupNavigation() {
     });
 
 }
-
 
 function navigate(page) {
 

@@ -29,33 +29,28 @@ function initializeRegistration() {
 
     if (form) {
 
-        form.addEventListener("submit", function (event) {
+       form.addEventListener("submit", function (event) {
 
-            event.preventDefault();
+    event.preventDefault();
 
-            if (!form.checkValidity()) {
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
 
-                form.reportValidity();
+    confirmBooking();
 
-                return;
-
-            }
-
-            confirmBooking();
-
-        });
+});
 
     }
 
 }
 
-
 function setupInsurance() {
 
-    const radios =
-        document.querySelectorAll(
-            'input[name="insurance"]'
-        );
+    const radios = document.querySelectorAll(
+        'input[name="insurance"]'
+    );
 
     radios.forEach(radio => {
 
@@ -86,6 +81,9 @@ function setupInsurance() {
 }
 
 
+/* =========================================================
+   INSURANCE MODAL
+   ========================================================= */
 
 function closeInsuranceModal() {
 
@@ -93,38 +91,47 @@ function closeInsuranceModal() {
         "insuranceModal"
     ).style.display = "none";
 
+    /* Cancel = remove selection */
+    insuranceChoice = null;
+    insuranceData = null;
+
+    const yesRadio = document.querySelector(
+        'input[name="insurance"][value="yes"]'
+    );
+
+    if (yesRadio) {
+        yesRadio.checked = false;
+    }
 }
 
 
 function confirmInsurance() {
 
     const provider =
-        document.getElementById("provider").value;
+        document.getElementById("provider").value.trim();
 
     const policy =
-        document.getElementById("policy").value;
+        document.getElementById("policy").value.trim();
 
     if (!provider || !policy) {
-
-        alert(
-            "Please complete insurance details."
-        );
-
-        return;
-
-    }
-
-    insuranceData = {
-
-        provider,
-        policy
-
-    };
-
-    closeInsuranceModal();
-
+    return;
 }
 
+    insuranceData = {
+        provider,
+        policy
+    };
+
+    /* Confirm = preserve selection and data */
+    document.getElementById(
+        "insuranceModal"
+    ).style.display = "none";
+}
+
+
+/* =========================================================
+   PAYMENT MODAL
+   ========================================================= */
 
 function closePaymentModal() {
 
@@ -132,6 +139,17 @@ function closePaymentModal() {
         "paymentModal"
     ).style.display = "none";
 
+    /* Cancel = remove selection */
+    insuranceChoice = null;
+    paymentData = null;
+
+    const noRadio = document.querySelector(
+        'input[name="insurance"][value="no"]'
+    );
+
+    if (noRadio) {
+        noRadio.checked = false;
+    }
 }
 
 
@@ -140,123 +158,150 @@ function confirmPayment() {
     const card =
         document.getElementById(
             "cardNumber"
-        ).value;
+        ).value.trim();
 
     const cvv =
         document.getElementById(
             "cvv"
-        ).value;
+        ).value.trim();
 
     if (!card || !cvv) {
 
-        alert(
-            "Please complete payment details."
-        );
-
         return;
-
     }
 
     paymentData = {
-
         card,
         cvv
-
     };
 
-    closePaymentModal();
-
+    /* Confirm = preserve selection and data */
+    document.getElementById(
+        "paymentModal"
+    ).style.display = "none";
 }
+
+
 
 
 function confirmBooking() {
 
+
     if (!insuranceChoice) {
+    return;
+}
 
-        alert(
-            "Please select insurance option."
-        );
 
-        return;
-
-    }
-
+  
     if (
-
-        insuranceChoice === "yes"
-        &&
+        insuranceChoice === "yes" &&
         !insuranceData
-
     ) {
 
-        alert(
-            "Please enter insurance details."
-        );
+        document.getElementById(
+            "insuranceModal"
+        ).style.display = "flex";
 
         return;
-
     }
 
+
+  
     if (
-
-        insuranceChoice === "no"
-        &&
+        insuranceChoice === "no" &&
         !paymentData
-
     ) {
 
-        alert(
-            "Please enter payment details."
-        );
+        document.getElementById(
+            "paymentModal"
+        ).style.display = "flex";
 
         return;
-
     }
 
-    const appointment = {
+
+    const genderSelect =
+        document.querySelector(
+            '.form-group select[required]'
+        );
+
+    const addressField =
+        document.querySelector(
+            'textarea[placeholder="Street, City, State, ZIP Code"]'
+        );
+
+
+
+        const otpMethod =
+    document.querySelector(
+        'input[name="otp"]:checked'
+    )?.value || "";
+
+
+
+   const appointment = {
 
     firstName:
-        document.getElementById("firstName").value,
+        document.getElementById("firstName").value.trim(),
 
     lastName:
-        document.getElementById("lastName").value,
+        document.getElementById("lastName").value.trim(),
 
     phone:
-        document.getElementById("phone").value,
+        document.getElementById("phone").value.trim(),
 
     email:
-        document.querySelector('input[type="email"]').value,
+        document.querySelector(
+            'input[type="email"]'
+        ).value.trim(),
+
+    dateOfBirth:
+        document.getElementById("dateOfBirth").value,
+
+    age:
+        document.getElementById("age").value,
+
+    gender:
+        genderSelect
+            ? genderSelect.value
+            : "",
+
+    address:
+        addressField
+            ? addressField.value.trim()
+            : "",
+
+    insurance:
+        insuranceChoice,
+
+    insuranceData:
+        insuranceData,
+
+    paymentData:
+        paymentData,
 
     otpMethod:
-        document.querySelector(
-            'input[name="otp"]:checked'
-        ).value,
-
-    date:
-        localStorage.getItem("selectedDate") || "",
-
-    time:
-        localStorage.getItem("selectedTime") || ""
-
+        otpMethod
 };
 
-localStorage.setItem(
-    "latestAppointment",
-    JSON.stringify(appointment)
-);
 
-localStorage.setItem(
-    "tempAppointment",
-    JSON.stringify(appointment)
-);
+    localStorage.setItem(
+        "tempAppointment",
+        JSON.stringify(appointment)
+    );
 
 
+    if (otpMethod === "none") {
+
+    window.location.href =
+        "patient-registration-success.html";
+
+    return;
+}
 
 window.location.href =
     "registration-otp.html";
-
 }
-
 
 
 function updateAgeFromDob() {
@@ -424,3 +469,7 @@ document.addEventListener(
     }
 
 );
+
+
+
+
