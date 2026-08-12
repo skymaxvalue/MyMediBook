@@ -1,4 +1,4 @@
-import { PatientRegister } from "../../Models/Patient-Model"
+import { PatientRegister } from "../../core/Models/Patient-Model"
 
 
 export interface PatientState {

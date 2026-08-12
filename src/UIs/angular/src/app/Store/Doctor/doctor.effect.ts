@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, of } from 'rxjs';
 
 import * as DoctorSpecialityActions from './doctor.action';
-import { DoctorService } from '../../Services/doctor.service';
+import { DoctorService } from '../../core/Services/doctor.service';
 
 @Injectable()
 export class DoctorSpecialityEffects {
@@ -298,7 +298,7 @@ export class DoctorSpecialityEffects {
 
                     map((response: any) =>
                         DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess({
-                            associateSchedule: response
+                            updatedAssociate: response
                         })
                     ),
 

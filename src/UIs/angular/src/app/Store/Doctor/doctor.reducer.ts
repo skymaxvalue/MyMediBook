@@ -314,9 +314,9 @@ export const doctorSpecialityReducer = createReducer(
 
     on(
         DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess,
-        (state, { associateSchedule }) => ({
+        (state, { updatedAssociate }) => ({
             ...state,
-            associateSchedule: associateSchedule,
+            updatedAssociate: updatedAssociate,
             isLoading: false
         })
     ),

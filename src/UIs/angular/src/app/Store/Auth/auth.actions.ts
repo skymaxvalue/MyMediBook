@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { PatientRegister } from "../../Models/Patient-Model";
+import { PatientRegister } from "../../core/Models/Patient-Model";
 
 // Login Actions
 export const login = createAction(

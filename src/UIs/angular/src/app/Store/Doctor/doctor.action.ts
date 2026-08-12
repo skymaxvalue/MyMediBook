@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AssociateRequest, UpdateAssociateScheduleRequest } from 'src/app/Models/Association-model';
+import { AssociateRequest, UpdateAssociateScheduleRequest } from 'src/app/core/Models/Association-model';
 
 export const loadDoctorSpecialities = createAction(
     '[Doctor Speciality] Load'
@@ -163,13 +163,13 @@ export const getTimeSloteByDoctorIDFailure = createAction(
 );
 export const updateAssociatesAndItsSchedule = createAction(
     'Update Associates Schedule',
-    props<{ associate: UpdateAssociateScheduleRequest }>()
+    props<{ associate: any }>()
 
 );
 
 export const updateAssociatesAndItsScheduleSuccess = createAction(
     'Update Associates Schedule Success',
-    props<{ associateSchedule: any }>()
+    props<{ updatedAssociate: any }>()
 );
 
 export const updateAssociatesAndItsScheduleFailure = createAction(

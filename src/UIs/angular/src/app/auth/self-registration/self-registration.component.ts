@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { JsonPipe } from "@angular/common";
 import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from "ngxsmk-tel-input";
 import { Router, RouterModule } from "@angular/router";
-import { PatientRegister } from "../../Models/Patient-Model";
+import { PatientRegister } from "../../core/Models/Patient-Model";
 import { selectRegisteredPatient, selectSecurityQuestions } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';

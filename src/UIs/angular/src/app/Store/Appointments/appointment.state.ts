@@ -1,4 +1,4 @@
-import { AppointmentBooking } from '../../Models/Appointment-Model';
+import { AppointmentBooking } from '../../core/Models/Appointment-Model';
 
 export interface AppointmentState {
     appointment: AppointmentBooking | null;

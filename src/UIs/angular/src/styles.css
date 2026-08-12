@@ -12,6 +12,33 @@
   font-family: "Source Sans Pro", sans-serif !important;
 }
 
+:root {
+  --primary: #183C75;
+  --primary-dark: #14325F;
+  --secondary: #4D87FF;
+
+  --success: #34C759;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  --purple: #7C3AED;
+  --cyan: #06B6D4;
+  --green: #10B981;
+  --orange: #FB923C;
+
+  --background: #F4F7FB;
+  --card: #FFFFFF;
+
+  --text: #1F2937;
+  --text-light: #6B7280;
+
+  --border: #E6ECF5;
+
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+
+  --radius: 18px;
+}
+
 #toast-container {
   position: fixed !important;
   top: 12px;

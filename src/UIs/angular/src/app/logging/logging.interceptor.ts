@@ -13,7 +13,7 @@ import { tap, catchError } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
 import { USE_ASSOCIATION_TOKEN } from './http-context-tokens';
-import { ToastService } from "../Components/Toaster/toast.service"
+import { ToastService } from "../shared/Components/Toaster/toast.service";
 
 @Injectable()
 export class LoggingInterceptor implements HttpInterceptor {

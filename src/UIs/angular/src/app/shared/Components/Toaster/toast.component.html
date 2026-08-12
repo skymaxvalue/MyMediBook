@@ -1,0 +1,35 @@
+<div class="toast-container">
+
+    @for (toast of toastService.toasts(); track toast.id) {
+
+    <div class="toast" [class]="toast.type">
+
+        <div class="accent"></div>
+
+        <div class="icon">
+            {{ getIcon(toast.type) }}
+        </div>
+
+        <div class="content">
+            <div class="title">
+                {{ toast.title }}
+            </div>
+
+            <div class="message">
+                {{ toast.message }}
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+
+        <button class="close" (click)="toastService.remove(toast.id)">
+            ✕
+        </button>
+
+    </div>
+
+    }
+
+</div>

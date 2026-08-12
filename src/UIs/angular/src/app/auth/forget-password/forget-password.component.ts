@@ -11,7 +11,7 @@ import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
 import * as AuthActions from "../../Store/Auth/auth.actions";
-import { ToastService } from "src/app/Components/Toaster/toast.service";
+import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 
 @Component({
   selector: "app-forget-password",

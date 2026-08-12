@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, computed, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { delay } from "rxjs";
 import { AppState } from "src/app/Store/app.state";
 import { deleteAssociatesAndItsSchedule, getAllAssociates } from "src/app/Store/Doctor/doctor.action";
 import { selectGelAllAssociate } from "src/app/Store/Doctor/doctor.selectors";
@@ -111,12 +112,16 @@ export class AssociationListComponent implements OnInit {
   }
 
   edit(id: any, index: number) {
+    // alert(id)
     // this.router.navigate([
     //   '/associate/dashboard/update-association',
     //   row.associateId
     // ]);
 
-    this.router.navigate([`/associate/dashboard/update-association/`, id]);
+    console.log('EDIT CLICKED ID:', id);
+
+
+    this.router.navigate([`/admin/update-association/`, id]);
     // localStorage.setItem(
     //   'associateScheduleSelected',
     //   JSON.stringify({
@@ -140,13 +145,15 @@ export class AssociationListComponent implements OnInit {
     if (!this.deleteRow) return;
     const payload = {
       associateId: this.deleteRow.associateId,
-      isActive: this.deleteRow.isActive ? 1 : 0,
+      isActive: this.deleteRow.isActive ? 0 : 1,
       updatedBy: JSON.parse(localStorage.getItem('user') || '{}')?.fullName
     }
     this.store.dispatch(deleteAssociatesAndItsSchedule({ associate: payload }))
-    this.schedules.update(rows =>
-      rows.filter((x: any) => x.associateId !== this.deleteRow!.associateId)
-    );
+    // this.schedules.update(rows =>
+    //   rows.filter((x: any) => x.associateId !== this.deleteRow!.associateId)
+    // );
+    delay(2000)
+    this.store.dispatch(getAllAssociates())
 
     this.saveRows();
 

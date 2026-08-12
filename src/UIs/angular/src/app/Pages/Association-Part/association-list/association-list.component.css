@@ -135,7 +135,7 @@
   .shape {
       position: absolute;
       opacity: 0.10;
-      pointer-events: none;
+      /* pointer-events: none; */
       color: #c8d5ec;
   }
   .shape::before, .shape::after {

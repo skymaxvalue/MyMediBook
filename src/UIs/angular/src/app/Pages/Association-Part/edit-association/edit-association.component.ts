@@ -7,10 +7,10 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { UpdateAssociateScheduleRequest } from 'src/app/Models/Association-model';
+import { UpdateAssociateScheduleRequest } from 'src/app/core/Models/Association-model';
 import { AppState } from 'src/app/Store/app.state';
 import { getAssociatesByID, getRoleDepaSpecia, getWeekDays, updateAssociatesAndItsSchedule } from 'src/app/Store/Doctor/doctor.action';
-import { selectGetAssociateDetailsByItID, selectGetRoleDepSpeciOfAssociate, selectGetWeekDays } from 'src/app/Store/Doctor/doctor.selectors';
+import { selectGetAssociateDetailsByItID, selectGetRoleDepSpeciOfAssociate, selectGetWeekDays, selectUpdateAssociateDetailsByItID } from 'src/app/Store/Doctor/doctor.selectors';
 
 interface AssociateSchedule {
 
@@ -94,7 +94,7 @@ export class EditAssociationComponent implements OnInit {
   selectedRole: any = null;
   back() {
 
-    this.router.navigate(['association/dashboard/association-list']);
+    this.router.navigate(['/admin/associate-list']);
 
   }
   constructor(
@@ -526,31 +526,36 @@ export class EditAssociationComponent implements OnInit {
       .filter((id: string | null) => id != null)
       .join(',')
 
-    const payload: UpdateAssociateScheduleRequest = {
+    const payload = {
       associateId: this.associateId,
       roleId: this.form.get('roleId')?.value,
       departmentId: this.form.get('departmentId')?.value,
       specialityId: this.form.get('specialityId')?.value,
       designationId: this.form.get('designationId')?.value,
-      fromDate: new Date(this.form.get('fromDate')?.value).toISOString(),
-      toDate: new Date(this.form.get('toDate')?.value).toISOString(),
+      fromDate: new Date(this.form.get('fromDate')?.value) ? new Date(this.form.get('fromDate')?.value)?.toISOString() : null,
+      toDate: new Date(this.form.get('toDate')?.value) ? new Date(this.form.get('toDate')?.value)?.toISOString() : null,
 
-      fromTime: this.to24Hour(this.form.get('fromTime')?.value),
-      toTime: this.to24Hour(this.form.get('toTime')?.value),
+      fromTime: this.to24Hour(this.form.get('fromTime')?.value) ? this.to24Hour(this.form.get('fromTime')?.value) : null,
+      toTime: this.to24Hour(this.form.get('toTime')?.value) ? this.to24Hour(this.form.get('toTime')?.value) : null,
 
-      breakTimeFrom: this.to24Hour(this.form.get('breakTimeFrom')?.value),
-      breakTimeTo: this.to24Hour(this.form.get('breakTimeTo')?.value),
+      breakTimeFrom: this.to24Hour(this.form.get('breakTimeFrom')?.value) ? this.to24Hour(this.form.get('breakTimeFrom')?.value) : null,
+      breakTimeTo: this.to24Hour(this.form.get('breakTimeTo')?.value) ? this.to24Hour(this.form.get('breakTimeTo')?.value) : null,
 
-      workingDays: workingDays,
+      workingDays: workingDays ? workingDays : null,
 
-      consultationTime: Number(this.form.get('consultationTime')?.value),
-      averageCharge: Number(this.form.get('averageCharge')?.value),
+      consultationTime: Number(this.form.get('consultationTime')?.value) ? Number(this.form.get('consultationTime')?.value) : null,
+      averageCharge: Number(this.form.get('averageCharge')?.value) ? Number(this.form.get('averageCharge')?.value) : null,
 
       updatedBy: this.loginUser.fullName
     };
 
     console.log(payload);
     this.store.dispatch(updateAssociatesAndItsSchedule({ associate: payload }))
+    this.store.select(selectUpdateAssociateDetailsByItID).subscribe((res: any) => {
+      if (res) {
+        this.router.navigate(['/admin/associate-list'])
+      }
+    })
 
 
   }
