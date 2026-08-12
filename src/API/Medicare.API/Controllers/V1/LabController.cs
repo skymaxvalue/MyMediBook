@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Medicare.Application.Models.Lab;
 using Microsoft.AspNetCore.Authorization;
 using Medicare.Application.Features.Queries.Lab;
+using Medicare.Application.Features.Commands.LabResult;
+using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.API.Controllers.V1
 {
@@ -18,8 +20,17 @@ namespace Medicare.API.Controllers.V1
             _mediator = mediator;
         }
 
+        [HttpPost]
+        [Route("CreateLabResult")]
+        public async Task<IActionResult> CreateLabResult(LabResultModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new CreateLabResultCommand(model));
+            return HandleResponse(response);
+        }
+
         [HttpGet]
-        [Route("GetLabResultDetailById{id}")]
+        [Route("GetLabResultDetailById/{id}")]
         public async Task<IActionResult> GetLabResultDetailById(int id)
         {
             LabResultSummaryModel response = new LabResultSummaryModel();
@@ -37,7 +48,7 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetLabResultsByProfileId{profileId}")]
+        [Route("GetLabResultsByProfileId/{profileId}")]
         public async Task<IActionResult> GetLabResultsByProfileId(int profileId)
         {
             List<LabResultSummaryModel> response = new List<LabResultSummaryModel>();
