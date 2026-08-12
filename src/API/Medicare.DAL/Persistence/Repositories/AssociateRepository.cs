@@ -144,6 +144,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("RoleId", model.RoleId);
                 param.Add("DepartmentId", model.DepartmentId);
                 param.Add("SpecialityId", model.SpecialityId);
+                param.Add("DesignationId", model.DesignationId);
                 param.Add("FromDate", model.FromDate);
                 param.Add("ToDate", model.ToDate);
                 param.Add("FromTime", model.FromTime);
