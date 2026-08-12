@@ -1,37 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const loginBtn = document.getElementById("loginBtn");
+    const dashboardBtn = document.getElementById("loginBtn");
 
-    const supportLink = document.querySelector(".support-text a");
+    dashboardBtn.addEventListener("click", () => {
 
-
-
-    loginBtn.addEventListener("click", () => {
-
-        clearRecoveryData();
-
-        window.location.href = "login.html";
+        window.location.href = "dashboard.html";
 
     });
-
-
-
-    supportLink.addEventListener("click", (e) => {
-
-        e.preventDefault();
-
-        alert("Please contact your system administrator or IT support.");
-
-    });
-
-
-
-    function clearRecoveryData(){
-
-        localStorage.removeItem("passwordRecoveryUser");
-        localStorage.removeItem("otpFlow");
-
-    }
-
 
 });

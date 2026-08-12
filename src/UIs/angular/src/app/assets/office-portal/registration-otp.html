@@ -8,8 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>OTP Verification | My Medi Book</title>
-
+    <title>OTP Verification | MyMediBook</title>
 
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
@@ -22,239 +21,132 @@
           rel="stylesheet">
 
 
+          <link rel="stylesheet"
+          href="../css/style.css">
 
     <link rel="stylesheet"
-          href="css/style.css">
+          href="css/forgot-password.css">
 
     <link rel="stylesheet"
-          href="css/navbar.css">
+          href="css/forgot-password-otp.css">
 
-    <link rel="stylesheet"
-          href="css/registration-otp.css">
 
 </head>
 
 <body>
 
- 
+    <div class="forgot-wrapper">
 
-    <div id="navbar-container"></div>
-
-  
-
-    <main class="dashboard-container">
+        <div class="forgot-card">
 
 
 
-        <section class="breadcrumb">
+            <div class="brand">
 
-            <a href="dashboard.html">
+                <img src="../images/logo.png"
+                     alt="MyMediBook Logo">
 
-                Dashboard
+                <div class="brand-text">
 
-            </a>
+                    <span class="black-text">My</span>
+                    <span class="green-text">Medi</span>
+                    <span class="blue-text">Book</span>
 
-            <span class="separator">
-
-                <img src="images/right-arrow-blue.png"
-                     alt="Arrow">
-
-            </span>
-
-            <a href="patient-registration.html">
-
-                Patient Registration
-
-            </a>
-
-            <span class="separator">
-
-                <img src="images/right-arrow-blue.png"
-                     alt="Arrow">
-
-            </span>
-
-            <span class="active">
-
-                OTP Verification
-
-            </span>
-
-        </section>
-
- 
-
-        <section class="otp-card">
-
-            <div class="otp-logo">
-
-                <img src="images/logo.png"
-                     alt="My Medi Book">
+                </div>
 
             </div>
 
+            <h1>OTP Verification</h1>
 
-            <h1>
-
-                OTP Verification
-
-            </h1>
-
-            <p class="otp-description">
-
-                Enter the 4-digit verification code sent to
-
+            <p class="description">
+                Enter the 4-digit verification code sent to your
+                registered email address / mobile number.
             </p>
 
-            <h3 id="otpSentTo">
 
-                +91 ******2541
+            <form id="otpForm"
+                  autocomplete="off">
 
-            </h3>
+                <div class="otp-group">
 
+                    <input type="text"
+                           class="otp-input"
+                           maxlength="1"
+                           inputmode="numeric"
+                           autocomplete="one-time-code">
 
-            <form id="otpForm">
+                    <input type="text"
+                           class="otp-input"
+                           maxlength="1"
+                           inputmode="numeric">
 
+                    <input type="text"
+                           class="otp-input"
+                           maxlength="1"
+                           inputmode="numeric">
 
-                <div class="otp-inputs">
-
-                    <input
-                        type="text"
-                        maxlength="1"
-                        class="otp-input"
-                        id="otp1"
-                        autocomplete="off"
-                        inputmode="numeric">
-
-                    <input
-                        type="text"
-                        maxlength="1"
-                        class="otp-input"
-                        id="otp2"
-                        autocomplete="off"
-                        inputmode="numeric">
-
-                    <input
-                        type="text"
-                        maxlength="1"
-                        class="otp-input"
-                        id="otp3"
-                        autocomplete="off"
-                        inputmode="numeric">
-
-                    <input
-                        type="text"
-                        maxlength="1"
-                        class="otp-input"
-                        id="otp4"
-                        autocomplete="off"
-                        inputmode="numeric">
+                    <input type="text"
+                           class="otp-input"
+                           maxlength="1"
+                           inputmode="numeric">
 
                 </div>
 
 
-                <div class="timer-wrapper">
+                <div class="otp-info">
 
-                    <span>
+                    <p class="timer">
 
-                        OTP expires in
+                        Remaining time:
 
-                    </span>
+                        <span id="countdown">
+                            01:00
+                        </span>
 
-                    <span id="countdown">
+                    </p>
 
-                        00:59
+                    <p class="resend">
 
-                    </span>
+                        Didn't receive the code?
 
-                </div>
+                        <button type="button"
+                                id="resendBtn">
 
+                            Resend
 
-                <div class="resend-wrapper">
+                        </button>
 
-                    Didn't receive the code?
-
-                    <button
-                        type="button"
-                        id="resendOtpBtn">
-
-                        Resend OTP
-
-                    </button>
+                    </p>
 
                 </div>
 
 
-                <div class="otp-actions">
+                <button type="submit"
+                        class="send-btn">
 
-                    <button
-                        type="submit"
-                        class="verify-btn">
+                    Verify
 
-                        Verify &amp; Book Appointment
+                    <img src="images/arrow-right.png"
+                         alt="Arrow">
 
-                        <img src="images/right-arrow-white.png"
-                             alt="Arrow">
+                </button>
 
-                    </button>
 
-                    <button
-                        type="button"
+                <button type="button"
                         class="cancel-btn"
-                        id="cancelOtp">
+                        id="cancelBtn">
 
-                        Cancel
+                    Cancel
 
-                    </button>
-
-                </div>
-
-
-
-                <div class="security-card">
-
-                    <div class="security-icon">
-
-                        <img src="images/shield.png"
-                             alt="Security">
-
-                    </div>
-
-                    <div class="security-content">
-
-                        <h4>
-
-                            Your Security Matters
-
-                        </h4>
-
-                        <p>
-
-                            Never share your OTP with anyone. Our
-                            hospital staff will never ask for your
-                            verification code over phone, email, or
-                            message.
-
-                        </p>
-
-                    </div>
-
-                </div>
+                </button>
 
             </form>
 
-        </section>
+           
 
-    </main>
+        </div>
 
-
-
-    <div id="footer-container"></div>
-
-
-    <script src="js/navbar.js"></script>
-
-    <script src="js/footer.js"></script>
+    </div>
 
     <script src="js/registration-otp.js"></script>
 
