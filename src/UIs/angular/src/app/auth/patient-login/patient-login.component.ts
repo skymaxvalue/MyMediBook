@@ -36,11 +36,11 @@ export class PatientLoginComponent implements AfterViewInit, OnInit {
 
 
 
-    if (this.router.url === "/associate-login") {
+    // if (this.router.url === "/associate-login") {
 
-      this.loginRole = "Associate";
+    //   this.loginRole = "Associate";
 
-    }
+    // }
   }
 
   ngAfterViewInit(): void {

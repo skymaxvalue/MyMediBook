@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
   styleUrl: "./otp-verification.component.css",
 })
 export class OtpVerificationComponent implements OnInit, OnDestroy {
+  currentUrl = '';
   @ViewChildren('otpInput')
   otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
   otp: string[] = ['', '', '', ''];
@@ -43,30 +44,36 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router
-  ) { }
+  ) {
+    this.currentUrl = this.router.url;
+    console.log('Current URL:', this.currentUrl);
+  }
 
 
   ngOnInit(): void {
+    if (this.currentUrl !== "/front-office/sendotp-verification") {
+      const pendingUser = localStorage.getItem('pendingUser');
+
+      if (!pendingUser) {
+
+        this.router.navigate(['/front-office/login']);
+
+        return;
+      }
+
+      try {
+
+        this.pendingUser = JSON.parse(pendingUser);
+
+      } catch {
+
+        this.pendingUser = pendingUser;
+
+      }
+    }
 
     // Check pending user
-    const pendingUser = localStorage.getItem('pendingUser');
 
-    if (!pendingUser) {
-
-      this.router.navigate(['/patient/login']);
-
-      return;
-    }
-
-    try {
-
-      this.pendingUser = JSON.parse(pendingUser);
-
-    } catch {
-
-      this.pendingUser = pendingUser;
-
-    }
 
 
     // Start timer
@@ -100,24 +107,21 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ==========================================
-  // OTP INPUT
-  // ==========================================
 
   onOtpInput(event: Event, index: number): void {
 
     const input = event.target as HTMLInputElement;
 
-    // फक्त number allow
+
     const value = input.value.replace(/\D/g, '');
 
-    // एकच digit ठेवा
+
     this.otp[index] = value.slice(0, 1);
 
-    // Input मध्ये clean value दाखवा
+
     input.value = this.otp[index];
 
-    // पुढच्या input वर जा
+
     if (this.otp[index] && index < this.otp.length - 1) {
 
       setTimeout(() => {
@@ -131,9 +135,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   }
 
 
-  // ==========================================
-  // BACKSPACE
-  // ==========================================
 
   onKeyDown(
     event: KeyboardEvent,
@@ -159,10 +160,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
   }
 
-
-  // ==========================================
-  // PASTE OTP
-  // ==========================================
 
   onPaste(event: ClipboardEvent): void {
 
@@ -204,10 +201,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
   }
 
-
-  // ==========================================
-  // TIMER
-  // ==========================================
 
   startTimer(): void {
 
@@ -258,10 +251,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   }
 
 
-  // ==========================================
-  // RESEND OTP
-  // ==========================================
-
   resendOtp(): void {
 
     if (!this.isExpired) {
@@ -269,7 +258,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     }
 
 
-    // TODO:
+
     // Here you can call your resend OTP API
 
     console.log('Resend OTP');
@@ -287,11 +276,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     alert('Demo OTP: 1234');
 
   }
-
-
-  // ==========================================
-  // VERIFY OTP
-  // ==========================================
 
   verifyOtp(): void {
 
@@ -341,9 +325,17 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
         alert("verify otp")
         // After successful verification
-        this.router.navigate([
-          '/front-office/dashboard'
-        ]);
+        if (this.router.url === "/front-office/sendotp-verification") {
+          alert("/front-office/reset-password")
+          this.router.navigate([
+            '/front-office/reset-password'
+          ]);
+        } else {
+
+          this.router.navigate([
+            '/front-office/dashboard'
+          ]);
+        }
 
       } else {
 

@@ -12,6 +12,18 @@ export const PATIENT_ROUTES: Routes = [
         ,
         canActivate: [loginGuard]
     },
+    {
+        path: 'forgot-password',
+        loadComponent: () =>
+            import('../auth/patient-login/forget-password/forget-password.component')
+                .then(m => m.ForgetPasswordComponent)
+    },
+    {
+        path: 'sign-up',
+        loadComponent: () =>
+            import('../auth/patient-login/self-registration/self-registration.component')
+                .then(m => m.SelfRegistrationComponent)
+    },
 
     {
         path: '',

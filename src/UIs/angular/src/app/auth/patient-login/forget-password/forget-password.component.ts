@@ -10,7 +10,7 @@ import { Router, RouterModule } from "@angular/router";
 import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
-import * as AuthActions from "../../Store/Auth/auth.actions";
+import * as AuthActions from "../../../Store/Auth/auth.actions";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 
 @Component({
@@ -95,7 +95,6 @@ export class ForgetPasswordComponent {
   }
   sendOtp() {
 
-    this.toast.success('Success', 'OTP sent successfully!');
     this.store.dispatch(AuthActions.requestOTP({ email: this.emailOrMobile }))
 
 

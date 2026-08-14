@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormsModule } from '@angular/forms';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AuthService } from 'src/app/core/Services/auth.service';
+import { AppState } from 'src/app/Store/app.state';
+import { login } from 'src/app/Store/Auth/auth.actions';
 @Component({
   selector: "app-frontoffice-login",
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: "./frontoffice-login.component.html",
   styleUrl: "./frontoffice-login.component.css",
 })
@@ -15,7 +19,11 @@ export class FrontofficeLoginComponent {
   remember = false;
   showPassword = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router,
+    public auth: AuthService,
+    private form_builder: FormBuilder,
+    private store: Store<AppState>
+  ) {
     const savedUser = localStorage.getItem('rememberedUsername');
 
     if (savedUser) {
@@ -43,12 +51,25 @@ export class FrontofficeLoginComponent {
       return;
     }
 
+    //  this.store.dispatch(AuthActions.login({
+
+    //           username: this.loginForm.value.username,
+
+    //           password: this.loginForm.value.password,
+
+    //           role: this.loginRole
+
+    //         })
+    //       );
+
+    this.store.dispatch(login({ username: this.username, password: this.password, role: 'associate' }))
     // Remember username
     if (this.remember) {
       localStorage.setItem('rememberedUsername', user);
     } else {
       localStorage.removeItem('rememberedUsername');
     }
+
 
     // Temporary login
     if (user === '1024' && pass === '1234') {
@@ -80,6 +101,7 @@ export class FrontofficeLoginComponent {
 
     card.classList.add('shake');
   }
+
 
 
 }

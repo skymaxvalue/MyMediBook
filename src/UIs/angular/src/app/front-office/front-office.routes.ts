@@ -26,6 +26,18 @@ export const FRONT_OFFICE_ROUTES: Routes = [
         loadComponent: () =>
             import('../auth/frontoffice-login/forgot-password/forgot-password.component')
                 .then(m => m.ForgotPasswordComponent)
+    },
+    {
+        path: 'reset-password',
+        loadComponent: () =>
+            import('../auth/frontoffice-login/reset-password/reset-password.component')
+                .then(m => m.ResetPasswordComponent)
+    },
+    {
+        path: 'sendotp-verification',
+        loadComponent: () =>
+            import('../auth/frontoffice-login/otp-verification/otp-verification.component')
+                .then(m => m.OtpVerificationComponent)
     }
 
     , {
@@ -51,8 +63,20 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                 children: [
 
 
+                ],
 
-                ]
+            },
+            {
+                path: 'patient-registration',
+                loadComponent: () =>
+                    import('../auth/patient-login/self-registration/self-registration.component')
+                        .then(m => m.SelfRegistrationComponent)
+            },
+            {
+                path: 'book-appointment',
+                loadComponent: () =>
+                    import('../Pages/Patient-View/book-appoiment-form/book-appoiment-form.component')
+                        .then(m => m.BookAppoimentFormComponent)
             }
 
         ]

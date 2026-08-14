@@ -3,6 +3,7 @@ import { loginGuard } from '../core/guards/login.guard';
 import { AdminLayoutComponent } from '../layouts/admin-layout/admin-layout.component';
 import { authGuard } from '../core/guards/auth.guard';
 import { AssignScheduleAsspciationComponent } from '../Pages/Association-Part/assign-schedule-asspciation/assign-schedule-asspciation.component';
+import { HelthCareAssociationComponent } from '../Pages/Association-Part/helth-care-association/helth-care-association.component';
 
 export const ADMIN_ROUTES: Routes = [
 
@@ -48,6 +49,10 @@ export const ADMIN_ROUTES: Routes = [
             {
                 path: "association-schedule",
                 component: AssignScheduleAsspciationComponent
+            },
+            {
+                path: "associate-registration",
+                component: HelthCareAssociationComponent
             },
 
         ]

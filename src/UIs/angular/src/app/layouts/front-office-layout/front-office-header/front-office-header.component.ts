@@ -15,11 +15,6 @@ import { Router } from '@angular/router';
 })
 export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
-
-  // ==============================
-  // DATE & TIME
-  // ==============================
-
   currentDate = '';
 
   currentTime = '';
@@ -27,23 +22,11 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   private timer: any;
 
 
-  // ==============================
-  // USER
-  // ==============================
-
   username = 'Front Office';
 
 
-  // ==============================
-  // PROFILE DROPDOWN
-  // ==============================
-
   isProfileOpen = false;
 
-
-  // ==============================
-  // ACTIVE NAVIGATION
-  // ==============================
 
   activePage = 'dashboard';
 
@@ -53,9 +36,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   ) { }
 
 
-  // ==============================
-  // INIT
-  // ==============================
 
   ngOnInit(): void {
 
@@ -69,10 +49,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
   }
 
-
-  // ==============================
-  // DATE
-  // ==============================
 
   updateDate(): void {
 
@@ -98,10 +74,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   }
 
 
-  // ==============================
-  // TIME
-  // ==============================
-
   updateTime(): void {
 
     const options: Intl.DateTimeFormatOptions = {
@@ -123,11 +95,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
   }
 
-
-  // ==============================
-  // CLOCK
-  // ==============================
-
   startClock(): void {
 
     this.timer = setInterval(() => {
@@ -139,9 +106,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   }
 
 
-  // ==============================
-  // LOAD USER
-  // ==============================
 
   loadUser(): void {
 
@@ -183,11 +147,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
   }
 
-
-  // ==============================
-  // PROFILE DROPDOWN
-  // ==============================
-
   toggleProfile(event: Event): void {
 
     event.stopPropagation();
@@ -207,10 +166,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   }
 
 
-  // ==============================
-  // PROFILE
-  // ==============================
-
   openProfile(): void {
 
     this.isProfileOpen = false;
@@ -222,9 +177,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   }
 
 
-  // ==============================
-  // NAVIGATION
-  // ==============================
 
   navigate(page: string): void {
 
@@ -325,11 +277,6 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
     }
 
   }
-
-
-  // ==============================
-  // LOGOUT
-  // ==============================
 
   logout(): void {
 

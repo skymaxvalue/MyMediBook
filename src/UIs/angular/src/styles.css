@@ -56,6 +56,9 @@ div.card {
 .table {
   margin-top: 10px;
 }
+a{
+    text-decoration: none !important;
+}
 
 * {
   margin: 0;

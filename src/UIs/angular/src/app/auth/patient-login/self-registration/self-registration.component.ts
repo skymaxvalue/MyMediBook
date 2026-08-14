@@ -3,12 +3,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { JsonPipe } from "@angular/common";
 import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from "ngxsmk-tel-input";
 import { Router, RouterModule } from "@angular/router";
-import { PatientRegister } from "../../core/Models/Patient-Model";
+import { PatientRegister } from "../../../core/Models/Patient-Model";
 import { selectRegisteredPatient, selectSecurityQuestions } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
-import * as AuthActions from "../../Store/Auth/auth.actions";
-import * as PatientAction from "../../Store/Patient/patient.action"
+import * as AuthActions from "../../../Store/Auth/auth.actions";
+import * as PatientAction from "../../../Store/Patient/patient.action"
 import { ToastrService } from "ngx-toastr";
 
 @Component({
@@ -333,16 +333,13 @@ export class SelfRegistrationComponent implements OnInit {
     this.store.select(state => state.auth.registeredPatient).subscribe((patient: any) => {
       if (patient) {
 
-        this.router.navigate(['/login']);
+        this.router.navigate(['/patient/login']);
       }
     }
     )
   }
 
   formInitialization() {
-    // alert(patient)
-
-
     this.signupForm = this.fb.group({
       firstName: ["", Validators.required],
       middleName: [""],
