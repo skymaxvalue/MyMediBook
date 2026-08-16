@@ -3,95 +3,62 @@ let paymentData = null;
 let insuranceChoice = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-
     initializeRegistration();
-
 });
 
-
-
 function initializeRegistration() {
-
     const form = document.getElementById("bookingForm");
-
     const dobInput = document.getElementById("dateOfBirth");
 
     if (dobInput) {
-
-        dobInput.addEventListener(
-            "change",
-            updateAgeFromDob
-        );
-
+        dobInput.addEventListener("change", updateAgeFromDob);
     }
 
     setupInsurance();
 
     if (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
 
-       form.addEventListener("submit", function (event) {
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
 
-    event.preventDefault();
-
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+            confirmBooking();
+        });
     }
-
-    confirmBooking();
-
-});
-
-    }
-
 }
 
 function setupInsurance() {
-
     const radios = document.querySelectorAll(
         'input[name="insurance"]'
     );
 
     radios.forEach(radio => {
-
         radio.addEventListener("change", function () {
-
             insuranceChoice = this.value;
 
             if (this.value === "yes") {
-
                 document.getElementById(
                     "insuranceModal"
                 ).style.display = "flex";
-
             }
 
             if (this.value === "no") {
-
                 document.getElementById(
                     "paymentModal"
                 ).style.display = "flex";
-
             }
-
         });
-
     });
-
 }
 
-
-/* =========================================================
-   INSURANCE MODAL
-   ========================================================= */
-
 function closeInsuranceModal() {
-
     document.getElementById(
         "insuranceModal"
     ).style.display = "none";
 
-    /* Cancel = remove selection */
     insuranceChoice = null;
     insuranceData = null;
 
@@ -104,42 +71,59 @@ function closeInsuranceModal() {
     }
 }
 
-
 function confirmInsurance() {
+    const provider = document
+        .getElementById("provider")
+        .value
+        .trim();
 
-    const provider =
-        document.getElementById("provider").value.trim();
+    const policy = document
+        .getElementById("policy")
+        .value
+        .trim();
 
-    const policy =
-        document.getElementById("policy").value.trim();
+    const groupId = document
+        .getElementById("groupId")
+        .value
+        .trim();
 
-    if (!provider || !policy) {
-    return;
-}
+    const holderName = document
+        .getElementById("holderName")
+        .value
+        .trim();
+
+    const insuranceAddress = document
+        .getElementById("insuranceAddress")
+        .value
+        .trim();
+
+    if (
+        !provider ||
+        !policy ||
+        !holderName ||
+        !insuranceAddress
+    ) {
+        return;
+    }
 
     insuranceData = {
         provider,
-        policy
+        policy,
+        groupId,
+        holderName,
+        insuranceAddress
     };
 
-    /* Confirm = preserve selection and data */
     document.getElementById(
         "insuranceModal"
     ).style.display = "none";
 }
 
-
-/* =========================================================
-   PAYMENT MODAL
-   ========================================================= */
-
 function closePaymentModal() {
-
     document.getElementById(
         "paymentModal"
     ).style.display = "none";
 
-    /* Cancel = remove selection */
     insuranceChoice = null;
     paymentData = null;
 
@@ -152,52 +136,63 @@ function closePaymentModal() {
     }
 }
 
-
 function confirmPayment() {
+    const paymentType = document
+        .getElementById("paymentType")
+        .value;
 
-    const card =
-        document.getElementById(
-            "cardNumber"
-        ).value.trim();
+    const cardHolder = document
+        .getElementById("cardHolder")
+        .value
+        .trim();
 
-    const cvv =
-        document.getElementById(
-            "cvv"
-        ).value.trim();
+    const cardNumber = document
+        .getElementById("cardNumber")
+        .value
+        .trim();
 
-    if (!card || !cvv) {
+    const expiry = document
+        .getElementById("expiry")
+        .value
+        .trim();
 
+    const cvv = document
+        .getElementById("cvv")
+        .value
+        .trim();
+
+    if (
+        !paymentType ||
+        !cardHolder ||
+        !cardNumber ||
+        !expiry ||
+        !cvv
+    ) {
         return;
     }
 
     paymentData = {
-        card,
+        paymentType,
+        cardHolder,
+        cardNumber,
+        expiry,
         cvv
     };
 
-    /* Confirm = preserve selection and data */
     document.getElementById(
         "paymentModal"
     ).style.display = "none";
 }
 
-
-
-
 function confirmBooking() {
-
-
     if (!insuranceChoice) {
-    return;
-}
+        return;
+    }
 
-
-  
     if (
         insuranceChoice === "yes" &&
         !insuranceData
     ) {
-
         document.getElementById(
             "insuranceModal"
         ).style.display = "flex";
@@ -205,13 +200,10 @@ function confirmBooking() {
         return;
     }
 
-
-  
     if (
         insuranceChoice === "no" &&
         !paymentData
     ) {
-
         document.getElementById(
             "paymentModal"
         ).style.display = "flex";
@@ -219,147 +211,142 @@ function confirmBooking() {
         return;
     }
 
+    const genderSelect = document.querySelector(
+        '#bookingForm .form-grid select'
+    );
 
-    const genderSelect =
-        document.querySelector(
-            '.form-group select[required]'
-        );
-
-    const addressField =
-        document.querySelector(
-            'textarea[placeholder="Street, City, State, ZIP Code"]'
-        );
-
-
-
-        const otpMethod =
-    document.querySelector(
+    const otpMethod = document.querySelector(
         'input[name="otp"]:checked'
     )?.value || "";
 
+    const appointment = {
+        firstName: document
+            .getElementById("firstName")
+            .value
+            .trim(),
 
+        lastName: document
+            .getElementById("lastName")
+            .value
+            .trim(),
 
-   const appointment = {
+        phone: document
+            .getElementById("phone")
+            .value
+            .trim(),
 
-    firstName:
-        document.getElementById("firstName").value.trim(),
+        email: document
+            .getElementById("email")
+            .value
+            .trim(),
 
-    lastName:
-        document.getElementById("lastName").value.trim(),
+        dateOfBirth: document
+            .getElementById("dateOfBirth")
+            .value,
 
-    phone:
-        document.getElementById("phone").value.trim(),
+        age: document
+            .getElementById("age")
+            .value,
 
-    email:
-        document.querySelector(
-            'input[type="email"]'
-        ).value.trim(),
-
-    dateOfBirth:
-        document.getElementById("dateOfBirth").value,
-
-    age:
-        document.getElementById("age").value,
-
-    gender:
-        genderSelect
+        gender: genderSelect
             ? genderSelect.value
             : "",
 
-    address:
-        addressField
-            ? addressField.value.trim()
-            : "",
+        address: document
+            .getElementById("residentialAddress")
+            .value
+            .trim(),
 
-    insurance:
-        insuranceChoice,
+        cityVillage: document
+            .getElementById("cityVillage")
+            .value
+            .trim(),
 
-    insuranceData:
+        state: document
+            .getElementById("state")
+            .value,
+
+        pinCode: document
+            .getElementById("pinCode")
+            .value
+            .trim(),
+
+        insurance: insuranceChoice,
+
         insuranceData,
 
-    paymentData:
         paymentData,
 
-    otpMethod:
         otpMethod
-};
-
+    };
 
     localStorage.setItem(
         "tempAppointment",
         JSON.stringify(appointment)
     );
 
-
     if (otpMethod === "none") {
-
-    window.location.href =
-        "patient-registration-success.html";
-
-    return;
-}
-
-window.location.href =
-    "registration-otp.html";
-}
-
-
-function updateAgeFromDob() {
-
-    const dobInput =
-        document.getElementById(
-            "dateOfBirth"
-        );
-
-    const ageInput =
-        document.getElementById(
-            "age"
-        );
-
-    const yearsRadio =
-        document.querySelector(
-            'input[name="ageType"][value="years"]'
-        );
-
-    const monthsRadio =
-        document.querySelector(
-            'input[name="ageType"][value="months"]'
-        );
-
-    if (!dobInput.value) {
-
-        ageInput.value = "";
-
-        ageInput.readOnly = false;
-
-        ageInput.disabled = false;
-
-        yearsRadio.checked = false;
-
-        monthsRadio.checked = false;
+        window.location.href =
+            "patient-registration-success.html";
 
         return;
-
     }
 
-    const dob =
-        new Date(
-            dobInput.value + "T00:00:00"
-        );
+    window.location.href =
+        "registration-otp.html";
+}
 
-    const today =
-        new Date();
+function updateAgeFromDob() {
+    const dobInput = document.getElementById(
+        "dateOfBirth"
+    );
 
-    if (dob > today) {
+    const ageInput = document.getElementById(
+        "age"
+    );
 
+    const yearsRadio = document.querySelector(
+        'input[name="ageType"][value="years"]'
+    );
+
+    const monthsRadio = document.querySelector(
+        'input[name="ageType"][value="months"]'
+    );
+
+    if (!dobInput.value) {
         ageInput.value = "";
+        ageInput.readOnly = false;
+        ageInput.disabled = false;
 
-        yearsRadio.checked = false;
+        if (yearsRadio) {
+            yearsRadio.checked = false;
+        }
 
-        monthsRadio.checked = false;
+        if (monthsRadio) {
+            monthsRadio.checked = false;
+        }
 
         return;
+    }
 
+    const dob = new Date(
+        dobInput.value + "T00:00:00"
+    );
+
+    const today = new Date();
+
+    if (dob > today) {
+        ageInput.value = "";
+
+        if (yearsRadio) {
+            yearsRadio.checked = false;
+        }
+
+        if (monthsRadio) {
+            monthsRadio.checked = false;
+        }
+
+        return;
     }
 
     let years =
@@ -375,101 +362,69 @@ function updateAgeFromDob() {
         dob.getDate();
 
     if (days < 0) {
-
         months--;
-
     }
 
     if (months < 0) {
-
         years--;
-
         months += 12;
-
     }
 
     if (years <= 0) {
-
-        let totalMonths =
+        const totalMonths =
             Math.max(months, 0);
 
-        ageInput.value =
-            totalMonths;
-
+        ageInput.value = totalMonths;
         ageInput.disabled = true;
 
-        monthsRadio.checked = true;
+        if (monthsRadio) {
+            monthsRadio.checked = true;
+        }
 
-        yearsRadio.checked = false;
+        if (yearsRadio) {
+            yearsRadio.checked = false;
+        }
 
         return;
-
     }
 
-    ageInput.value =
-        years;
-
+    ageInput.value = years;
     ageInput.disabled = true;
 
-    yearsRadio.checked = true;
+    if (yearsRadio) {
+        yearsRadio.checked = true;
+    }
 
-    monthsRadio.checked = false;
-
+    if (monthsRadio) {
+        monthsRadio.checked = false;
+    }
 }
 
-
-
 document.addEventListener(
-
     "reset",
-
     function () {
-
         insuranceChoice = null;
-
         insuranceData = null;
-
         paymentData = null;
 
-        const age =
-            document.getElementById(
-                "age"
-            );
+        const age = document.getElementById(
+            "age"
+        );
 
         if (age) {
-
             age.disabled = false;
-
         }
-
     }
-
 );
-
-
 
 document.addEventListener(
-
     "keydown",
-
     function (event) {
-
         if (
-
-            event.key === "Enter"
-            &&
+            event.key === "Enter" &&
             event.target.tagName !== "TEXTAREA"
-
         ) {
-
             event.preventDefault();
-
         }
-
     }
-
 );
-
-
-
-
