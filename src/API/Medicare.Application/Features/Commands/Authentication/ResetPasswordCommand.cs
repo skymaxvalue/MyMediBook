@@ -4,5 +4,5 @@ using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.Application.Features.Commands.Authentication
 {
-    public record ResetPasswordCommand(ResetPasswordModel model) : IRequest<ResponseModel>;
+    public record ResetPasswordCommand(ResetAssociatePasswordModel model) : IRequest<ResponseModel>;
 }

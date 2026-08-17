@@ -1,6 +1,6 @@
 ﻿namespace Medicare.Application.Models.Authentication
 {
-    public class ResetPasswordModel
+    public class ResetAssociatePasswordModel
     {
         public string Token { get; set; }
         public string Password { get; set; }

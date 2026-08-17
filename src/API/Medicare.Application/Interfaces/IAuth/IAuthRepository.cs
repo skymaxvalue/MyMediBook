@@ -14,8 +14,12 @@ namespace Medicare.Application.Interfaces.IAuthRepository
         Task<ResponseModel> SaveOtpAsync(OtpDetailModel model);
         Task<OtpDetailModel> GetOtpDetailAsync(string email);
         Task<ResponseModel> ClearOtpAsync(string email);
-        Task<ResponseModel> IncrementOtpAttemptsAsync(string email);
+        Task<ResponseModel> IncrementOtpAttemptsAsync(Guid userId);
         Task<ResponseModel> ResetFailedAttemptsAsync(string email);
         Task<ResponseModel> ResetPasswordAsync(Guid userId, string passwordHash);
+        Task<ResponseModel> SavePasswordResetTokenAsync(Guid userId, Guid token);
+        Task<ResponseModel> ResetForgotPasswordAsync(ResetForgotPasswordModel model);
+        Task<OtpDetailModel> GetOtpDetailByUserIdAsync(Guid userId);
+        Task<ResponseModel> ClearForgotPasswordOtpAsync(Guid userId);
     }
 }

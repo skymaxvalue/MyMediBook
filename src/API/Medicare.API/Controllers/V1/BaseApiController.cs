@@ -147,5 +147,33 @@ namespace Medicare.API.Controllers.V1
                 Result = 1
             });
         }
+        protected IActionResult HandleForgotPasswordResponse<T>(T data) where T : IErrorHandling
+        {
+            if (data == null)
+                return BadRequest(new ApiResponse<T>
+                {
+                    Data = default,
+                    StatusMessage = "Invalid request.",
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Result = 0
+                });
+
+            if (data.IsSuccess != 1)
+                return BadRequest(new ApiResponse<T>
+                {
+                    Data = default,
+                    StatusMessage = data.ResponseMessage,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Result = 0
+                });
+
+            return Ok(new ApiResponse<T>
+            {
+                Data = data,
+                StatusMessage = data.ResponseMessage,
+                StatusCode = HttpStatusCode.OK,
+                Result = 1
+            });
+        }
     }
 }
