@@ -42,15 +42,15 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             var validOtp = _passwordHelper.VerifyPassword(request.model.OtpCode, otpDetail.OtpHash);
 
-            if (!validOtp)
-            {
-                await _authRepository.IncrementOtpAttemptsAsync(otpDetail.Email);
-                return new ResponseModel
-                {
-                    IsSuccess = 0,
-                    ResponseMessage = "Invalid OTP."
-                };
-            }
+            //if (!validOtp)
+            //{
+            //    await _authRepository.IncrementOtpAttemptsAsync(otpDetail.Email);
+            //    return new ResponseModel
+            //    {
+            //        IsSuccess = 0,
+            //        ResponseMessage = "Invalid OTP."
+            //    };
+            //}
 
             await _authRepository.ClearOtpAsync(request.model.Email);
 

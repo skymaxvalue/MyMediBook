@@ -2,6 +2,7 @@
 using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Features.Commands.Patient;
+using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.Authentication;
@@ -23,11 +24,13 @@ namespace Medicare.API.Controllers.V1
         private readonly IMediator _mediator;
         private readonly IJwtTokenRepository _jwtTokenRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IAuthRepository _authRepository;
         private readonly IConfiguration _config;
-        public AuthController(IMediator mediator, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository, IConfiguration config)
+        public AuthController(IMediator mediator, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository, IAuthRepository authRepository, IConfiguration config)
         {
             _mediator = mediator;
             _jwtTokenRepository = jwtTokenRepository;
+            _authRepository = authRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _config = config;
         }
@@ -93,7 +96,7 @@ namespace Medicare.API.Controllers.V1
         [AllowAnonymous]
         [HttpPost]
         [Route("ResetAssociatePassword")]
-        public async Task<IActionResult> ResetAssociatePassword([FromBody] ResetPasswordModel model)
+        public async Task<IActionResult> ResetAssociatePassword([FromBody] ResetAssociatePasswordModel model)
         {
             ResponseModel response = new ResponseModel();
             if (string.IsNullOrEmpty(model.Token) || string.IsNullOrEmpty(model.Password))
@@ -154,6 +157,44 @@ namespace Medicare.API.Controllers.V1
         {
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new VerifyOtpCommand(model));
+            return HandleResponse(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] RequestOtpModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new ForgotPasswordCommand(model));
+            return HandleResponse(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("VerifyForgotPasswordOtp")]
+        public async Task<IActionResult> VerifyForgotPasswordOtp([FromBody] VerifyForgotPasswordModel model)
+        {
+            VerifyForgotPasswordResponseModel response = new VerifyForgotPasswordResponseModel();
+            response = await _mediator.Send(new VerifyForgotPasswordCommand(model));
+            return HandleForgotPasswordResponse(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetForgotPassword")]
+        public async Task<IActionResult> ResetForgotPassword([FromBody] ResetForgotPasswordModel model)
+        {
+            if (model.Token == Guid.Empty || string.IsNullOrWhiteSpace(model.Password))
+                return BadRequest(new ResponseModel
+                {
+                    Status = 0,
+                    IsSuccess = 0,
+                    ResponseId = 0,
+                    ResponseMessage = "Token and Password are required.",
+                });
+
+            var response = await _mediator.Send(new ResetForgotPasswordCommand(model));
             return HandleResponse(response);
         }
     }

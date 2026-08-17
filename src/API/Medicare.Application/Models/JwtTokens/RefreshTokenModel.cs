@@ -20,7 +20,7 @@ namespace Medicare.Application.Models.JwtTokens
         public Guid UserId { get; set; }
         public string UserType { get; set; }
         public bool IsSuccess { get; set; }
-        public string ResposneMessage { get; set; }
+        public string ResponseMessage { get; set; }
     }
 
 }

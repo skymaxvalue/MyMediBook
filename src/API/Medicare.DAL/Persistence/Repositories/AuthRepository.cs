@@ -10,6 +10,7 @@ using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace Medicare.DAL.Persistence.Repositories
 {
@@ -265,14 +266,14 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-        public async Task<ResponseModel> IncrementOtpAttemptsAsync(string email)
+        public async Task<ResponseModel> IncrementOtpAttemptsAsync(Guid userId)
         {
             string procName = "USP_UpdatePatientOtpAttempts";
             ResponseModel returnData = new ResponseModel();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("Email", email);
+                param.Add("UserId", userId);
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
 
             }
@@ -322,7 +323,8 @@ namespace Medicare.DAL.Persistence.Repositories
             try
             {
                 var param = new DynamicParameters();
-                param.Add("Email", model.Email);
+                param.Add("UserId", model.UserId);
+                param.Add("UserType", model.UserType);
                 param.Add("OtpHash", model.OtpHash);
                 param.Add("OtpExpiry", model.OtpExpiry);
                 param.Add("OtpAttempts", model.OtpAttempts);
@@ -524,6 +526,99 @@ namespace Medicare.DAL.Persistence.Repositories
                     Error_Trace = ex.StackTrace
                 });
             }
+            return returnData;
+        }
+        public async Task<ResponseModel> SavePasswordResetTokenAsync(Guid userId, Guid token)
+        {
+            string procName = "USP_SavePasswordResetToken";
+            ResponseModel returnData = new();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("UserId", userId);
+                param.Add("Token", token);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+        public async Task<ResponseModel> ResetForgotPasswordAsync(ResetForgotPasswordModel model)
+        {
+            string procName = "USP_ResetForgotPassword";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("Token", model.Token);
+                param.Add("PasswordHash", model.Password);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<OtpDetailModel> GetOtpDetailByUserIdAsync(Guid userId)
+        {
+            string procName = "USP_GetPatientOtpDetail";
+            OtpDetailModel returnData = new OtpDetailModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("UserId", userId);
+                returnData = await _context.QuerySingleStoredProcAsync<OtpDetailModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+        public async Task<ResponseModel> ClearForgotPasswordOtpAsync(Guid userId)
+        {
+            string procName = "USP_ClearPatientOtp";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("UserId", userId);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+
             return returnData;
         }
     }
