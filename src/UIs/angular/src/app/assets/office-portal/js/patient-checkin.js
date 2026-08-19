@@ -454,13 +454,6 @@ No appointment was found for the details entered.
 
                 <td>
 
-                    <input
-                        type="radio"
-                        name="selectedPatient"
-                        class="patient-radio"
-                        value="${appointment.id}"
-                    >
-
                     ${index + 1}
 
                 </td>
@@ -511,26 +504,7 @@ No appointment was found for the details entered.
         `
         ).join("");
 
-    document
-        .querySelectorAll(
-            ".patient-radio"
-        )
-        .forEach(
-            radio => {
-
-                radio.addEventListener(
-                    "change",
-                    function() {
-
-                        selectAppointment(
-                            Number(this.value)
-                        );
-
-                    }
-                );
-
-            }
-        );
+  
 
     document
         .querySelectorAll(
@@ -571,18 +545,7 @@ function selectAppointment(
         return;
     }
 
-    document
-        .querySelectorAll(
-            ".patient-radio"
-        )
-        .forEach(
-            radio => {
-
-                radio.checked =
-                    Number(radio.value) === id;
-
-            }
-        );
+    
 
     document
         .querySelectorAll(

@@ -33,6 +33,9 @@
     <link rel="stylesheet"
           href="css/patient-registration.css">
 
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+
 </head>
 
 <body>
@@ -150,77 +153,6 @@
 
                             <label>
 
-                                Date of Birth
-
-                                <span>*</span>
-
-                            </label>
-
-                            <div class="date-field">
-
-                                <input type="date"
-                                       id="dateOfBirth"
-                                       required>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-
-                                Age
-
-                                <span>*</span>
-
-                            </label>
-
-                            <div class="age-wrapper">
-
-                                <input type="number"
-                                       id="age"
-                                       placeholder="Age"
-                                       required>
-
-                                <label class="radio-inline">
-
-                                    <input type="radio"
-                                           name="ageType"
-                                           value="years">
-
-                                    <span>
-
-                                        Years
-
-                                    </span>
-
-                                </label>
-
-                                <label class="radio-inline">
-
-                                    <input type="radio"
-                                           name="ageType"
-                                           value="months">
-
-                                    <span>
-
-                                        Months
-
-                                    </span>
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-
                                 Gender
 
                                 <span>*</span>
@@ -258,6 +190,54 @@
                             </select>
 
                         </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Date of Birth
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="date-field">
+
+                                <input type="date"
+                                       id="dateOfBirth"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Age
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="age-wrapper">
+                                <input
+                                    type="text"
+                                    id="age"
+                                    placeholder="--"
+                                    readonly
+                                    aria-readonly="true"
+                                    required>
+                                <span class="age-unit">Years</span>
+                            </div>
+
+                        </div>
+
+
+                        
 
 
                         <div class="form-group">
@@ -329,12 +309,12 @@
 
                         <div class="form-group full-width">
                             <label>
-                                Residential Address
+                                Address
                                 <span>*</span>
                             </label>
                             <input type="text"
                                    id="residentialAddress"
-                                   placeholder="Enter residential address"
+                                   placeholder="Enter address"
                                    required>
                         </div>
 
@@ -383,19 +363,20 @@
                             </label>
                             <input type="tel"
                                    id="phone"
-                                   placeholder="Mobile number"
+                                   placeholder="Enter Mobile Number"
+                                   autocomplete="tel"
                                    required>
                         </div>
 
                         <div class="form-group">
                             <label>
                                 Email Address
-                                <span>*</span>
+                                
                             </label>
                             <input type="email"
                                    id="email"
                                    placeholder="Email address"
-                                   required>
+                                   >
                         </div>
 
                     </div>
@@ -710,15 +691,13 @@
 
                 <select id="paymentType">
 
-                    <option value="">Select payment type</option>
+                    <option value="" selected disabled>Select payment type</option>
 
                     <option>Credit Card</option>
 
                     <option>Debit Card</option>
 
-                    <option>UPI</option>
-
-                    <option>Cash</option>
+                
 
                 </select>
 
@@ -836,6 +815,7 @@
 
     <script src="js/footer.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
     <script src="js/patient-registration.js"></script>
 
 </body>
