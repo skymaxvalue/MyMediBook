@@ -59,6 +59,12 @@ import { appointmentReducer } from "./app/Store/Appointments/appointment.reducer
 import { AppointmentEffects } from "./app/Store/Appointments/appointment.effect";
 import { doctorSpecialityReducer } from "./app/Store/Doctor/doctor.reducer";
 import { DoctorSpecialityEffects } from "./app/Store/Doctor/doctor.effect";
+import { LabResultReducer } from "./app/Store/Lab-Results/lab-result.reducer";
+import { LabResultEffects } from "./app/Store/Lab-Results/lab-result.effect";
+import { BillsEffects } from "./app/Store/Billing/billing.effect";
+import { BillReducer } from "./app/Store/Billing/billing.reducer";
+import { MessagesEffects } from "./app/Store/Messages/messages.effect";
+import { MessagesReducer } from "./app/Store/Messages/messages.reducer";
 
 if (environment.production) {
   enableProdMode();
@@ -108,14 +114,20 @@ bootstrapApplication(AppComponent, {
       auth: authReducer,
       patient: patientReducer,
       appointment: appointmentReducer,
-      doctor: doctorSpecialityReducer
+      doctor: doctorSpecialityReducer,
+      labresult: LabResultReducer,
+      bills: BillReducer,
+      message: MessagesReducer
     }),
     provideEffects([
       AuthEffects,
       PatientEffects,
       AppointmentEffects,
       DoctorSpecialityEffects,
-      AuditLogEffects
+      LabResultEffects,
+      AuditLogEffects,
+      BillsEffects,
+      MessagesEffects
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

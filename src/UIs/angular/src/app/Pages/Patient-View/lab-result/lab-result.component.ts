@@ -1,83 +1,64 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   signal
 } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-
-
-
-import { LabResult } from "src/app/core/Models/lab-result.model";
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LabResultService } from 'src/app/core/Services/lab-result.service';
-export const LAB_RESULTS: LabResult[] = [
 
-  {
-    id: 1,
-    patient: 'Ramesh',
-    test: 'Blood Test',
-    code: 'B101',
-    date: '2026-05-01',
-    result: 'Insufficient',
-    range: '90 - 110',
-    status: 'Normal',
-    lab: 'Lab Corp',
-    image: 'assets/images/user.png'
-  },
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
 
-  {
-    id: 2,
-    patient: 'Self',
-    test: 'Urine Test',
-    code: 'B209',
-    date: '2026-05-02',
-    result: 'Hemolyzed',
-    range: '5 - 12',
-    status: 'Critical',
-    lab: 'Lab Corp',
-    image: 'assets/images/user.png'
-  },
+import { LabResultModel } from 'src/app/core/Models/lab-result.model';
 
-  {
-    id: 3,
-    patient: 'Anita',
-    test: 'Thyroid Panel',
-    code: 'T401',
-    date: '2026-05-03',
-    result: 'Pending',
-    range: 'Awaiting',
-    status: 'Pending',
-    lab: 'Health Lab',
-    image: 'assets/images/user.png'
-  }
+import { getMyLabResults } from 'src/app/Store/Lab-Results/lab-result.actions';
+import { selectMyAllLabResultList } from 'src/app/Store/Lab-Results/lab-result.selcetors';
 
-]
+// IMPORTANT:
+// इथे तुमच्या project मधील actual selector import करा.
+// उदाहरण:
+// import { selectMyLabResults } from 'src/app/Store/Lab-Results/lab-result.selectors';
 
-type SortField = 'patient' | 'test' | 'date' | '';
-type SortDirection = 'asc' | 'desc';
+
+type SortField =
+  | 'patientName'
+  | 'testName'
+  | 'reportDate'
+  | '';
+
+type SortDirection =
+  | 'asc'
+  | 'desc';
+
 
 @Component({
-  selector: "app-lab-result",
+  selector: 'app-lab-result',
 
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: "./lab-result.component.html",
-  styleUrl: "./lab-result.component.css",
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule
+  ],
+
+  templateUrl: './lab-result.component.html',
+  styleUrl: './lab-result.component.css',
+
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class LabResultComponent {
 
-  constructor(private service: LabResultService) { }
+  loginUser = JSON.parse(
+    localStorage.getItem('user') || 'null'
+  );
 
 
-  selectedSort = signal('');
-  selectedReport = signal<any | null>(null);
-  results = this.service.getResults();
+  results = signal<LabResultModel[]>([]);
 
   searchText = signal('');
+
+  selectedSort = signal('');
 
   sortField = signal<SortField>('');
 
@@ -87,53 +68,143 @@ export class LabResultComponent {
 
   readonly pageSize = 5;
 
-  selectedResult = signal<LabResult | null>(null);
+  selectedResult = signal<LabResultModel | null>(null);
 
   showModal = signal(false);
 
 
-  totalTests = computed(() => this.results().length);
+  constructor(
+    private store: Store<AppState>
+  ) {
+
+    this.store.dispatch(
+      getMyLabResults({
+        patientId: this.loginUser.refId
+      })
+    );
+
+  }
+
+
+  ngOnInit(): void {
+
+
+
+
+    this.store
+      .select(selectMyAllLabResultList)
+      .subscribe((res: LabResultModel[]) => {
+
+        if (res && Array.isArray(res)) {
+          this.results.set(res);
+          this.currentPage.set(1);
+        }
+
+      });
+
+
+  }
+
+
+
+  totalTests = computed(() =>
+    this.results().length
+  );
+
+
+  enteredTests = computed(() =>
+    this.results().filter(
+      x => x.resultStatus === 'Entered'
+    ).length
+  );
+
+
+
 
   normalTests = computed(() =>
-    this.results().filter(x => x.status === 'Normal').length
+    this.results().filter(
+      x => this.getStatusText(x) === 'Normal'
+    ).length
   );
+
 
   criticalTests = computed(() =>
-    this.results().filter(x => x.status === 'Critical').length
+    this.results().filter(
+      x => this.getStatusText(x) === 'Critical'
+    ).length
   );
+
 
   pendingTests = computed(() =>
-    this.results().filter(x => x.status === 'Pending').length
+    this.results().filter(
+      x =>
+        x.resultStatus?.toLowerCase() === 'pending'
+    ).length
   );
 
+
   reportsReady = computed(() =>
-    this.results().filter(x => x.status !== 'Pending').length
+    this.results().filter(
+      x =>
+        x.resultStatus?.toLowerCase() !== 'pending'
+    ).length
   );
+
+
 
 
   filteredResults = computed(() => {
 
-    const keyword = this.searchText().trim().toLowerCase();
+    const keyword =
+      this.searchText()
+        .trim()
+        .toLowerCase();
 
     let data = [...this.results()];
 
+
+    // SEARCH
     if (keyword) {
 
       data = data.filter(item =>
 
-        item.patient.toLowerCase().includes(keyword) ||
+        item.patientName
+          ?.toLowerCase()
+          .includes(keyword)
 
-        item.test.toLowerCase().includes(keyword) ||
+        ||
 
-        item.code.toLowerCase().includes(keyword) ||
+        item.testName
+          ?.toLowerCase()
+          .includes(keyword)
 
-        item.lab.toLowerCase().includes(keyword)
+        ||
+
+        item.testCode
+          ?.toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        item.labName
+          ?.toLowerCase()
+          .includes(keyword)
+
+        ||
+
+        item.resultId
+          ?.toString()
+          .includes(keyword)
 
       );
 
     }
 
+
+
+
     const field = this.sortField();
+
 
     if (field) {
 
@@ -143,101 +214,202 @@ export class LabResultComponent {
 
         let valueB: any = b[field];
 
-        if (field === 'date') {
 
-          valueA = new Date(valueA).getTime();
+        if (field === 'reportDate') {
 
-          valueB = new Date(valueB).getTime();
+          valueA =
+            new Date(valueA).getTime();
 
-        } else {
-
-          valueA = valueA.toLowerCase();
-
-          valueB = valueB.toLowerCase();
+          valueB =
+            new Date(valueB).getTime();
 
         }
 
+        else {
+
+          valueA =
+            (valueA ?? '')
+              .toString()
+              .toLowerCase();
+
+          valueB =
+            (valueB ?? '')
+              .toString()
+              .toLowerCase();
+
+        }
+
+
+        if (valueA === valueB) {
+          return 0;
+        }
+
+
+        const result =
+          valueA > valueB ? 1 : -1;
+
+
         return this.sortDirection() === 'asc'
-          ? valueA > valueB ? 1 : -1
-          : valueA < valueB ? 1 : -1;
+          ? result
+          : -result;
 
       });
 
     }
 
+
     return data;
 
   });
-  sortBy(value: string) {
 
-    this.selectedSort.set(value);
 
-    switch (value) {
 
-      case 'nameAsc':
-        this.sortField.set('patient');
-        this.sortDirection.set('asc');
-        break;
+  totalPages = computed(() =>
+    Math.max(
+      1,
+      Math.ceil(
+        this.filteredResults().length /
+        this.pageSize
+      )
+    )
+  );
 
-      case 'nameDesc':
-        this.sortField.set('patient');
-        this.sortDirection.set('desc');
-        break;
 
-      case 'newest':
-        this.sortField.set('date');
-        this.sortDirection.set('desc');
-        break;
+  paginatedResults = computed(() => {
 
-      case 'oldest':
-        this.sortField.set('date');
-        this.sortDirection.set('asc');
-        break;
+    const start =
+      (this.currentPage() - 1) *
+      this.pageSize;
 
-      case 'testAsc':
-        this.sortField.set('test');
-        this.sortDirection.set('asc');
-        break;
 
-      case 'testDesc':
-        this.sortField.set('test');
-        this.sortDirection.set('desc');
-        break;
-    }
+    return this.filteredResults()
+      .slice(
+        start,
+        start + this.pageSize
+      );
+
+  });
+
+
+
+  onSearch(value: string): void {
+
+    this.searchText.set(value);
 
     this.currentPage.set(1);
 
   }
 
-  sortColumn(field: SortField) {
+
+
+  sortBy(value: string): void {
+
+    this.selectedSort.set(value);
+
+
+    switch (value) {
+
+      case 'nameAsc':
+
+        this.sortField.set('patientName');
+
+        this.sortDirection.set('asc');
+
+        break;
+
+
+      case 'nameDesc':
+
+        this.sortField.set('patientName');
+
+        this.sortDirection.set('desc');
+
+        break;
+
+
+      case 'newest':
+
+        this.sortField.set('reportDate');
+
+        this.sortDirection.set('desc');
+
+        break;
+
+
+      case 'oldest':
+
+        this.sortField.set('reportDate');
+
+        this.sortDirection.set('asc');
+
+        break;
+
+
+      case 'testAsc':
+
+        this.sortField.set('testName');
+
+        this.sortDirection.set('asc');
+
+        break;
+
+
+      case 'testDesc':
+
+        this.sortField.set('testName');
+
+        this.sortDirection.set('desc');
+
+        break;
+
+
+      default:
+
+        this.sortField.set('');
+
+        break;
+
+    }
+
+
+    this.currentPage.set(1);
+
+  }
+
+
+
+  sortColumn(field: SortField): void {
+
+    if (!field) {
+      return;
+    }
+
 
     if (this.sortField() === field) {
 
       this.sortDirection.set(
+
         this.sortDirection() === 'asc'
           ? 'desc'
           : 'asc'
+
       );
 
-    } else {
+    }
+
+    else {
 
       this.sortField.set(field);
+
       this.sortDirection.set('asc');
 
     }
 
+
+    this.currentPage.set(1);
+
   }
-  totalPages = computed(() =>
-    Math.ceil(this.filteredResults().length / this.pageSize)
-  );
 
-  paginatedResults = computed(() => {
-
-    const start = (this.currentPage() - 1) * this.pageSize;
-
-    return this.filteredResults().slice(start, start + this.pageSize);
-
-  });
 
 
   getArrow(field: SortField): string {
@@ -248,64 +420,50 @@ export class LabResultComponent {
 
     }
 
+
     return this.sortDirection() === 'asc'
       ? '▲'
       : '▼';
 
   }
-  onSearch(value: string) {
-
-    this.searchText.set(value);
-
-    this.currentPage.set(1);
-
-  }
 
 
-  sort(field: SortField) {
 
-    if (this.sortField() === field) {
+  nextPage(): void {
 
-      this.sortDirection.set(
+    if (
+      this.currentPage() <
+      this.totalPages()
+    ) {
 
-        this.sortDirection() === 'asc'
-          ? 'desc'
-          : 'asc'
-
+      this.currentPage.update(
+        page => page + 1
       );
 
-    } else {
+    }
 
-      this.sortField.set(field);
+  }
 
-      this.sortDirection.set('asc');
+
+  previousPage(): void {
+
+    if (
+      this.currentPage() > 1
+    ) {
+
+      this.currentPage.update(
+        page => page - 1
+      );
 
     }
 
   }
 
 
-  nextPage() {
 
-    if (this.currentPage() < this.totalPages()) {
-
-      this.currentPage.update(x => x + 1);
-
-    }
-
-  }
-
-  previousPage() {
-
-    if (this.currentPage() > 1) {
-
-      this.currentPage.update(x => x - 1);
-
-    }
-
-  }
-
-  openDetails(item: LabResult) {
+  openDetails(
+    item: LabResultModel
+  ): void {
 
     this.selectedResult.set(item);
 
@@ -313,7 +471,8 @@ export class LabResultComponent {
 
   }
 
-  closeModal() {
+
+  closeModal(): void {
 
     this.showModal.set(false);
 
@@ -321,45 +480,134 @@ export class LabResultComponent {
 
   }
 
-  // -----------------------
-  // Status Class
-  // -----------------------
 
-  getStatusClass(status: string) {
+  getStatusText(
+    item: LabResultModel
+  ): string {
 
-    switch (status) {
-
-      case 'Normal':
-        return 'status-normal';
-
-      case 'Critical':
-        return 'status-critical';
-
-      case 'Pending':
-        return 'status-pending';
-
-      default:
-        return '';
-
-    }
+    return item.resultStatus || 'Entered';
 
   }
 
-  // -----------------------
-  // Format Date
-  // -----------------------
 
-  formatDate(date: string) {
+  getStatusClass(
+    item: LabResultModel
+  ): string {
 
-    return new Date(date).toLocaleDateString('en-GB', {
+    const status =
+      this.getStatusText(item)
+        .toLowerCase();
 
-      day: '2-digit',
 
-      month: 'short',
+    if (status === 'normal') {
 
-      year: 'numeric'
+      return 'status-normal';
 
-    });
+    }
+
+
+    if (status === 'critical') {
+
+      return 'status-critical';
+
+    }
+
+
+    if (status === 'pending') {
+
+      return 'status-pending';
+
+    }
+
+
+    return 'status-entered';
+
+  }
+
+  getResultStatus(
+    item: LabResultModel
+  ): 'Normal' | 'Critical' | 'Pending' {
+
+
+    if (!item.resultValue || !item.referenceRange) {
+      return 'Pending';
+    }
+
+    const value = parseFloat(item.resultValue);
+
+    if (isNaN(value)) {
+      return 'Pending';
+    }
+
+    const range = item.referenceRange
+      .replace(/,/g, '')
+      .toLowerCase()
+      .trim();
+
+
+    const rangeMatch = range.match(
+      /(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/
+    );
+
+    if (rangeMatch) {
+
+      const min = parseFloat(rangeMatch[1]);
+      const max = parseFloat(rangeMatch[2]);
+
+      return value >= min && value <= max
+        ? 'Normal'
+        : 'Critical';
+    }
+
+
+    const lessMatch = range.match(
+      /<\s*(\d+(?:\.\d+)?)/
+    );
+
+    if (lessMatch) {
+
+      const max = parseFloat(lessMatch[1]);
+
+      return value < max
+        ? 'Normal'
+        : 'Critical';
+    }
+
+    // Example: > 40 mg/dL
+    const greaterMatch = range.match(
+      />\s*(\d+(?:\.\d+)?)/
+    );
+
+    if (greaterMatch) {
+
+      const min = parseFloat(greaterMatch[1]);
+
+      return value > min
+        ? 'Normal'
+        : 'Critical';
+    }
+
+    return 'Pending';
+  }
+
+
+
+  formatDate(date: string): string {
+
+    if (!date) {
+      return '';
+    }
+
+
+    return new Date(date)
+      .toLocaleDateString(
+        'en-GB',
+        {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }
+      );
 
   }
 

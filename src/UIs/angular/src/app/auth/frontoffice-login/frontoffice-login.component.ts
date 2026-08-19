@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { AuthService } from 'src/app/core/Services/auth.service';
 import { AppState } from 'src/app/Store/app.state';
 import { login } from 'src/app/Store/Auth/auth.actions';
+import { selectLoginUser } from 'src/app/Store/Auth/auth.selectors';
 @Component({
   selector: "app-frontoffice-login",
   imports: [FormsModule, RouterLink],
@@ -51,24 +52,23 @@ export class FrontofficeLoginComponent {
       return;
     }
 
-    //  this.store.dispatch(AuthActions.login({
+    // this.store.dispatch(login({ username: this.username, password: this.password, role: 'associate' }))
+    // // Remember username
 
-    //           username: this.loginForm.value.username,
+    // this.store.select(selectLoginUser).subscribe((res: any) => {
+    //   if (res) {
+    //     this.router.navigate(['/front-office/otp-verification']);
+    //   }
+    // })
 
-    //           password: this.loginForm.value.password,
 
-    //           role: this.loginRole
 
-    //         })
-    //       );
 
-    this.store.dispatch(login({ username: this.username, password: this.password, role: 'associate' }))
-    // Remember username
-    if (this.remember) {
-      localStorage.setItem('rememberedUsername', user);
-    } else {
-      localStorage.removeItem('rememberedUsername');
-    }
+    // if (this.remember) {
+    //   localStorage.setItem('rememberedUsername', user);
+    // } else {
+    //   localStorage.removeItem('rememberedUsername');
+    // }
 
 
     // Temporary login

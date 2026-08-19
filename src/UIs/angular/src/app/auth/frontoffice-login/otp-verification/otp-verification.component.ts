@@ -299,9 +299,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
 
-    // ==========================================
-    // DEMO OTP
-    // ==========================================
 
     setTimeout(() => {
 
@@ -323,10 +320,8 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
         this.clearTimer();
 
-        alert("verify otp")
         // After successful verification
         if (this.router.url === "/front-office/sendotp-verification") {
-          alert("/front-office/reset-password")
           this.router.navigate([
             '/front-office/reset-password'
           ]);

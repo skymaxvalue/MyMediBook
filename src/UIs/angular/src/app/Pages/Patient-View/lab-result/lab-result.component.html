@@ -116,185 +116,207 @@
 
         <div class="table-header">
 
-            <div (click)="sortColumn('patient')">
+            <div (click)="sortColumn('patientName')">
                 Patient Name
+
                 <span class="sort-icon">
-                    {{ getArrow('patient') }}
+                    {{ getArrow('patientName') }}
                 </span>
             </div>
 
-            <div (click)="sortColumn('test')">
+
+            <div (click)="sortColumn('testName')">
                 Test Name
+
                 <span class="sort-icon">
-                    {{ getArrow('test') }}
+                    {{ getArrow('testName') }}
                 </span>
             </div>
 
-            <div>Test Code</div>
 
-            <div (click)="sortColumn('date')">
+            <div>
+                Test Code
+            </div>
+
+
+            <div (click)="sortColumn('reportDate')">
                 Date
+
                 <span class="sort-icon">
-                    {{ getArrow('date') }}
+                    {{ getArrow('reportDate') }}
                 </span>
             </div>
 
-            <div>Result</div>
 
-            <div>Reference</div>
+            <div>
+                Result
+            </div>
 
-            <div>Status</div>
 
-            <div>Lab</div>
+            <div>
+                Reference
+            </div>
 
-            <div>Action</div>
+
+            <div>
+                Status
+            </div>
+
+
+            <div>
+                Lab
+            </div>
+
+
+            <div>
+                Action
+            </div>
 
         </div>
 
 
+        @if(paginatedResults().length > 0){
 
-        @for(item of paginatedResults(); track item.id){
+        @for(
+        item of paginatedResults();
+        track item.resultId
+        ) {
 
         <div class="result-card">
 
 
+            <!-- PATIENT -->
 
             <div class="patient">
 
-                <img [src]="item.image">
+                <img src="assets/images/user.png" alt="Patient">
 
-
-
-                <span><b>{{ item.patient }}</b></span>
-
-
+                <span class="patient-name" [title]="item.patientName">
+                    <b>
+                        {{ item.patientName }}
+                    </b>
+                </span>
 
             </div>
 
 
+            <!-- TEST -->
 
             <div class="mobile-field">
 
                 <b>Test</b>
 
-                <span>{{ item.test }}</span>
+                <span>
+                    {{ item.testName }}
+                </span>
 
             </div>
 
+
+            <!-- CODE -->
 
             <div class="mobile-field">
 
                 <b>Code</b>
 
-                <span>{{ item.code }}</span>
+                <span>
+                    {{ item.testCode }}
+                </span>
 
             </div>
 
 
+            <!-- DATE -->
 
             <div class="mobile-field">
 
                 <b>Date</b>
 
                 <span>
-                    {{ item.date | date:'dd-MMM-yyyy' }}
+                    {{ item.reportDate | date:'dd-MMM-yyyy' }}
                 </span>
 
             </div>
 
 
+            <!-- RESULT -->
 
             <div class="mobile-field">
 
                 <b>Result</b>
 
-                <span>{{ item.result }}</span>
+                <span>
+                    {{ item.resultValue }}
+                </span>
 
             </div>
 
 
+            <!-- REFERENCE -->
 
             <div class="mobile-field">
 
                 <b>Reference</b>
 
-                <span>{{ item.range }}</span>
+                <span>
+                    {{ item.referenceRange }}
+                </span>
 
             </div>
 
 
+            <!-- STATUS -->
 
             <div>
 
-                @switch(item.status){
-
-                @case('Normal'){
-
-                <div class="status-normal">
+                <div [ngClass]="getStatusClass(item)">
 
                     <div class="badge-title">
 
-                        Normal
-
-                        <img src="assets/images/status-normal.png">
+                        {{ getStatusText(item) }}
 
                     </div>
 
-                    <small>In Range</small>
+
+                    @if(getResultStatus(item) === 'Normal') {
+
+                    <small>
+                        In Range
+                    </small>
+
+                    }
+
+                    @else if(getResultStatus(item) === 'Critical') {
+
+                    <small>
+                        Out Of Range
+                    </small>
+
+                    }
+
+                    @else {
+
+                    <small>
+                        {{ item.resultStatus }}
+                    </small>
+
+                    }
 
                 </div>
-
-                }
-
-                @case('Critical'){
-
-                <div class="status-critical">
-
-                    <div class="badge-title">
-
-                        Critical
-
-                        <img src="assets/images/status-critical.png">
-
-                    </div>
-
-                    <small>Out Of Range</small>
-
-                </div>
-
-                }
-
-                @default{
-
-                <div class="status-pending">
-
-                    <div class="badge-title">
-
-                        Pending
-
-                        <img src="assets/images/icon-pending.png">
-
-                    </div>
-
-                    <small>Awaiting Report</small>
-
-                </div>
-
-                }
-
-                }
 
             </div>
 
 
+            <!-- LAB -->
 
             <div>
 
-                {{ item.lab }}
+                {{ item.labName || 'N/A' }}
 
             </div>
 
 
+            <!-- ACTION -->
 
             <div>
 
@@ -307,6 +329,14 @@
         </div>
 
         }
+        }
+        @else{
+        <div class="no-data-container">
+            <h3>No Data Available</h3>
+            <p>No lab results found.</p>
+        </div>
+        }
+
 
     </div>
 
@@ -338,52 +368,272 @@
 
 
 
-@if(selectedResult()){
+@if (selectedResult()) {
 
-<div class="custom-modal-backdrop">
+<div class="lab-modal-backdrop">
 
-    <div class="custom-modal">
+    <div class="lab-modal">
 
-        <div class="modal-header">
+        <!-- HEADER -->
+        <div class="lab-modal-header">
 
-            <h3>Lab Report Details</h3>
+            <div class="lab-modal-title">
+                <div class="header-icon">
+                    <img src="/assets/images/treatModal.png" alt="">
+                </div>
 
-            <button (click)="closeModal()">✕</button>
+                <h2>Lab Report Details</h2>
+            </div>
 
-        </div>
-
-        <div class="modal-body">
-
-            <p><strong>Patient:</strong> {{ selectedResult()?.patient }}</p>
-
-            <p><strong>Test:</strong> {{ selectedResult()?.test }}</p>
-
-            <p><strong>Code:</strong> {{ selectedResult()?.code }}</p>
-
-            <p><strong>Lab:</strong> {{ selectedResult()?.lab }}</p>
-
-            <p><strong>Date:</strong>
-
-                {{ selectedResult()?.date | date:'dd-MMM-yyyy' }}
-
-            </p>
-
-            <p><strong>Result:</strong> {{ selectedResult()?.result }}</p>
-
-            <p><strong>Reference:</strong> {{ selectedResult()?.range }}</p>
-
-            <p><strong>Status:</strong> {{ selectedResult()?.status }}</p>
-
-        </div>
-
-        <div class="modal-footer">
-
-            <button class="details-btn">
-                Download PDF
+            <button class="close-btn" type="button" (click)="closeModal()">
+                ✕
             </button>
 
-            <button class="details-btn">
+        </div>
+
+
+        <!-- BODY -->
+        <div class="lab-modal-body">
+
+            <!-- TOP SUMMARY -->
+            <div class="report-summary">
+
+                <div class="report-icon">
+                    <img src="/assets/images/icon-total.png" alt="">
+                </div>
+
+                <div class="report-main">
+                    <div class="divided">
+                        <h1>
+                            {{ selectedResult()?.testName }}
+                        </h1>
+
+                        <div class="report-status" [ngClass]="getStatusClass(selectedResult()!)">
+                            <img src="/assets/images/security-icon.png" alt=""> {{
+                            getStatusText(selectedResult()!) }}
+                        </div>
+                    </div>
+
+                    <span class="test-code">
+                        Test Code: {{ selectedResult()?.testCode }}
+                    </span>
+
+                    <div class="lab-name">
+                        <span><img src="/assets/images/location-icon.png" alt=""> </span>
+                        {{ selectedResult()?.labName || 'N/A' }}
+                    </div>
+
+                </div>
+
+                <!-- STATUS -->
+
+
+            </div>
+
+
+            <!-- DETAILS -->
+            <div class="report-details">
+
+                <!-- LEFT COLUMN -->
+                <div class="details-column">
+
+                    <!-- Patient -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/blueUser.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Patient Name
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.patientName }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Collection Date -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/calendar-icon.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Collection Date
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.reportDate | date:'dd MMM yyyy' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Result -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/icons8-lab-100.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Result
+                            </span>
+
+                            <strong [class.result-normal]="getStatusText(selectedResult()!) === 'Normal'"
+                                [class.result-critical]="getStatusText(selectedResult()!) === 'Critical'">
+
+                                {{ selectedResult()?.resultValue || 'N/A' }}
+
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Reference Range -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            ⓘ
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Reference Range
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.referenceRange || 'N/A' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT COLUMN -->
+                <div class="details-column">
+
+                    <!-- Test Name -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/icon-total.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Test Name
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.testName }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Lab Name -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/icons8-building-100.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Lab Name
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.labName || 'N/A' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/icons8-time-100.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Status
+                            </span>
+
+                            <strong [class.status-text-normal]="getStatusText(selectedResult()!) === 'Normal'"
+                                [class.status-text-critical]="getStatusText(selectedResult()!) === 'Critical'"
+                                [class.status-text-pending]="getStatusText(selectedResult()!) === 'Pending'">
+
+                                {{ getStatusText(selectedResult()!) }}
+
+                                <span class="small-check" *ngIf="getStatusText(selectedResult()!) === 'Normal'">
+                                    <img src="/assets/images/security-icon.png" alt="">
+                                </span>
+
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Doctor Notes -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/docMod.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Doctor Notes
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.notes || 'No additional remarks.' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="lab-modal-footer">
+
+            <button class="download-btn" type="button">
+
+                <img src="/assets/images/icons8-installing-updates-100.png" alt="">
+                Download PDF
+
+            </button>
+
+            <button class="print-btn" type="button">
+
+                <img src="/assets/images/print.png" alt="">
                 Print
+
             </button>
 
         </div>

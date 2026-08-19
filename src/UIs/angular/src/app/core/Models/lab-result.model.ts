@@ -1,14 +1,24 @@
 export type LabStatus = 'Normal' | 'Critical' | 'Pending';
 
-export interface LabResult {
-    id: number;
-    patient: string;
-    test: string;
-    code: string;
-    date: string;
-    result: string;
-    range: string;
-    status: LabStatus;
-    lab: string;
-    image: string;
+export interface LabResultModel {
+    resultId: number;
+    profileId: number;
+    patientId: number;
+    patientName: string;
+
+    testName: string;
+    testCode: string;
+
+    labName: string | null;
+
+    reportDate: string;
+    resultValue: string;
+    referenceRange: string;
+
+    resultStatus: string;
+    notes: string | null;
+
+    isSuccess: number;
+    status: number;
+    responseMessage: string
 }

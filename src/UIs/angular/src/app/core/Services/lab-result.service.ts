@@ -1,30 +1,25 @@
 import { Injectable, signal } from "@angular/core";
-import { LabResult } from "../Models/lab-result.model";
-import { LAB_RESULTS } from "../../Pages/Patient-View/lab-result/lab-result.component";
+import { LabResultModel } from "../Models/lab-result.model";
+import { environment } from "src/environments/environment";
+import { LabResult } from "src/app/Utility/EndPointsOfAPI";
+import { HttpClient } from "@angular/common/http";
+
 
 @Injectable({
     providedIn: "root",
 })
 export class LabResultService {
-    private readonly resultsSignal = signal<LabResult[]>(LAB_RESULTS);
+    // private readonly resultsSignal = signal<LabResultModel[]>(LAB_RESULTS);
 
-    getResults() {
-        return this.resultsSignal;
+    constructor(private http: HttpClient) {
+
     }
+    // Dummy
 
-    add(result: LabResult) {
-        this.resultsSignal.update(list => [...list, result]);
-    }
 
-    update(result: LabResult) {
-        this.resultsSignal.update(list =>
-            list.map(x => x.id === result.id ? result : x)
-        );
-    }
-
-    delete(id: number) {
-        this.resultsSignal.update(list =>
-            list.filter(x => x.id !== id)
+    GetMyLabResultsByPatientId(patientId: number) {
+        return this.http.get(
+            `${environment.OpenIdConnect.apiUrl}${LabResult.GET_LAB_RESULT_BY_PATIENT_ID}${patientId}`
         );
     }
 }

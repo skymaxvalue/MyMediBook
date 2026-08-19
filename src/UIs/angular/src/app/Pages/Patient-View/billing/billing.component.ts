@@ -7,6 +7,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AppState } from 'src/app/Store/app.state';
+import { Store } from '@ngrx/store';
+import { getMyAllBills } from 'src/app/Store/Billing/billing.actions';
 
 declare var bootstrap: any;
 declare var html2pdf: any;
@@ -34,7 +37,18 @@ interface Bill {
 export class BillingComponent {
   @ViewChild('detailsModal')
   detailsModal!: ElementRef;
+  loginUser = JSON.parse(
+    localStorage.getItem("user") || "null"
+  );
+  constructor(private store: Store<AppState>) {
+    if (this.loginUser?.refId) {
 
+      this.store.dispatch(getMyAllBills({ patientId: this.loginUser?.refId }))
+    } else {
+      console.error("Patient ID not found in localStorage");
+    }
+
+  }
   @ViewChild('printArea')
   printArea!: ElementRef;
 
@@ -162,6 +176,9 @@ export class BillingComponent {
     return data;
 
   });
+  closeModal() {
+    this.selectedBill.set(null)
+  }
 
 
   paginatedBills = computed(() => {

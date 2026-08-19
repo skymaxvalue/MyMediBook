@@ -8,7 +8,10 @@ import { filter } from "rxjs";
 
 @Component({
   selector: "app-front-office-layout",
-  imports: [RouterOutlet, RouterLink, FrontOfficeSidebarComponent, FrontOfficeFooterComponent, FrontOfficeHeaderComponent],
+  imports: [RouterOutlet, RouterLink,
+    //  FrontOfficeSidebarComponent
+    // ,
+    FrontOfficeFooterComponent, FrontOfficeHeaderComponent],
   templateUrl: "./front-office-layout.component.html",
   styleUrl: "./front-office-layout.component.css",
 })

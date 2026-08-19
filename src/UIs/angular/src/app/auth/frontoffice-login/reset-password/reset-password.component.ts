@@ -26,7 +26,7 @@ export class ResetPasswordComponent {
     private fb: FormBuilder,
     private router: Router
   ) {
-    alert("this is reset page")
+
     this.resetPasswordForm = this.fb.group({
       newPassword: [
         '',

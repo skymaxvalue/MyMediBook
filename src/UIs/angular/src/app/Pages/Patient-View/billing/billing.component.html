@@ -42,189 +42,190 @@
         </div>
 
         <!-- Table Header -->
-          <div class="billing-table-wrapper">
+        <div class="billing-table-wrapper">
 
-        <div class="billing-table">
+            <div class="billing-table">
 
-        <div class="table-header">
+                <div class="table-header">
 
-            <div (click)="sortTable('patient')">
-                Patient Name
-                <span class="sort-icon">
-                    {{ getSortIcon('patient') }}
-                </span>
-            </div>
+                    <div (click)="sortTable('patient')">
+                        Patient Name
+                        <span class="sort-icon">
+                            {{ getSortIcon('patient') }}
+                        </span>
+                    </div>
 
-            <div (click)="sortTable('visitDate')">
-                Visit Date
-                <span class="sort-icon">
-                    {{ getSortIcon('visitDate') }}
-                </span>
-            </div>
+                    <div (click)="sortTable('visitDate')">
+                        Visit Date
+                        <span class="sort-icon">
+                            {{ getSortIcon('visitDate') }}
+                        </span>
+                    </div>
 
-            <div>Doctor Name</div>
+                    <div>Doctor Name</div>
 
-            <div>Clinic Address</div>
+                    <div>Clinic Address</div>
 
-            <div>Total Charge</div>
+                    <div>Total Charge</div>
 
-            <div>Insurance Covered</div>
+                    <div>Insurance Covered</div>
 
-            <div>Adjustments / Write-Offs</div>
+                    <div>Adjustments / Write-Offs</div>
 
-            <div>Patient Responsibility</div>
+                    <div>Patient Responsibility</div>
 
-            <div>Payment Date</div>
+                    <div>Payment Date</div>
 
-            <div>Remaining Balance</div>
+                    <div>Remaining Balance</div>
 
-            <div>Action</div>
+                    <div>Action</div>
 
-        </div>
+                </div>
 
-        <!-- Bills -->
+                <!-- Bills -->
 
-        <div id="billingContainer">
+                <div id="billingContainer">
 
-            @if(paginatedBills().length > 0){
+                    @if(paginatedBills().length > 0){
 
-            @for(bill of paginatedBills(); track bill.id){
+                    @for(bill of paginatedBills(); track bill.id){
 
-            <div class="bill-card">
+                    <div class="bill-card">
 
-                <!-- Patient -->
+                        <!-- Patient -->
 
-                <div class="patient">
+                        <div class="patient">
 
-                    <img [src]="bill.image" alt="Patient">
+                            <img [src]="bill.image" alt="Patient">
 
-                    <div>
+                            <div>
 
-                        <strong>{{ bill.patient }}</strong>
+                                <strong>{{ bill.patient }}</strong>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Visit Date -->
+
+                        <div>
+
+                            {{ formatDate(bill.visitDate) }}
+
+                        </div>
+
+                        <!-- Doctor -->
+
+                        <div>
+
+                            {{ bill.doctor }}
+
+                        </div>
+
+                        <!-- Clinic -->
+
+                        <div class="pharmacy-info">
+
+                            <a href="javascript:void(0)" (click)="openMap(bill.clinicAddress)">
+
+                                <img src="/assets/images/location-icon.png" class="location-icon">
+
+                            </a>
+
+                            <span>
+
+                                {{ bill.clinicAddress }}
+
+                            </span>
+
+                        </div>
+
+                        <!-- Total -->
+
+                        <div>
+
+                            ₹{{ bill.totalCharge }}
+
+                        </div>
+
+                        <!-- Insurance -->
+
+                        <div>
+
+                            ₹{{ bill.insuranceCovered }}
+
+                        </div>
+
+                        <!-- Adjustments -->
+
+                        <div>
+
+                            ₹{{ bill.adjustments }}
+
+                        </div>
+
+                        <!-- Responsibility -->
+
+                        <div>
+
+                            ₹{{ bill.patientResponsibility }}
+
+                        </div>
+
+                        <!-- Payment -->
+
+                        <div>
+
+                            {{ formatDate(bill.paymentDate) }}
+
+                        </div>
+
+                        <!-- Balance -->
+
+                        <div [class.balance-paid]="bill.remainingBalance===0"
+                            [class.balance-due]="bill.remainingBalance>0">
+
+                            ₹{{ bill.remainingBalance }}
+
+                        </div>
+
+                        <!-- Button -->
+
+                        <div>
+
+                            <button class="details-btn" (click)="showDetails(bill)">
+
+                                View Details
+
+                            </button>
+
+                        </div>
 
                     </div>
 
-                </div>
+                    }
 
-                <!-- Visit Date -->
+                    }
 
-                <div>
+                    @else{
 
-                    {{ formatDate(bill.visitDate) }}
+                    <div class="empty-state">
 
-                </div>
+                        <h3>No Billing Records Found</h3>
 
-                <!-- Doctor -->
+                        <p>
 
-                <div>
+                            No billing records match your search.
 
-                    {{ bill.doctor }}
+                        </p>
 
-                </div>
+                    </div>
 
-                <!-- Clinic -->
-
-                <div class="pharmacy-info">
-
-                    <a href="javascript:void(0)" (click)="openMap(bill.clinicAddress)">
-
-                        <img src="/assets/images/location-icon.png" class="location-icon">
-
-                    </a>
-
-                    <span>
-
-                        {{ bill.clinicAddress }}
-
-                    </span>
+                    }
 
                 </div>
-
-                <!-- Total -->
-
-                <div>
-
-                    ₹{{ bill.totalCharge }}
-
-                </div>
-
-                <!-- Insurance -->
-
-                <div>
-
-                    ₹{{ bill.insuranceCovered }}
-
-                </div>
-
-                <!-- Adjustments -->
-
-                <div>
-
-                    ₹{{ bill.adjustments }}
-
-                </div>
-
-                <!-- Responsibility -->
-
-                <div>
-
-                    ₹{{ bill.patientResponsibility }}
-
-                </div>
-
-                <!-- Payment -->
-
-                <div>
-
-                    {{ formatDate(bill.paymentDate) }}
-
-                </div>
-
-                <!-- Balance -->
-
-                <div [class.balance-paid]="bill.remainingBalance===0" [class.balance-due]="bill.remainingBalance>0">
-
-                    ₹{{ bill.remainingBalance }}
-
-                </div>
-
-                <!-- Button -->
-
-                <div>
-
-                    <button class="details-btn" (click)="showDetails(bill)">
-
-                        View Details
-
-                    </button>
-
-                </div>
-
             </div>
-
-            }
-
-            }
-
-            @else{
-
-            <div class="empty-state">
-
-                <h3>No Billing Records Found</h3>
-
-                <p>
-
-                    No billing records match your search.
-
-                </p>
-
-            </div>
-
-            }
-
         </div>
-        </div>
-          </div>
 
     </div>
 
@@ -254,154 +255,258 @@
 
 </div>
 
-<!-- Modal -->
+@if (selectedBill(); as bill) {
 
-<div #detailsModal class="modal fade">
+<div class="billing-modal-backdrop">
 
-    <div class="modal-dialog modal-lg">
+    <div class="billing-modal">
 
-        <div class="modal-content">
+        <!-- HEADER -->
+        <div class="billing-modal-header">
 
-            <div class="modal-header">
+            <div class="billing-title">
 
-                <h5 class="modal-title">
+                <div class="billing-title-icon">
+                    <img src="/assets/images/treatModal.png" alt="">
+                </div>
 
-                    Billing Summary
-
-                </h5>
-
-                <button class="btn-close" data-bs-dismiss="modal">✕</button>
+                <h2>Billing Summary</h2>
 
             </div>
-            <!-- <div class="modal-header">
 
-                <h5 class="modal-title">
+            <button type="button" class="close-btn" (click)="closeModal()">
+                ×
+            </button>
 
-                    Billing Summary
+        </div>
 
-                </h5>
 
-                <button class="btn-close" data-bs-dismiss="modal">
-                </button>
+        <!-- BODY -->
+        <div class="billing-modal-body" #printArea>
 
-            </div> -->
+            <!-- BILLING INVOICE -->
+            <section class="invoice-section">
 
-            <div class="modal-body" #printArea>
+                <h3>Billing Invoice</h3>
 
-                @if(selectedBill(); as bill){
+                <div class="invoice-info">
 
-                <div class="billing-sheet">
+                    <!-- PATIENT -->
+                    <div class="invoice-item">
 
-                    <h3>Billing Invoice</h3>
+                        <div class="info-icon">
+                            <img src="/assets/images/blueUser.png" alt="">
+                        </div>
 
-                    <hr>
+                        <div>
+                            <span>Patient</span>
+                            <strong [title]="bill.patient">{{ bill.patient }}</strong>
+                        </div>
 
-                    <p>
+                    </div>
 
-                        <strong>Patient :</strong>
 
-                        {{ bill.patient }}
+                    <!-- DOCTOR -->
+                    <div class="invoice-item">
 
-                    </p>
+                        <div class="info-icon">
+                            <img src="/assets/images/docMod.png" alt="">
+                        </div>
 
-                    <p>
+                        <div>
+                            <span>Doctor</span>
+                            <strong [title]="bill.doctor">{{ bill.doctor }}</strong>
+                        </div>
 
-                        <strong>Doctor :</strong>
+                    </div>
 
-                        {{ bill.doctor }}
 
-                    </p>
+                    <!-- VISIT DATE -->
+                    <div class="invoice-item">
 
-                    <p>
+                        <div class="info-icon">
+                            <img src="/assets/images/calendar-icon.png" alt="">
+                        </div>
 
-                        <strong>Visit Date :</strong>
+                        <div>
+                            <span>Visit Date</span>
+                            <strong>{{ formatDate(bill.visitDate) }}</strong>
+                        </div>
 
-                        {{ formatDate(bill.visitDate) }}
+                    </div>
 
-                    </p>
 
-                    <p>
+                    <!-- CLINIC -->
+                    <div class="invoice-item">
 
-                        <strong>Clinic :</strong>
+                        <div class="info-icon">
+                            <img src="/assets/images/location-icon.png" alt="">
+                        </div>
 
-                        {{ bill.clinicAddress }}
+                        <div>
+                            <span>Clinic</span>
+                            <strong [title]="bill.clinicAddress">{{ bill.clinicAddress }}</strong>
+                        </div>
 
-                    </p>
-
-                    <hr>
-
-                    <p>
-
-                        <strong>Total Charge :</strong>
-
-                        ₹{{ bill.totalCharge }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Insurance Covered :</strong>
-
-                        ₹{{ bill.insuranceCovered }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Adjustments :</strong>
-
-                        ₹{{ bill.adjustments }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Patient Responsibility :</strong>
-
-                        ₹{{ bill.patientResponsibility }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Payment Date :</strong>
-
-                        {{ formatDate(bill.paymentDate) }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Remaining Balance :</strong>
-
-                        ₹{{ bill.remainingBalance }}
-
-                    </p>
+                    </div>
 
                 </div>
 
-                }
+            </section>
 
-            </div>
 
-            <div class="modal-footer">
+            <!-- BILLING BREAKDOWN -->
+            <section class="breakdown-section">
 
-                <button class="btn btn-outline-primary" (click)="downloadPDF()">
+                <h3>Billing Breakdown</h3>
 
-                    Download PDF
 
-                </button>
+                <!-- TOTAL CHARGE -->
+                <div class="billing-row">
 
-                <button class="btn btn-primary" (click)="printBill()">
+                    <div class="billing-label">
 
-                    Print Bill
+                        <div class="row-icon blue">
+                            <img src="/assets/images/icon-reports.png" alt="">
+                        </div>
 
-                </button>
+                        <span>Total Charge</span>
 
-            </div>
+                    </div>
+
+                    <strong>
+                        ₹{{ bill.totalCharge }}
+                    </strong>
+
+                </div>
+
+
+                <!-- INSURANCE -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon green">
+                            ✓
+                        </div>
+
+                        <span>Insurance Covered</span>
+
+                    </div>
+
+                    <strong class="green-text">
+                        -₹{{ bill.insuranceCovered }}
+                    </strong>
+
+                </div>
+
+
+                <!-- ADJUSTMENTS -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon orange">
+                            <img src="../../../../assets/images/icon-pending.png" alt="">
+                        </div>
+
+                        <span>Adjustments</span>
+
+                    </div>
+
+                    <strong class="orange-text">
+                        -₹{{ bill.adjustments }}
+                    </strong>
+
+                </div>
+
+
+                <!-- PATIENT RESPONSIBILITY -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon blue">
+                            <img src="../../../../assets/images/blueUser.png" alt="">
+                        </div>
+
+                        <span>Patient Responsibility</span>
+
+                    </div>
+
+                    <strong>
+                        ₹{{ bill.patientResponsibility }}
+                    </strong>
+
+                </div>
+
+
+                <!-- REMAINING BALANCE -->
+                <div class="billing-row balance-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon blue">
+                            <img src="../../../../assets/images/icons8-wallet-100.png" alt="">
+                        </div>
+
+                        <strong>Remaining Balance</strong>
+
+                    </div>
+
+                    <strong class="balance-text">
+                        ₹{{ bill.remainingBalance }}
+                    </strong>
+
+                </div>
+
+
+                <!-- PAYMENT DATE -->
+                <div class="billing-row payment-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon purple">
+                            <img src="../../../../assets/images/calendar2.png" alt="">
+                        </div>
+
+                        <span>Payment Date</span>
+
+                    </div>
+
+                    <strong>
+                        {{ formatDate(bill.paymentDate) }}
+                    </strong>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="billing-modal-footer">
+
+            <button type="button" class="download-btn" (click)="downloadPDF()">
+
+                <img src="../../../../assets/images/icons8-installing-updates-100.png" alt="">
+                Download PDF
+
+            </button>
+
+
+            <button type="button" class="print-btn" (click)="printBill()">
+
+                <img src="../../../../assets/images/print.png" alt="">
+                Print
+
+            </button>
 
         </div>
 
     </div>
 
 </div>
+
+}

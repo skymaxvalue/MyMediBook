@@ -43,15 +43,42 @@ export interface Country {
 }
 
 export interface MedicineOrder {
-    id: number;
-    patient: string;
-    medicine: string;
-    strength: string;
+    orderId: number;
+    patientId: number;
+    profileId: number;
+    associateId: number;
+
+    patientName: string;
+    dateOfBirth: string;
+    gender: string;
+
+    doctorName: string;
+
+    pharmacyId: number;
+    pharmacyName: string;
+    pharmacistName: string;
+    pharmacyMobile: string;
+    pharmacyAddress: string;
+
+    drugName: string;
+    dosage: string;
+    frequency: string;
+    durationDays: number;
     instructions: string;
-    date: string;
-    doctor: string;
-    status: string;
-    address: string;
-    image: string;
-    refill: boolean;
+
+    expiryDate: string;
+    orderStatus: string;
+
+    cancelReason: string | null;
+    cancelledDate: string;
+    createdDate: string;
+    updatedDate: string;
+
+    isSuccess: number;
+    status: number;
+    responseMessage: string;
+
+    // UI fields
+    refill?: boolean;
+    image?: string;
 }

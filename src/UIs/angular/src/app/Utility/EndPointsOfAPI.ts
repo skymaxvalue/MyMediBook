@@ -12,6 +12,7 @@ export const APIEndpoints = {
 export const MedicineOrderEndPoints = {
     GET_MEDICINE_OF_PATIENT: "RxOrder/GetRxOrderByPatientProfileId"
 }
+
 export const AppointmentApiEndPoint = {
     CANCEL_MY_APPOINTMENT: "Appointment/CancelAppointmentById",
     RESCHEULE_MY_APPOINTMENT: "Appointment/UpdateAppointmentSchedule",
@@ -33,6 +34,17 @@ export const AssociateApiEndPoint = {
     UPDATE_ASSOCIATE_BY_ITS_ID: "Associate/UpdateAssociateDetail",
     DELETE_ASSOCIATE_BY_ITS_ID: "Associate/DeleteAssociate"
 }
+export const LabResult = {
+    CREATE_LAB_REPORT: "Lab/CreateLabResult",
+    GET_LAB_RESULT_BY_DETAILS_ID: "Lab/GetLabResultDetailById/",
+    GET_LAB_RESULT_BY_PATIENT_ID: "Lab/GetLabResultsByPatientId/",
+    GET_LCB_RESULT_BY_PROFILE_ID: "Lab/GetLabResultsByProfileId/"
+}
+export const BillingAPiEndPoints = {
+    GET_ALL_BILSS_BY_BILL_ID: "Billing/GetBillsById{id}",
+    GET_ALL_BILL_BY_PATIENT_ID: "Billing/GetBillsByPatientId/"
+
+}
 
 
 export const LocationAPIEndPoint = {
@@ -46,6 +58,11 @@ export const MasterAPIEndPoints = {
     GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
     GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
     GET_AGE_TYPE: "Master/GetAgeTypeList",
+
+}
+export const MessageEndPoints = {
+    GET_MESSAGE_BY_ITS_ID: "Message/MessageListById/",
+    UPDATE_MESSAGE_BY_ID: "Message/UpdateMessageToRead"
 
 }
 export const AuthEndPoints = {

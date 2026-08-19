@@ -90,7 +90,7 @@ export class PatientEffects {
             mergeMap((action) =>
                 this.patientService.getAllMediceneByPatientId(action.patientId).pipe(
                     map((response: any) =>
-                        PatientAction.getAllMecineDetailByPatientIDSuccess({ patientMedicalData: response })
+                        PatientAction.getAllMecineDetailByPatientIDSuccess({ patientMedicalData: response.data })
                     ),
                     catchError((error) =>
                         of(PatientAction.getAllMecineDetailByPatientIDFailure({ error: error.message || 'Login Failed' }))

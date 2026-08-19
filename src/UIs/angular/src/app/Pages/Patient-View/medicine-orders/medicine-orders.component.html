@@ -87,24 +87,27 @@
 
             </div>
             <div id="ordersContainer">
+                @if(pagedOrders.length>0){
 
 
-                <div class="order-card" *ngFor="let order of pagedOrders">
+                @for( order of pagedOrders; track order.orderId){
+
+                <div class="order-card">
 
                     <div class="patient">
 
                         <img [src]="order.image">
 
-                        <div>
-                            <h5 class="patientName">{{ order.patient }}</h5>
+                        <div class="patient-name-wrapper">
+                            <h5 class="patientName" [title]="order.patientName">{{ order.patientName }}</h5>
                         </div>
 
                     </div>
 
                     <div>
-                        <b>{{ order.medicine }}</b>
+                        <b>{{ order.drugName }}</b>
                         <br>
-                        {{ order.strength }}
+                        {{ order.dosage }}
                     </div>
 
                     <div>
@@ -113,10 +116,10 @@
 
                     <div>
 
-                        <b>{{ formatDate(order.date) }}</b>
+                        <b>{{ formatDate(order.createdDate) }}</b>
                         <br>
 
-                        {{ order.doctor }}
+                        {{ order.doctorName }}
 
                     </div>
 
@@ -144,14 +147,14 @@
 
                     <div class="pharmacy-info">
 
-                        <a (click)="openMap(order.address)">
+                        <a (click)="openMap(order.pharmacyAddress)">
 
                             <img src="assets/images/location-icon.png" class="location-icon">
 
                         </a>
 
                         <span>
-                            {{ order.address }}
+                            {{ order.pharmacyAddress }}
                         </span>
 
                     </div>
@@ -159,11 +162,11 @@
                     <div>
 
                         <span [ngClass]="{
-              'status-ready': order.status === 'Ready',
-              'status-transit': order.status === 'In Transit'
+              'status-ready': order.orderStatus === 'Ready',
+              'status-transit': order.orderStatus === 'In Transit'
             }">
 
-                            {{ order.status }}
+                            {{ order.orderStatus }}
 
                         </span>
 
@@ -180,6 +183,13 @@
                     </div>
 
                 </div>
+                } }
+                @else{
+                <div class="no-data-container">
+                    <h3>No Data Available</h3>
+                    <p>No prescription results found.</p>
+                </div>
+                }
 
             </div>
         </div>
@@ -210,19 +220,19 @@
 
 
 
-@if (isShowDetailMedicin) {
+<!-- @if (isShowDetailMedicin) {
 <div class="modal fade show d-block custom-modal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
 
-            <!-- Header -->
+          
             <div class="modal-header">
                 <h4 class="modal-title">Prescription &amp; Order Summary</h4>
 
                 <button type="button" class="btn-close" (click)="closeMedicineDetails()"></button>
             </div>
 
-            <!-- Body -->
+            
             <div class="modal-body" id="printArea">
 
                 <h2 class="prescription-title">
@@ -235,17 +245,17 @@
 
                     <div class="detail-row">
                         <span class="label">Patient Name:</span>
-                        <span class="value">{{selectedOrder.patient}}</span>
+                        <span class="value">{{selectedOrder.patientName}}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">Medicine:</span>
-                        <span class="value">{{selectedOrder.medicine}}</span>
+                        <span class="value">{{selectedOrder.drugName}}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">Strength:</span>
-                        <span class="value">{{selectedOrder.strength}}</span>
+                        <span class="value">{{selectedOrder.dosage}}</span>
                     </div>
 
                     <div class="detail-row">
@@ -257,29 +267,29 @@
 
                     <div class="detail-row">
                         <span class="label">Doctor:</span>
-                        <span class="value">{{selectedOrder.doctor}}</span>
+                        <span class="value">{{selectedOrder.doctorName}}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">Order Date:</span>
-                        <span class="value">{{selectedOrder.date | date:'d-MMM-yyyy' }}</span>
+                        <span class="value">{{selectedOrder.createdDate | date:'d-MMM-yyyy' }}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">Pharmacy:</span>
-                        <span class="value">{{selectedOrder.address}}</span>
+                        <span class="value">{{selectedOrder.pharmacyAddress}}</span>
                     </div>
 
                     <div class="detail-row">
                         <span class="label">Status:</span>
-                        <span class="value ready">{{selectedOrder.status}}</span>
+                        <span class="value ready">{{selectedOrder.orderStatus}}</span>
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- Footer -->
+           
             <div class="modal-footer">
 
                 <button class="btn details-btn" (click)="downloadPDF()">
@@ -293,6 +303,147 @@
             </div>
 
         </div>
+    </div>
+</div>
+} -->
+
+
+@if (isShowDetailMedicin) {
+<div class="medicine-modal">
+    <div class="medicine-modal-content">
+
+        <!-- Header -->
+        <div class="medicine-modal-header">
+            <div class="modal-heading">
+                <div class="document-icon"> <img src="/assets/images/icon-reports.png" alt=""></div>
+
+                <div>
+                    <h2>Prescription &amp; Order Summary</h2>
+                    <p>
+                        Order #ORD-{{ currentYear }}-00{{ selectedOrder.orderId }}
+
+                    </p>
+                </div>
+            </div>
+
+            <button class="close-btn" (click)="closeMedicineDetails()">
+                ×
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="medicine-modal-body" id="printArea">
+
+            <!-- Medicine -->
+            <div class="medicine-card">
+
+                <div class="medicine-icon">
+                    <img src="/assets/images/fillMedi.png" alt="">
+                </div>
+
+                <div class="medicine-info">
+                    <div class="divided">
+                        <h3>{{ selectedOrder.drugName }}</h3>
+                        <div class="order-status">
+                            <img src="/assets/images/transit-icon.png" alt=""> {{ selectedOrder.orderStatus }}
+                        </div>
+
+                    </div>
+                    <span>{{ selectedOrder.dosage }}</span>
+
+                    <p>
+                        <img src="/assets/images/medicine-icon.png" alt="">
+                        {{ selectedOrder.instructions }}
+                    </p>
+                </div>
+
+
+
+            </div>
+
+            <!-- Information -->
+            <div class="info-card">
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="/assets/images/blueUser.png" alt=""></div>
+                    <div>
+                        <label>Patient</label>
+                        <strong>{{ selectedOrder.patientName }}</strong>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="/assets/images/docMod.png" alt=""></div>
+                    <div>
+                        <label>Prescribed By</label>
+                        <strong>{{ selectedOrder.doctorName }}</strong>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="
+                        /assets/images/calendar-icon.png" alt=""></div>
+                    <div>
+                        <label>Order Date</label>
+                        <strong>
+                            {{ selectedOrder.createdDate | date:'dd MMM yyyy' }}
+                        </strong>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="
+                        /assets/images/location-icon.png" alt=""></div>
+                    <div>
+                        <label>Pharmacy</label>
+                        <strong>{{ selectedOrder.pharmacyAddress }}</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Instructions -->
+            <div class="instruction-card">
+
+                <div class="instruction-item">
+                    <div class="info-icon"> <img src="/assets/images/icon-reports.png" alt=""></div>
+
+                    <div>
+                        <label>Dosage Instructions</label>
+                        <strong>{{ selectedOrder.instructions }}</strong>
+                    </div>
+                </div>
+
+                <div class="instruction-item status-row">
+                    <div class="info-icon"> <img src="../../../../assets/images/security-icon.png" alt=""></div>
+
+                    <label>Status</label>
+
+                    <div class="order-status">
+                        <img src="/assets/images/transit-icon.png" alt=""> {{ selectedOrder.orderStatus }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="medicine-modal-footer">
+
+            <button class="download-btn" (click)="downloadPDF()">
+                <img src="../../../../assets/images/icons8-installing-updates-100.png" alt=""> Download PDF
+            </button>
+
+            <button class="print-btn" (click)="printDetails()">
+                <img src="../../../../assets/images/print.png" alt=""> Print
+            </button>
+
+        </div>
+
     </div>
 </div>
 }
