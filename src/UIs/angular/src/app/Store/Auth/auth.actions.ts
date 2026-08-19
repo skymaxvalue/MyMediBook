@@ -132,22 +132,20 @@ export const refreshTokenFailure = createAction(
 );
 
 
-// Associate login
 
-// Login Actions
-// export const associateLogin = createAction(
-//     '[Auth] Associate Login',
-//     props<{ username: string; password: string, role: string }>()
-// );
+export const verifyOTP = createAction(
+    '[Auth] verifyOTP',
+    props<{ email: string; otpCode: string }>()
+);
 
-// export const associateLoginSuccess = createAction(
-//     '[Auth] Associate Login Success',
-//     props<{ associate: any }>()
-// );
+export const verifyOTPSuccess = createAction(
+    '[Auth] verifyOTP Success',
+    props<{ otpres: any }>()
+);
 
-// export const associateLoginFailure = createAction(
-//     '[Auth] Associate Login Failure',
-//     props<{ error: string }>()
-// );
+export const verifyOTPFailure = createAction(
+    '[Auth] verifyOTP Failure',
+    props<{ error: string }>()
+);
 
 

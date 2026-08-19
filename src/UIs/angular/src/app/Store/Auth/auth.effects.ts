@@ -180,6 +180,24 @@ export class AuthEffects {
         )
     )
 
+    verifyOTPRequest$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.verifyOTP),
+            mergeMap((action) =>
+                this.authService.verifyOTP(action.email, action.otpCode).pipe(
+                    map((response: any) =>
+                        AuthActions.verifyOTPSuccess({ otpres: response })
+                    ),
+                    catchError((error) =>
+                        of(AuthActions.verifyOTPFailure({ error: error.message || 'Otp verification Failed' }))
+                    )
+                )
+            )
+
+        )
+
+    )
+
 
 
 

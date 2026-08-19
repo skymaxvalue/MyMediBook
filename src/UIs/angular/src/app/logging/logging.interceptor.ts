@@ -63,7 +63,7 @@ export class LoggingInterceptor implements HttpInterceptor {
 
       // Error Response
       catchError((error: HttpErrorResponse) => {
-
+        console.log(error)
         let message = 'Something went wrong.';
 
         switch (error.status) {

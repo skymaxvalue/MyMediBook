@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
-import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
+import { selectRequestedOTP, selectVerifyOTP } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
 import * as AuthActions from "../../../Store/Auth/auth.actions";
@@ -29,8 +29,8 @@ export class ForgetPasswordComponent {
 
   @ViewChildren('otpInput')
   otpInputs!: QueryList<ElementRef>;
-  timer = '00:59';
-  seconds = 59;
+  timer = '05:00';
+  seconds = 300;
   interval: any;
   newPassword: string = '';
   confirmPassword: string = '';
@@ -73,7 +73,8 @@ export class ForgetPasswordComponent {
   startTimer() {
     clearInterval(this.interval);
 
-    this.seconds = 59;
+    this.seconds = 300;
+    this.timer = '05:00';
 
     this.interval = setInterval(() => {
 
@@ -111,12 +112,29 @@ export class ForgetPasswordComponent {
 
   }
 
-  verifyOtp() {
+  async verifyOtp() {
+    const otp = this.otpInputs
+      .map(input => input.nativeElement.value)
+      .join('');
+
+    console.log('OTP:', otp);
+
+    if (otp.length !== this.otpArray.length) {
+      console.log('Please enter complete OTP');
+      return;
+    }
     // Implement OTP verification logic here
-    alert("OTP verified successfully!");
-    this.isOtpSent = false;
-    this.isOtpVerified = true;
-    console.log("OTP verified successfully.");
+    await this.store.dispatch(AuthActions.verifyOTP({ email: this.emailOrMobile, otpCode: String(otp) }))
+
+    await this.store.select(selectVerifyOTP).subscribe((res: any) => {
+      if (res) {
+        alert("OTP verified successfully!");
+        this.isOtpSent = false;
+        this.isOtpVerified = true;
+        console.log("OTP verified successfully.");
+      }
+    })
+
   }
 
   resetPassword(): void {

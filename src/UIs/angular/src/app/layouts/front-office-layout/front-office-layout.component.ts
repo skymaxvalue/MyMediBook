@@ -67,11 +67,11 @@ export class FrontOfficeLayoutComponent implements OnInit {
 
     }
 
-    else if (url.includes('patient-check-in')) {
+    else if (url.includes('patient-checkin')) {
 
       this.breadcrumbs.push({
-        label: 'Patient Check-In',
-        url: '/front-office/patient-check-in'
+        label: 'patient-checkin',
+        url: '/front-office/patient-checkin'
       });
 
     }

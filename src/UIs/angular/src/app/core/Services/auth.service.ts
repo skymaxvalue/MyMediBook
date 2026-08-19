@@ -38,6 +38,14 @@ export class AuthService {
       email
     );
   }
+  verifyOTP(email: any, otpCode: string) {
+    return this.http.post<any>(
+      `${this.apiUrl}${AuthEndPoints.VERIFY_OTP}`,
+      {
+        email, otpCode
+      }
+    );
+  }
 
   // Self Registration API
   registerPatient(

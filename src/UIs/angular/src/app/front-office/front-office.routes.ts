@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { loginGuard } from '../core/guards/login.guard';
 import { FrontOfficeLayoutComponent } from '../layouts/front-office-layout/front-office-layout.component';
 import { authGuard } from '../core/guards/auth.guard';
+import { PatientCheckInComponent } from '../Pages/Front-Office-View/patient-check-in/patient-check-in.component';
 
 export const FRONT_OFFICE_ROUTES: Routes = [
 
@@ -77,6 +78,16 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                 loadComponent: () =>
                     import('../Pages/Patient-View/book-appoiment-form/book-appoiment-form.component')
                         .then(m => m.BookAppoimentFormComponent)
+            },
+            {
+                path: 'patient-checkin',
+                component: PatientCheckInComponent
+            },
+            {
+                path: 'next-in-queue',
+                loadComponent: () =>
+                    import('../Pages/Front-Office-View/next-in-queue/next-in-queue.component')
+                        .then(m => m.NextInQueueComponent)
             }
 
         ]
