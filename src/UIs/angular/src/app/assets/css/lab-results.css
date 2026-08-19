@@ -193,22 +193,22 @@ grid-template-columns:
 
 .patient {
   display: flex;
-  align-items: center;
-  gap: 18px;
+    align-items: center;
+    gap: 15px;
   margin-bottom: 20px;
 }
 .patient img {
-  width: 74px;
-  height: 74px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.patient h5 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
+  width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
+.patient h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
 
 
 .status-normal,

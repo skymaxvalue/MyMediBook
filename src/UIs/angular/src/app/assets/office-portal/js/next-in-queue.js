@@ -1,191 +1,140 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const doctorSearch = document.getElementById("doctorSearch");
-    const doctorDropdownButton = document.getElementById("doctorDropdownButton");
+document.addEventListener("DOMContentLoaded", function () {
+    const doctorInput = document.getElementById("doctorSearch");
+    const dropdownButton = document.getElementById("doctorDropdownButton");
     const doctorDropdown = document.getElementById("doctorDropdown");
-    const selectedDoctorBox = document.getElementById("selectedDoctor");
-    const selectedDoctorName = document.getElementById("selectedDoctorName");
-    const validationMessage = document.getElementById("validationMessage");
+    const doctorOptions = document.querySelectorAll(".doctor-option");
     const viewQueueButton = document.getElementById("viewQueueButton");
     const clearButton = document.getElementById("clearButton");
 
-    let selectedDoctor = null;
+    let selectedDoctor = "";
 
-    const doctors = getDoctors();
+    function openDropdown() {
+        doctorDropdown.classList.add("active");
+        doctorInput.setAttribute("aria-expanded", "true");
+    }
 
-    function getAppointments() {
-        try {
-            const storedAppointments = localStorage.getItem("myMediBookAppointments");
+    function closeDropdown() {
+        doctorDropdown.classList.remove("active");
+        doctorInput.setAttribute("aria-expanded", "false");
+    }
 
-            if (!storedAppointments) {
-                return [];
-            }
-
-            const appointments = JSON.parse(storedAppointments);
-
-            return Array.isArray(appointments) ? appointments : [];
-        } catch (error) {
-            return [];
+    function toggleDropdown() {
+        if (doctorDropdown.classList.contains("active")) {
+            closeDropdown();
+        } else {
+            openDropdown();
         }
     }
 
-    function getDoctors() {
-        const appointments = getAppointments();
+    doctorInput.addEventListener("click", function () {
+        toggleDropdown();
+    });
 
-        const doctorMap = new Map();
+    dropdownButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleDropdown();
+    });
 
-        appointments.forEach(appointment => {
-            if (!appointment.doctor) {
-                return;
-            }
+    doctorOptions.forEach(function (option) {
+        option.addEventListener("click", function () {
+            selectedDoctor =
+                this.dataset.doctor || this.textContent.trim();
 
-            const doctorName = appointment.doctor.trim();
+            doctorInput.value = selectedDoctor;
 
-            if (!doctorName) {
-                return;
-            }
-
-            if (!doctorMap.has(doctorName)) {
-                doctorMap.set(doctorName, {
-                    name: doctorName,
-                    department: appointment.department || "",
-                    room: appointment.room || ""
-                });
-            }
-        });
-
-        return Array.from(doctorMap.values());
-    }
-
-    function renderDoctors(searchTerm = "") {
-        const normalizedSearch = searchTerm.trim().toLowerCase();
-
-        const filteredDoctors = doctors.filter(doctor =>
-            doctor.name.toLowerCase().includes(normalizedSearch)
-        );
-
-        doctorDropdown.innerHTML = "";
-
-        if (filteredDoctors.length === 0) {
-            doctorDropdown.innerHTML = `
-                <div class="no-doctors">
-                    No doctors found
-                </div>
-            `;
-
-            return;
-        }
-
-        filteredDoctors.forEach(doctor => {
-            const option = document.createElement("div");
-
-            option.className = "doctor-option";
-
-            option.innerHTML = `
-                <strong>${escapeHtml(doctor.name)}</strong>
-                ${
-                    doctor.department
-                        ? `<span>${escapeHtml(doctor.department)}</span>`
-                        : ""
-                }
-            `;
-
-            option.addEventListener("click", () => {
-                selectDoctor(doctor);
+            doctorOptions.forEach(function (item) {
+                item.classList.remove("selected");
+                item.setAttribute("aria-selected", "false");
             });
 
-            doctorDropdown.appendChild(option);
+            this.classList.add("selected");
+            this.setAttribute("aria-selected", "true");
+
+            closeDropdown();
         });
-    }
-
-    function selectDoctor(doctor) {
-        selectedDoctor = doctor;
-
-        doctorSearch.value = doctor.name;
-
-        selectedDoctorName.textContent = doctor.name;
-
-        selectedDoctorBox.classList.remove("hidden");
-        validationMessage.classList.add("hidden");
-        doctorDropdown.classList.remove("active");
-    }
-
-    function clearSelection() {
-        selectedDoctor = null;
-
-        doctorSearch.value = "";
-
-        selectedDoctorName.textContent = "";
-
-        selectedDoctorBox.classList.add("hidden");
-        validationMessage.classList.add("hidden");
-        doctorDropdown.classList.remove("active");
-
-        doctorSearch.focus();
-    }
-
-    doctorSearch.addEventListener("focus", () => {
-        renderDoctors(doctorSearch.value);
-        doctorDropdown.classList.add("active");
     });
 
-    doctorSearch.addEventListener("input", () => {
-        selectedDoctor = null;
-        selectedDoctorBox.classList.add("hidden");
-        validationMessage.classList.add("hidden");
-
-        renderDoctors(doctorSearch.value);
-        doctorDropdown.classList.add("active");
-    });
-
-    doctorDropdownButton.addEventListener("click", () => {
-        if (doctorDropdown.classList.contains("active")) {
-            doctorDropdown.classList.remove("active");
-            return;
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".doctor-select-wrapper")) {
+            closeDropdown();
         }
-
-        renderDoctors(doctorSearch.value);
-        doctorDropdown.classList.add("active");
-        doctorSearch.focus();
     });
 
-    clearButton.addEventListener("click", () => {
-        clearSelection();
-    });
-
-    viewQueueButton.addEventListener("click", () => {
+    viewQueueButton.addEventListener("click", function () {
         if (!selectedDoctor) {
-            validationMessage.textContent = "Please select a doctor to continue.";
-            validationMessage.classList.remove("hidden");
-            doctorSearch.focus();
+            openDropdown();
             return;
         }
 
         localStorage.setItem(
-            "selectedDoctor",
-            JSON.stringify({
-                name: selectedDoctor.name,
-                department: selectedDoctor.department || "",
-                room: selectedDoctor.room || ""
-            })
+            "selectedQueueDoctor",
+            selectedDoctor
         );
 
         window.location.href = "doctor-queue.html";
     });
 
-    document.addEventListener("click", event => {
-        if (!event.target.closest(".doctor-select-wrapper")) {
-            doctorDropdown.classList.remove("active");
-        }
+    clearButton.addEventListener("click", function () {
+        selectedDoctor = "";
+        doctorInput.value = "";
+
+        doctorOptions.forEach(function (option) {
+            option.classList.remove("selected");
+            option.setAttribute("aria-selected", "false");
+        });
+
+        localStorage.removeItem("selectedQueueDoctor");
+
+        closeDropdown();
     });
 
-    function escapeHtml(value) {
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+    const savedDoctor =
+        localStorage.getItem("selectedQueueDoctor");
+
+    if (savedDoctor) {
+        const matchingOption = Array.from(doctorOptions).find(
+            function (option) {
+                return (
+                    (option.dataset.doctor ||
+                        option.textContent.trim()) === savedDoctor
+                );
+            }
+        );
+
+        if (matchingOption) {
+            selectedDoctor = savedDoctor;
+            doctorInput.value = savedDoctor;
+
+            matchingOption.classList.add("selected");
+            matchingOption.setAttribute("aria-selected", "true");
+        }
     }
 
-    renderDoctors();
+    const queueNavbarObserver = new MutationObserver(function () {
+        const queueItem = document.querySelector(
+            '.nav-item[data-page="queue"]'
+        );
+
+        if (!queueItem) {
+            return;
+        }
+
+        document.querySelectorAll(".nav-item").forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        queueItem.classList.add("active");
+        queueNavbarObserver.disconnect();
+    });
+
+    const queueNavbarContainer =
+        document.getElementById("navbar-container");
+
+    if (queueNavbarContainer) {
+        queueNavbarObserver.observe(queueNavbarContainer, {
+            childList: true,
+            subtree: true
+        });
+    }
 });

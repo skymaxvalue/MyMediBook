@@ -6,9 +6,23 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeRegistration();
 });
 
+function initializePhoneInput() {
+    const phoneInput = document.getElementById("phone");
+    if (!phoneInput || typeof window.intlTelInput !== "function") return null;
+
+    return window.intlTelInput(phoneInput, {
+        initialCountry: "in",
+        separateDialCode: true,
+        preferredCountries: ["in", "us", "gb"],
+        nationalMode: true,
+        autoPlaceholder: "polite"
+    });
+}
+
 function initializeRegistration() {
     const form = document.getElementById("bookingForm");
     const dobInput = document.getElementById("dateOfBirth");
+    const phoneIti = initializePhoneInput();
 
     if (dobInput) {
         dobInput.addEventListener("change", updateAgeFromDob);
@@ -230,10 +244,9 @@ function confirmBooking() {
             .value
             .trim(),
 
-        phone: document
-            .getElementById("phone")
-            .value
-            .trim(),
+        phone: phoneIti
+            ? phoneIti.getNumber()
+            : document.getElementById("phone").value.trim(),
 
         email: document
             .getElementById("email")
@@ -297,107 +310,49 @@ function confirmBooking() {
 }
 
 function updateAgeFromDob() {
-    const dobInput = document.getElementById(
-        "dateOfBirth"
-    );
+    const dobInput = document.getElementById("dateOfBirth");
+    const ageInput = document.getElementById("age");
 
-    const ageInput = document.getElementById(
-        "age"
-    );
+    if (!dobInput || !ageInput) return;
 
-    const yearsRadio = document.querySelector(
-        'input[name="ageType"][value="years"]'
-    );
 
-    const monthsRadio = document.querySelector(
-        'input[name="ageType"][value="months"]'
-    );
+    ageInput.readOnly = true;
+    ageInput.disabled = false;
 
     if (!dobInput.value) {
         ageInput.value = "";
-        ageInput.readOnly = false;
-        ageInput.disabled = false;
-
-        if (yearsRadio) {
-            yearsRadio.checked = false;
-        }
-
-        if (monthsRadio) {
-            monthsRadio.checked = false;
-        }
-
         return;
     }
 
-    const dob = new Date(
-        dobInput.value + "T00:00:00"
-    );
-
+    const dob = new Date(dobInput.value + "T00:00:00");
     const today = new Date();
 
-    if (dob > today) {
+    if (Number.isNaN(dob.getTime()) || dob > today) {
         ageInput.value = "";
-
-        if (yearsRadio) {
-            yearsRadio.checked = false;
-        }
-
-        if (monthsRadio) {
-            monthsRadio.checked = false;
-        }
-
         return;
     }
 
-    let years =
-        today.getFullYear() -
-        dob.getFullYear();
+    let years = today.getFullYear() - dob.getFullYear();
+    let months = today.getMonth() - dob.getMonth();
+    const days = today.getDate() - dob.getDate();
 
-    let months =
-        today.getMonth() -
-        dob.getMonth();
-
-    const days =
-        today.getDate() -
-        dob.getDate();
-
-    if (days < 0) {
-        months--;
-    }
-
+    if (days < 0) months--;
     if (months < 0) {
         years--;
         months += 12;
     }
 
+    const unit = document.querySelector(".age-unit");
+
     if (years <= 0) {
-        const totalMonths =
-            Math.max(months, 0);
-
+        const totalMonths = Math.max(0, months);
         ageInput.value = totalMonths;
-        ageInput.disabled = true;
-
-        if (monthsRadio) {
-            monthsRadio.checked = true;
-        }
-
-        if (yearsRadio) {
-            yearsRadio.checked = false;
-        }
-
+        if (unit) unit.textContent = totalMonths === 1 ? "Month" : "Months";
         return;
     }
 
     ageInput.value = years;
-    ageInput.disabled = true;
-
-    if (yearsRadio) {
-        yearsRadio.checked = true;
-    }
-
-    if (monthsRadio) {
-        monthsRadio.checked = false;
-    }
+    if (unit) unit.textContent = years === 1 ? "Year" : "Years";
 }
 
 document.addEventListener(
@@ -412,8 +367,13 @@ document.addEventListener(
         );
 
         if (age) {
+            age.value = "";
+            age.readOnly = true;
             age.disabled = false;
         }
+
+        const ageUnit = document.querySelector(".age-unit");
+        if (ageUnit) ageUnit.textContent = "Years";
     }
 );
 

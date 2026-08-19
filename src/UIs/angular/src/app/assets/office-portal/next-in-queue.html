@@ -3,87 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next in Queue - MyMediBook</title>
 
-    <link rel="stylesheet" href="css/next-in-queue.css">
+    <title>Next in Queue | Health Haven Medical Center</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/next-in-queue.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+ 
 
-    <div id="navbar"></div>
+    <div id="navbar-container"></div>
 
     <main class="page-container">
 
         <div class="breadcrumb">
-            <span>Dashboard</span>
-            <span class="breadcrumb-separator">»</span>
-            <span>Patient Check-In</span>
-            <span class="breadcrumb-separator">»</span>
-            <span class="current">Next in Queue</span>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <span class="breadcrumb-arrow" aria-hidden="true"></span>
+
+            <span class="breadcrumb-current">
+                Next in Queue
+            </span>
+
         </div>
 
-        <section class="page-header">
-            <div>
+        <section class="page-heading">
+
+            <div class="page-heading-title">
+
+                <span class="page-heading-icon" aria-hidden="true">
+                    <img
+                        src="images/queue-icon-placeholder.png"
+                        alt=""
+                    >
+                </span>
+
                 <h1>Next in Queue</h1>
-                <p>Select a doctor to view their appointment queue.</p>
+
             </div>
+
+            <p>
+                Select a doctor to view their appointment queue.
+            </p>
+
         </section>
 
-        <section class="doctor-selection-card">
+        <section class="queue-card">
 
             <div class="card-header">
-                <h2>Select Doctor</h2>
-                <p>Choose a doctor to view today's patient queue.</p>
-            </div>
 
-            <div class="form-group">
-                <label for="doctorSearch">Doctor Name</label>
-
-                <div class="doctor-select-wrapper">
-
-                    <input
-                        type="text"
-                        id="doctorSearch"
-                        class="doctor-input"
-                        placeholder="Search or select doctor"
-                        autocomplete="off"
+                <div class="card-header-icon" aria-hidden="true">
+                    <img
+                        src="images/doctor-icon-placeholder.png"
+                        alt=""
                     >
+                </div>
 
-                    <button
-                        type="button"
-                        id="doctorDropdownButton"
-                        class="dropdown-button"
-                        aria-label="Open doctor list"
-                    >
-                        <span>▼</span>
-                    </button>
+                <div class="card-header-content">
 
-                    <div id="doctorDropdown" class="doctor-dropdown"></div>
+                    <h2>Select Doctor</h2>
+
+                    <p>
+                        Choose a doctor to view today's patient queue.
+                    </p>
 
                 </div>
+
             </div>
 
-            <div id="selectedDoctor" class="selected-doctor hidden">
-                <div class="selected-doctor-icon">✓</div>
+            <div class="card-divider"></div>
+
+            <div class="doctor-selection">
+
+                <div class="form-group">
+
+                    <label for="doctorSearch">
+                        Doctor Name
+                    </label>
+
+                    <div class="doctor-select-wrapper">
+
+                        <input
+                            type="text"
+                            id="doctorSearch"
+                            class="doctor-input"
+                            placeholder="Select Doctor"
+                            autocomplete="off"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                        >
+
+                        <button
+                            type="button"
+                            id="doctorDropdownButton"
+                            class="dropdown-button"
+                            aria-label="Open doctor list"
+                        >
+                            <span class="dropdown-arrow"></span>
+                        </button>
+
+                        <div
+                            id="doctorDropdown"
+                            class="doctor-dropdown"
+                            role="listbox"
+                        >
+
+                            <div
+                                class="doctor-option"
+                                data-doctor="Dr. Kumaravel"
+                                role="option"
+                                aria-selected="false"
+                            >
+                                Dr. Kumaravel
+                            </div>
+
+                            <div
+                                class="doctor-option"
+                                data-doctor="Dr. Priya"
+                                role="option"
+                                aria-selected="false"
+                            >
+                                Dr. Priya
+                            </div>
+
+                            <div
+                                class="doctor-option"
+                                data-doctor="Dr. Arjun"
+                                role="option"
+                                aria-selected="false"
+                            >
+                                Dr. Arjun
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                id="selectedDoctor"
+                class="selected-doctor hidden"
+            >
+                <div class="selected-doctor-icon">
+                    ✓
+                </div>
 
                 <div>
-                    <span class="selected-label">Selected Doctor</span>
+                    <span class="selected-label">
+                        Selected Doctor
+                    </span>
+
                     <strong id="selectedDoctorName"></strong>
                 </div>
             </div>
 
-            <div id="validationMessage" class="validation-message hidden">
+            <div
+                id="validationMessage"
+                class="validation-message hidden"
+            >
                 Please select a doctor to continue.
             </div>
 
+            <div class="card-divider bottom-divider"></div>
+
             <div class="card-actions">
+
                 <button
                     type="button"
                     id="clearButton"
-                    class="secondary-button"
+                    class="btn btn-clear"
                 >
                     Clear
                 </button>
@@ -91,17 +193,18 @@
                 <button
                     type="button"
                     id="viewQueueButton"
-                    class="primary-button"
+                    class="btn btn-primary"
                 >
                     View Queue
                 </button>
+
             </div>
 
         </section>
 
     </main>
 
-    <div id="footer"></div>
+    <div id="footer-container"></div>
 
     <script src="js/navbar.js"></script>
     <script src="js/footer.js"></script>
