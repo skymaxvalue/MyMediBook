@@ -1,0 +1,240 @@
+<div class="top-header">
+
+    <!-- LEFT -->
+    <div class="header-left">
+
+        <div class="hospital-brand">
+
+            <img src="assets/images/hospital2.png" alt="Hospital Logo" />
+
+            <div class="hospital-text">
+                <h2>HEALTH HAVEN</h2>
+                <span>MEDICAL CENTER</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CENTER -->
+    <div class="header-center">
+
+        <h1>
+            Front Office Dashboard
+        </h1>
+
+        <div class="dashboard-info">
+
+            <div class="info-item">
+
+                <img src="assets/images/calendar.png" alt="Calendar" />
+
+                <span>
+                    {{ currentDate }}
+                </span>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info-item">
+
+                <img src="assets/images/front-office/images/clock2.png" alt="Clock" />
+
+                <span>
+                    {{ currentTime }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT -->
+    <div class="header-right">
+
+        <!-- MediBook -->
+        <div class="medibook-brand">
+
+            <img src="assets/images/front-office/images/logo2.png" alt="My Medi Book" />
+
+            <span>
+                My
+                <strong>Medi</strong>
+                Book
+            </span>
+
+        </div>
+
+
+        <!-- USER PROFILE -->
+        <div class="user-profile">
+
+            <img src="assets/images/user.png" alt="User" class="profile-image" />
+
+            <div class="profile-info">
+
+                <h4>
+                    {{ username }}
+                </h4>
+
+                <span>
+                    Front Office
+                </span>
+
+            </div>
+
+
+            <button type="button" class="profile-toggle" (click)="toggleProfile($event)">
+
+                <img src="assets/images/front-office/images/down-arrow.png" alt="Menu" />
+
+            </button>
+
+
+            <!-- DROPDOWN -->
+            @if (isProfileOpen) {
+
+            <div class="profile-dropdown" (click)="$event.stopPropagation()">
+
+                <button type="button" (click)="openProfile()">
+                    My Profile
+                </button>
+
+                <button type="button" (click)="logout()">
+                    Logout
+                </button>
+
+            </div>
+
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- NAVIGATION -->
+<nav class="dashboard-nav">
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'dashboard'" (click)="navigate('dashboard')">
+
+        <img src="assets/images/front-office/images/dashboard.png" alt="Dashboard" />
+
+        <span>
+            Dashboard
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'patient-registration'"
+        (click)="navigate('patient-registration')">
+
+        <img src="assets/images/front-office/images/patient-registration.png" alt="Patient Registration" />
+
+        <span>
+            Patient Registration
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'book-appointment'"
+        (click)="navigate('book-appointment')">
+
+        <img src="assets/images/front-office/images/book-appointment.png" alt="Appointment" />
+
+        <span>
+            Book Appointment
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'patient-checkin'"
+        (click)="navigate('patient-checkin')">
+
+        <img src="assets/images/front-office/images/checkin.png" alt="Check In" />
+
+        <span>
+            Patient Check-In
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'lab-service'"
+        (click)="navigate('lab-service')">
+
+        <img src="assets/images/front-office/images/lab-service.png" alt="Lab" />
+
+        <span>
+            Lab Service
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'insurance'" (click)="navigate('insurance')">
+
+        <img src="assets/images/front-office/images/insurance.png" alt="Insurance" />
+
+        <span>
+            Insurance & Billing
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'queue'" (click)="navigate('queue')">
+
+        <img src="assets/images/front-office/images/queue.png" alt="Queue" />
+
+        <span>
+            Queue Management
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'doctor-schedule'"
+        (click)="navigate('doctor-schedule')">
+
+        <img src="assets/images/front-office/images/doctor-schedule.png" alt="Doctor" />
+
+        <span>
+            Doctor Schedule
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'reports'" (click)="navigate('reports')">
+
+        <img src="assets/images/front-office/images/reports.png" alt="Reports" />
+
+        <span>
+            Reports
+        </span>
+
+    </button>
+
+
+    <button type="button" class="nav-item" [class.active]="activePage === 'settings'" (click)="navigate('settings')">
+
+        <img src="assets/images/front-office/images/settings.png" alt="Settings" />
+
+        <span>
+            Settings
+        </span>
+
+    </button>
+
+</nav>

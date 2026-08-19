@@ -1,0 +1,398 @@
+<main class="dashboard-container">
+
+    <section class="stats-section">
+
+        @for (stat of dashboardData.stats; track stat.title) {
+
+        <div class="stat-card">
+
+            <div class="stat-icon" [class]="stat.color">
+                @if(stat.title==="Today's Appointments"){
+                <img [src]="'assets/images/' + stat.icon" [alt]="stat.title">
+                }
+                @else{
+
+                <img [src]="'assets/images/front-office/images/' + stat.icon" [alt]="stat.title">
+                }
+
+
+            </div>
+
+            <div class="stat-content">
+
+                <p>
+                    {{ stat.title }}
+                </p>
+
+                <h2>
+                    {{ stat.value }}
+                </h2>
+
+            </div>
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <section class="feature-grid">
+
+        <!-- QUICK ACTIONS -->
+        <section class="dashboard-card quick-actions">
+
+            <div class="card-header">
+                <h3>QUICK ACTIONS</h3>
+            </div>
+
+
+            <!-- SEARCH -->
+            <div class="search-box">
+
+                <img src="assets/images/search.png" alt="Search">
+
+                <input id="dashboardSearch" name="dashboardSearch" type="text" placeholder="Search patient"
+                    [(ngModel)]="searchValue" (keydown.enter)="openSearchPage()">
+
+            </div>
+
+
+            <div class="action-list">
+
+                @for (
+                action of dashboardData.quickActions;
+                track action.title
+                ) {
+
+                <div class="action-card" (click)="navigate(action.route)">
+
+                    <div class="action-left">
+
+                        <div class="action-icon" [class]="action.color">
+
+                            <img [src]="'assets/images/front-office/images/' + action.icon" [alt]="action.title">
+
+                        </div>
+
+                        <div>
+
+                            <h4>
+                                {{ action.title }}
+                            </h4>
+
+                            <p>
+                                {{ action.description }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow" src="assets/images/front-office/images/right-arrow.png" alt="Arrow">
+
+                </div>
+
+                }
+
+            </div>
+
+        </section>
+
+
+        <!-- SERVICES -->
+        <section class="dashboard-card services">
+
+            <div class="card-header">
+                <h3>SERVICES</h3>
+            </div>
+
+
+            <div class="service-list">
+
+                @for (
+                service of dashboardData.services;
+                track service.title
+                ) {
+
+                <div class="service-card" (click)="navigate(service.route)">
+
+                    <div class="service-left">
+
+                        <div class="service-icon" [class]="service.color">
+
+                            <img [src]="'assets/images/front-office/images/' + service.icon" [alt]="service.title">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>
+                                {{ service.title }}
+                            </h4>
+
+                            <p>
+                                {{ service.description }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow" src="assets/images/front-office/images/right-arrow.png" alt="Arrow">
+
+                </div>
+
+                }
+
+            </div>
+
+        </section>
+
+
+        <!-- BILLING -->
+        <section class="dashboard-card billing">
+
+            <div class="card-header">
+                <h3>BILLING & CLAIMS</h3>
+            </div>
+
+
+            <div class="billing-list">
+
+                @for (
+                item of dashboardData.billingClaims;
+                track item.title
+                ) {
+
+                <div class="billing-card" (click)="navigate(item.route)">
+
+                    <div class="billing-left">
+
+                        <div class="billing-icon" [class]="item.color">
+
+                            <img [src]="'assets/images/front-office/images/' + item.icon" [alt]="item.title">
+
+                        </div>
+
+                        <div class="billing-content">
+
+                            <h4>
+                                {{ item.title }}
+                            </h4>
+
+                            <p>
+                                {{ item.description }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow" src="assets/images/front-office/images/right-arrow.png" alt="Arrow">
+
+                </div>
+
+                }
+
+            </div>
+
+        </section>
+
+    </section>
+
+
+    <!-- ==================== BOTTOM GRID ==================== -->
+    <section class="bottom-grid">
+
+
+        <!-- RECENT PATIENTS -->
+        <section class="dashboard-card recent-patients">
+
+            <div class="card-header">
+
+                <h3>RECENT PATIENTS</h3>
+
+                <a href="javascript:void(0)" (click)="viewAllPatients()">
+                    View all
+                </a>
+
+            </div>
+
+
+            <div class="patient-list">
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar blue">
+                            RK
+                        </div>
+
+                        <span class="patient-name">
+                            Ramesh Kumar
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+                        UHID: HH24567
+                    </span>
+
+                    <span class="badge checked-in">
+                        Checked In
+                    </span>
+
+                    <span class="time">
+                        10 mins ago
+                    </span>
+
+                </div>
+
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar green">
+                            LP
+                        </div>
+
+                        <span class="patient-name">
+                            Lakshmi Patel
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+                        UHID: HH24568
+                    </span>
+
+                    <span class="badge pending-payment">
+                        Pending Payment
+                    </span>
+
+                    <span class="time">
+                        15 mins ago
+                    </span>
+
+                </div>
+
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar purple">
+                            RS
+                        </div>
+
+                        <span class="patient-name">
+                            Rahul Singh
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+                        UHID: HH24569
+                    </span>
+
+                    <span class="badge waiting">
+                        Waiting
+                    </span>
+
+                    <span class="time">
+                        20 mins ago
+                    </span>
+
+                </div>
+
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar cyan">
+                            AS
+                        </div>
+
+                        <span class="patient-name">
+                            Anita Sharma
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+                        UHID: HH24570
+                    </span>
+
+                    <span class="badge lab-pending">
+                        Lab Pending
+                    </span>
+
+                    <span class="time">
+                        25 mins ago
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TODAY QUEUE -->
+        <section class="dashboard-card todays-queue">
+
+            <div class="card-header">
+
+                <h3>TODAY'S QUEUE</h3>
+
+                <a href="javascript:void(0)" (click)="viewAllQueue()">
+                    View all
+                </a>
+
+            </div>
+
+
+            <div class="queue-list">
+
+                @for (
+                patient of dashboardData.todaysQueue;
+                track patient.time
+                ) {
+
+                <div class="queue-row">
+
+                    <div class="queue-number" [class]="patient.avatarClass">
+                        {{ patient.initials }}
+                    </div>
+
+                    <span class="queue-patient">
+                        {{ patient.patient }}
+                    </span>
+
+                    <span class="queue-doctor">
+                        {{ patient.doctor }}
+                    </span>
+
+                    <span class="queue-time">
+                        {{ patient.time }}
+                    </span>
+
+                    <span class="badge" [class]="patient.statusClass">
+                        {{ patient.status }}
+                    </span>
+
+                </div>
+
+                }
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>

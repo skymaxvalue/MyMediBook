@@ -1,0 +1,33 @@
+.login-selection-container {
+  width: 400px;
+  margin: 100px auto;
+  padding: 40px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-selection-container h2 {
+  margin-bottom: 10px;
+}
+
+.login-selection-container p {
+  margin-bottom: 25px;
+  color: #777;
+}
+
+.login-dropdown {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  border: 1px solid #d9dfec;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+}
+
+.login-dropdown:focus {
+  border-color: #3d67ef;
+}

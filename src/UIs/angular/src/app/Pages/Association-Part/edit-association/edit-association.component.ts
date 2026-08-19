@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,9 +7,10 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { UpdateAssociateScheduleRequest } from 'src/app/core/Models/Association-model';
 import { AppState } from 'src/app/Store/app.state';
-import { getAssociatesByID, getRoleDepaSpecia } from 'src/app/Store/Doctor/doctor.action';
-import { selectGetAssociateDetailsByItID, selectGetRoleDepSpeciOfAssociate } from 'src/app/Store/Doctor/doctor.selectors';
+import { getAssociatesByID, getRoleDepaSpecia, getWeekDays, updateAssociatesAndItsSchedule } from 'src/app/Store/Doctor/doctor.action';
+import { selectGetAssociateDetailsByItID, selectGetRoleDepSpeciOfAssociate, selectGetWeekDays, selectUpdateAssociateDetailsByItID } from 'src/app/Store/Doctor/doctor.selectors';
 
 interface AssociateSchedule {
 
@@ -45,7 +46,7 @@ interface AssociateSchedule {
 
   deptId: string;
 
-  deptName: string;
+  departmentName: string;
 
   roleDeptId: string;
 
@@ -65,6 +66,15 @@ interface AssociateSchedule {
 export class EditAssociationComponent implements OnInit {
   showDepartmentModal = signal(false);
   showRoleModal = signal(false);
+  showDesignationModal = signal(false);
+  showSpecialityModal = signal(false);
+  daysDisabled = signal(true);
+  loginUser: any = JSON.parse(localStorage.getItem('user') ?? '{}');
+
+  originalRoleId!: number;
+  roleSelectionChanged = false;
+  departments: any[] = [];
+  specialities: any[] = [];
   readonly STORAGE_KEY = 'associateScheduleDatabaseRows';
 
   readonly SELECTED_KEY = 'associateScheduleSelected';
@@ -73,117 +83,18 @@ export class EditAssociationComponent implements OnInit {
   associate: any = null
 
   selectedIndex = signal(0);
-  daysDisabled = true;
-
-  departmentMap = {
-
-    '10': 'Physician',
-
-    '11': 'Cardiology',
-
-    '12': 'Neurology',
-
-    '13': 'Orthopedics',
-
-    '14': 'Pediatrics'
-
-  };
-  roleData: Record<string, { id: string; name: string }[]> = {
-
-    '10': [
-      { id: '1', name: 'General Physician' },
-      { id: '2', name: 'Physical Examiner' },
-      { id: '3', name: 'Senior Doctor' }
-    ],
-
-    '11': [
-      { id: '21', name: 'Cardiologist' },
-      { id: '22', name: 'Echo Specialist' }
-    ],
-
-    '12': [
-      { id: '31', name: 'Neurologist' },
-      { id: '32', name: 'Neurosurgeon' }
-    ],
-
-    '13': [
-      { id: '41', name: 'Orthopedic Surgeon' },
-      { id: '42', name: 'Trauma Specialist' }
-    ],
-
-    '14': [
-      { id: '51', name: 'Pediatrician' },
-      { id: '52', name: 'Neonatologist' }
-    ]
-
-  };
-
-  roleMap: any = {
-
-    '10': {
-
-      '1': 'General Physician',
-
-      '2': 'Physical Examiner',
-
-      '3': 'Senior Doctor'
-
-    },
-
-    '11': {
-
-      '21': 'Cardiologist',
-
-      '22': 'Echo Specialist'
-
-    },
-
-    '12': {
-
-      '31': 'Neurologist',
-
-      '32': 'Neurosurgeon'
-
-    },
-
-    '13': {
-
-      '41': 'Orthopedic Surgeon',
-
-      '42': 'Trauma Specialist'
-
-    },
-
-    '14': {
-
-      '51': 'Pediatrician',
-
-      '52': 'Neonatologist'
-
-    }
 
 
-  };
-  departmentIds = [
-    { id: '10', name: 'Physician' },
-    { id: '11', name: 'Cardiology' },
-    { id: '12', name: 'Neurology' },
-    { id: '13', name: 'Orthopedics' },
-    { id: '14', name: 'Pediatrics' }
-  ];
 
-  availableRoles = computed(() => {
 
-    const deptId = this.form.get('roleDeptId')?.value;
-
-    return this.roleData[deptId] ?? [];
-
-  });
   associateId: any;
   allRoles: any[] = [];
+  weekDays: any[] = []
+  designations: any[] = [];
+  selectedRole: any = null;
   back() {
 
-    this.router.navigate(['association/dashboard/association-list']);
+    this.router.navigate(['/admin/associate-list']);
 
   }
   constructor(
@@ -193,150 +104,358 @@ export class EditAssociationComponent implements OnInit {
     private route: ActivatedRoute,
 
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private cdr: ChangeDetectorRef
 
   ) { }
 
   ngOnInit() {
+    this.createForm();
+
+    this.loadData();
     this.store.dispatch(
       getRoleDepaSpecia());
     this.associateId = Number(
       this.route.snapshot.paramMap.get('associateId')
     );
+    this.store.dispatch(getWeekDays())
     this.store.select(selectGetRoleDepSpeciOfAssociate)
-      .subscribe((res: any) => {
-        this.allRoles = res;
+      .subscribe(res => {
 
+        this.allRoles = res ?? [];
+
+        console.log("Roles Loaded", this.allRoles);
+
+        this.setSelectedRole();
 
       });
+    this.store.select(selectGetWeekDays).subscribe((res: any) => {
+      if (res) {
+
+        this.weekDays = res;
+      }
+    })
     if (this.associateId) {
       this.store.dispatch(getAssociatesByID({ associateId: this.associateId }))
+
       this.store.select(selectGetAssociateDetailsByItID).subscribe((res) => {
+
         if (res) {
           this.associate = res
-          // this.form.patchValue(res)
-          const selectedRole = this.allRoles.find(
+          this.setSelectedRole();
+          this.originalRoleId = res.roleId;
+          this.selectedRole = this.allRoles.find(
             (x) => x.roleId == this.associate.roleId
           );
-          console.log(selectedRole, "=========>")
+          this.form.patchValue({
+            firstName: res.firstName,
+            middleName: res.middleName,
+            lastName: res.lastName,
+
+            roleName: res.roleName,
+            roleId: res.roleId,
+            departmentName: res.departmentName,
+            specialityName: res.specialityName,
+            specialityId: res.specialityId,
+            departmentId: res.departmentId,
+            roleDeptId: res.roleDeptId,
+            designationName: res.designationName,
+            designationId: res.designationId,
+            fromDate: res.schedule.fromDate.substring(0, 10),
+            toDate: res.schedule.toDate.substring(0, 10),
+
+            fromTime: this.to12Hour(res.schedule.fromTime),
+            toTime: this.to12Hour(res.schedule.toTime),
+            breakTimeFrom: this.to12Hour(res.schedule.breakTimeFrom),
+            breakTimeTo: this.to12Hour(res.schedule.breakTimeTo),
+
+            consultationTime: res.schedule.consultationTime,
+            averageCharge: res.schedule.averageCharge,
+
+            // days: this.mapWorkingDays(res.schedule.workingDays)
+          });
+
+          if (this.weekDays.length) {
+            this.preSelectWorkingDays(res.schedule.workingDays);
+          }
+          console.log("Roles", this.allRoles);
+          console.log("Associate RoleId", res.roleId);
+
+          const selectedRole = this.allRoles.find(
+            x => x.roleId == res.roleId
+          );
+
+          console.log("Selected", selectedRole);
         }
+
+
       })
+
     }
 
-    this.createForm();
 
-    this.loadData();
+
+  }
+  private setSelectedRole() {
+    console.log("Associate", this.associate);
+    console.log("Roles", this.allRoles);
+    if (!this.associate) return;
+
+    if (!this.allRoles.length) return;
+
+    this.selectedRole =
+      this.allRoles.find(x => x.roleId == this.associate.roleId);
+
+    console.log("Selected Role =>", this.selectedRole);
 
   }
 
+  to12Hour(time: string): string {
+
+    if (!time) return '';
+
+    let [hour, minute] = time.split(':').map(Number);
+
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+
+    hour = hour % 12;
+
+    if (hour === 0) hour = 12;
+
+    return `${hour.toString().padStart(2, '0')}:${minute
+      .toString()
+      .padStart(2, '0')} ${ampm}`;
+  }
 
   createForm() {
-
     this.form = this.fb.group({
       firstName: [{ value: '', disabled: true }],
-      lastName: [{ value: '', disabled: true }],
       middleName: [{ value: '', disabled: true }],
+      lastName: [{ value: '', disabled: true }],
+
       departmentId: [{ value: '', disabled: true }],
       roleId: [{ value: '', disabled: true }],
       specialityId: [{ value: '', disabled: true }],
+      designationId: [{ value: '', disabled: true }],
+      designationName: [{ value: '', disabled: true }],
 
-      from: [{ value: '', disabled: true }],
-      to: [{ value: '', disabled: true }],
+      departmentName: [{ value: '', disabled: true }],
+      roleName: [{ value: '', disabled: true }],
+
+      specialityName: [{ value: '', disabled: true }],
+
+      fromDate: [{ value: '', disabled: true }],
+      toDate: [{ value: '', disabled: true }],
 
       fromTime: [{ value: '', disabled: true }],
       toTime: [{ value: '', disabled: true }],
 
-      breakFrom: [{ value: '', disabled: true }],
-      breakTo: [{ value: '', disabled: true }],
+      breakTimeFrom: [{ value: '', disabled: true }],
+      breakTimeTo: [{ value: '', disabled: true }],
 
-      duration: [{ value: '', disabled: true }],
-      charge: [{ value: '', disabled: true }],
+      consultationTime: [{ value: '', disabled: true }],
+      averageCharge: [{ value: '', disabled: true }],
 
       days: [[]],
 
-      deptId: ['10'],
-      deptName: [''],
-      roleDeptId: ['10'],
-
-
     });
 
+
   }
+  mapWorkingDays(days: string): string[] {
 
-  departmentChanged() {
+    if (!days) return [];
 
-    const deptId = this.form.get('deptId')?.value;
+    return days
+      .split(',')
+      .map(id => {
+        const day = this.weekDays.find(
+          x => x.weekdayId === Number(id)
+        );
 
-    const dept = this.departmentIds.find(x => x.id === deptId);
+        return day?.dayName;
+      })
+      .filter(Boolean) as string[];
 
+  }
+  onSpecialitiesChange() {
+    console.log(this.selectedRole.designations, "=========>", "selectedRole.designations")
+    const currentSpecialityId = Number(this.form.value.specialityId);
+
+    console.log(this.selectedRole, "=========>", "selectedRole")
+    const selectedSpeciality = this.specialities.find(
+      x => x.specialityId === currentSpecialityId
+    );
+    console.log(selectedSpeciality, "=========>", "selectedSpeciality")
+
+    if (!selectedSpeciality) {
+
+      return;
+    }
     this.form.patchValue({
-
-      deptName: dept?.name,
-
-      dept: dept?.name
-
+      specialityId: selectedSpeciality.specialityId,
+      specialityName: selectedSpeciality.specialityName
     });
 
   }
-  roleDepartmentChanged() {
 
-    const roles = this.availableRoles();
+  closeSpecialityModal() {
+    this.showSpecialityModal.set(false);
+  }
 
-    if (roles.length) {
+  confirmSpeciality() {
+    const specialityId = Number(this.form.value.specialityId);
+    const speciality = this.specialities.find(
+      x => x.specialityId === specialityId
+    );
 
-      this.form.patchValue({
+    if (!speciality) return;
+    this.form.patchValue({
+      specialityId: specialityId,
+      specialityName: speciality.specialityName
+    });
+    console.log(speciality, "=========>", "speciality", this.selectedRole)
+    this.showSpecialityModal.set(false);
 
-        roleId: roles[0].id,
+  }
 
-        roleName: roles[0].name,
+  onRoleChange(roleId: any) {
 
-        role: roles[0].name
+    const currentRoleId = Number(roleId);
 
-      });
+    this.roleSelectionChanged = currentRoleId !== this.originalRoleId;
 
+    const selectedRole = this.selectedRole = this.allRoles.find(
+      x => x.roleId === currentRoleId
+    );
+
+    if (!selectedRole) {
+      this.departments = [];
+      this.designations = [];
+      return;
     }
 
+    this.departments = selectedRole.departments;
+    this.designations = selectedRole.designations;
+    console.log(this.departments, "=========>", "departments")
+
+    this.form.patchValue({
+      roleId: selectedRole.roleId,
+      roleName: selectedRole.roleName
+    });
   }
+  onDepartmentChange() {
+
+    const departmentId = Number(this.form.value.departmentId);
+
+    const department = this.departments.find(
+      x => x.departmentId === departmentId
+    );
+
+    this.specialities = department?.specialities ?? [];
+
+    this.form.patchValue({
+      departmentName: department?.departmentName ?? '',
+      departmentId: department?.departmentId ?? '',
+      specialityId: ''
+    });
+
+  }
+  onDesignationChange() {
+    const designationId = Number(this.form.value.designationId);
+
+    const designation = this.designations.find(
+      (x: any) => x.designationId === designationId
+    );
+    if (designation) {
+      this.form.patchValue({
+        designationName: designation.designationName
+      });
+    }
+  }
+  openDesignation() {
+    this.form.get('designationId')?.enable();
+    this.showDesignationModal.set(true);
+  }
+  openSpecialityModal() {
+
+    this.form.get('specialityId')?.enable();
+    this.showSpecialityModal.set(true);
+  }
+  closeDesignation() {
+    this.showDesignationModal.set(false);
+  }
+  preSelectWorkingDays(workingDays: string) {
+
+    if (!workingDays || !this.weekDays.length) return;
+
+    const selectedIds = workingDays.split(',').map(Number);
+
+    const dayNames = this.weekDays
+      .filter(x => selectedIds.includes(x.weekdayId))
+      .map(x => x.dayName);
+
+    this.form.patchValue({
+      days: dayNames
+    });
+
+  }
+
   confirmRole() {
+    if (this.roleSelectionChanged) {
+
+      this.form.patchValue({
+        departmentId: '',
+        departmentName: '',
+        specialityId: '',
+        specialityName: ''
+      });
+
+      // this.departments = [];
+      // this.specialities = [];
+    }
+
+    this.form.get('roleId')?.disable();
 
     this.closeRole();
 
+
+  }
+
+  confirmDesignation() {
+    const designationId = Number(this.form.value.designationId);
+
+    const designation = this.designations.find(
+      (x: any) => x.designationId === designationId
+    );
+    if (designation) {
+      this.form.patchValue({
+        designationName: designation.designationName
+      });
+    }
+    this.showDesignationModal.set(false);
   }
   confirmDepartment() {
 
-    const deptId = this.form.value.deptId;
+    const deptId = Number(this.form.value.departmentId)
 
-    const dept = this.departmentIds.find(x => x.id === deptId);
+    const dept = this.departments.find(x => x.departmentId === deptId);
 
     if (!dept) return;
 
     this.form.patchValue({
-      dept: dept.name
+      departmentName: dept.departmentName,
+      departmentId: dept.departmentId
+
     });
 
     this.showDepartmentModal.set(false);
   }
-  roleChanged() {
 
-    const deptId = this.form.value.roleDeptId;
-
-    const roleId = this.form.value.roleId;
-
-    const roles = this.roleData[deptId] ?? [];
-
-    const role = roles.find(x => x.id === roleId);
-
-    if (!role) return;
-
-    this.form.patchValue({
-      roleName: role.name
-    });
-
-  }
 
   toggleDay(day: string) {
 
-    if (this.daysDisabled) {
+    if (this.daysDisabled()) {
       return;
     }
 
@@ -349,20 +468,19 @@ export class EditAssociationComponent implements OnInit {
     } else {
       days.push(day);
     }
+    this.form.get('days')?.setValue(days);
 
-    this.form.patchValue({
-      days
-    });
+  }
 
+  isSelected(day: string): boolean {
+    const days = this.form.get('days')?.value;
+
+    return Array.isArray(days) && days.includes(day);
   }
   enableDays() {
-    this.daysDisabled = false;
+    this.daysDisabled.set(false);
   }
-  isSelected(day: string): boolean {
 
-    return (this.form.value.days || []).includes(day);
-
-  }
   loadData() {
 
     const selected = localStorage.getItem(this.SELECTED_KEY);
@@ -378,37 +496,83 @@ export class EditAssociationComponent implements OnInit {
     }
 
   }
+  to24Hour(time: string): string {
+    if (!time) return '';
+
+    const [timePart, modifier] = time.split(' ');
+    let [hours, minutes] = timePart.split(':').map(Number);
+
+    if (modifier === 'PM' && hours !== 12) {
+      hours += 12;
+    }
+
+    if (modifier === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:00`;
+  }
   save() {
+    // alert("Data Saved Successfully")
 
-    const rows = JSON.parse(
+    console.log(this.form.getRawValue(), "=========>", "this.form.value")
 
-      localStorage.getItem(this.STORAGE_KEY) ?? '[]'
+    const workingDays = this.form.value.days
+      .map((day: string) => {
+        return this.weekDays.find(x => x.dayName === day)?.weekdayId;
+      })
+      .filter((id: string | null) => id != null)
+      .join(',')
 
-    );
+    const payload = {
+      associateId: this.associateId,
+      roleId: this.form.get('roleId')?.value,
+      departmentId: this.form.get('departmentId')?.value,
+      specialityId: this.form.get('specialityId')?.value,
+      designationId: this.form.get('designationId')?.value,
+      fromDate: new Date(this.form.get('fromDate')?.value) ? new Date(this.form.get('fromDate')?.value)?.toISOString() : null,
+      toDate: new Date(this.form.get('toDate')?.value) ? new Date(this.form.get('toDate')?.value)?.toISOString() : null,
 
-    rows[this.selectedIndex()] = {
+      fromTime: this.to24Hour(this.form.get('fromTime')?.value) ? this.to24Hour(this.form.get('fromTime')?.value) : null,
+      toTime: this.to24Hour(this.form.get('toTime')?.value) ? this.to24Hour(this.form.get('toTime')?.value) : null,
 
-      ...rows[this.selectedIndex()],
+      breakTimeFrom: this.to24Hour(this.form.get('breakTimeFrom')?.value) ? this.to24Hour(this.form.get('breakTimeFrom')?.value) : null,
+      breakTimeTo: this.to24Hour(this.form.get('breakTimeTo')?.value) ? this.to24Hour(this.form.get('breakTimeTo')?.value) : null,
 
-      ...this.form.value
+      workingDays: workingDays ? workingDays : null,
 
+      consultationTime: Number(this.form.get('consultationTime')?.value) ? Number(this.form.get('consultationTime')?.value) : null,
+      averageCharge: Number(this.form.get('averageCharge')?.value) ? Number(this.form.get('averageCharge')?.value) : null,
+
+      updatedBy: this.loginUser.fullName
     };
 
-    localStorage.setItem(
+    console.log(payload);
+    this.store.dispatch(updateAssociatesAndItsSchedule({ associate: payload }))
+    this.store.select(selectUpdateAssociateDetailsByItID).subscribe((res: any) => {
+      if (res) {
+        this.router.navigate(['/admin/associate-list'])
+      }
+    })
 
-      this.STORAGE_KEY,
-
-      JSON.stringify(rows)
-
-    );
-
-    this.router.navigate(['/association-list']);
 
   }
 
   openDepartment() {
+    this.form.get('departmentId')?.enable();
 
     this.showDepartmentModal.set(true);
+
+    if (!this.roleSelectionChanged) {
+
+      this.form.patchValue({
+        departmentId: this.associate.departmentId,
+        departmentName: this.associate.departmentName
+      });
+
+    }
 
   }
 
@@ -416,21 +580,27 @@ export class EditAssociationComponent implements OnInit {
 
     this.showDepartmentModal.set(false);
 
+
   }
 
   openRole() {
+    this.form.get('roleId')?.enable();
+
+    this.originalRoleId = this.form.get('roleId')?.value;
 
     this.showRoleModal.set(true);
 
+
   }
-
   closeRole() {
-
+    // alert(this.form.get('roleId')?.value)
+    this.allRoles.find
     this.showRoleModal.set(false);
 
   }
 
   enableField(controlName: string, fromDate?: HTMLInputElement | HTMLSelectElement) {
+
     const control = this.form.get(controlName);
 
     if (!control) return;
@@ -442,6 +612,9 @@ export class EditAssociationComponent implements OnInit {
 
       if (fromDate instanceof HTMLInputElement &&
         fromDate.type === 'date') {
+        requestAnimationFrame(() => {
+          fromDate?.focus();
+        });
 
         fromDate.showPicker?.();
       }

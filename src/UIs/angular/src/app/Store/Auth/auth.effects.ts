@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AuthService } from '../../Services/auth.service';
+import { AuthService } from '../../core/Services/auth.service';
 import * as AuthActions from './auth.actions';
 import { catchError, mergeMap, map, of, exhaustMap, tap } from 'rxjs';
 
@@ -178,6 +178,24 @@ export class AuthEffects {
                 )
             )
         )
+    )
+
+    verifyOTPRequest$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.verifyOTP),
+            mergeMap((action) =>
+                this.authService.verifyOTP(action.email, action.otpCode).pipe(
+                    map((response: any) =>
+                        AuthActions.verifyOTPSuccess({ otpres: response })
+                    ),
+                    catchError((error) =>
+                        of(AuthActions.verifyOTPFailure({ error: error.message || 'Otp verification Failed' }))
+                    )
+                )
+            )
+
+        )
+
     )
 
 

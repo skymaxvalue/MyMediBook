@@ -9,7 +9,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/Store/app.state';
 import * as AuthActions from "../../../../Store/Auth/auth.actions";
-import { Country } from 'src/app/Models/Patient-Model';
+import { Country } from 'src/app/core/Models/Patient-Model';
 @Component({
   selector: "app-personal-info",
   imports: [FormsModule, ReactiveFormsModule],

@@ -1,0 +1,30 @@
+.layout{
+     display: block;
+  min-height: 100vh;
+  background-color: #F4F7FB;
+}
+.content{
+  background-color: #F4F7FB;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 25px;
+}
+
+.breadcrumb a {
+  color: #2554df;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.breadcrumb-arrow {
+  color: #2554df;
+  font-size: 24px;
+}
+
+.breadcrumb .current {
+  color: #1f2937;
+  font-weight: 500;
+}

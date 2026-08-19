@@ -1,0 +1,247 @@
+<div class="login-container">
+
+    <!-- ================= LEFT SECTION ================= -->
+
+    <section class="login-left">
+
+        <div class="left-overlay"></div>
+
+        <div class="hospital-logo">
+
+            <img src="assets/images/hospital2.png" alt="Hospital Logo">
+
+        </div>
+
+        <div class="left-content">
+
+            <h4>
+                HEALTH HEAVEN MEDICAL CENTER
+            </h4>
+
+            <h1>
+                Front Office Portal
+            </h1>
+
+            <p>
+                Appointment Check-ins
+                <span>•</span>
+                Walk-In Registration
+                <span>•</span>
+                Patient Queue
+            </p>
+
+        </div>
+
+        <div class="illustration-wrapper">
+
+            <img src="assets/images/front-office/images/front-office.png" alt="Front Office Illustration">
+
+        </div>
+
+        <div class="left-footer">
+
+            <img src="assets/images/front-office/images/shield.png" alt="Shield">
+
+            <span>
+                Manage patient arrivals efficiently.
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RIGHT SECTION ================= -->
+
+    <section class="login-right">
+
+        <div class="login-card">
+
+            <!-- Brand -->
+
+            <div class="brand">
+
+                <img src="assets/images/logo.png" alt="My Medi Book">
+
+                <div class="brand-text">
+
+                    <span class="black-text">My</span>
+                    <span class="green-text">Medi</span>
+                    <span class="blue-text">Book</span>
+
+                </div>
+
+            </div>
+
+
+            <h2>
+                Front Office Login
+            </h2>
+
+            <p class="login-subtitle">
+                Sign in to manage today's appointments.
+            </p>
+
+
+            <!-- Login Form -->
+
+            <form id="loginForm" (ngSubmit)="onLogin()">
+
+
+                <!-- Employee ID -->
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Employee ID
+                    </label>
+
+                    <div class="input-box">
+
+                        <img src="assets/images/front-office/images/emp.png" alt="User">
+
+                        <input type="text" id="username" name="username" placeholder="Enter your username"
+                            autocomplete="username" [(ngModel)]="username">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-box password-box">
+
+                        <img src="assets/images/front-office/images/lock.png" alt="Password">
+
+                        <input [type]="showPassword ? 'text' : 'password'" id="password" name="password"
+                            placeholder="Enter your password" autocomplete="current-password" [(ngModel)]="password">
+
+
+                        <!-- Password Toggle -->
+
+                        <button type="button" id="togglePassword" class="toggle-password" (click)="togglePassword()">
+
+                            <img [src]="showPassword
+                                    ? 'assets/images/hide.png'
+                                    : 'assets/images/show.png'" [alt]="showPassword
+                                    ? 'Hide Password'
+                                    : 'Show Password'">
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Options -->
+
+                <div class="options">
+
+                    <label class="remember">
+
+                        <input type="checkbox" id="remember" name="remember" [(ngModel)]="remember">
+
+                        <span class="checkmark"></span>
+
+                        Remember me
+
+                    </label>
+
+
+                    <a routerLink="/front-office/forgot-password">
+
+                        Forgot password?
+
+                    </a>
+
+                </div>
+
+
+                <!-- Login Button -->
+
+                <button type="submit" class="login-btn">
+
+                    <img src="assets/images/front-office/images/login-icon.png" alt="Login">
+
+                    <span>
+                        Sign In
+                    </span>
+
+                </button>
+
+
+                <!-- Secure Access -->
+
+                <div class="secure-access">
+
+                    <img src="assets/images/front-office/images/secure.png" alt="Secure">
+
+                    <span>
+                        Secure Hospital Access
+                    </span>
+
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <!-- Support -->
+
+                <div class="support">
+
+                    <h5>
+                        Trouble Signing In?
+                    </h5>
+
+                    <p>
+
+                        Contact
+
+                        <a href="#">
+                            System Support
+                        </a>
+
+                    </p>
+
+                </div>
+
+
+                <div class="divider bottom-divider"></div>
+
+
+                <!-- Powered By -->
+
+                <div class="powered-by">
+
+                    <small>
+                        Powered By
+                    </small>
+
+                    <div class="company">
+
+                        <img src="assets/images/front-office/images/skymax-footer.png" alt="SkyMaxValue">
+
+                        <span>
+                            SkyMaxValue Technology Solutions
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</div>

@@ -66,4 +66,10 @@ export const selectCity =
         state => state.getCities
     );
 
+export const selectVerifyOTP =
+    createSelector(
+        selectAuthState,
+        state => state.otpres
+    );
+
 

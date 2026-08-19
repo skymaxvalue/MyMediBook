@@ -1,0 +1,226 @@
+{
+  "stats": [
+    {
+      "title": "Today's Appointments",
+      "value": "52",
+      "icon": "calendar2.png",
+      "color": "blue"
+    },
+    {
+      "title": "Walk-ins Waiting",
+      "value": "08",
+      "icon": "walkin.png",
+      "color": "green"
+    },
+    {
+      "title": "Checked In",
+      "value": "27",
+      "icon": "checked-in.png",
+      "color": "purple"
+    },
+    {
+      "title": "Pending Payments",
+      "value": "05",
+      "icon": "payment.png",
+      "color": "orange"
+    },
+    {
+      "title": "Lab Results",
+      "value": "09",
+      "icon": "lab.png",
+      "color": "blue"
+    }
+  ],
+
+  "quickActions": [
+    {
+      "title": "Patient Registration",
+      "description": "Register new patient",
+      "icon": "patient-registration2.png",
+      "color": "blue",
+      "route": "patient-registration"
+    },
+    {
+      "title": "Patient Check-in",
+      "description": "Check-in existing patient",
+      "icon": "checkin2.png",
+      "color": "green",
+      "route": "patient-checkin"
+    },
+    {
+      "title": "Book Appointment",
+      "description": "Schedule new appointment",
+      "icon": "book.png",
+      "color": "orange",
+      "route": "book-appointment"
+    },
+    {
+      "title": "Next in Queue",
+      "description": "View next patient in queue",
+      "icon": "queue2.png",
+      "color": "purple",
+      "route": "queue"
+    },
+    {
+      "title": "Walk-in Registration",
+      "description": "Quick walk-in registration",
+      "icon": "walkin-reg.png",
+      "color": "cyan",
+      "route": "patient-registration"
+    }
+  ],
+
+  "services": [
+    {
+      "title": "Lab Service",
+      "description": "Create lab request",
+      "icon": "lab2.png",
+      "color": "purple",
+      "route": "lab-service"
+    },
+    {
+      "title": "Room Service",
+      "description": "Manage room allotment",
+      "icon": "room-service.png",
+      "color": "blue",
+      "route": "room-service"
+    },
+    {
+      "title": "Consultation",
+      "description": "Create OP consultation",
+      "icon": "consultation.png",
+      "color": "green",
+      "route": "consultation"
+    },
+    {
+      "title": "Follow-up Visits",
+      "description": "Schedule follow-up",
+      "icon": "doctor.png",
+      "color": "blue",
+      "route": "follow-up"
+    },
+    {
+      "title": "Prescription Refill",
+      "description": "E-prescription & refills",
+      "icon": "prescription.png",
+      "color": "purple",
+      "route": "prescription"
+    },
+    {
+      "title": "Payment",
+      "description": "Collect and manage payments",
+      "icon": "payment2.png",
+      "color": "green",
+      "route": "payment"
+    }
+  ],
+
+  "billingClaims": [
+    {
+      "title": "Claims Dashboard",
+      "description": "View claims overview",
+      "icon": "claims.png",
+      "color": "blue",
+      "route": "claims"
+    },
+    {
+      "title": "Credit Card Processing",
+      "description": "Integrated Credit Card Processing",
+      "icon": "payment2.png",
+      "color": "green",
+      "route": "credit-card-processing"
+    },
+    {
+      "title": "Insurance & Billing",
+      "description": "Manage insurance & billing",
+      "icon": "insurance2.png",
+      "color": "blue",
+      "route": "insurance"
+    },
+    {
+      "title": "Payment Queue",
+      "description": "View pending payments",
+      "icon": "payment.png",
+      "color": "orange",
+      "route": "payment-queue"
+    }
+  ],
+
+  "recentPatients": [
+    {
+      "initials": "RK",
+      "name": "Ramesh Kumar",
+      "uhid": "HH24567",
+      "status": "Checked In",
+      "statusClass": "checked-in",
+      "time": "10 mins ago",
+      "avatarClass": "blue"
+    },
+    {
+      "initials": "LP",
+      "name": "Lakshmi Patel",
+      "uhid": "HH24568",
+      "status": "Pending Payment",
+      "statusClass": "pending-payment",
+      "time": "15 mins ago",
+      "avatarClass": "green"
+    },
+    {
+      "initials": "RS",
+      "name": "Rahul Singh",
+      "uhid": "HH24569",
+      "status": "Waiting",
+      "statusClass": "waiting",
+      "time": "20 mins ago",
+      "avatarClass": "purple"
+    },
+    {
+      "initials": "AS",
+      "name": "Anita Sharma",
+      "uhid": "HH24570",
+      "status": "Lab Pending",
+      "statusClass": "lab-pending",
+      "time": "25 mins ago",
+      "avatarClass": "cyan"
+    }
+  ],
+
+  "todaysQueue": [
+    {
+      "initials": "RV",
+      "patient": "Rajesh Verma",
+      "doctor": "Dr. Arun Sharma",
+      "time": "10:30 AM",
+      "status": "Waiting",
+      "statusClass": "waiting",
+      "avatarClass": "blue"
+    },
+    {
+      "initials": "AG",
+      "patient": "Anita Gupta",
+      "doctor": "Dr. Priya Singh",
+      "time": "10:45 AM",
+      "status": "In Consultation",
+      "statusClass": "consultation",
+      "avatarClass": "green"
+    },
+    {
+      "initials": "SD",
+      "patient": "Suman Das",
+      "doctor": "Dr. Kumar",
+      "time": "11:00 AM",
+      "status": "Waiting",
+      "statusClass": "waiting",
+      "avatarClass": "purple"
+    },
+    {
+      "initials": "MI",
+      "patient": "Mohd. Irfan",
+      "doctor": "Dr. Neha Patel",
+      "time": "11:15 AM",
+      "status": "Waiting",
+      "statusClass": "waiting",
+      "avatarClass": "blue"
+    }
+  ]
+}

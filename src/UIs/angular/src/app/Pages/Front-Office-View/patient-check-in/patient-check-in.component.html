@@ -1,0 +1,441 @@
+<main class="dashboard-container">
+
+
+
+    <section class="checkin-card">
+
+        <div class="checkin-header">
+
+            <div class="checkin-header-left">
+
+                <div class="checkin-icon">
+                    <img src="/assets/images/appointment-icon.png" alt="Check-In">
+                </div>
+
+                <div>
+                    <h1>Check-In by Appointment</h1>
+
+                    <p>
+                        Search patient by details or doctor to check-in
+                        for their appointment.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="checkin-search-area">
+
+
+            <div class="form-group">
+
+                <label>Patient Full Name</label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+                    </span>
+
+                    <input type="text" placeholder="Enter full name" [ngModel]="patientName()"
+                        (ngModelChange)="patientName.set($event)">
+                </div>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>Date of Birth</label>
+
+                <div class="input-wrapper">
+
+                    <input type="date" [ngModel]="dob()" (ngModelChange)="dob.set($event)">
+
+                </div>
+
+            </div>
+
+
+            <div class="or-divider">
+                <span>OR</span>
+            </div>
+
+
+
+
+            <div class="form-group doctor-wrapper">
+
+                <label>Doctor Name</label>
+
+                <div class="input-wrapper">
+
+                    <input type="text" placeholder="Select Doctor" autocomplete="off" [ngModel]="doctorName()"
+                        (ngModelChange)="doctorName.set($event)" (focus)="openDoctorDropdown()">
+
+                    <span class="doctor-arrow">⌄</span>
+
+                </div>
+
+
+                @if(showDoctorDropdown()) {
+
+                <div class="doctor-dropdown">
+
+                    @for (doctor of filteredDoctors(); track doctor) {
+
+                    <div class="doctor-option" (click)="selectDoctor(doctor)">
+
+                        {{ doctor }}
+
+                    </div>
+
+                    }
+
+                </div>
+
+                }
+
+            </div>
+
+
+
+
+            <button type="button" class="search-btn" (click)="searchAppointments()">
+
+                <img src="/assets/images/front-office/images/search-white.png" alt="">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+
+    <section class="department-bar">
+
+        <div class="department-title">
+
+            <img src="/assets/images/front-office/images/group.png" alt="">
+
+            <span>
+                General Physician
+            </span>
+
+        </div>
+
+        <button class="department-toggle">
+            ↓
+        </button>
+
+    </section>
+
+
+
+    <section class="results-card">
+
+        <div class="results-header">
+
+            <div>
+
+                <div class="results-title">
+
+                    <h2>Appointment Results</h2>
+
+                    <span class="count-badge">
+                        {{ filteredAppointments().length }}
+                        Appointments Found
+                    </span>
+
+                </div>
+
+                <p>
+                    Select a patient and click on Check In to continue.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>#</th>
+                        <th>Patient Name</th>
+                        <th>DOB</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                        <th>Email ID</th>
+                        <th>Doctor Name</th>
+                        <th>Room Number</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @for (
+                    appointment of filteredAppointments();
+                    track appointment.id;
+                    let i = $index
+                    ) {
+
+                    <tr [class.selected-row]="
+                selectedPatient()?.id === appointment.id
+              ">
+
+                        <td>
+                            {{ i + 1 }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ appointment.patientName }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ formatDate(appointment.dob) }}
+                        </td>
+
+                        <td>
+                            {{ appointment.address }}
+                        </td>
+
+                        <td>
+                            {{ appointment.phone }}
+                        </td>
+
+                        <td>
+                            {{ appointment.email }}
+                        </td>
+
+                        <td>
+                            {{ appointment.doctorName }}
+                        </td>
+
+                        <td>
+                            {{ appointment.roomNumber }}
+                        </td>
+
+                        <td>
+
+                            <button class="select-btn" type="button" (click)="selectPatient(appointment)">
+
+                                @if(selectedPatient()?.id === appointment.id) {
+                                Selected
+                                } @else {
+                                Select
+                                }
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                    @if(filteredAppointments().length === 0) {
+
+                    <tr>
+
+                        <td colspan="9" class="no-data">
+
+                            No appointments found.
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+
+    <div class="checkin-actions">
+
+        <button type="button" class="primary-btn" [disabled]="!selectedPatient()" (click)="openConfirmModal()">
+
+            <img src="/assets/images/front-office/images/patient-registration.png" alt="">
+
+            Check In
+
+        </button>
+
+    </div>
+
+</main>
+
+
+
+@if(showConfirmModal()) {
+
+<div class="modal-backdrop">
+
+    <div class="modal-content">
+
+        <button class="modal-close" (click)="closeConfirmModal()">
+
+            ×
+
+        </button>
+
+        <h2>Confirm Check-In</h2>
+
+        <p class="modal-description">
+
+            Please review the details below before
+            checking in the patient.
+
+        </p>
+
+
+        @if(selectedPatient(); as patient) {
+
+        <div class="details-box">
+
+            <div>
+                <span>Patient</span>
+                <strong>{{ patient.patientName }}</strong>
+            </div>
+
+            <div>
+                <span>DOB</span>
+                <strong>{{ formatDate(patient.dob) }}</strong>
+            </div>
+
+            <div>
+                <span>Doctor</span>
+                <strong>{{ patient.doctorName }}</strong>
+            </div>
+
+            <div>
+                <span>Room</span>
+                <strong>{{ patient.roomNumber }}</strong>
+            </div>
+
+        </div>
+
+        }
+
+
+        <div class="modal-actions">
+
+            <button class="secondary-btn" (click)="closeConfirmModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="primary-btn" (click)="confirmCheckIn()">
+
+                Confirm Check-In
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+
+@if(showSuccessModal()) {
+
+<div class="modal-backdrop">
+
+    <div class="modal-content success-modal">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>
+            Patient Checked In Successfully!
+        </h2>
+
+        <p class="modal-description">
+
+            The patient has been checked in for
+            the appointment.
+
+        </p>
+
+
+        @if(selectedPatient(); as patient) {
+
+        <div class="details-box">
+
+            <div>
+                <span>Patient</span>
+                <strong>
+                    {{ patient.patientName }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Doctor</span>
+                <strong>
+                    {{ patient.doctorName }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Room</span>
+                <strong>
+                    {{ patient.roomNumber }}
+                </strong>
+            </div>
+
+        </div>
+
+        }
+
+
+        <div class="modal-actions">
+
+            <button class="secondary-btn" (click)="closeSuccessModal()">
+
+                Done
+
+            </button>
+
+            <button class="primary-btn" (click)="closeSuccessModal()">
+
+                View Queue
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

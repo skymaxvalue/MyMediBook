@@ -145,4 +145,21 @@ export const authReducer = createReducer(
         error: action.error,
     })),
 
+    on(AuthActions.verifyOTP, (state) => ({
+        ...state,
+        isLoading: true,
+    })),
+
+    on(AuthActions.verifyOTPSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        otpres: action.otpres,
+    })),
+
+    on(AuthActions.verifyOTPFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    })),
+
 )

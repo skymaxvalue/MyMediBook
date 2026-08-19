@@ -74,17 +74,21 @@
                 </tbody>
             </table>
 
-            <div class="modal" *ngIf="showDeleteModal">
 
-                <div class="modal-box">
+        </div>
+    </section>
+</main>
+<div class="modal" *ngIf="showDeleteModal">
 
-                    <p>
+    <div class="modal-box">
 
-                        Delete {{deleteRow?.firstName}} {{deleteRow?.lastName}} ?
+        <p>
 
-                    </p>
+            Delete {{deleteRow?.firstName}} {{deleteRow?.lastName}} ?
 
-                    <!-- <button >
+        </p>
+
+        <!-- <button >
 
                         Yes
 
@@ -95,15 +99,12 @@
                         Cancel
 
                     </button> -->
-                    <div class="modal-actions">
-                        <button id="confirmDelete" class="action-btn delete" (click)="deleteConfirmed()">Yes,
-                            Delete</button>
-                        <button id="cancelDelete" class="action-btn cancel" (click)="closeModal()">Cancel</button>
-                    </div>
-
-                </div>
-
-            </div>
+        <div class="modal-actions">
+            <button id="confirmDelete" class="action-btn delete" (click)="deleteConfirmed()">Yes,
+                Delete</button>
+            <button id="cancelDelete" class="action-btn cancel" (click)="closeModal()">Cancel</button>
         </div>
-    </section>
-</main>
+
+    </div>
+
+</div>

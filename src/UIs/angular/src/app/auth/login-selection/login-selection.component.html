@@ -1,0 +1,23 @@
+<div class="login-selection-container">
+
+    <h2>Select Login Type</h2>
+
+    <p>Please select your login type to continue</p>
+
+    <select class="login-dropdown" (change)="onLoginTypeChange($event)">
+        <option value="">-- Select Login --</option>
+
+        <option value="front-office">
+            Front Office
+        </option>
+
+        <option value="patient">
+            Patient
+        </option>
+
+        <option value="admin">
+            Admin
+        </option>
+    </select>
+
+</div>
