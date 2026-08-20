@@ -6,6 +6,7 @@ using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Orders;
 using Medicare.Application.Models.RxOrder;
 using Medicare.DAL.Persistence.Dapper;
+using System.Text.Json;
 
 namespace Medicare.DAL.Persistence.Repositories
 {
@@ -75,17 +76,23 @@ namespace Medicare.DAL.Persistence.Repositories
             ResponseModel returnData = new ResponseModel();
             try
             {
+                if (model.MedicineOrder == null || !model.MedicineOrder.Any())
+                {
+                    return new ResponseModel
+                    {
+                        IsSuccess = 0,
+                        Status = 0,
+                        ResponseMessage = "At Least One Medicine Is Required"
+                    };
+                }
+
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
                 param.Add("ProfileId", model.ProfileId);
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("PharmacyId", model.PharmacyId);
-                param.Add("DrugName", model.DrugName);
-                param.Add("Dosage", model.Dosage);
-                param.Add("Frequency", model.Frequency);
-                param.Add("DurationDays", model.DurationDays);
-                param.Add("Instructions", model.Instructions);
-                param.Add("ExpiryDate", model.ExpiryDate);
+
+                param.Add("MedicineOrder", JsonSerializer.Serialize(model.MedicineOrder));
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }

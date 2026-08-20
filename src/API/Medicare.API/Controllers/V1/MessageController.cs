@@ -21,15 +21,18 @@ namespace Medicare.API.Controllers.V1
         }
 
         [Authorize]
-        [HttpGet("MessageListById/{id}")]
+        [HttpGet]
+        [Route("MessageListById/{id}")]
         public async Task<IActionResult> GetMessageListById(int id)
         {
             List<MessageResponseModel> response = new List<MessageResponseModel>();
             response = await _mediator.Send(new GetMessageListByIdQuery(id));
             return HandleListResponse(response);
         }
+
         [Authorize]
-        [HttpGet("UpdateMessageToRead")]
+        [HttpPost]
+        [Route("UpdateMessageToRead")]
         public async Task<IActionResult> UpdateMessageToRead(UpdateMessageRequestModel model)
         {
             ResponseModel response = new ResponseModel();
