@@ -328,8 +328,8 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("OtpHash", model.OtpHash);
                 param.Add("OtpExpiry", model.OtpExpiry);
                 param.Add("OtpAttempts", model.OtpAttempts);
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
 
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
             }
             catch (Exception ex)
             {
@@ -352,8 +352,8 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("Email", email);
-                returnData = await _context.QuerySingleStoredProcAsync<OtpDetailModel>(procName, param);
 
+                returnData = await _context.QuerySingleStoredProcAsync<OtpDetailModel>(procName, param);
             }
             catch (Exception ex)
             {
@@ -377,7 +377,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 {
                     ToEmail = toEmail,
                     ToName = toName,
-                    Subject = "Your Medicare Login OTP",
+                    Subject = "Medicare OTP",
                     Body = BuildOtpEmailBody(toName, otpCode),
                     IsHtml = true
                 };

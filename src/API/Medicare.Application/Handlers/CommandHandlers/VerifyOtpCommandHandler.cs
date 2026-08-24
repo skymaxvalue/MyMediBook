@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Interfaces.IAuthRepository;
+using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 
 namespace Medicare.Application.Handlers.CommandHandlers
@@ -17,7 +18,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
         }
         public async Task<ResponseModel> Handle(VerifyOtpCommand request, CancellationToken ct)
         {
-            var otpDetail = await _authRepository.GetOtpDetailAsync(request.model.Email);
+            OtpDetailModel otpDetail = await _authRepository.GetOtpDetailAsync(request.model.Email);
 
             if (otpDetail is null)
                 return new ResponseModel
@@ -33,7 +34,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                     ResponseMessage = "OTP locked. Please request a new one."
                 };
 
-            if (DateTime.UtcNow > otpDetail.OtpExpiry)
+            if (otpDetail.OtpExpiry == null || otpDetail.OtpExpiry < DateTime.UtcNow)
                 return new ResponseModel
                 {
                     IsSuccess = 0,
@@ -41,16 +42,6 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 };
 
             var validOtp = _passwordHelper.VerifyPassword(request.model.OtpCode, otpDetail.OtpHash);
-
-            //if (!validOtp)
-            //{
-            //    await _authRepository.IncrementOtpAttemptsAsync(otpDetail.Email);
-            //    return new ResponseModel
-            //    {
-            //        IsSuccess = 0,
-            //        ResponseMessage = "Invalid OTP."
-            //    };
-            //}
 
             await _authRepository.ClearOtpAsync(request.model.Email);
 

@@ -168,8 +168,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("CardHolder", model.PaymentData?.CardHolder);
                 param.Add("CardNumber", model.PaymentData?.CardNumber);
                 param.Add("Expiry", model.PaymentData?.Expiry);
-                param.Add("CvvHash", model.PaymentData?.CvvHash, dbType: DbType.Binary);
-                param.Add("CvvSalt", model.PaymentData?.CvvSalt, dbType: DbType.Binary);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(appointmentProc, param);
 

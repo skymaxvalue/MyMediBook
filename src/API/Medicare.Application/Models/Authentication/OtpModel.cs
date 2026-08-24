@@ -11,7 +11,7 @@ namespace Medicare.Application.Models.Authentication
         public string Email { get; set; }
         [JsonIgnore]
         public string OtpHash { get; set; }  
-        public DateTime OtpExpiry { get; set; }
+        public DateTime? OtpExpiry { get; set; }
         public int OtpAttempts { get; set; } = 0;
         public string ResponseMessage { get; set; }
         public int IsSuccess { get; set; }

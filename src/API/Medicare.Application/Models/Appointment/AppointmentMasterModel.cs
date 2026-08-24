@@ -42,10 +42,5 @@ namespace Medicare.Application.Models.Appointment
         public string? CardHolder { get; set; }
         public string? CardNumber { get; set; }
         public string? Expiry { get; set; }
-        public string? CVV { get; set; }
-        [JsonIgnore]
-        public byte[]? CvvHash { get; set; }
-        [JsonIgnore]
-        public byte[]? CvvSalt { get; set; }
     }
 }
