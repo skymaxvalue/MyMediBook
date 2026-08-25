@@ -22,7 +22,7 @@ export class AppointmentEffects {
                     .pipe(
                         map((response: any) =>
                             AppointmentActions.createAppointmentSuccess({
-                                appointment: response
+                                appointment: response.data
                             })
                         ),
 

@@ -59,7 +59,7 @@ export const authReducer = createReducer(
     on(AuthActions.requestOTPSuccess, (state, action) => ({
         ...state,
         isLoading: false,
-        requestedOtp: action.requesteOTP
+        requestedOtp: action.requestedOtp
     })),
 
     on(AuthActions.requestOTPFailure, (state, action) => ({
@@ -157,6 +157,23 @@ export const authReducer = createReducer(
     })),
 
     on(AuthActions.verifyOTPFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    })),
+
+    on(AuthActions.ForrgetResetPassword, (state) => ({
+        ...state,
+        isLoading: true,
+    })),
+
+    on(AuthActions.ForrgetResetPasswordSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        resetPassRes: action.resetPassRes,
+    })),
+
+    on(AuthActions.ForrgetResetPasswordFailure, (state, action) => ({
         ...state,
         isLoading: false,
         error: action.error

@@ -56,7 +56,7 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.authService.requestOTP({ email: action.email }).pipe(
                     map((response: any) =>
-                        AuthActions.requestOTPSuccess({ requesteOTP: response })
+                        AuthActions.requestOTPSuccess({ requestedOtp: response })
                     ),
                     catchError((error) =>
                         of(AuthActions.requestOTPFailure({ error: error.message || 'Login Failed' }))
@@ -186,7 +186,7 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.authService.verifyOTP(action.email, action.otpCode).pipe(
                     map((response: any) =>
-                        AuthActions.verifyOTPSuccess({ otpres: response })
+                        AuthActions.verifyOTPSuccess({ otpres: response.data })
                     ),
                     catchError((error) =>
                         of(AuthActions.verifyOTPFailure({ error: error.message || 'Otp verification Failed' }))
@@ -198,9 +198,23 @@ export class AuthEffects {
 
     )
 
+    ForrgetResetPasswordRequest$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.ForrgetResetPassword),
+            mergeMap((action) =>
+                this.authService.ForgotPassReset(action.password, action.token, action.isAssociate).pipe(
+                    map((response: any) =>
+                        AuthActions.ForrgetResetPasswordSuccess({ resetPassRes: response })
+                    ),
+                    catchError((error) =>
+                        of(AuthActions.ForrgetResetPasswordFailure({ error: error.message || 'Otp verification Failed' }))
+                    )
+                )
+            )
 
+        )
 
-
+    )
 
 
 }

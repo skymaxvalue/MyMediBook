@@ -7,6 +7,10 @@ import {
   Validators
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
+import { requestOTP } from 'src/app/Store/Auth/auth.actions';
+import { selectRequestedOTP, selectVerifyOTP } from 'src/app/Store/Auth/auth.selectors';
 @Component({
   selector: "app-forgot-password",
   imports: [CommonModule,
@@ -21,7 +25,8 @@ export class ForgotPasswordComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>,
   ) {
     this.forgotPasswordForm = this.fb.group({
       identifier: ['', Validators.required]
@@ -32,7 +37,7 @@ export class ForgotPasswordComponent {
     return this.forgotPasswordForm.get('identifier');
   }
 
-  sendOTP(): void {
+  async sendOTP() {
 
     this.submitted = true;
 
@@ -68,15 +73,26 @@ export class ForgotPasswordComponent {
       value
     );
 
-    localStorage.setItem(
-      'otpFlow',
-      'forgot-password'
-    );
+    await this.store.dispatch(requestOTP({ email: value }))
 
-    // Navigate to OTP page
-    this.router.navigate([
-      '/front-office/sendotp-verification'
-    ]);
+    await this.store.select(selectRequestedOTP).subscribe((res: any) => {
+      if (res) {
+        localStorage.setItem(
+          'otpFlow',
+          'forgot-password'
+        );
+
+        // Navigate to OTP page
+        this.router.navigate([
+          '/front-office/sendotp-verification'
+        ],
+          {
+            state: {
+              emailId: value
+            }
+          });
+      }
+    })
   }
 
   onFocus(): void {

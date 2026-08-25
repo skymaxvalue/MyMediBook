@@ -1,0 +1,615 @@
+<main class="dashboard-container">
+
+
+    <div class="queue-layout">
+
+
+
+        <aside class="doctor-card">
+
+            <div class="doctor-image-wrapper">
+
+                <img src="/assets/images/doc.jpg" alt="Doctor Image" />
+
+            </div>
+
+
+            <h1>
+                {{ doctorName }}
+            </h1>
+
+
+            <div class="doctor-qualification">
+                MBBS, FRCS
+            </div>
+
+
+            <div class="doctor-divider"></div>
+
+
+            <!-- Department -->
+
+            <div class="doctor-info-item">
+
+                <div class="info-icon department-icon">
+
+                    <img src="/assets/images/front-office/images/department.png" alt="" />
+
+                </div>
+
+                <div>
+
+                    <span class="info-label">
+                        Department
+                    </span>
+
+                    <strong>
+                        {{ doctorDepartment }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Room -->
+
+            <div class="doctor-info-item">
+
+                <div class="info-icon room-icon">
+
+                    <img src="/assets/images/front-office/images/room.png" alt="" />
+
+                </div>
+
+                <div>
+
+                    <span class="info-label">
+                        Room Number
+                    </span>
+
+                    <strong>
+                        {{ doctorRoom }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Appointment Count -->
+
+            <div class="doctor-info-item">
+
+                <div class="info-icon appointment-icon">
+
+                    <img src="/assets/images/front-office/images/today.png" alt="" />
+
+                </div>
+
+                <div>
+
+                    <span class="info-label">
+                        Today's Appointments
+                    </span>
+
+                    <strong>
+                        {{ queuePatients.length.toString().padStart(2, '0') }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- ================= QUEUE CONTENT ================= -->
+
+        <section class="queue-content">
+
+
+            <!-- ================= HEADER ================= -->
+
+            <div class="queue-header">
+
+                <div class="queue-title">
+
+                    <div class="queue-title-icon">
+
+                        <img src="/assets/images/front-office/images/calendar2.png" alt="" />
+
+                    </div>
+
+                    <h2>
+                        Appointment Check-Ins
+                    </h2>
+
+                </div>
+
+
+                <!-- DATE SELECTOR -->
+
+                <label class="date-selector">
+
+                    <img src="/assets/images/front-office/images/calendar2.png" alt="" />
+
+                    <span>
+                        {{ queueDateLabel }}
+                    </span>
+
+                    <span class="date-arrow" (click)="openCalendar()">
+                        ⌄
+                    </span>
+
+                    <input #dateInput type="date" class="hidden-date-input" [(ngModel)]="selectedDate"
+                        (change)="onDateChange()" />
+
+                </label>
+
+            </div>
+
+
+
+            <!-- ================= QUEUE TABLE ================= -->
+
+            <div class="queue-table-card">
+
+                <table class="queue-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Patient Name
+                            </th>
+
+                            <th>
+                                Appointment Time
+                            </th>
+
+                            <th>
+                                Checked-in
+                            </th>
+
+                            <th>
+                                Consultation Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        <!-- ================= NO DATA ================= -->
+
+                        @if (queuePatients.length === 0) {
+
+                        <tr>
+
+                            <td colspan="5" class="empty-queue">
+
+                                No appointments found for this date.
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+
+                        <!-- ================= PATIENTS ================= -->
+
+                        @else {
+
+                        @for (
+                        patient of queuePatients;
+                        track patient.id;
+                        let i = $index
+                        ) {
+
+                        <tr>
+
+
+                            <!-- Serial Number -->
+
+                            <td>
+                                {{ i + 1 }}
+                            </td>
+
+
+                            <!-- Patient Name -->
+
+                            <td>
+                                {{ patient.name }}
+                            </td>
+
+
+                            <!-- Appointment Time -->
+
+                            <td>
+                                {{ patient.time }}
+                            </td>
+
+
+                            <!-- Checked In -->
+
+                            <td>
+
+                                <div class="checked-in" [class.active]="patient.checkedIn" [title]="
+                                        patient.checkedIn
+                                        ? 'Already checked in'
+                                        : 'Click to check in'
+                                    " (click)="
+                                        !patient.checkedIn &&
+                                        openConfirmModal(patient)
+                                    ">
+                                </div>
+
+                            </td>
+
+
+                            <!-- Consultation Status -->
+
+                            <td>
+
+                                <select class="status-select" [class.completed]="
+                                        patient.status === 'Completed'
+                                    " [class.consultation]="
+                                        patient.status === 'In consultation'
+                                    " [class.next]="
+                                        patient.status === 'Next in queue'
+                                    " [(ngModel)]="patient.status" (change)="
+                                        updatePatientStatus(patient)
+                                    ">
+
+                                    <option value="--">
+                                        --
+                                    </option>
+
+                                    <option value="Next in queue">
+                                        Next in queue
+                                    </option>
+
+                                    <option value="In consultation">
+                                        In consultation
+                                    </option>
+
+                                    <option value="Completed">
+                                        Completed
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+
+            <!-- ================= BACK BUTTON ================= -->
+
+            <div class="queue-actions">
+
+                <button type="button" class="back-search-btn" (click)="backToSearch()">
+
+                    <span class="back-arrow">
+                        ←
+                    </span>
+
+                    Back to Search Appointment
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     CONFIRM CHECK-IN MODAL
+========================================================= -->
+
+@if (showConfirmModal) {
+
+<div class="queue-modal show" (click)="closeConfirmModalOnOutsideClick($event)">
+
+    <div class="queue-modal-content">
+
+
+        <!-- Close -->
+
+        <button type="button" class="modal-close" (click)="closeConfirmModal()">
+            ×
+        </button>
+
+
+        <!-- Icon -->
+
+        <div class="modal-icon">
+
+            <img src="/assets/images/front-office/images/info-blue.png" alt="" />
+
+        </div>
+
+
+        <h2>
+            Confirm Check-In
+        </h2>
+
+
+        <p class="modal-subtitle">
+
+            Please review the details below before
+            checking in the patient.
+
+        </p>
+
+
+        <!-- Patient Details -->
+
+        @if (selectedPatient) {
+
+        <div class="queue-modal-details">
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Patient Name
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ selectedPatient.name }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    UHID
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ selectedPatient.uhid || '-' }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Doctor
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ doctorName }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Appointment Time
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ selectedPatient.time }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Room Number
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ doctorRoom }}
+                </span>
+
+            </div>
+
+        </div>
+
+        }
+
+
+        <!-- Actions -->
+
+        <div class="modal-actions">
+
+            <button type="button" class="modal-secondary-btn" (click)="closeConfirmModal()">
+                Cancel
+            </button>
+
+
+            <button type="button" class="modal-primary-btn" (click)="confirmCheckIn()">
+                Confirm Check-In
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+
+
+<!-- =========================================================
+     SUCCESS MODAL
+========================================================= -->
+
+@if (showSuccessModal) {
+
+<div class="queue-modal show" (click)="closeSuccessModalOnOutsideClick($event)">
+
+    <div class="queue-modal-content">
+
+
+        <!-- Success Icon -->
+
+        <div class="success-icon">
+
+            <span>
+                ✓
+            </span>
+
+        </div>
+
+
+        <h2>
+            Patient Checked In Successfully!
+        </h2>
+
+
+        <p class="modal-subtitle">
+
+            The patient has been checked in for the appointment.
+
+        </p>
+
+
+        <!-- Success Details -->
+
+        @if (selectedPatient) {
+
+        <div class="queue-modal-details">
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Patient Name
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ selectedPatient.name }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    UHID
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ selectedPatient.uhid || '-' }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Doctor
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ doctorName }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Appointment Time
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ selectedPatient.time }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Room Number
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ doctorRoom }}
+                </span>
+
+            </div>
+
+
+            <div class="queue-detail-row">
+
+                <span class="queue-detail-label">
+                    Check-In Time
+                </span>
+
+                <span class="queue-detail-value">
+                    {{ checkInTime }}
+                </span>
+
+            </div>
+
+        </div>
+
+        }
+
+
+        <!-- Actions -->
+
+        <div class="modal-actions">
+
+            <button type="button" class="modal-secondary-btn" (click)="viewQueue()">
+                View Queue
+            </button>
+
+
+            <button type="button" class="modal-primary-btn" (click)="done()">
+                Done
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

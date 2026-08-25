@@ -7,12 +7,14 @@ import {
   ElementRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
 import { FormsModule } from '@angular/forms';
 
 
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AppState } from 'src/app/Store/app.state';
+import { Store } from '@ngrx/store';
+import { verifyOTP } from 'src/app/Store/Auth/auth.actions';
+import { selectVerifyOTP } from 'src/app/Store/Auth/auth.selectors';
 
 @Component({
   selector: "app-otp-verification",
@@ -40,10 +42,12 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   pendingUser: any = null;
 
   private countdown: any;
+  resetPasswordToken: any;
+  emailId: any;
 
 
   constructor(
-    private router: Router
+    private router: Router, private store: Store<AppState>, private route: ActivatedRoute
   ) {
     this.currentUrl = this.router.url;
     console.log('Current URL:', this.currentUrl);
@@ -51,26 +55,31 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    if (this.currentUrl !== "/front-office/sendotp-verification") {
-      const pendingUser = localStorage.getItem('pendingUser');
 
-      if (!pendingUser) {
+    this.emailId = history.state.emailId;
 
-        this.router.navigate(['/front-office/login']);
+    console.log('Email ID:', this.emailId);
 
-        return;
-      }
+    // if (this.currentUrl !== "/front-office/sendotp-verification") {
+    //   const pendingUser = localStorage.getItem('pendingUser');
 
-      try {
+    //   if (!pendingUser) {
 
-        this.pendingUser = JSON.parse(pendingUser);
+    //     this.router.navigate(['/front-office/login']);
 
-      } catch {
+    //     return;
+    //   }
 
-        this.pendingUser = pendingUser;
+    //   try {
 
-      }
-    }
+    //     this.pendingUser = JSON.parse(pendingUser);
+
+    //   } catch {
+
+    //     this.pendingUser = pendingUser;
+
+    //   }
+    // }
 
     // Check pending user
 
@@ -272,12 +281,11 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.startTimer();
 
 
-    // Demo
-    alert('Demo OTP: 1234');
+
 
   }
 
-  verifyOtp(): void {
+  async verifyOtp() {
 
     this.errorMessage = '';
 
@@ -296,66 +304,25 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     }
 
 
-    this.isLoading = true;
+    // this.isLoading = true;
 
+    await this.store.dispatch(verifyOTP({ email: this.emailId, otpCode: enteredOtp }))
 
-
-    setTimeout(() => {
-
-      this.isLoading = false;
-
-
-      if (enteredOtp === '1234') {
-
-        localStorage.setItem(
-          'isLoggedIn',
-          'true'
-        );
-
-
-        localStorage.removeItem(
-          'pendingUser'
-        );
-
-
-        this.clearTimer();
-
-        // After successful verification
-        if (this.router.url === "/front-office/sendotp-verification") {
-          this.router.navigate([
-            '/front-office/reset-password'
-          ]);
-        } else {
-
-          this.router.navigate([
-            '/front-office/dashboard'
-          ]);
+    await this.store.select(selectVerifyOTP).subscribe((res: any) => {
+      if (res) {
+        this.resetPasswordToken = res.token
+        this.router.navigate([
+          '/front-office/reset-password'
+        ], {
+          state: {
+            token: this.resetPasswordToken
+          }
         }
+        );
 
-      } else {
-
-        this.errorMessage =
-          'Invalid OTP.';
-
-
-        this.otp =
-          ['', '', '', ''];
-
-
-        setTimeout(() => {
-
-          const firstInput =
-            document.querySelector(
-              '.otp-input'
-            ) as HTMLInputElement;
-
-          firstInput?.focus();
-
-        });
-
+        console.log("OTP verified successfully.");
       }
-
-    }, 700);
+    })
 
   }
 
@@ -369,7 +336,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.clearTimer();
 
     this.router.navigate([
-      '/patient/login'
+      '/front-office/login'
     ]);
 
   }

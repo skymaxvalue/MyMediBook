@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-booking-failed",
@@ -11,8 +12,11 @@ export class BookingFailedComponent {
   @Input() selectedDate: any;
   @Input() selectedSlot: any;
   @Input() bookingPatient: any;
+  constructor(private router: Router) {
+
+  }
   goBack() {
-    window.location.reload();
+    this.router.navigate(['/patient/dashboard/appointments'])
   }
 
 }

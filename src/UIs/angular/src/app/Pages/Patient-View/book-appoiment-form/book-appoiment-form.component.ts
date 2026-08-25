@@ -10,6 +10,8 @@ import {
 import { Store } from '@ngrx/store';
 import { getAgeType, getRelationType } from 'src/app/Store/Appointments/appointment.actions';
 import { selectAgeType, selectRelationShipType } from 'src/app/Store/Appointments/appointment.selcetors';
+import { requestOTP } from 'src/app/Store/Auth/auth.actions';
+import { selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
 import { getPetirntProfileListById, getProfileDataByProfileId } from 'src/app/Store/Patient/patient.action';
 import { selectGetProfileDataByProfileId, selectGetProfileListByPatientId } from 'src/app/Store/Patient/patient.selectors';
 
@@ -475,7 +477,7 @@ export class BookAppoimentFormComponent implements OnInit {
     }
   }
 
-  submitForm(): void {
+  async submitForm() {
     console.log(this.bookingForm, this.bookingForm.invalid)
     this.bookingForm.markAllAsTouched();
 
@@ -493,10 +495,16 @@ export class BookAppoimentFormComponent implements OnInit {
         bookingPatient.insurance = false
         // delete bookingPatient.insuranceData
       }
-      const otpDeviceDetails: any = { otpDevice: this.bookingForm.value.otpMethod, value: this.bookingForm.get('otpMethod')?.value === "mobile" ? this.bookingForm.get('phone')?.value : this.bookingForm.get('email')?.value, bookingPatient: bookingPatient }
-      this.backToAvailability.emit(otpDeviceDetails);
-      // { otpDevice: this.otpDevice, value: this.bookingForm.get('otp')?.value }
-      console.log('Form Submitted:', this.bookingForm.getRawValue());
+      await this.store.dispatch(requestOTP({ email: this.bookingForm.get('email')?.value }))
+      await this.store.select(selectRequestedOTP).subscribe((res: any) => {
+        if (res) {
+          const otpDeviceDetails: any = { otpDevice: this.bookingForm.value.otpMethod, value: this.bookingForm.get('otpMethod')?.value === "mobile" ? this.bookingForm.get('phone')?.value : this.bookingForm.get('email')?.value, bookingPatient: bookingPatient }
+          this.backToAvailability.emit(otpDeviceDetails);
+          // { otpDevice: this.otpDevice, value: this.bookingForm.get('otp')?.value }
+          console.log('Form Submitted:', this.bookingForm.getRawValue());
+        }
+      })
+
 
     }
   }

@@ -1,7 +1,6 @@
 <main class="dashboard-container">
 
 
-
     <section class="checkin-card">
 
         <div class="checkin-header">
@@ -9,7 +8,7 @@
             <div class="checkin-header-left">
 
                 <div class="checkin-icon">
-                    <img src="/assets/images/appointment-icon.png" alt="Check-In">
+                    <img src="/assets/images/front-office/images/appointment.png" alt="Check-In" />
                 </div>
 
                 <div>
@@ -26,88 +25,109 @@
         </div>
 
 
-
+        <!-- SEARCH AREA -->
         <div class="checkin-search-area">
 
+            <!-- PATIENT SEARCH -->
+            <div class="patient-search-fields">
 
-            <div class="form-group">
+                <!-- Patient Name -->
+                <div class="form-group">
 
-                <label>Patient Full Name</label>
+                    <label for="patientName">
+                        Patient Full Name
+                    </label>
 
-                <div class="input-wrapper">
+                    <div class="input-wrapper">
 
-                    <span class="input-icon">
-                        <img src="/assets/images/front-office/images/profile-outline.png" alt="">
-                    </span>
+                        <span class="input-icon">
+                            <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+                        </span>
 
-                    <input type="text" placeholder="Enter full name" [ngModel]="patientName()"
-                        (ngModelChange)="patientName.set($event)">
+                        <input type="text" id="patientName" [(ngModel)]="patientName" placeholder="Enter full name" />
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOB -->
+                <div class="form-group">
+
+                    <label for="dob">
+                        Date of Birth
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input type="date" id="dob" [(ngModel)]="dob" />
+
+                    </div>
+
                 </div>
 
             </div>
 
 
-
-            <div class="form-group">
-
-                <label>Date of Birth</label>
-
-                <div class="input-wrapper">
-
-                    <input type="date" [ngModel]="dob()" (ngModelChange)="dob.set($event)">
-
-                </div>
-
-            </div>
-
-
+            <!-- OR -->
             <div class="or-divider">
                 <span>OR</span>
             </div>
 
 
+            <!-- DOCTOR SEARCH -->
+            <div class="doctor-search">
+
+                <div class="form-group">
+
+                    <label for="doctorName">
+                        Doctor Name
+                    </label>
+
+                    <div class="doctor-search">
+
+                        <input type="text" id="doctorName" [(ngModel)]="doctorSearch" (focus)="openDoctorDropdown()"
+                            (input)="filterDoctors()" placeholder="Select Doctor" autocomplete="off" />
+
+                        <span class="doctor-arrow" (click)="toggleDoctorDropdown()">
+                            ⌄
+                        </span>
 
 
-            <div class="form-group doctor-wrapper">
+                        <!-- DOCTOR DROPDOWN -->
+                        <div id="doctorDropdown" class="doctor-dropdown" [class.show]="showDoctorDropdown">
 
-                <label>Doctor Name</label>
+                            @if (filteredDoctors.length > 0) {
 
-                <div class="input-wrapper">
+                            @for (doctor of filteredDoctors; track doctor) {
 
-                    <input type="text" placeholder="Select Doctor" autocomplete="off" [ngModel]="doctorName()"
-                        (ngModelChange)="doctorName.set($event)" (focus)="openDoctorDropdown()">
+                            <div class="doctor-option" (click)="selectDoctor(doctor)">
+                                {{ doctor }}
+                            </div>
 
-                    <span class="doctor-arrow">⌄</span>
+                            }
 
-                </div>
+                            } @else {
 
+                            <div class="doctor-no-results">
+                                No doctors found
+                            </div>
 
-                @if(showDoctorDropdown()) {
+                            }
 
-                <div class="doctor-dropdown">
-
-                    @for (doctor of filteredDoctors(); track doctor) {
-
-                    <div class="doctor-option" (click)="selectDoctor(doctor)">
-
-                        {{ doctor }}
+                        </div>
 
                     </div>
 
-                    }
-
                 </div>
-
-                }
 
             </div>
 
 
+            <!-- SEARCH BUTTON -->
+            <button type="button" class="search-btn" [disabled]="isSearchDisabled()" (click)="handleSearch()">
 
-
-            <button type="button" class="search-btn" (click)="searchAppointments()">
-
-                <img src="/assets/images/front-office/images/search-white.png" alt="">
+                <img src="/assets/images/front-office/images/search-white.png" alt="" />
 
                 Search
 
@@ -118,13 +138,12 @@
     </section>
 
 
-
-
+    <!-- DEPARTMENT -->
     <section class="department-bar">
 
         <div class="department-title">
 
-            <img src="/assets/images/front-office/images/group.png" alt="">
+            <img src="/assets/images/front-office/images/group.png" alt="" />
 
             <span>
                 General Physician
@@ -132,14 +151,16 @@
 
         </div>
 
-        <button class="department-toggle">
-            ↓
+        <button type="button" class="department-toggle">
+
+            <img src="/assets/images/front-office/images/down-arrow.png" alt="Expand" />
+
         </button>
 
     </section>
 
 
-
+    <!-- APPOINTMENT RESULTS -->
     <section class="results-card">
 
         <div class="results-header">
@@ -148,11 +169,16 @@
 
                 <div class="results-title">
 
-                    <h2>Appointment Results</h2>
+                    <h2>
+                        Appointment Results
+                    </h2>
 
                     <span class="count-badge">
-                        {{ filteredAppointments().length }}
-                        Appointments Found
+
+                        {{ searchResults.length }}
+                        Appointment{{ searchResults.length === 1 ? '' : 's' }}
+                        Found
+
                     </span>
 
                 </div>
@@ -166,6 +192,7 @@
         </div>
 
 
+        <!-- TABLE -->
         <div class="table-wrapper">
 
             <table>
@@ -173,15 +200,25 @@
                 <thead>
 
                     <tr>
-                        <th>#</th>
+
+                        <th>Sl. No</th>
+
                         <th>Patient Name</th>
+
                         <th>DOB</th>
+
                         <th>Address</th>
+
                         <th>Phone Number</th>
+
                         <th>Email ID</th>
+
                         <th>Doctor Name</th>
+
                         <th>Room Number</th>
+
                         <th>Action</th>
+
                     </tr>
 
                 </thead>
@@ -189,28 +226,62 @@
 
                 <tbody>
 
+                    <!-- Initial state -->
+                    @if (!hasSearched) {
+
+                    <tr>
+
+                        <td colspan="9" class="empty-results">
+                            No appointments searched yet.
+                        </td>
+
+                    </tr>
+
+                    }
+
+                    <!-- No results -->
+                    @else if (searchResults.length === 0) {
+
+                    <tr>
+
+                        <td colspan="9" class="empty-results">
+
+                            <strong>
+                                No Appointments Found
+                            </strong>
+
+                            <br />
+
+                            No appointment was found for the
+                            details entered.
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                    <!-- Results -->
+                    @else {
+
                     @for (
-                    appointment of filteredAppointments();
+                    appointment of searchResults;
                     track appointment.id;
                     let i = $index
                     ) {
 
-                    <tr [class.selected-row]="
-                selectedPatient()?.id === appointment.id
-              ">
+                    <tr>
 
                         <td>
                             {{ i + 1 }}
                         </td>
 
                         <td>
-                            <strong>
-                                {{ appointment.patientName }}
-                            </strong>
+                            {{ appointment.patientName }}
                         </td>
 
                         <td>
-                            {{ formatDate(appointment.dob) }}
+                            {{ appointment.dob }}
                         </td>
 
                         <td>
@@ -226,22 +297,24 @@
                         </td>
 
                         <td>
-                            {{ appointment.doctorName }}
+                            {{ appointment.doctor }}
                         </td>
 
                         <td>
-                            {{ appointment.roomNumber }}
+                            {{ appointment.room }}
                         </td>
 
                         <td>
 
-                            <button class="select-btn" type="button" (click)="selectPatient(appointment)">
+                            <button type="button" class="select-patient" [class.selected]="
+                      selectedAppointment?.id === appointment.id
+                    " (click)="selectAppointment(appointment)">
 
-                                @if(selectedPatient()?.id === appointment.id) {
-                                Selected
-                                } @else {
-                                Select
-                                }
+                                {{
+                                selectedAppointment?.id === appointment.id
+                                ? 'Selected'
+                                : 'Select'
+                                }}
 
                             </button>
 
@@ -250,18 +323,6 @@
                     </tr>
 
                     }
-
-                    @if(filteredAppointments().length === 0) {
-
-                    <tr>
-
-                        <td colspan="9" class="no-data">
-
-                            No appointments found.
-
-                        </td>
-
-                    </tr>
 
                     }
 
@@ -274,13 +335,12 @@
     </section>
 
 
-
-
+    <!-- CHECK-IN BUTTON -->
     <div class="checkin-actions">
 
-        <button type="button" class="primary-btn" [disabled]="!selectedPatient()" (click)="openConfirmModal()">
+        <button type="button" class="primary-btn" [disabled]="!selectedAppointment" (click)="handleCheckIn()">
 
-            <img src="/assets/images/front-office/images/patient-registration.png" alt="">
+            <img src="/assets/images/front-office/images/patient-registration.png" alt="" />
 
             Check In
 
@@ -291,20 +351,25 @@
 </main>
 
 
+<!-- =====================================================
+     CONFIRM CHECK-IN MODAL
+     ===================================================== -->
 
-@if(showConfirmModal()) {
+@if (showConfirmModal) {
 
-<div class="modal-backdrop">
+<div class="modal show" (click)="closeConfirmModalOnOutsideClick($event)">
 
     <div class="modal-content">
 
-        <button class="modal-close" (click)="closeConfirmModal()">
-
-            ×
-
+        <button type="button" class="modal-close" (click)="closeConfirmModal()">
+            &times;
         </button>
 
-        <h2>Confirm Check-In</h2>
+
+        <h2>
+            Confirm Check-In
+        </h2>
+
 
         <p class="modal-description">
 
@@ -314,28 +379,72 @@
         </p>
 
 
-        @if(selectedPatient(); as patient) {
+        @if (selectedAppointment) {
 
         <div class="details-box">
 
-            <div>
-                <span>Patient</span>
-                <strong>{{ patient.patientName }}</strong>
+            <div class="detail-row">
+
+                <span>
+                    Patient Name
+                </span>
+
+                <span>
+                    {{ selectedAppointment.patientName }}
+                </span>
+
             </div>
 
-            <div>
-                <span>DOB</span>
-                <strong>{{ formatDate(patient.dob) }}</strong>
+
+            <div class="detail-row">
+
+                <span>
+                    UHID
+                </span>
+
+                <span>
+                    {{ selectedAppointment.uhid }}
+                </span>
+
             </div>
 
-            <div>
-                <span>Doctor</span>
-                <strong>{{ patient.doctorName }}</strong>
+
+            <div class="detail-row">
+
+                <span>
+                    Doctor
+                </span>
+
+                <span>
+                    {{ selectedAppointment.doctor }}
+                </span>
+
             </div>
 
-            <div>
-                <span>Room</span>
-                <strong>{{ patient.roomNumber }}</strong>
+
+            <div class="detail-row">
+
+                <span>
+                    Appointment Time
+                </span>
+
+                <span>
+                    {{ selectedAppointment.appointmentTime }}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Room Number
+                </span>
+
+                <span>
+                    {{ selectedAppointment.room }}
+                </span>
+
             </div>
 
         </div>
@@ -345,16 +454,13 @@
 
         <div class="modal-actions">
 
-            <button class="secondary-btn" (click)="closeConfirmModal()">
-
+            <button type="button" class="secondary-btn" (click)="closeConfirmModal()">
                 Cancel
-
             </button>
 
-            <button class="primary-btn" (click)="confirmCheckIn()">
 
+            <button type="button" class="primary-btn" (click)="confirmCheckIn()">
                 Confirm Check-In
-
             </button>
 
         </div>
@@ -366,51 +472,113 @@
 }
 
 
-@if(showSuccessModal()) {
+<!-- =====================================================
+     SUCCESS MODAL
+     ===================================================== -->
 
-<div class="modal-backdrop">
+@if (showSuccessModal) {
+
+<div class="modal show" (click)="closeSuccessModalOnOutsideClick($event)">
 
     <div class="modal-content success-modal">
+
 
         <div class="success-icon">
             ✓
         </div>
 
+
         <h2>
             Patient Checked In Successfully!
         </h2>
 
+
         <p class="modal-description">
 
-            The patient has been checked in for
-            the appointment.
+            The patient has been checked in for the appointment.
 
         </p>
 
 
-        @if(selectedPatient(); as patient) {
+        @if (selectedAppointment) {
 
         <div class="details-box">
 
-            <div>
-                <span>Patient</span>
-                <strong>
-                    {{ patient.patientName }}
-                </strong>
+            <div class="detail-row">
+
+                <span>
+                    Patient Name
+                </span>
+
+                <span>
+                    {{ selectedAppointment.patientName }}
+                </span>
+
             </div>
 
-            <div>
-                <span>Doctor</span>
-                <strong>
-                    {{ patient.doctorName }}
-                </strong>
+
+            <div class="detail-row">
+
+                <span>
+                    UHID
+                </span>
+
+                <span>
+                    {{ selectedAppointment.uhid }}
+                </span>
+
             </div>
 
-            <div>
-                <span>Room</span>
-                <strong>
-                    {{ patient.roomNumber }}
-                </strong>
+
+            <div class="detail-row">
+
+                <span>
+                    Doctor
+                </span>
+
+                <span>
+                    {{ selectedAppointment.doctor }}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Appointment Time
+                </span>
+
+                <span>
+                    {{ selectedAppointment.appointmentTime }}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Room Number
+                </span>
+
+                <span>
+                    {{ selectedAppointment.room }}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span>
+                    Check-In Time
+                </span>
+
+                <span>
+                    {{ checkInTime }}
+                </span>
+
             </div>
 
         </div>
@@ -420,16 +588,13 @@
 
         <div class="modal-actions">
 
-            <button class="secondary-btn" (click)="closeSuccessModal()">
-
-                Done
-
+            <button type="button" class="secondary-btn" (click)="viewQueue()">
+                View Queue
             </button>
 
-            <button class="primary-btn" (click)="closeSuccessModal()">
 
-                View Queue
-
+            <button type="button" class="primary-btn" (click)="done()">
+                Done
             </button>
 
         </div>

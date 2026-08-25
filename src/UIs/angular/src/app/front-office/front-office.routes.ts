@@ -70,8 +70,8 @@ export const FRONT_OFFICE_ROUTES: Routes = [
             {
                 path: 'patient-registration',
                 loadComponent: () =>
-                    import('../auth/patient-login/self-registration/self-registration.component')
-                        .then(m => m.SelfRegistrationComponent)
+                    import('../Pages/Front-Office-View/patient-registration-fo/patient-registration-fo.component')
+                        .then(m => m.PatientRegistrationFOComponent)
             },
             {
                 path: 'book-appointment',
@@ -88,6 +88,12 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                 loadComponent: () =>
                     import('../Pages/Front-Office-View/next-in-queue/next-in-queue.component')
                         .then(m => m.NextInQueueComponent)
+            },
+            {
+                path: 'doctor-queue',
+                loadComponent: () =>
+                    import('../Pages/Front-Office-View/doctor-queue/doctor-queue.component')
+                        .then(m => m.DoctorQueueComponent)
             }
 
         ]
