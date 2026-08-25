@@ -3,6 +3,7 @@ using System.Data;
 using Medicare.Application.Interfaces.Dapper;
 using Microsoft.Extensions.Logging;
 using Medicare.Application.Models.CommonModels.ErrorLog;
+using Microsoft.Data.SqlClient;
 
 namespace Medicare.DAL.Persistence.Dapper
 {
@@ -68,15 +69,34 @@ namespace Medicare.DAL.Persistence.Dapper
         {
             try
             {
-                using var connection = _factory.CreateConnection();
-                if (connection.State == ConnectionState.Closed)
-                    connection.Open();
-
+                using var connection = await _factory.CreateOpenConnectionAsync();
+               
                 return await operation(connection);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Database operation failed. ProcName: {ProcName}. Params: {@Params}", procName, param);
+                throw;
+            }
+        }
+
+        public async Task<TResult> QueryMultipleAsync<TResult>(string procName, object param, Func<SqlMapper.GridReader, Task<TResult>> map)
+        {
+            try
+            {
+                using var connection = await _factory.CreateOpenConnectionAsync();
+
+                using var result = await connection.QueryMultipleAsync(procName, param, commandType: CommandType.StoredProcedure);
+
+                return await map(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Database operation failed. ProcName: {ProcName}. Params: {@Params}",
+                    procName,
+                    param);
                 throw;
             }
         }
@@ -89,5 +109,6 @@ namespace Medicare.DAL.Persistence.Dapper
         Task<T> QuerySingleStoredProcAsync<T>(string procName, object param = null);
         Task<List<T>> QueryStoredProcListAsync<T>(string procName, object param = null);
         Task<int> ExecuteStoredProcAsync(string procName, object param = null);
+        Task<TResult> QueryMultipleAsync<TResult>(string procName, object param, Func<SqlMapper.GridReader, Task<TResult>> map);
     }
 }

@@ -19,7 +19,9 @@ namespace Medicare.Application.Models.Patient
         public string? PhoneNumber { get; set; }
         public int RelationTypeId { get; set; }
         public string? RelationTypeName { get; set; }   // "Self" | "Spouse" | "Child" etc.
-        public InsuranceData Insurance { get; set; }
+        public int Insurance { get; set; }
+        public InsuranceData InsuranceData { get; set; }
+        public PaymentData PaymentData { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
@@ -43,11 +45,16 @@ namespace Medicare.Application.Models.Patient
         public string? PhoneNumber { get; set; }
         public int RelationTypeId { get; set; }
         public string? RelationTypeName { get; set; }   // "Self" | "Spouse" | "Child" etc.
+        public int Insurance { get; set; }
         public string? Provider { get; set; }
         public string? Policy { get; set; }
         public string? GroupId { get; set; }
         public string? HolderName { get; set; }
         public string? Address { get; set; }
+        public string? PaymentType { get; set; }
+        public string? CardHolder { get; set; }
+        public string? CardNumber { get; set; }
+        public string? Expiry { get; set; }
 
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }

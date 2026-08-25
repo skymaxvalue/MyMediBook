@@ -31,13 +31,21 @@ namespace Medicare.Application.Handlers.QueryHandlers
                 AgeTypeName = result.AgeTypeName,
                 RelationTypeId = result.RelationTypeId,
                 RelationTypeName = result.RelationTypeName,
-                Insurance = new InsuranceData
+                Insurance = result.Insurance,
+                InsuranceData = new InsuranceData
                 {
                     HolderName = result.HolderName,
                     Policy = result.Policy,
                     Provider = result.Provider,
                     GroupId = result.GroupId,
                     Address = result.Address
+                },
+                PaymentData = new PaymentData
+                {
+                     CardHolder = result.PaymentType,
+                     CardNumber = result.CardNumber,
+                     PaymentType = result.PaymentType,
+                     Expiry = result.Expiry
                 },
                 IsActive = result.IsActive,
                 CreatedDate = result.CreatedDate,

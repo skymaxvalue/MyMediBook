@@ -19,20 +19,20 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetBillsById{id}")]
+        [Route("GetBillByClaimId/{id}")]
         public async Task<IActionResult> GetBillsById(int id)
         {
             BillingSummaryModel response = new BillingSummaryModel();
-            response = await _mediator.Send(new GetBillsByIdQuery(id));
+            response = await _mediator.Send(new GetBillByClaimIdQuery(id));
             return HandleResponse(response);
         }
 
         [HttpGet]
-        [Route("GetBillsByPatientId/{patientId}")]
+        [Route("GetBillingListByPatientId/{patientId}")]
         public async Task<IActionResult> GetBillsByPatientId(int patientId)
         {
             List<BillingSummaryModel> response = new List<BillingSummaryModel>();
-            response = await _mediator.Send(new GetBillsByPatientIdQuery(patientId));
+            response = await _mediator.Send(new GetBillingListByPatientIdQuery(patientId));
             return HandleListResponse(response);
         }
 
