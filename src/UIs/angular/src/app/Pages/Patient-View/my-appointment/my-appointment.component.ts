@@ -282,7 +282,7 @@ export class MyAppointmentComponent implements OnInit {
 
       title: 'Reschedule Appointment',
       subTitle: 'Please review before you continue.',
-
+      confirmButton: 'Reschedule',
       confirmTitle:
         'Reschedule not allowed.',
 
@@ -483,7 +483,8 @@ export class MyAppointmentComponent implements OnInit {
       modalData.confirmText =
         'This appointment has already started. Cancellation is not allowed.';
 
-      // modalData.confirmButton = 'Yes, Cancel Appointment';
+      modalData.confirmButton = 'Yes, Cancel Appointment';
+
       modalData.cancelButton = 'Close';
       modalData.disableConfirm = true;
       modalData.displayRules = [cancelRules[2]];

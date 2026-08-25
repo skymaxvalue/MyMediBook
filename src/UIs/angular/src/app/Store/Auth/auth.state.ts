@@ -15,7 +15,8 @@ export interface AuthState {
     requestedOtp: any;
     refreshToken: string | null;
     associate: any;
-    otpres: any
+    otpres: any;
+    resetPassRes: any
 }
 
 export const initialAuthState: AuthState = {
@@ -32,5 +33,6 @@ export const initialAuthState: AuthState = {
     requestedOtp: null,
     refreshToken: null,
     associate: null,
-    otpres: null
+    otpres: null,
+    resetPassRes: null
 }

@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
-import { selectRequestedOTP, selectVerifyOTP } from "src/app/Store/Auth/auth.selectors";
+import { selectForgotPassReset, selectRequestedOTP, selectVerifyOTP } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
 import { Store } from '@ngrx/store';
 import * as AuthActions from "../../../Store/Auth/auth.actions";
@@ -39,6 +39,7 @@ export class ForgetPasswordComponent {
   confirmPasswordError: string = '';
   showPassword: boolean = false;
   OtpData: any;
+  resetPasswordToken: any;
 
   constructor(private router: Router, private store: Store<AppState>, private cdr: ChangeDetectorRef, private toast: ToastService,) {
 
@@ -131,6 +132,7 @@ export class ForgetPasswordComponent {
         alert("OTP verified successfully!");
         this.isOtpSent = false;
         this.isOtpVerified = true;
+        this.resetPasswordToken = res.token
         console.log("OTP verified successfully.");
       }
     })
@@ -161,14 +163,21 @@ export class ForgetPasswordComponent {
         'New password and confirm password do not match';
     }
 
-    if (
-      !this.newPasswordError &&
-      !this.confirmPasswordError
-    ) {
-      alert('Password Reset Successfully');
-      this.router.navigate(['/login']);
+    this.store.dispatch(AuthActions.ForrgetResetPassword({ password: this.confirmPassword, token: this.resetPasswordToken }))
+    this.store.select(selectForgotPassReset).subscribe((res: any) => {
+      if (res) {
+        this.router.navigate(['/patient/login']);
+      }
+    })
 
-    }
+    // if (
+    //   !this.newPasswordError &&
+    //   !this.confirmPasswordError
+    // ) {
+    //   alert('Password Reset Successfully');
+    //   this.router.navigate(['/login']);
+
+    // }
   }
   resendOtp() {
 

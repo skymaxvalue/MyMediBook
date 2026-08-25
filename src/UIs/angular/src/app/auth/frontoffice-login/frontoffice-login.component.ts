@@ -52,14 +52,14 @@ export class FrontofficeLoginComponent {
       return;
     }
 
-    // this.store.dispatch(login({ username: this.username, password: this.password, role: 'associate' }))
-    // // Remember username
+    this.store.dispatch(login({ username: this.username, password: this.password, role: 'associate' }))
+    // Remember username
 
-    // this.store.select(selectLoginUser).subscribe((res: any) => {
-    //   if (res) {
-    //     this.router.navigate(['/front-office/otp-verification']);
-    //   }
-    // })
+    this.store.select(selectLoginUser).subscribe((res: any) => {
+      if (res) {
+        this.router.navigate(['/front-office/otp-verification']);
+      }
+    })
 
 
 
@@ -72,18 +72,18 @@ export class FrontofficeLoginComponent {
 
 
     // Temporary login
-    if (user === '1024' && pass === '1234') {
+    // if (user === '1024' && pass === '1234') {
 
-      localStorage.setItem('pendingUser', user);
+    //   localStorage.setItem('pendingUser', user);
 
-      this.router.navigate(['/front-office/otp-verification']);
+    //   this.router.navigate(['/front-office/otp-verification']);
 
-    } else {
+    // } else {
 
-      this.shakeForm();
+    //   this.shakeForm();
 
-      alert('Invalid Employee ID or Password.');
-    }
+    //   alert('Invalid Employee ID or Password.');
+    // }
   }
 
   private shakeForm(): void {

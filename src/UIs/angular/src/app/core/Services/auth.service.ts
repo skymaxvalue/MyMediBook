@@ -47,6 +47,26 @@ export class AuthService {
     );
   }
 
+  ForgotPassReset(password: any, token: string, isAssociate?: boolean) {
+    if (isAssociate) {
+      return this.http.post<any>(
+        `${this.apiUrl}${AuthEndPoints.RESET_PASS_FOR_ASSOCIATE}`,
+        {
+          password, token
+        }
+      );
+    } else {
+      return this.http.post<any>(
+        `${this.apiUrl}${AuthEndPoints.FORGET_PASSWORD_RESETL}`,
+        {
+          password, token
+        }
+      );
+
+    }
+
+  }
+
   // Self Registration API
   registerPatient(
     patient: PatientRegister
@@ -122,7 +142,7 @@ export class AuthService {
   }
 
   callRefreshToken(): Observable<any> {
-    // alert("abc")
+
     const refreshToken = localStorage.getItem('refreshToken');
     const accessToken = localStorage.getItem('token')
 

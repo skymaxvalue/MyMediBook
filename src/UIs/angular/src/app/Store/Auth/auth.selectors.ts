@@ -72,4 +72,11 @@ export const selectVerifyOTP =
         state => state.otpres
     );
 
+export const selectForgotPassReset =
+    createSelector(
+        selectAuthState,
+        state => state.resetPassRes
+    );
+
+
 

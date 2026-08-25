@@ -10,7 +10,11 @@ import {
   Input,
   ChangeDetectorRef
 } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { ToastService } from 'src/app/shared/Components/Toaster/toast.service';
+import { AppState } from 'src/app/Store/app.state';
+import { verifyOTP } from 'src/app/Store/Auth/auth.actions';
+import { selectVerifyOTP } from 'src/app/Store/Auth/auth.selectors';
 @Component({
   selector: "app-booking-otp-verificatin",
   imports: [],
@@ -35,7 +39,7 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
 
   interval: any;
 
-  constructor(private cdr: ChangeDetectorRef, private toast: ToastService) { }
+  constructor(private cdr: ChangeDetectorRef, private toast: ToastService, private store: Store<AppState>) { }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -137,8 +141,14 @@ export class BookingOTPVerificatinComponent implements OnDestroy {
     // localStorage.removeItem('tempAppointment');
 
     // alert('Appointment Booked Successfully');
-    clearInterval(this.interval);
-    this.VerifyOTP.emit(this.bookingPatient);
+    this.store.dispatch(verifyOTP({ email: this.bookingPatient.email, otpCode: finalOtp }))
+    this.store.select(selectVerifyOTP).subscribe((res: any) => {
+      if (res) {
+        clearInterval(this.interval);
+        this.VerifyOTP.emit(this.bookingPatient);
+      }
+    })
+
   }
 
   cancelOtp() {

@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
+import { ForrgetResetPassword } from 'src/app/Store/Auth/auth.actions';
+import { selectForgotPassReset } from 'src/app/Store/Auth/auth.selectors';
 
 @Component({
   selector: "app-reset-password",
@@ -14,17 +18,20 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: "./reset-password.component.html",
   styleUrl: "./reset-password.component.css",
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: FormGroup;
   isSuccessResetPassword: boolean = false;
 
   showNewPassword = false;
   showConfirmPassword = false;
+  token: any;
   // isSuccessResetPassword: any;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
+
   ) {
 
     this.resetPasswordForm = this.fb.group({
@@ -44,6 +51,13 @@ export class ResetPasswordComponent {
         Validators.required
       ]
     });
+
+  }
+  ngOnInit(): void {
+
+    this.token = history.state.token;
+
+    console.log('Email ID:', this.token);
 
   }
 
@@ -98,11 +112,18 @@ export class ResetPasswordComponent {
     localStorage.removeItem('passwordRecoveryUser');
 
 
-    alert('Password reset successfully.');
+    this.store.dispatch(ForrgetResetPassword({ password: confirmPassword, token: this.token, isAssociate: true }))
+
+    this.store.select(selectForgotPassReset).subscribe((res: any) => {
+      if (res) {
+        this.isSuccessResetPassword = true
+      }
+    })
+
 
 
     // Navigate to success page
-    this.isSuccessResetPassword = true
+
 
   }
 

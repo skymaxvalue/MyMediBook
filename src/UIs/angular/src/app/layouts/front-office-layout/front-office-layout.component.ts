@@ -84,6 +84,19 @@ export class FrontOfficeLayoutComponent implements OnInit {
       });
 
     }
+    else if (url.includes('doctor-queue')) {
+
+      this.breadcrumbs.push({
+        label: 'Patient Check-In',
+        url: '/front-office/patient-check-in'
+      });
+
+      this.breadcrumbs.push({
+        label: 'Appointment Check-Ins',
+        url: '/front-office/doctor-queue'
+      });
+
+    }
 
   }
 }

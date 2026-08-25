@@ -67,12 +67,12 @@ export const MessageEndPoints = {
 }
 export const AuthEndPoints = {
     PATIENT_REGISTER: "Auth/CreatePatientAccount",
-    // PATIENT_LOGIN: "Auth/doLogin",
     REQUEST_OTP: "Auth/RequestOtp",
-    VERIFY_OTP: "Auth/VerifyOtp",
+    VERIFY_OTP: "Auth/VerifyForgotPasswordOtp",
     REFRESH_TOKEN: "Auth/RefreshToken",
     REGISTER_ASSOCIATION: "Auth/RegisterAssociate",
-    // ASSOCIATE_LOGIN: "Auth/doLogin",
+    FORGET_PASSWORD_RESETL: "Auth/ResetForgotPassword",
+    RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
     doLOGIN: "Auth/doLogin",
 }
 

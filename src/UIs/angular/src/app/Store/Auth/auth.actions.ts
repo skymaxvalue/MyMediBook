@@ -25,7 +25,7 @@ export const requestOTP = createAction(
 
 export const requestOTPSuccess = createAction(
     '[Auth] OTP Success',
-    props<{ requesteOTP: any }>()
+    props<{ requestedOtp: any }>()
 );
 
 export const requestOTPFailure = createAction(
@@ -147,5 +147,20 @@ export const verifyOTPFailure = createAction(
     '[Auth] verifyOTP Failure',
     props<{ error: string }>()
 );
+export const ForrgetResetPassword = createAction(
+    '[Auth] ForrgetResetPassword',
+    props<{ password: string; token: string, isAssociate?: boolean }>()
+);
+
+export const ForrgetResetPasswordSuccess = createAction(
+    '[Auth] ForrgetResetPassword Success',
+    props<{ resetPassRes: any }>()
+);
+
+export const ForrgetResetPasswordFailure = createAction(
+    '[Auth] ForrgetResetPassword Failure',
+    props<{ error: string }>()
+);
+
 
 

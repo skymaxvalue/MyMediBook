@@ -25,4 +25,8 @@ export const selectCanceledAppointment = createSelector(
 export const selectRescheduledAppointment = createSelector(
     selectAppointmentState,
     state => state.rescheduledAppointment
+);
+export const selectCreateAppointmentRes = createSelector(
+    selectAppointmentState,
+    state => state.appointment
 ); 

@@ -1,0 +1,748 @@
+<main class="dashboard-container">
+
+
+    <section class="registration-card">
+
+        <div class="page-header">
+
+            <h1>
+                Patient Registration
+            </h1>
+
+            <p>
+                Provide the patient's details to schedule an appointment
+            </p>
+
+        </div>
+
+
+        <form #bookingForm="ngForm" (ngSubmit)="submitRegistration(bookingForm)" novalidate>
+
+
+            <!-- =========================
+                 PERSONAL DETAILS
+            ========================== -->
+
+            <section class="form-section">
+
+                <div class="section-title">
+
+                    <img src="/assets/images/front-office/images/profile-outline.png" alt="Personal">
+
+                    <h2>
+                        Personal Details
+                    </h2>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- FIRST NAME -->
+
+                    <div class="form-group">
+
+                        <label>
+                            First Name
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" name="firstName" placeholder="First name" [(ngModel)]="firstName" required>
+
+                    </div>
+
+
+                    <!-- LAST NAME -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Last Name
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" name="lastName" placeholder="Last name" [(ngModel)]="lastName" required>
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Gender
+                            <span>*</span>
+                        </label>
+
+                        <select name="gender" [(ngModel)]="gender" required>
+
+                            <option value="" disabled>
+                                Select gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DOB -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Date of Birth
+                            <span>*</span>
+                        </label>
+
+                        <div class="date-field">
+
+                            <input type="date" name="dateOfBirth" [(ngModel)]="dateOfBirth"
+                                (change)="updateAgeFromDob()" required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- AGE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Age
+                            <span>*</span>
+                        </label>
+
+                        <div class="age-wrapper">
+
+                            <input type="text" name="age" placeholder="--" [value]="age" readonly required>
+
+                            <span class="age-unit">
+                                {{ ageUnit }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INSURANCE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Insurance Coverage
+                            <span>*</span>
+                        </label>
+
+                        <div class="radio-group">
+
+                            <label>
+
+                                <input type="radio" name="insurance" value="yes" [(ngModel)]="insuranceChoice"
+                                    (change)="onInsuranceChange()" required>
+
+                                <span>
+                                    Yes
+                                </span>
+
+                            </label>
+
+
+                            <label>
+
+                                <input type="radio" name="insurance" value="no" [(ngModel)]="insuranceChoice"
+                                    (change)="onInsuranceChange()">
+
+                                <span>
+                                    No
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 CONTACT INFORMATION
+            ========================== -->
+
+            <section class="form-section">
+
+                <div class="section-title">
+
+                    <img src="/assets/images/front-office/images/location.png" alt="Location">
+
+                    <h2>
+                        Contact Information
+                    </h2>
+
+                </div>
+
+
+                <div class="contact-grid">
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="form-group full-width">
+
+                        <label>
+                            Address
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" name="address" placeholder="Enter address" [(ngModel)]="address" required>
+
+                    </div>
+
+
+                    <!-- CITY -->
+
+                    <div class="form-group">
+
+                        <label>
+                            City / Village
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" name="cityVillage" placeholder="City / Village" [(ngModel)]="cityVillage"
+                            required>
+
+                    </div>
+
+
+                    <!-- STATE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            State
+                            <span>*</span>
+                        </label>
+
+                        <select name="state" [(ngModel)]="state" required>
+
+                            <option value="" disabled>
+                                State / Province
+                            </option>
+
+                            <option value="West Bengal">
+                                West Bengal
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PIN -->
+
+                    <div class="form-group">
+
+                        <label>
+                            PIN Code
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" name="pinCode" inputmode="numeric" maxlength="6" placeholder="PIN Code"
+                            [(ngModel)]="pinCode" (keydown)="allowOnlyNumbers($event)" required>
+
+                    </div>
+
+
+                    <!-- MOBILE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Mobile Number
+                            <span>*</span>
+                        </label>
+
+                        <input type="tel" name="phone" placeholder="Enter Mobile Number" [(ngModel)]="phone" required>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Email Address
+                        </label>
+
+                        <input type="email" name="email" placeholder="Email address" [(ngModel)]="email">
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 VERIFICATION
+            ========================== -->
+
+            <section class="form-section verification-section">
+
+                <div class="section-title">
+
+                    <img src="assets/images/security-icon.png" alt="Verification">
+
+                    <h2>
+                        Verification
+                    </h2>
+
+                </div>
+
+
+                <div class="verification-row">
+
+                    <label class="verification-label">
+
+                        Receive OTP Via
+
+                        <span>*</span>
+
+                    </label>
+
+
+                    <div class="radio-group">
+
+                        <label>
+
+                            <input type="radio" name="otp" value="mobile" [(ngModel)]="otpMethod" required>
+
+                            <span>
+                                Mobile Number
+                            </span>
+
+                        </label>
+
+
+                        <label>
+
+                            <input type="radio" name="otp" value="email" [(ngModel)]="otpMethod">
+
+                            <span>
+                                Email Address
+                            </span>
+
+                        </label>
+
+
+                        <label>
+
+                            <input type="radio" name="otp" value="none" [(ngModel)]="otpMethod">
+
+                            <span>
+                                None
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 ACTIONS
+            ========================== -->
+
+            <div class="form-actions">
+
+                <button type="submit" class="primary-btn">
+
+                    Continue
+
+                    <img src="/assets/images/front-office/images/arrow-right.png" alt="Arrow">
+
+                </button>
+
+
+                <button type="button" class="secondary-btn" (click)="clearForm(bookingForm)">
+
+                    Clear
+
+                    <img src="/assets/images/front-office/images/clear-blue.png" alt="Clear">
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<!-- =================================================
+     INSURANCE MODAL
+================================================= -->
+
+@if (showInsuranceModal) {
+
+<div class="modal">
+
+    <div class="modal-content insurance-modal">
+
+        <button type="button" class="modal-close" (click)="closeInsuranceModal()">
+
+            &times;
+
+        </button>
+
+
+        <div class="insurance-header">
+
+            <div class="insurance-icon">
+
+                <img src="/assets/images/front-office/images/security-icon.png" alt="Insurance">
+
+            </div>
+
+            <div>
+
+                <h2>
+                    Insurance Details
+                </h2>
+
+                <p>
+                    Please provide insurance information
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="insurance-form">
+
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/provider.png">
+
+                    Provider Name
+                    <span>*</span>
+
+                </label>
+
+                <input type="text" [(ngModel)]="provider" placeholder="Enter provider name">
+
+            </div>
+
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/id-card.png">
+
+                    Insurance Policy ID
+                    <span>*</span>
+
+                </label>
+
+                <input type="text" [(ngModel)]="policy" placeholder="Enter policy ID">
+
+            </div>
+
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/group.png">
+
+                    Insurance Group ID
+
+                </label>
+
+                <input type="text" [(ngModel)]="groupId" placeholder="Enter group ID">
+
+            </div>
+
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/profile-outline.png">
+
+                    Primary Holder Name
+                    <span>*</span>
+
+                </label>
+
+                <input type="text" [(ngModel)]="holderName" placeholder="Enter primary holder name">
+
+            </div>
+
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/location.png">
+
+                    Primary Address
+                    <span>*</span>
+
+                </label>
+
+                <input type="text" [(ngModel)]="insuranceAddress" placeholder="Enter primary address">
+
+            </div>
+
+
+            @if (insuranceError) {
+
+            <div class="error-message">
+                {{ insuranceError }}
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="insurance-footer">
+
+            <button type="button" class="secondary-btn" (click)="closeInsuranceModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button" class="primary-btn" (click)="confirmInsurance()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+
+<!-- =================================================
+     PAYMENT MODAL
+================================================= -->
+
+@if (showPaymentModal) {
+
+<div class="modal">
+
+    <div class="modal-content payment-modal">
+
+        <button type="button" class="modal-close" (click)="closePaymentModal()">
+
+            &times;
+
+        </button>
+
+
+        <div class="payment-header">
+
+            <div class="payment-icon">
+
+                <img src="/assets/images/front-office/images/card.png" alt="Payment">
+
+            </div>
+
+            <div>
+
+                <h2>
+                    Payment Details
+                </h2>
+
+                <p>
+                    Please provide payment information
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-form">
+
+
+            <!-- PAYMENT TYPE -->
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/imagess/card.png">
+
+                    Payment Type
+                    <span>*</span>
+
+                </label>
+
+                <select [(ngModel)]="paymentType">
+
+                    <option value="" disabled>
+
+                        Select payment type
+
+                    </option>
+
+                    <option value="Credit Card">
+                        Credit Card
+                    </option>
+
+                    <option value="Debit Card">
+                        Debit Card
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CARD HOLDER -->
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/profile-outline.png">
+
+                    Card Holder Name
+                    <span>*</span>
+
+                </label>
+
+                <input type="text" [(ngModel)]="cardHolder" placeholder="Enter card holder name">
+
+            </div>
+
+
+            <!-- CARD NUMBER -->
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/card.png">
+
+                    Card Number
+                    <span>*</span>
+
+                </label>
+
+                <input type="text" maxlength="19" [(ngModel)]="cardNumber" (input)="formatCardNumber()"
+                    placeholder="Enter card number">
+
+            </div>
+
+
+            <!-- EXPIRY + CVV -->
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="/assets/images/front-office/images/calendar2.png">
+
+                    Expiry Date
+                    <span>*</span>
+
+                </label>
+
+
+                <div class="expiry-wrapper">
+
+                    <input type="text" maxlength="7" [(ngModel)]="expiry" (input)="formatExpiry()"
+                        placeholder="MM / YY">
+
+
+                    <span class="cvv-text">
+
+                        CVV
+                        <span>*</span>
+
+                    </span>
+
+
+                    <input type="password" maxlength="3" [(ngModel)]="cvv" placeholder="Enter CVV">
+
+                </div>
+
+            </div>
+
+
+            @if (paymentError) {
+
+            <div class="error-message">
+                {{ paymentError }}
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="payment-footer">
+
+            <button type="button" class="secondary-btn" (click)="closePaymentModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button" class="primary-btn" (click)="confirmPayment()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

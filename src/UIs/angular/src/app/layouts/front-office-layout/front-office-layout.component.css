@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 20px 25px;
+  padding: 10px 42px 0px 42px;
 }
 
 .breadcrumb a {

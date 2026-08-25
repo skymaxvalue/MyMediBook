@@ -10,7 +10,7 @@ import { Store } from "@ngrx/store";
 import { getTimeSloteByDoctorID } from "src/app/Store/Doctor/doctor.action";
 import { selectGetTimeSlotOfDoctor } from "src/app/Store/Doctor/doctor.selectors";
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
-import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
+import { selectCreateAppointmentRes, selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
 import { take } from "rxjs";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 import { createAppointment, getMyAppointments, rescheduleMyAppointment } from "src/app/Store/Appointments/appointment.actions";
@@ -353,8 +353,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     this.bookingPatient = patientDetail;
     this.showBookingCunfermationOtp = false;
     this.showAddbookingAppoinmentForm = false;
-    this.showSlotsModal = false;
-    this.showBookingSuccess = true;
+
     console.log(patientDetail, this.selectedDate, this.selectedSlot, "========>")
     const payload = {
       ...patientDetail,
@@ -365,6 +364,17 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
         appointment: payload
       })
     );
+    this.store.select(selectCreateAppointmentRes).subscribe((res: any) => {
+      if (res) {
+        this.showSlotsModal = false
+        this.showBookingSuccess = true
+        this.showBookingFaild = false
+      } else {
+        this.showSlotsModal = false
+        this.showBookingFaild = true
+        this.showBookingSuccess = false
+      }
+    })
 
   }
 
