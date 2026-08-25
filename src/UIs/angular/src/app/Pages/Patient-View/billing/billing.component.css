@@ -12,7 +12,7 @@ body{
 
 .billing-container{
     background:#fff;
-    border:1px solid #C8D8FF;
+    border:1px solid #EEF2F7;
     border-radius:32px;
     padding:25px;
     width: 100%;
@@ -83,7 +83,7 @@ body{
     width:390px;
     height:58px;
 
-    border:1px solid #E4E6EF;
+    border:1px solid #EEF2F7;
     border-radius:12px;
 
     padding-left:54px;
@@ -95,7 +95,7 @@ body{
         display:none;
     width:220px;
     height:58px;
-    border:1px solid #E4E6EF;
+    border:1px solid #EEF2F7;
     border-radius:12px;
     padding:0 15px;
 }
@@ -148,7 +148,7 @@ body{
 }
 .bill-card{
     margin-top:18px;
-    border:1px solid #E8EAF0;
+    border:1px solid #EEF2F7;
     border-radius:20px 0px 0px 20px;
     padding:20px 18px;
     display:grid;
@@ -423,7 +423,7 @@ width: 30px;
     font-size: 20px;
     font-weight: 700;
 
-    color: #14213d;
+    color: #0F172A;
 }
 
 
@@ -434,7 +434,7 @@ width: 30px;
     font-size: 42px;
     line-height: 1;
 
-    color: #6b7280;
+    color: #6B7280;
 
     cursor: pointer;
 
@@ -467,7 +467,7 @@ width: 30px;
 .invoice-section,
 .breakdown-section {
 
-    border: 1px solid #e5eaf2;
+    border: 1px solid #EEF2F7;
 
     border-radius: 16px;
 
@@ -487,7 +487,7 @@ width: 30px;
     font-size: 25px;
     font-weight: 600;
 
-    color: #17233d;
+    color: #0F172A;
 }
 
 
@@ -559,7 +559,7 @@ margin-left: 10px;
 
     font-size: 14px;
 
-    color: #59657d;
+    color: #64748B;
 
     margin-bottom: 5px;
 }
@@ -573,7 +573,7 @@ margin-left: 10px;
 
     font-weight: 700;
 
-    color: #17233d;
+    color: #0F172A;
     width: 100px;
     white-space: nowrap;
 
@@ -621,7 +621,7 @@ margin-left: 10px;
 
     font-size: 20px;
 
-    color: #17233d;
+    color: #111827;
 }
 
 
@@ -629,7 +629,7 @@ margin-left: 10px;
 
     font-size: 20px;
 
-    color: #17233d;
+    color: #0F172A;
 }
 
 
@@ -687,13 +687,13 @@ margin-left: 10px;
 
 .green-text {
 
-    color: #16a34a !important;
+    color: #16A34A !important;
 }
 
 
 .orange-text {
 
-    color: #f59e0b !important;
+    color: #F59E0B !important;
 }
 
 
@@ -709,7 +709,7 @@ margin-left: 10px;
 
 .balance-row {
 
-    background: #f1f5ff;
+    background: #F2F6FE;
 
     border-radius: 12px;
 
@@ -782,11 +782,11 @@ margin-left: 10px;
 
 .download-btn {
 
-    background: #1769f5;
+    background:  #165DFF;
 
-    color: #fff;
+    color: #FFFFFF;
 
-    border: 1px solid #1769f5;
+    border: 1px solid  #165DFF;
 
     min-width: 200px;
 }
@@ -802,9 +802,9 @@ margin-left: 10px;
 
     background: #fff;
 
-    color: #1769f5;
+    color: #165DFF;
 
-    border: 2px solid #1769f5;
+    border: 2px solid #165DFF;
 
     min-width: 130px;
 }
