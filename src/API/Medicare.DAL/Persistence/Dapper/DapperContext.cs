@@ -3,6 +3,7 @@ using System.Data;
 using Medicare.Application.Interfaces.Dapper;
 using Microsoft.Extensions.Logging;
 using Medicare.Application.Models.CommonModels.ErrorLog;
+using Microsoft.Data.SqlClient;
 
 namespace Medicare.DAL.Persistence.Dapper
 {
@@ -68,10 +69,8 @@ namespace Medicare.DAL.Persistence.Dapper
         {
             try
             {
-                using var connection = _factory.CreateConnection();
-                if (connection.State == ConnectionState.Closed)
-                    connection.Open();
-
+                using var connection = await _factory.CreateOpenConnectionAsync();
+               
                 return await operation(connection);
             }
             catch (Exception ex)
@@ -85,7 +84,7 @@ namespace Medicare.DAL.Persistence.Dapper
         {
             try
             {
-                using var connection = _factory.CreateConnection();
+                using var connection = await _factory.CreateOpenConnectionAsync();
 
                 using var result = await connection.QueryMultipleAsync(procName, param, commandType: CommandType.StoredProcedure);
 
