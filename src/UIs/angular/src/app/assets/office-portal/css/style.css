@@ -34,3 +34,42 @@
     letter-spacing: 0.1px;
 }
 
+body{
+    font-family:'Source Sans Pro',sans-serif;
+    
+}
+
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 18px 40px;
+    background: #F4F6FB;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+    box-sizing: border-box;
+}
+
+.breadcrumb a {
+    color: #155EE8;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.breadcrumb .separator {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb .separator img {
+    width: 8px;
+    height: 12px;
+}
+
+.breadcrumb .active {
+    color: #101828;
+    font-weight: 600;
+}

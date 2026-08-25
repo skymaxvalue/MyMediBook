@@ -524,3 +524,87 @@
     }
 
 }
+
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.45);
+  backdrop-filter:blur(4px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.modal-overlay.show{
+  display:flex;
+}
+
+.logout-modal{
+  width:460px;
+  background:#fff;
+  border-radius:20px;
+  padding:32px;
+  box-shadow:0 24px 60px rgba(0,0,0,.18);
+  position:relative;
+  text-align:center;
+}
+
+.logout-icon{
+  width:72px;
+  height:72px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:#FEECEC;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+}
+
+.logout-modal h2{
+  color:#0B2458;
+  margin-bottom:10px;
+}
+
+.logout-modal p{
+  color:#64748B;
+  margin-bottom:28px;
+}
+
+.modal-close{
+  position:absolute;
+  top:18px;
+  right:18px;
+  background:none;
+  border:none;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.modal-actions{
+  display:flex;
+  gap:14px;
+}
+
+.btn-outline,
+.btn-danger{
+  flex:1;
+  height:48px;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-outline{
+  border:1px solid #2563EB;
+  background:#fff;
+  color:#2563EB;
+}
+
+.btn-danger{
+  border:none;
+  background:#DC2626;
+  color:#fff;
+}

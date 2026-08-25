@@ -1,6 +1,7 @@
 let insuranceData = null;
 let paymentData = null;
 let insuranceChoice = null;
+let phoneIti = null; 
 
 document.addEventListener("DOMContentLoaded", () => {
     initializeRegistration();
@@ -22,7 +23,7 @@ function initializePhoneInput() {
 function initializeRegistration() {
     const form = document.getElementById("bookingForm");
     const dobInput = document.getElementById("dateOfBirth");
-    const phoneIti = initializePhoneInput();
+    phoneIti = initializePhoneInput();
 
     if (dobInput) {
         dobInput.addEventListener("change", updateAgeFromDob);

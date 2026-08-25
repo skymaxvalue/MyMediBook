@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Doctor Availability | My Medi Book</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/availability.css">
+
+
+</head>
+
+<body>
+
+
+<div id="navbar-container"></div>
+
+<main class="dashboard-container">
+
+    <section class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span class="separator">
+            <img src="images/right-arrow-blue.png" alt="Arrow">
+        </span>
+        <a href="book-appointment.html">Book Appointment</a>
+        <span class="separator">
+            <img src="images/right-arrow-blue.png" alt="Arrow">
+        </span>
+        <span class="active">Doctor Availability</span>
+    </section>
+
+    <div class="availability-container">
+
+        <div class="availability-header">
+            <div class="availability-heading">
+                <h2>Doctor Availability</h2>
+                <p class="subtitle">View and select an available date to book appointment.</p>
+            </div>
+
+            <div class="date-filter">
+                <label for="dateFilter">View Availability From:</label>
+                <div class="date-box">
+                    <input type="date" id="dateFilter">
+                </div>
+            </div>
+        </div>
+
+        <div class="availability-card">
+
+            <div class="doctor-info">
+
+                <div class="doctor-top">
+                    <div class="doc-img-container">
+                        <img src="images/doc.jpg" class="doc-img">
+                    </div>
+
+                    <h3>Dr. Kumar</h3>
+                    <p>MBBS</p>
+                    <span class="tag">GENERAL</span>
+                </div>
+
+                <div class="doctor-department">
+                    <p class="dept-label">Department</p>
+                    <p class="dept-value">General Physician</p>
+                </div>
+
+                <button class="back-btn" onclick="goBack()">
+                    <span class="back-arrow">←</span> Back to Doctor List
+                </button>
+
+            </div>
+
+
+            <div class="schedule-box">
+
+                <div id="scheduleContainer"></div>
+
+                <div class="week-nav">
+                    <button class="week-btn" onclick="prevWeek()">
+                        <span class="nav-arrow">‹</span> Previous Week
+                    </button>
+
+                    <button class="week-btn" onclick="nextWeek()">
+                        Next Week <span class="nav-arrow">›</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="legend">
+            <span><i class="dot green"></i> Available</span>
+            <span><i class="dot red"></i> Limited Slots</span>
+            <span><i class="dot beige"></i> Unavailable</span>
+        </div>
+
+    </div>
+
+</main>
+
+<div id="bookingModal" class="modal">
+    <div class="modal-content">
+        <h3>Book Appointment</h3>
+
+        <p id="selectedDate"></p>
+        <p id="selectedTime"></p>
+
+        <button onclick="confirmBooking()">Confirm</button>
+        <button onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<div id="slotsModal" class="modal">
+  <div class="modal-content appointment-card">
+
+
+    <div class="close-icon" onclick="closeSlotsModal()">✖</div>
+
+    <h2>Available Appointments</h2>
+    <p id="slotDate" class="slot-date"></p>
+
+    <div class="appointment-body">
+
+
+      <div class="doctor-info-popup">
+        <img src="images/doc.jpg" class="doctor-img-popup">
+        <h4>Dr. Kumar</h4>
+        <p>MBBS</p>
+        <span class="tag">GENERAL</span>
+      </div>
+
+
+      <div class="slots-section">
+        <div id="slotsContainer" class="slots-grid"></div>
+      </div>
+
+    </div>
+
+
+    <div class="legend-popup">
+      <span><span class="dot available"></span> Available</span>
+      <span><span class="dot booked"></span> Already Booked</span>
+    </div>
+
+
+
+
+    <button class="book-btn" onclick="goToBooking()">Book Appointment</button>
+
+  </div>
+
+</div>
+
+<div id="footer-container"></div>
+
+<script src="js/footer.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/availability.js"></script>
+
+</body>
+</html>

@@ -67,41 +67,6 @@
     box-sizing: border-box;
 }
 
-.breadcrumb {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 18px 27px 0;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: "Source Sans Pro", sans-serif;
-    font-size: 15px;
-    line-height: 20px;
-}
-
-.breadcrumb a {
-    color: #155ee8;
-    text-decoration: none;
-}
-
-.breadcrumb .separator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.breadcrumb .separator img {
-    width: 8px;
-    height: 12px;
-    object-fit: contain;
-}
-
-.breadcrumb .active {
-    color: #101828;
-}
-
 .page-header {
     text-align: center;
     margin: 0 0 32px;
