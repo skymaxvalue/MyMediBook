@@ -31,6 +31,7 @@ function initializeNavbar() {
     setupNavigation();
 
     loadUser();
+    setupProfileActions();
 
 }
 
@@ -217,35 +218,32 @@ function navigate(page) {
 }
 
 
-const profileBtn = document.getElementById("profileBtn");
-
-if (profileBtn) {
-
-    profileBtn.addEventListener("click", () => {
-
-        window.location.href = "profile.html";
-
-    });
-
-}
-
-
-const logoutBtn = document.getElementById("logoutBtn");
+function setupProfileActions() {
+    const logoutBtn = document.getElementById("logoutBtn");
+const logoutModal = document.getElementById("logoutModal");
+const cancelLogout = document.getElementById("cancelLogout");
+const confirmLogout = document.getElementById("confirmLogout");
+const closeLogoutModal = document.getElementById("closeLogoutModal");
 
 if (logoutBtn) {
-
     logoutBtn.addEventListener("click", () => {
-
-        if (confirm("Are you sure you want to logout?")) {
-
-            localStorage.removeItem("loggedInUser");
-
-            localStorage.removeItem("isLoggedIn");
-
-            window.location.href = "login.html";
-
-        }
-
+        document.getElementById("profileDropdown").classList.remove("show");
+        logoutModal.classList.add("show");
     });
+}
 
+cancelLogout.onclick = () => logoutModal.classList.remove("show");
+closeLogoutModal.onclick = () => logoutModal.classList.remove("show");
+
+confirmLogout.onclick = () => {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("isLoggedIn");
+    window.location.href = "login.html";
+};
+
+logoutModal.addEventListener("click", (e) => {
+    if (e.target === logoutModal) {
+        logoutModal.classList.remove("show");
+    }
+});
 }
