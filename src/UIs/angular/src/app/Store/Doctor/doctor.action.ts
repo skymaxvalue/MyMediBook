@@ -7,7 +7,7 @@ export const loadDoctorSpecialities = createAction(
 
 export const loadDoctorSpecialitiesSuccess = createAction(
     '[Doctor Speciality] Load Success',
-    props<{ specialities: any[] }>()
+    props<{ doctorList: any[] }>()
 );
 
 export const loadDoctorSpecialitiesFailure = createAction(

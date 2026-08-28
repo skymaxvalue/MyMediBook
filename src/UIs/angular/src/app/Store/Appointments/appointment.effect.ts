@@ -177,4 +177,33 @@ export class AppointmentEffects {
             )
         )
     );
+
+    getAppointmentListByAssociateList$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getAppointmentListByAssociateId),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getAppointmentListByAssociateId(action.associateId)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getAppointmentListByAssociateIdSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getAppointmentListByAssociateIdFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
 }

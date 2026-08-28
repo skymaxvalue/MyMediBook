@@ -44,7 +44,7 @@ export const FRONT_OFFICE_ROUTES: Routes = [
     , {
         path: '',
         component: FrontOfficeLayoutComponent,
-        // canActivate: [authGuard],
+        canActivate: [authGuard],
 
         children: [
 
@@ -74,10 +74,10 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                         .then(m => m.PatientRegistrationFOComponent)
             },
             {
-                path: 'book-appointment',
+                path: 'doctor-availability',
                 loadComponent: () =>
-                    import('../Pages/Patient-View/book-appoiment-form/book-appoiment-form.component')
-                        .then(m => m.BookAppoimentFormComponent)
+                    import('../Pages/Patient-View/check-doc-available/check-doc-available.component')
+                        .then(m => m.CheckDocAvailableComponent)
             },
             {
                 path: 'patient-checkin',
@@ -94,6 +94,12 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                 loadComponent: () =>
                     import('../Pages/Front-Office-View/doctor-queue/doctor-queue.component')
                         .then(m => m.DoctorQueueComponent)
+            },
+            {
+                path: 'book-appointment',
+                loadComponent: () =>
+                    import('../Pages/Patient-View/specialities/specialities.component')
+                        .then(m => m.SpecialitiesComponent)
             }
 
         ]

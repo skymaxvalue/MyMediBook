@@ -44,6 +44,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   private countdown: any;
   resetPasswordToken: any;
   emailId: any;
+  isLoginFlow: boolean = false;
 
 
   constructor(
@@ -57,6 +58,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.emailId = history.state.emailId;
+    this.isLoginFlow = history.state.isLoginFollw
 
     console.log('Email ID:', this.emailId);
 
@@ -311,14 +313,22 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     await this.store.select(selectVerifyOTP).subscribe((res: any) => {
       if (res) {
         this.resetPasswordToken = res.token
-        this.router.navigate([
-          '/front-office/reset-password'
-        ], {
-          state: {
-            token: this.resetPasswordToken
+        if (this.isLoginFlow) {
+          this.router.navigate([
+            '/front-office/dashboard'
+          ]
+          );
+        } else {
+          this.router.navigate([
+            '/front-office/reset-password'
+          ], {
+            state: {
+              token: this.resetPasswordToken
+            }
           }
+          );
+
         }
-        );
 
         console.log("OTP verified successfully.");
       }

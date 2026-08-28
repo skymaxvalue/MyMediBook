@@ -80,12 +80,48 @@ export class LoggingInterceptor implements HttpInterceptor {
               'Bad Request';
             break;
 
-          case 401:
+          case 401: {
+
             message = 'Session expired. Please login again.';
 
-            localStorage.clear();
-            this.router.navigate(['/login']);
+            const userString = localStorage.getItem('user');
+
+            let user: any = null;
+
+            try {
+              user = JSON.parse(userString || 'null');
+            } catch {
+              user = null;
+            }
+
+            // Authentication data remove करा
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('associationToken');
+            localStorage.removeItem('user');
+
+            // Role नुसार login page
+            switch (user?.roleName) {
+
+              case 'Patient':
+                this.router.navigate(['/patient/login']);
+                break;
+
+              case 'Associate':
+                this.router.navigate(['/front-office/login']);
+                break;
+
+              case 'Admin':
+                this.router.navigate(['/admin/login']);
+                break;
+
+              default:
+                this.router.navigate(['/']);
+                break;
+            }
+
             break;
+          }
 
           case 403:
             message = 'You are not authorized to perform this action.';

@@ -90,3 +90,18 @@ export const rescheduleMyAppointmentFailure = createAction(
     '[Appointments reschedule] put  Failure',
     props<{ error: string }>()
 );
+export const getAppointmentListByAssociateId = createAction(
+    '[Appointments by associate list] get ',
+    props<{ associateId: number }>()
+
+);
+
+export const getAppointmentListByAssociateIdSuccess = createAction(
+    '[Appointments by associate list] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getAppointmentListByAssociateIdFailure = createAction(
+    '[Appointments by associate list] get  Failure',
+    props<{ error: string }>()
+);

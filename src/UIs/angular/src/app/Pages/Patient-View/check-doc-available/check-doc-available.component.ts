@@ -14,6 +14,7 @@ import { selectCreateAppointmentRes, selectRescheduledAppointment } from "src/ap
 import { take } from "rxjs";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 import { createAppointment, getMyAppointments, rescheduleMyAppointment } from "src/app/Store/Appointments/appointment.actions";
+import { BookingPatientInformationComponent } from "../../Front-Office-View/booking-patient-information/booking-patient-information.component";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -23,7 +24,7 @@ interface ScheduleItem {
 }
 @Component({
   selector: "app-check-doc-available",
-  imports: [CommonModule, FormsModule, BookAppoimentFormComponent, BookingOTPVerificatinComponent, BookingSuccessfullComponent, BookingFailedComponent],
+  imports: [CommonModule, FormsModule, BookAppoimentFormComponent, BookingOTPVerificatinComponent, BookingSuccessfullComponent, BookingFailedComponent, BookingPatientInformationComponent],
   templateUrl: "./check-doc-available.component.html",
   styleUrl: "./check-doc-available.component.css",
 })
@@ -58,6 +59,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   showAddbookingAppoinmentForm: boolean = false
   ProfileList: any[] = [];
   maxDate: string = '';
+  isFrontOfficePage: boolean = false
 
   constructor(private router: Router, private store: Store, private toast: ToastService) {
     // this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
@@ -72,11 +74,15 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
     if (navigation?.extras.state) {
 
       this.doctor = navigation.extras.state['doctor'];
+
+
+
       this.updatesheduledpatient = navigation.extras.state['appointment'];
     } else {
 
       this.doctor = history.state.doctor;
       this.updatesheduledpatient = history.state.appointment;
+      this.isFrontOfficePage = history.state.isFrontOfficePage;
     }
 
     console.log('Doctor =>', this.doctor);
@@ -260,7 +266,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     }
     await this.store.dispatch(getTimeSloteByDoctorID({ payload }))
-    await this.store.select(selectGetTimeSlotOfDoctor)
+    await this.store.select(selectGetTimeSlotOfDoctor).pipe(take(1))
       .subscribe((res: any) => {
 
         if (res?.data) {
@@ -271,8 +277,14 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
             slotId: slot.slotId,
             isAvailable: slot.isAvailable
           }));
+          if (this.slots.length > 1) {
 
-          this.showSlotsModal = true;
+            this.showSlotsModal = true;
+          } else {
+            this.toast.info('info', "Time slote is not available")
+          }
+
+
 
 
           // console.log(res, "=========>")
@@ -290,6 +302,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
           // }));
           // this.showSlotsModal = true;
         }
+
       })
 
 

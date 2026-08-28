@@ -13,18 +13,18 @@ export const loginGuard: CanActivateFn = (route, state) => {
   }
 
 
-  switch (user.roleName) {
+  switch (user.userType) {
 
     case 'Patient':
       return router.createUrlTree(['/patient/dashboard']);
 
     case 'Associate':
-      return router.createUrlTree(['/associate/dashboard']);
-
+      return router.createUrlTree(['/front-office/dashboard']);
     case 'Admin':
       return router.createUrlTree(['/admin/dashboard']);
 
     default:
+      console.log('Unknown role:', user?.roleName);
       localStorage.clear();
       return true;
   }

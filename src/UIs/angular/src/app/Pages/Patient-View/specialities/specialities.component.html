@@ -1,6 +1,11 @@
 <div class="speciality-container">
 
-    <h2 class="title2 py-1">Our Specialities</h2>
+    <div class="speciality-heading">
+        <h2 class="title2"><img src="../../../../assets/images/appointment-icon.png" alt="" class="title-icon">Book
+            Appointment</h2>
+        <p class="subtitle">Search for a doctor by name, speciality or symptoms.</p>
+    </div>
+
 
     <!-- Search Bar -->
     <div class="search-bar">
@@ -44,6 +49,105 @@
     <!-- Doctor Cards -->
     @for (doctor of speciality.doctors; track doctor.name) {
 
+
+    @if(doctor.fromDate===null){
+    <div class="doctor-card leave-card" (click)="goToAvailability(doctor,doctor.specialityId)">
+        <div class="card-row">
+            <div class="doc-left">
+
+
+                <!-- <img src="{{apiUrl}}{{doctor.image}}" class="doc-img" alt="doctor"> -->
+                <img src="assets/images/doc.jpg" class="doc-img" alt="doctor">
+                <div class="doc-info">
+
+                    <p>
+                        Doctor Name :
+                        <b>{{ doctor?.name }}</b>
+                    </p>
+
+                    <p>
+                        Degree :
+                        <b>{{ doctor?.degree }}</b>
+                    </p>
+
+                    <p>
+                        Department :
+
+                        <span class="badge">
+                            {{ doctor?.department }}
+                        </span>
+
+                    </p>
+
+                </div>
+
+
+
+
+            </div>
+            <div class="card-divider"></div>
+            <div class="doc-right">
+
+                <p>[Visiting Hours / Out Of Station]</p>
+
+                <h3>12PM - 5PM</h3>
+
+                <div class="leave-pill">
+                    <span class="leave-pill-icon">&#128197;</span>
+                    On Leave
+                    <span class="leave-pill-info" title="Doctor is currently on annual leave">&#9432;</span>
+                </div>
+                <p class="leave-caption">Doctor is not available during this period</p>
+
+
+
+            </div>
+        </div>
+
+        <div class="leave-banner">
+            <div class="leave-banner-main">
+                <div class="leave-banner-header">
+                    <span class="leave-banner-icon-circle">&#128197;</span>
+                    <span class="leave-banner-title">On Annual Leave</span>
+                </div>
+
+                <div class="leave-banner-details">
+                    <div class="leave-banner-item">
+                        <span class="leave-banner-icon-circle small">&#128197;</span>
+                        <div>
+                            <p class="leave-banner-item-label">Leave Period</p>
+                            <p class="leave-banner-item-value">01 Sep 2026 - 30 Sep 2026</p>
+                        </div>
+                    </div>
+
+                    <div class="leave-banner-vdivider"></div>
+
+                    <div class="leave-banner-item">
+                        <span class="leave-banner-icon-circle small">&#128337;</span>
+                        <div>
+                            <p class="leave-banner-item-label">Next Available From</p>
+                            <p class="leave-banner-item-value red">01 Oct 2026 (Thursday)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-ahead-box">
+                <p class="plan-ahead-title"><span class="plan-ahead-icon">&#128226;</span> Plan Ahead</p>
+                <p class="plan-ahead-text">You can view availability from <b>01 Oct 2026</b> onwards.</p>
+            </div>
+        </div>
+
+        <div class="leave-notice">
+            <span class="leave-notice-icon">&#9432;</span>
+            Doctor availability is shown in local time. Please select a date after <b>01 Oct 2026</b> to view time
+            slots.
+        </div>
+
+
+    </div>
+
+    }@else{
     <div class="doctor-card" (click)="goToAvailability(doctor,doctor.specialityId)">
 
         <div class="doc-left">
@@ -74,6 +178,7 @@
 
             </div>
 
+
         </div>
 
         <div class="doc-right">
@@ -87,6 +192,7 @@
         </div>
 
     </div>
+    }
 
     }
 

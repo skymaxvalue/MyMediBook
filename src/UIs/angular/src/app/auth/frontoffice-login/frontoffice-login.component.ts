@@ -4,8 +4,8 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AuthService } from 'src/app/core/Services/auth.service';
 import { AppState } from 'src/app/Store/app.state';
-import { login } from 'src/app/Store/Auth/auth.actions';
-import { selectLoginUser } from 'src/app/Store/Auth/auth.selectors';
+import { login, requestOTP } from 'src/app/Store/Auth/auth.actions';
+import { selectLoginUser, selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
 @Component({
   selector: "app-frontoffice-login",
   imports: [FormsModule, RouterLink],
@@ -19,6 +19,7 @@ export class FrontofficeLoginComponent {
 
   remember = false;
   showPassword = false;
+  emailId: any;
 
   constructor(private router: Router,
     public auth: AuthService,
@@ -57,7 +58,24 @@ export class FrontofficeLoginComponent {
 
     this.store.select(selectLoginUser).subscribe((res: any) => {
       if (res) {
-        this.router.navigate(['/front-office/otp-verification']);
+        this.emailId = res.data.email
+        localStorage.setItem('loginTime', Date.now().toString());
+        localStorage.setItem('token', res.tokenKey);
+        localStorage.setItem('refreshToken', res.refreshToken);
+        localStorage.setItem('user', JSON.stringify(res.data));
+
+        this.store.dispatch(requestOTP({ email: this.emailId }))
+      }
+
+    })
+    this.store.select(selectRequestedOTP).subscribe((res: any) => {
+      if (res) {
+        this.router.navigate(['/front-office/otp-verification'], {
+          state: {
+            emailId: this.emailId,
+            isLoginFollw: true
+          }
+        });
       }
     })
 
