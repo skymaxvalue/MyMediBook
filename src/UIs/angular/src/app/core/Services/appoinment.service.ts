@@ -39,4 +39,7 @@ export class AppoinmentService {
   rescheduleAppoitmentsByPatientID({ patientId, appointmentId, associateId, slotId, visitPurpose, visitType, lastUpdatedBy, associateRole, rescheduleReason }: { patientId: number, appointmentId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any, lastUpdatedBy: any, associateRole: any, rescheduleReason: any }) {
     return this.http.put(`${this.apiUrl}${AppointmentApiEndPoint.RESCHEULE_MY_APPOINTMENT}`, { patientId, appointmentId, associateId, slotId, visitPurpose, visitType, lastUpdatedBy, associateRole, rescheduleReason })
   }
+  getAppointmentListByAssociateId(associateId: number) {
+    return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST}${associateId}`)
+  }
 }

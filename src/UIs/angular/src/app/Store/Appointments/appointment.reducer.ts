@@ -108,5 +108,22 @@ export const appointmentReducer = createReducer(
         ...state,
         isLoading: false,
         error: action.error
+    })),
+    on(AppointmentActions.getAppointmentListByAssociateId, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getAppointmentListByAssociateIdSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        Appointments: action.Appointments
+    })),
+
+    on(AppointmentActions.getAppointmentListByAssociateIdFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
     }))
 );

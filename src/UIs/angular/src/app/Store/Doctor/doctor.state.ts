@@ -13,6 +13,7 @@ export interface DoctorSpecialityState {
     doctorTimeSlot: any[];
     accociateDetails: any;
     updatedAssociate: any;
+    doctorList: any[]
 
 
 }
@@ -31,6 +32,7 @@ export const initialState: DoctorSpecialityState = {
     associateSchedule: null,
     doctorTimeSlot: [],
     accociateDetails: null,
-    updatedAssociate: null
+    updatedAssociate: null,
+    doctorList: []
 
 };

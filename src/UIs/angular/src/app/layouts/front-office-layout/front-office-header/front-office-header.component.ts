@@ -207,7 +207,11 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
         this.router.navigate([
           '/front-office/book-appointment'
-        ]);
+        ], {
+          state: {
+            isFrontOfficePage: true
+          }
+        });
 
         break;
 

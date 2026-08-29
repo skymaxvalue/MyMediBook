@@ -16,7 +16,7 @@ export class DoctorSpecialityEffects {
     ) { }
 
 
-    loadSpecialities$ = createEffect(() =>
+    loadDoctorList$ = createEffect(() =>
         this.actions$.pipe(
             ofType(DoctorSpecialityActions.loadDoctorSpecialities),
 
@@ -25,7 +25,7 @@ export class DoctorSpecialityEffects {
 
                     map((response: any) =>
                         DoctorSpecialityActions.loadDoctorSpecialitiesSuccess({
-                            specialities: response.data
+                            doctorList: response.data
                         })
                     ),
 

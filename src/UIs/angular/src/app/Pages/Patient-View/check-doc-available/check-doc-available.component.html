@@ -121,9 +121,13 @@
 </div>
 }
 }
-@if (showAddbookingAppoinmentForm) {
+@if (showAddbookingAppoinmentForm && !isFrontOfficePage) {
 <app-book-appoiment-form [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
     (backToAvailability)="backToAvailability($event)"></app-book-appoiment-form>
+}
+@if(showAddbookingAppoinmentForm && isFrontOfficePage){
+<app-booking-patient-information [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    (backToAvailability)="backToAvailability($event)"></app-booking-patient-information>
 }
 @if(showBookingCunfermationOtp){
 <app-booking-otp-verificatin [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"

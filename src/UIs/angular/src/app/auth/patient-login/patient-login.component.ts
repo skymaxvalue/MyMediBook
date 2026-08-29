@@ -64,20 +64,9 @@ export class PatientLoginComponent implements AfterViewInit, OnInit {
         localStorage.setItem('refreshToken', response.refreshToken);
         localStorage.setItem('user', JSON.stringify(response.data));
 
-        switch (response.data.roleName) {
 
-          case 'Patient':
-            this.router.navigate(['/patient/dashboard']);
-            break;
+        this.router.navigate(['/patient/dashboard']);
 
-          case 'Associate':
-            this.router.navigate(['/associate/dashboard']);
-            break;
-
-          case 'Admin':
-            this.router.navigate(['/associate/dashboard']);
-            break;
-        }
 
       });
   }

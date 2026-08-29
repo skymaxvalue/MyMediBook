@@ -22,7 +22,9 @@ export class SpecialitiesComponent implements OnInit {
   @Output() onDoctorSelected = new EventEmitter<any>();
   searchText: any = '';
   searchedText: string = '';
+  isFrontOfficePage: boolean = false
   constructor(private router: Router, private toast: ToastService, private store: Store<AppState>, private cdr: ChangeDetectorRef) {
+    this.isFrontOfficePage = history.state.isFrontOfficePage
     this.store.dispatch(
       loadDoctorSpecialities());
   }
@@ -44,14 +46,27 @@ export class SpecialitiesComponent implements OnInit {
   goToAvailability(doctor: any, ocId: any) {
     if (doctor.fromDate && doctor.fromTime || doctor.toDate && doctor.toTime) {
 
-      this.router.navigate(
-        ['/patient/dashboard/doctor-availability'],
-        {
-          state: {
-            doctor
+      if (this.isFrontOfficePage) {
+        this.router.navigate(
+          ['/front-office/doctor-availability'],
+          {
+            state: {
+              doctor,
+              isFrontOfficePage: true
+            }
           }
-        }
-      );
+        );
+      } else {
+        this.router.navigate(
+          ['/patient/dashboard/doctor-availability'],
+          {
+            state: {
+              doctor
+            }
+          }
+        );
+
+      }
     } else {
       this.toast.info('Info', "Doctor is not available")
     }

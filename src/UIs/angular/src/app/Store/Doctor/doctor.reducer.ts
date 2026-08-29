@@ -19,9 +19,9 @@ export const doctorSpecialityReducer = createReducer(
 
     on(
         DoctorSpecialityActions.loadDoctorSpecialitiesSuccess,
-        (state, { specialities }) => ({
+        (state, { doctorList }) => ({
             ...state,
-            specialities,
+            doctorList: doctorList,
             isLoading: false
         })
     ),

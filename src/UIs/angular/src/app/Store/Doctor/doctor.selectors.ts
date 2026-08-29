@@ -8,7 +8,7 @@ export const selectDoctorSpecialityState =
 
 export const selectDoctorSpecialities = createSelector(
     selectDoctorSpecialityState,
-    state => state.specialities
+    state => state.doctorList
 );
 
 export const selectAllSpecialities = createSelector(

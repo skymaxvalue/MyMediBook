@@ -1,7 +1,7 @@
 import { UPDATE } from "@ngrx/store"
 
 export const APIEndpoints = {
-    GET_SPECIALITIES: "Doctor/GetDoctorList",
+    DOCTOR_LIST: "Doctor/GetDoctorList",
     GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
     GET_DEPARTMENT: "Department/GetDepartmentList",
     GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
@@ -19,6 +19,7 @@ export const AppointmentApiEndPoint = {
     CREATE_APPOINTMENT: "Appointment/CreateAppointment",
     GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
     GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/Patient/GetMyAppointmentList/",
+    GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST: "Appointment/Doctor/GetMyAppointmentList/"
 }
 export const PatientApiEndPoint = {
     UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",

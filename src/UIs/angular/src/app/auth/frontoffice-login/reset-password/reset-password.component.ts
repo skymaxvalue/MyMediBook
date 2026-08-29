@@ -112,7 +112,7 @@ export class ResetPasswordComponent implements OnInit {
     localStorage.removeItem('passwordRecoveryUser');
 
 
-    this.store.dispatch(ForrgetResetPassword({ password: confirmPassword, token: this.token, isAssociate: true }))
+    this.store.dispatch(ForrgetResetPassword({ password: confirmPassword, token: this.token }))
 
     this.store.select(selectForgotPassReset).subscribe((res: any) => {
       if (res) {

@@ -16,7 +16,7 @@ export class DoctorService {
   }
   getDoctorSpecialities() {
     return this.http.get(
-      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_SPECIALITIES}`
+      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.DOCTOR_LIST}`
     );
   }
 
