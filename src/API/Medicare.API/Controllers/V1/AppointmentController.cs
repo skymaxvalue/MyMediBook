@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Appointment;
+using Medicare.Application.Features.Commands.Claim;
 using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
+using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
 using Medicare.DAL.Services.Appointment;
@@ -53,7 +55,7 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetAvailableAppointments")]
+        [Route("GetAvailableAppointments/{associateId}")]
         public async Task<IActionResult> GetAvailableAppointments([FromQuery] int associateId)
         {
             List<AvailableAppointmentModel> response = new List<AvailableAppointmentModel>();
@@ -88,15 +90,6 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
-        [HttpPut]
-        [Route("UpdateAppointmentStatus/{appointmentId}")]
-        public async Task<IActionResult> UpdateAppointmentStatus(int associateId)
-        {
-            List<PatientProfileModel> response = new List<PatientProfileModel>();
-            response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
-            return HandleListResponse(response);
-        }
-
         [AllowAnonymous]
         [HttpGet]
         [Route("ConfirmAppointmentStatus")]
@@ -105,6 +98,15 @@ namespace Medicare.API.Controllers.V1
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new UpdateAppointmentStatusQuery(token));
             return HandleResponse(response);
+        }
+
+        [HttpPost]
+        [Route("{appointmentId}/Copay")]
+        public async Task<IActionResult> CollectCopay(int appointmentId, [FromBody] CollectCopayRequest request)
+        {
+            request.AppointmentId = appointmentId;
+            var result = await _mediator.Send(new CollectCopayCommand(request));
+            return Ok(result);
         }
     }
 }

@@ -10,7 +10,6 @@ using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
-using Microsoft.AspNetCore.Identity;
 
 namespace Medicare.DAL.Persistence.Repositories
 {

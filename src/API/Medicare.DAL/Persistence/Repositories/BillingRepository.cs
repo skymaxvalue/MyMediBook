@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IBilling;
 using Medicare.Application.Interfaces.IErrorLog;
-using Medicare.Application.Models.Billing;
+using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.Response;
 using Medicare.DAL.Persistence.Dapper;

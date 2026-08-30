@@ -1,6 +1,6 @@
 ﻿using Medicare.Application.Interfaces.IErrorHandling;
 
-namespace Medicare.Application.Models.Billing
+namespace Medicare.Application.Models.Claim
 {
     public class ClaimSummaryModel
     {

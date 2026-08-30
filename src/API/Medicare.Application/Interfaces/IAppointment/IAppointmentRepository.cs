@@ -1,4 +1,5 @@
 ﻿using Medicare.Application.Models.Appointment;
+using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
 
@@ -14,5 +15,6 @@ namespace Medicare.Application.Interfaces.IAppointment
         Task<ResponseModel> UpdateAppointmentScheduleAsync(UpdateAppointmentScheduleRequestModel model);
         Task<ResponseModel> CancelAppointmentByIdAsync(CancelAppointmentScheduleRequestModel model);
         Task<ResponseModel> ConfirmAppointmentStatusAsync(int appointmentId);
+        Task<ClaimAuditResponse> GetClaimAuditAsync(int claimId);
     }
 }

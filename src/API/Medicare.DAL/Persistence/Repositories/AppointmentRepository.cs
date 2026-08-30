@@ -5,6 +5,7 @@ using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.INotificationRepository;
 using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.Appointment;
+using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.Email;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
@@ -424,6 +425,39 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("AppointmentId", appointmentId);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+        public async Task<ClaimAuditResponse> GetClaimAuditAsync(int claimId)
+        {
+            const string procName = "USP_GetClaimAuditById";
+            ClaimAuditResponse returnData = new ClaimAuditResponse();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("ClaimId", claimId);
+
+                return await _context.QueryMultipleAsync(procName, param, async grid =>
+                {
+                    return new ClaimAuditResponse
+                    {
+                        Claim = await grid.ReadSingleAsync<ClaimAuditSummary>(),
+                        LineItems = (await grid.ReadAsync<AuditLineItem>()).ToList(),
+                        InsurancePayments = (await grid.ReadAsync<AuditPayment>()).ToList(),
+                        Adjustments = (await grid.ReadAsync<AuditAdjustment>()).ToList(),
+                        PatientResponsibility = (await grid.ReadAsync<AuditResponsibility>()).ToList()
+                    };
+                });
             }
             catch (Exception ex)
             {

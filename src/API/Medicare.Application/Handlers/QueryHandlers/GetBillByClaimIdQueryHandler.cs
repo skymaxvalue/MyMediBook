@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Queries.Billing;
 using Medicare.Application.Interfaces.IBilling;
-using Medicare.Application.Models.Billing;
+using Medicare.Application.Models.Claim;
 
 namespace Medicare.Application.Handlers.QueryHandlers
 {
