@@ -38,7 +38,7 @@ input[type="date"] {
     box-shadow: 0 6px 14px rgba(0,0,0,0.06);
 }
 
-/* Header */
+
 .patient-info-header {
     text-align: center;
     margin-bottom: 25px;
@@ -60,7 +60,12 @@ input[type="date"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+}
+
+.icon-badge img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
 }
 
 .patient-info-header h2 {
@@ -98,35 +103,155 @@ input[type="date"] {
     text-transform: uppercase;
 }
 
-/* Top single-column fields: Patient Type, Select Patient Profile */
+
 .top-fields {
     display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 20px 25px;
-    align-items: center;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
 }
 
-.top-fields label {
-    font-weight: 600;
-    color: #333;
-}
 
-/* Two-column detail sections */
 .detail-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 22px 50px;
 }
 
+.patient-details-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+
+.full-width-field {
+    grid-column: 1 / -1;
+}
+
 .field-pair {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    align-items: center;
-    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .field-pair.empty {
     visibility: hidden;
+}
+
+.field-pair-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.address-subfields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px 14px;
+    margin-top: 6px;
+}
+
+.address-subfields .field-pair {
+    gap: 6px;
+}
+
+.address-subfields label {
+    font-size: 13px;
+}
+
+.checkbox-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #3b5bdb;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.checkbox-inline input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    margin: 0;
+    border: 1.5px solid #9aa6c3;
+    border-radius: 4px;
+    background: #fff;
+    position: relative;
+    cursor: pointer;
+}
+
+.checkbox-inline input[type="checkbox"]:checked {
+    border-color: #3b5bdb;
+    background: #3b5bdb;
+}
+
+.checkbox-inline input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.checkbox-row input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    margin: 0;
+    border: 1.5px solid #9aa6c3;
+    border-radius: 6px;
+    background: #fff;
+    position: relative;
+    cursor: pointer;
+}
+
+.checkbox-row input[type="checkbox"]:checked {
+    border-color: #2F5BEA;
+    background: #2F5BEA;
+}
+
+.checkbox-row input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-row-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.age-type-pair {
+    justify-content: flex-end;
+    padding-bottom: 12px;
 }
 
 .field-pair label {
@@ -141,12 +266,26 @@ label {
 }
 
 input, select, textarea {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #dcdcdc;
-    background: #f5f6f8;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #D6E2F3;
+    background: #fff;
     width: 100%;
     box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:not([type="radio"]):not([type="checkbox"]),
+select {
+    height: 48px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #3b5bdb;
+    box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.14);
 }
 
 input[type="radio"] {
@@ -190,6 +329,11 @@ textarea {
 
 .book-btn:hover {
     opacity: 0.92;
+}
+
+.book-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .clear-btn {
@@ -249,6 +393,20 @@ textarea {
 #age:disabled {
     opacity: 1;
     color: #555;
+    cursor: not-allowed;
+}
+
+.field-pair input:disabled,
+.field-pair select:disabled,
+.field-pair textarea:disabled {
+    background: #eef1f5;
+    color: #98a2b3;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.radio-item:has(input:disabled) {
+    color: #98a2b3;
     cursor: not-allowed;
 }
 
@@ -319,6 +477,39 @@ textarea {
     flex: 1;
 }
 
+
+.iti {
+    width: 100%;
+}
+
+.iti__flag-container {
+    border-right: 1px solid #d9e1ed;
+}
+
+.iti__selected-flag {
+    height: 48px;
+    padding: 0 8px 0 9px;
+    background: #fff;
+    border-radius: 10px 0 0 10px;
+}
+
+.iti__country-list {
+    z-index: 20;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 13px;
+}
+
+.iti input[type="tel"] {
+    height: 48px !important;
+    padding-left: 86px !important;
+    border-radius: 10px !important;
+}
+
+.iti--allow-dropdown input,
+.iti--separate-dial-code input {
+    padding-right: 11px;
+}
+
 .cvv-label {
     font-weight: 600;
 }
@@ -358,18 +549,19 @@ textarea {
     height: 16px;
 }
 
-/* Patient profile dropdown */
+
 .patient-dropdown {
     position: relative;
 }
 
 .patient-dropdown-trigger {
     width: 100%;
+    height: 48px;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    border: 1px solid #d7dde7;
+    padding: 0 16px;
+    border: 1px solid #D6E2F3;
     border-radius: 10px;
     background: #fff;
     cursor: pointer;
@@ -384,16 +576,18 @@ textarea {
 }
 
 .patient-avatar-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #e5e7eb;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    color: #6b7280;
     flex-shrink: 0;
+}
+
+.patient-avatar-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
 .patient-dropdown-label {
@@ -415,22 +609,94 @@ textarea {
     transform: rotate(180deg);
 }
 
-.patient-dropdown-panel {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background: #fff;
-    border: 1px solid #e4e7ec;
-    border-radius: 12px;
-    box-shadow: 0 12px 28px rgba(16, 24, 40, 0.14);
-    z-index: 50;
-    display: none;
-    overflow: hidden;
+.patient-modal-content {
+    width: 560px;
 }
 
-.patient-dropdown-panel.open {
-    display: block;
+.saved-info-modal-content {
+    width: 460px;
+    text-align: center;
+}
+
+.saved-info-modal-content .patient-modal-header {
+    margin-bottom: 12px;
+}
+
+.saved-info-card {
+    background: #f5f6f8;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 4px 0 4px;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+}
+
+.saved-info-card p {
+    margin: 4px 0;
+}
+
+.saved-info-modal-content .form-actions {
+    margin-top: 22px;
+}
+
+.patient-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.patient-modal-header h2 {
+    margin: 0;
+    color: #3b5bdb;
+    font-size: 22px;
+}
+
+.patient-search-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.patient-search-row .patient-search-box {
+    flex: 1.4;
+    margin: 0;
+}
+
+.patient-dob-input {
+    flex: 1;
+}
+
+.patient-modal-hint {
+    margin: 10px 2px 14px;
+    color: #98a2b3;
+    font-size: 12px;
+}
+
+.patient-item-details {
+    flex: 1;
+}
+
+.patient-item.best-match {
+    background: #eef2ff;
+    border: 1px solid #3b5bdb;
+}
+
+.match-badge {
+    flex-shrink: 0;
+    background: #e0e6ff;
+    color: #2545b8;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 8px;
+    display: none;
+}
+
+.patient-item.best-match .match-badge {
+    display: inline-block;
 }
 
 .patient-search-box {
@@ -547,7 +813,8 @@ textarea {
         grid-template-columns: 1fr;
     }
 
-    .detail-grid {
+    .detail-grid,
+    .patient-details-grid {
         grid-template-columns: 1fr;
     }
 
@@ -555,9 +822,13 @@ textarea {
         display: none;
     }
 
-    .field-pair {
+    .age-type-pair {
+        justify-content: flex-start;
+        padding-bottom: 0;
+    }
+
+    .address-subfields {
         grid-template-columns: 1fr;
-        gap: 8px;
     }
 
     .schedule-box {
@@ -577,5 +848,86 @@ textarea {
     .book-btn, .clear-btn {
         justify-content: center;
         width: 100%;
+    }
+}
+
+
+
+.saved-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #E5E7EB;
+}
+
+.saved-row:last-child{
+    border-bottom:none;
+}
+
+.saved-row strong{
+    color:#64748B;
+    font-size:14px;
+    font-weight:600;
+}
+
+.saved-row span{
+    color:#042251;
+    font-size:15px;
+    font-weight:700;
+}
+
+
+
+
+
+
+
+
+
+#accountHolderQuestion{
+    margin: 18px 0 12px;
+}
+
+#accountHolderQuestion label{
+    margin-bottom: 10px;
+    display:block;
+}
+
+.account-holder-group{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+#accountHolderDetails{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:24px !important;
+    row-gap:0 !important;
+    margin:0 0 24px;
+    align-items:start;
+}
+
+#accountHolderDetails .field-pair{
+    gap:8px;
+    margin:0;
+}
+
+#accountHolderDetails label{
+    margin-bottom:0;
+}
+
+@media (max-width:768px){
+    #accountHolderDetails{
+        grid-template-columns:1fr;
+        row-gap:16px !important;
+    }
+
+    .account-holder-group{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
     }
 }

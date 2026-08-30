@@ -302,6 +302,56 @@
     width: 100%;
 }
 
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 16px;
+    color: #253a5d;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
+    margin: 0;
+    border: 1.5px solid #697d9c;
+    border-radius: 4px;
+    background: #ffffff;
+    position: relative;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+    border-color: #155ee8;
+    background: #155ee8;
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 9px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+#permanentAddressGrid input:disabled,
+#permanentAddressGrid select:disabled {
+    background: #f2f5fa;
+    color: #7c8aa2;
+    cursor: not-allowed;
+}
+
 .pin-field {
     width: 197px;
     max-width: 197px;

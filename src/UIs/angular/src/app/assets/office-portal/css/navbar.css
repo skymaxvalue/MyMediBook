@@ -349,16 +349,6 @@
     transform:scale(.98);
 }
 
-.dashboard-header::after{
-    content:"";
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:78px;
-    height:1px;
-    background:rgba(255,255,255,.08);
-    pointer-events:none;
-}
 
 .mobile-menu{
     display:none;
