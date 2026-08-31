@@ -122,6 +122,10 @@ function startTimer() {
 
 
 
+    // Pressing Enter inside any otp-input naturally triggers this same
+    // "submit" event (there's a type="submit" button in the form), so
+    // Enter and clicking Verify always run the exact same logic below —
+    // no separate keydown handler is needed for that requirement.
     otpForm.addEventListener("submit", function (event) {
 
         event.preventDefault();
@@ -131,7 +135,7 @@ function startTimer() {
                 .map(input => input.value)
                 .join("");
 
-     
+
         if (otp.length !== 4) {
 
             alert("Please enter the 4-digit OTP.");
@@ -159,22 +163,23 @@ function startTimer() {
         clearInterval(timer);
 
         localStorage.setItem(
-            "registrationVerified",
+            "bookingOtpVerified",
             "true"
         );
 
         window.location.href =
-            "patient-registration-success.html";
+            "booking-success.html";
 
     });
 
 
-   
 
     cancelBtn.addEventListener("click", function () {
 
+        clearInterval(timer);
+
         window.location.href =
-            "patient-registration.html";
+            "booking-failed.html";
 
     });
 

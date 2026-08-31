@@ -30,6 +30,7 @@ function initializeRegistration() {
     }
 
     setupInsurance();
+    setupPermanentAddress();
 
     if (form) {
         form.addEventListener("submit", function (event) {
@@ -43,6 +44,55 @@ function initializeRegistration() {
             confirmBooking();
         });
     }
+}
+
+function setupPermanentAddress() {
+    const sameAsPresent = document.getElementById("sameAsPresentAddress");
+    if (!sameAsPresent) return;
+
+    const presentFieldIds = ["residentialAddress", "cityVillage", "state", "pinCode"];
+    const permanentFieldIds = ["permanentAddress", "permanentCity", "permanentState", "permanentPinCode"];
+
+    function syncPermanentFromPresent() {
+        presentFieldIds.forEach((presentId, i) => {
+            const presentField = document.getElementById(presentId);
+            const permanentField = document.getElementById(permanentFieldIds[i]);
+            if (presentField && permanentField) {
+                permanentField.value = presentField.value;
+            }
+        });
+    }
+
+    function setPermanentFieldsDisabled(disabled) {
+        permanentFieldIds.forEach(id => {
+            const field = document.getElementById(id);
+            if (field) field.disabled = disabled;
+        });
+    }
+
+    sameAsPresent.addEventListener("change", function () {
+        if (this.checked) {
+            syncPermanentFromPresent();
+            setPermanentFieldsDisabled(true);
+        } else {
+            setPermanentFieldsDisabled(false);
+        }
+    });
+
+    // Keep the permanent address mirrored live while the checkbox is on,
+    // so editing the present address doesn't leave stale copied values.
+    presentFieldIds.forEach(id => {
+        const field = document.getElementById(id);
+        if (!field) return;
+
+        field.addEventListener("input", function () {
+            if (sameAsPresent.checked) syncPermanentFromPresent();
+        });
+
+        field.addEventListener("change", function () {
+            if (sameAsPresent.checked) syncPermanentFromPresent();
+        });
+    });
 }
 
 function setupInsurance() {
@@ -285,6 +335,29 @@ function confirmBooking() {
             .value
             .trim(),
 
+        sameAsPresentAddress: document
+            .getElementById("sameAsPresentAddress")
+            ?.checked || false,
+
+        permanentAddress: document
+            .getElementById("permanentAddress")
+            .value
+            .trim(),
+
+        permanentCity: document
+            .getElementById("permanentCity")
+            .value
+            .trim(),
+
+        permanentState: document
+            .getElementById("permanentState")
+            .value,
+
+        permanentPinCode: document
+            .getElementById("permanentPinCode")
+            .value
+            .trim(),
+
         insurance: insuranceChoice,
 
         insuranceData,
@@ -375,6 +448,11 @@ document.addEventListener(
 
         const ageUnit = document.querySelector(".age-unit");
         if (ageUnit) ageUnit.textContent = "Years";
+
+        ["permanentAddress", "permanentCity", "permanentState", "permanentPinCode"].forEach(id => {
+            const field = document.getElementById(id);
+            if (field) field.disabled = false;
+        });
     }
 );
 

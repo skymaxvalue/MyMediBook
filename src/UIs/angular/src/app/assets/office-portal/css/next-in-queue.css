@@ -1498,24 +1498,16 @@ button {
 
 
 
-.breadcrumb-container {
+.page-container{
     width: 100%;
-    padding: 0 23px;
-    box-sizing: border-box;
+    background: #F5F7FB;
 }
 
-.page-container {
-    width: 100%;
+.page-content{
     max-width: 1140px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 20px 40px 60px;
     box-sizing: border-box;
-}
-
-.page-container {
-    min-height: auto;
-    padding-top: 20px;
-    padding-bottom: 60px;
 }
 
 .page-heading {
