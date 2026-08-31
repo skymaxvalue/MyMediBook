@@ -622,7 +622,7 @@
         <!-- FOOTER -->
         <div class="lab-modal-footer">
 
-            <button class="download-btn" type="button">
+            <button class="download-btn" type="button" (click)="downloadLabReport()">
 
                 <img src="/assets/images/icons8-installing-updates-100.png" alt="">
                 Download PDF
@@ -643,3 +643,242 @@
 </div>
 
 }
+
+<div #labReportPdf class="pdf-page">
+
+    <div class="pdf-header">
+        <div class="logo-section">
+            <img src="assets/images/logo.png" />
+
+            <div>
+                <h1>HEALTH HEAVEN</h1>
+                <h2>MEDICAL CENTER</h2>
+            </div>
+        </div>
+
+        <div class="report-info">
+            <div>
+                <strong>Report ID</strong>
+                <span>:</span>
+                <span>LAB-2026-00521</span>
+            </div>
+
+            <div>
+                <strong>Report Date</strong>
+                <span>:</span>
+                <span>01 May 2026</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="title_section">
+        <h2>LAB REPORTS</h2>
+        <p>Official Electronic Medical Record</p>
+    </div>
+
+
+    <div class="information-grid">
+
+        <div class="info-box">
+            <h3>PATIENT INFORMATION</h3>
+
+            <div class="info-row">
+                <b>Patient Name</b>
+                <span>:</span>
+                <span>Ramesh Kumar</span>
+            </div>
+
+            <div class="info-row">
+                <b>Age / Gender</b>
+                <span>:</span>
+                <span>42 Years / Male</span>
+            </div>
+
+            <div class="info-row">
+                <b>Patient ID</b>
+                <span>:</span>
+                <span>PAT-2026-00345</span>
+            </div>
+
+            <div class="info-row">
+                <b>Contact Number</b>
+                <span>:</span>
+                <span>+91 98765 43210</span>
+            </div>
+        </div>
+
+
+        <div class="info-box">
+            <h3>LAB & TEST INFORMATION</h3>
+
+            <div class="info-row">
+                <b>Lab Name</b>
+                <span>:</span>
+                <span>Lab Corp</span>
+            </div>
+
+            <div class="info-row">
+                <b>Test Name</b>
+                <span>:</span>
+                <span>Blood Test</span>
+            </div>
+
+            <div class="info-row">
+                <b>Collection Date</b>
+                <span>:</span>
+                <span>01 May 2026</span>
+            </div>
+
+            <div class="info-row">
+                <b>Report Date</b>
+                <span>:</span>
+                <span>01 May 2026</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        TEST RESULTS
+    </div>
+
+    <table class="result-table">
+
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Result</th>
+                <th>Reference Range</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Hemoglobin (Hb)</td>
+                <td class="low">11.2 g/dL</td>
+                <td>12.0 - 16.0 g/dL</td>
+                <td class="low">Low</td>
+            </tr>
+
+            <tr>
+                <td>Total WBC Count</td>
+                <td>6,800 /µL</td>
+                <td>4,000 - 11,000 /µL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>RBC Count</td>
+                <td class="low">4.2 million /µL</td>
+                <td>4.5 - 5.5 million /µL</td>
+                <td class="low">Low</td>
+            </tr>
+
+            <tr>
+                <td>Platelet Count</td>
+                <td>2.45 lakh /µL</td>
+                <td>1.50 - 4.50 lakh /µL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>Blood Sugar (Fasting)</td>
+                <td>98 mg/dL</td>
+                <td>70 - 110 mg/dL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>Cholesterol (Total)</td>
+                <td>182 mg/dL</td>
+                <td>&lt; 200 mg/dL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>Triglycerides</td>
+                <td>135 mg/dL</td>
+                <td>&lt; 150 mg/dL</td>
+                <td class="normal">Normal</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+    <div class="bottom-grid">
+
+        <div class="summary-box">
+            <h3>REPORT SUMMARY</h3>
+
+            <div class="info-row">
+                <b>Result</b>
+                <span>:</span>
+                <span class="low">Insufficient</span>
+            </div>
+
+            <div class="info-row">
+                <b>Reference Range</b>
+                <span>:</span>
+                <span>90 - 110</span>
+            </div>
+
+            <div class="info-row">
+                <b>Status</b>
+                <span>:</span>
+                <span class="normal">Normal</span>
+            </div>
+
+            <div class="info-row">
+                <b>Doctor Notes</b>
+                <span>:</span>
+                <span>No additional remarks.</span>
+            </div>
+        </div>
+
+
+        <div class="summary-box">
+            <h3>NOTE</h3>
+
+            <ul>
+                <li>This is a computer generated report.</li>
+                <li>Please consult your physician for interpretation of results.</li>
+                <li>For any queries, please contact the lab.</li>
+            </ul>
+        </div>
+
+    </div>
+
+
+    <div class="signature">
+        <div class="signature-line"></div>
+        <span>Authorized Signature</span>
+    </div>
+
+
+    <div class="pdf-footer">
+
+        <div>
+            <small>Powered By</small>
+            <strong>SkyMaxValue</strong>
+            <span>Technology Solutions</span>
+        </div>
+
+        <div>
+            <small>Generated By</small>
+            <strong>MyMediBook</strong>
+        </div>
+
+        <div class="footer-right">
+            <strong>HEALTH HEAVEN</strong>
+            <span>MEDICAL CENTER</span>
+            <span>+91 98765 43210</span>
+            <span>www.healthheaven.in</span>
+        </div>
+
+    </div>
+
+</div>

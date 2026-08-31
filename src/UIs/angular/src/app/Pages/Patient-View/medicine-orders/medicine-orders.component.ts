@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { MedicineOrder } from "src/app/core/Models/Patient-Model";
@@ -15,6 +15,7 @@ import { getAllMecineDetailByPatientID } from "src/app/Store/Patient/patient.act
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 
 import { selectGetAllMedicineDetailsOfPatient } from "src/app/Store/Patient/patient.selectors";
+import { PdfService } from "src/app/core/Services/pdf.service";
 
 
 @Component({
@@ -28,7 +29,8 @@ import { selectGetAllMedicineDetailsOfPatient } from "src/app/Store/Patient/pati
   styleUrl: "./medicine-orders.component.css",
 })
 export class MedicineOrdersComponent implements OnInit {
-
+  @ViewChild('prescriptionPdf')
+  prescriptionPdf!: ElementRef<HTMLElement>;
   currentPage = 1;
 
   readonly perPage = 5;
@@ -61,7 +63,9 @@ export class MedicineOrdersComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private toast: ToastService
+    private toast: ToastService,
+    private pdfService: PdfService
+
   ) {
 
 
@@ -124,6 +128,29 @@ export class MedicineOrdersComponent implements OnInit {
   }
 
 
+  async downloadPrescriptionPdf(): Promise<void> {
+
+    if (!this.prescriptionPdf) {
+      console.error('Prescription PDF element not found');
+      return;
+    }
+
+    try {
+
+      await this.pdfService.downloadPdf(
+        this.prescriptionPdf.nativeElement,
+        'Prescription-Order-Summary.pdf'
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Error while generating prescription PDF:',
+        error
+      );
+
+    }
+  }
   get pagedOrders(): MedicineOrder[] {
 
     const start =
