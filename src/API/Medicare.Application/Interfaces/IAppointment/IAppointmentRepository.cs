@@ -16,5 +16,7 @@ namespace Medicare.Application.Interfaces.IAppointment
         Task<ResponseModel> CancelAppointmentByIdAsync(CancelAppointmentScheduleRequestModel model);
         Task<ResponseModel> ConfirmAppointmentStatusAsync(int appointmentId);
         Task<ClaimAuditResponse> GetClaimAuditAsync(int claimId);
+        Task<ResponseModel> UpdateConsultationStatusAsync(UpdateConsultationStatusRequestModel model);
+        Task<CollectCopayResponse> CollectCopayAsync(CollectCopayRequest model);
     }
 }

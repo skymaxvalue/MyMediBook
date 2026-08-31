@@ -440,7 +440,7 @@ namespace Medicare.DAL.Persistence.Repositories
         }
         public async Task<ClaimAuditResponse> GetClaimAuditAsync(int claimId)
         {
-            const string procName = "USP_GetClaimAuditById";
+            string procName = "USP_GetClaimAuditById";
             ClaimAuditResponse returnData = new ClaimAuditResponse();
             try
             {
@@ -458,6 +458,61 @@ namespace Medicare.DAL.Persistence.Repositories
                         PatientResponsibility = (await grid.ReadAsync<AuditResponsibility>()).ToList()
                     };
                 });
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<ResponseModel> UpdateConsultationStatusAsync(UpdateConsultationStatusRequestModel model)
+        {
+            string procName = "USP_UpdateConsultationStatus";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AssociateId", model.AssociateId);
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("PatientId", model.PatientId);
+                param.Add("ProfileId", model.ProfileId);
+                param.Add("ConsultationStatusId", model.ConsultationStatusId);
+
+                return await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<CollectCopayResponse> CollectCopayAsync(CollectCopayRequest model)
+        {
+            string procName = "USP_UpdateConsultationStatus";
+            CollectCopayResponse returnData = new CollectCopayResponse();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AssociateId", model.AppointmentId);
+                param.Add("CopayAmount", model.CopayAmount);
+                param.Add("PaymentMethod", model.PaymentMethod);
+                param.Add("ReferenceNo", model.ReferenceNo);
+
+                return await _context.QuerySingleStoredProcAsync<CollectCopayResponse>(procName, param);
             }
             catch (Exception ex)
             {

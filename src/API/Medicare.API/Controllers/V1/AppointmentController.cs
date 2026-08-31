@@ -90,23 +90,32 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [HttpPost]
+        [Route("Associate/UpdateConsultationStatus")]
+        public async Task<IActionResult> UpdateConsultationStatus(UpdateConsultationStatusRequestModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new UpdateConsultationStatusCommand(model));
+            return HandleResponse(response);
+        }
+
         [AllowAnonymous]
         [HttpGet]
-        [Route("ConfirmAppointmentStatus")]
+        [Route("Patient/ConfirmAppointmentStatus")]
         public async Task<IActionResult> ConfirmAppointmentStatus([FromQuery] string token)
         {
             ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new UpdateAppointmentStatusQuery(token));
+            response = await _mediator.Send(new ConfirmAppointmentStatusQuery(token));
             return HandleResponse(response);
         }
 
         [HttpPost]
-        [Route("{appointmentId}/Copay")]
-        public async Task<IActionResult> CollectCopay(int appointmentId, [FromBody] CollectCopayRequest request)
+        [Route("Associate/{appointmentId}/Copay")]
+        public async Task<IActionResult> CollectCopay(CollectCopayRequest request)
         {
-            request.AppointmentId = appointmentId;
-            var result = await _mediator.Send(new CollectCopayCommand(request));
-            return Ok(result);
+            CollectCopayResponse response = new CollectCopayResponse();
+            response = await _mediator.Send(new CollectCopayCommand(request));
+            return HandleResponse(response);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Medicare.Application.Models.Claim
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Claim
 {
     // Post Insurance Payment (ERA/EOB)
     public class PostInsurancePaymentRequest
@@ -70,11 +72,11 @@
         public string? ReferenceNo { get; set; }
     }
 
-    public class CollectCopayResponse
+    public class CollectCopayResponse : IErrorHandling
     {
         public int TransactionId { get; set; }
         public decimal AmountCollected { get; set; }
-        public bool IsSuccess { get; set; }
-        public string ResponseMessage { get; set; } = string.Empty;
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; } 
     }
 }
