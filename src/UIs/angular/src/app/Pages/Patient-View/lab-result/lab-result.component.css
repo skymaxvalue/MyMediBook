@@ -824,3 +824,275 @@ grid-template-columns:
  .header-icon img{
       width: 30px;
   }
+
+  .pdf-page {
+    position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  padding: 10mm 10mm 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #222;
+  
+}
+
+
+
+.pdf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #173f85;
+  padding-bottom: 7mm;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-section img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.logo-section h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #092d67;
+  font-weight: 700;
+}
+
+.logo-section h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #737887;
+  font-weight: 600;
+}
+
+.report-info {
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.report-info div {
+  display: grid;
+  grid-template-columns: 75px 10px 100px;
+}
+
+
+/* TITLE */
+
+.title_section {
+  padding: 7mm 3mm 5mm;
+  border-bottom: 1px solid #ddd;
+}
+
+.title_section h2 {
+  margin: 0;
+  color: #0b3780;
+  font-size: 21px;
+}
+
+.title_section p {
+  margin: 3px 0 0;
+  color: #7a7f8a;
+  font-size: 11px;
+}
+
+
+/* INFORMATION */
+
+.information-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 5mm;
+  margin-bottom: 5mm;
+}
+
+.info-box {
+  padding: 0 4mm;
+}
+
+.info-box:first-child {
+  border-right: 1px solid #ddd;
+}
+
+.info-box h3,
+.summary-box h3 {
+  font-size: 11px;
+  color: #0b3780;
+  margin: 0 0 4mm;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 100px 12px 1fr;
+  font-size: 9.5px;
+  margin-bottom: 2.5mm;
+}
+
+.info-row b {
+  font-weight: 600;
+}
+
+
+/* SECTION */
+
+.section-title {
+  color: #0b3780;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3mm 2mm;
+  border-top: 1px solid #ddd;
+}
+
+
+/* TABLE */
+
+.result-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #dfe3e8;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 9px;
+}
+
+.result-table th {
+  background: #063782;
+  color: white;
+  padding: 2.5mm 2mm;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid  #9fa1a2;
+}
+
+.result-table td {
+     padding: 2.5mm 2mm 2.5mm 19mm;
+    border: 1px solid #e1e4e8;
+}
+
+/* .result-table td:first-child {
+  text-align: center;
+} */
+
+.low {
+  color: #f00000;
+  font-weight: 600;
+}
+
+.normal {
+  color: #159447;
+  font-weight: 600;
+}
+
+
+/* BOTTOM BOXES */
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4mm;
+  margin-top: 4mm;
+}
+
+.summary-box {
+  border: 1px solid #e0e4e9;
+  border-radius: 5px;
+  padding: 4mm;
+  min-height: 30mm;
+  box-sizing: border-box;
+}
+
+.summary-box ul {
+  padding-left: 14px;
+  margin: 0;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.summary-box li {
+  margin-bottom: 1mm;
+}
+
+
+/* SIGNATURE */
+
+.signature {
+  position: absolute;
+  right: 10mm;
+  bottom: 32mm;
+  width: 55mm;
+  height: 27mm;
+  border: 1px solid #e0e4e9;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 3mm;
+  box-sizing: border-box;
+}
+
+.signature-line {
+  width: 45mm;
+  border-top: 1px solid #777;
+  margin-bottom: 2mm;
+}
+
+.signature span {
+  font-size: 8px;
+}
+
+
+/* FOOTER */
+
+.pdf-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 27mm;
+  background: #063782;
+  color: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 4mm 10mm;
+  box-sizing: border-box;
+}
+
+.pdf-footer > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pdf-footer > div:nth-child(2) {
+  border-left: 1px solid rgba(255,255,255,.4);
+  border-right: 1px solid rgba(255,255,255,.4);
+  align-items: center;
+}
+
+.pdf-footer small {
+  font-size: 7px;
+}
+
+.pdf-footer strong {
+  font-size: 12px;
+  margin-top: 1mm;
+}
+
+.pdf-footer span {
+  font-size: 7px;
+}
+
+.footer-right {
+  align-items: flex-end;
+}

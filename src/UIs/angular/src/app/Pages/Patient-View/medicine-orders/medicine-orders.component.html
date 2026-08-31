@@ -434,7 +434,7 @@
         <!-- Footer -->
         <div class="medicine-modal-footer">
 
-            <button class="download-btn" (click)="downloadPDF()">
+            <button class="download-btn" (click)="downloadPrescriptionPdf()">
                 <img src="../../../../assets/images/icons8-installing-updates-100.png" alt=""> Download PDF
             </button>
 
@@ -447,3 +447,547 @@
     </div>
 </div>
 }
+<!-- ========================================================= -->
+<!-- PRESCRIPTION PDF TEMPLATE -->
+<!-- ========================================================= -->
+
+<div #prescriptionPdf class="prescription-pdf">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="prescription-header">
+
+        <div class="hospital-brand">
+
+            <img src="assets/images/hospital.png" alt="Health Heaven" class="hospital-logo" />
+
+            <div class="hospital-name">
+
+                <h1>HEALTH HEAVEN</h1>
+
+                <h2>MEDICAL CENTER</h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="prescription-info">
+
+            <div class="prescription-info-row">
+
+                <span>Prescription ID</span>
+
+                <b>:</b>
+
+                <strong>
+                    ORD-2026-00521
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-info-row">
+
+                <span>Date</span>
+
+                <b>:</b>
+
+                <strong>
+                    01 May 2026
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= TITLE ================= -->
+
+    <div class="prescription-title">
+
+        <h2>
+            Prescription &amp; Order Summary
+        </h2>
+
+        <p>
+            Official Electronic Medical Record
+        </p>
+
+    </div>
+
+
+    <!-- ================= PATIENT + DOCTOR ================= -->
+
+    <div class="prescription-information">
+
+        <!-- PATIENT INFORMATION -->
+
+        <div class="prescription-info-column">
+
+            <h3>
+                PATIENT INFORMATION
+            </h3>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Full Name</span>
+
+                <b>:</b>
+
+                <strong>
+                    Ramesh Kumar
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Date of Birth</span>
+
+                <b>:</b>
+
+                <strong>
+                    15 Feb 1984
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Gender</span>
+
+                <b>:</b>
+
+                <strong>
+                    Male
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Age</span>
+
+                <b>:</b>
+
+                <strong>
+                    42 Years
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Patient ID</span>
+
+                <b>:</b>
+
+                <strong>
+                    PAT-2026-00345
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Contact Number</span>
+
+                <b>:</b>
+
+                <strong>
+                    +91 98765 43210
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRESCRIBING PHYSICIAN -->
+
+        <div class="prescription-info-column doctor-column">
+
+            <h3>
+                PRESCRIBING PHYSICIAN
+            </h3>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Doctor Name</span>
+
+                <b>:</b>
+
+                <strong>
+                    Dr. Amit Verma
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Department</span>
+
+                <b>:</b>
+
+                <strong>
+                    General Medicine
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>License Number</span>
+
+                <b>:</b>
+
+                <strong>
+                    MCI/12345/2010
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Clinic</span>
+
+                <b>:</b>
+
+                <strong>
+                    Health Heaven Medical Center
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Visit Date</span>
+
+                <b>:</b>
+
+                <strong>
+                    01 May 2026
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PRESCRIPTION DETAILS ================= -->
+
+    <div class="prescription-section">
+
+        <h3>
+            PRESCRIPTION DETAILS
+        </h3>
+
+
+        <table class="prescription-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Medication
+                    </th>
+
+                    <th>
+                        Strength
+                    </th>
+
+                    <th>
+                        Frequency
+                    </th>
+
+                    <th>
+                        Duration
+                    </th>
+
+                    <th>
+                        Instructions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        Tab. Amoxicillin
+                    </td>
+
+                    <td>
+                        500 mg
+                    </td>
+
+                    <td>
+                        Twice a day
+                    </td>
+
+                    <td>
+                        5 Days
+                    </td>
+
+                    <td>
+                        After food with water
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Tab. Paracetamol
+                    </td>
+
+                    <td>
+                        650 mg
+                    </td>
+
+                    <td>
+                        Thrice a day
+                    </td>
+
+                    <td>
+                        3 Days
+                    </td>
+
+                    <td>
+                        For pain or fever
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Tab. Pantoprazole
+                    </td>
+
+                    <td>
+                        40 mg
+                    </td>
+
+                    <td>
+                        Once a day
+                    </td>
+
+                    <td>
+                        7 Days
+                    </td>
+
+                    <td>
+                        Before breakfast
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Syp. Cough Relief
+                    </td>
+
+                    <td>
+                        10 ml
+                    </td>
+
+                    <td>
+                        Thrice a day
+                    </td>
+
+                    <td>
+                        5 Days
+                    </td>
+
+                    <td>
+                        Shake well before use
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================= NOTES + ALLERGY ================= -->
+
+    <div class="prescription-bottom-grid">
+
+
+        <!-- ADDITIONAL NOTES -->
+
+        <div class="prescription-box">
+
+            <h3>
+                ADDITIONAL NOTES
+            </h3>
+
+            <div class="box-divider"></div>
+
+            <p>
+                Complete the antibiotic course.
+            </p>
+
+            <p>
+                Drink plenty of water.
+            </p>
+
+        </div>
+
+
+        <!-- ALLERGY INFORMATION -->
+
+        <div class="prescription-box">
+
+            <h3>
+                ALLERGY INFORMATION
+            </h3>
+
+            <div class="box-divider"></div>
+
+            <p>
+                No Known Allergies
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= FOLLOW UP + SIGNATURE ================= -->
+
+    <div class="prescription-follow-grid">
+
+
+        <!-- FOLLOW UP -->
+
+        <div class="prescription-box follow-up-box">
+
+            <h3>
+                FOLLOW-UP / REFERRALS
+            </h3>
+
+            <div class="box-divider"></div>
+
+            <p>
+                Not Required.
+            </p>
+
+        </div>
+
+
+        <!-- SIGNATURE -->
+
+        <div class="signature-box">
+
+            <div class="signature-line"></div>
+
+            <span>
+                Authorized Signature
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <div class="prescription-footer">
+
+
+        <!-- POWERED BY -->
+
+        <div class="footer-column powered-by">
+
+            <small>
+                Powered By
+            </small>
+
+            <strong>
+                SkyMaxValue
+            </strong>
+
+            <span>
+                Technology Solutions
+            </span>
+
+            <p>
+                © 2026 SkyMaxValue Technology Solutions.
+                <br>
+                All Rights Reserved.
+            </p>
+
+        </div>
+
+
+        <!-- GENERATED BY -->
+
+        <div class="footer-column generated-by">
+
+            <small>
+                Generated By
+            </small>
+
+            <strong>
+                MyMediBook
+            </strong>
+
+        </div>
+
+
+        <!-- HOSPITAL -->
+
+        <div class="footer-column footer-hospital">
+
+            <strong>
+                HEALTH HEAVEN
+            </strong>
+
+            <span>
+                MEDICAL CENTER
+            </span>
+
+            <span>
+                +91 98765 43210
+            </span>
+
+            <span>
+                www.healthheaven.in
+            </span>
+
+        </div>
+
+    </div>
+
+</div>

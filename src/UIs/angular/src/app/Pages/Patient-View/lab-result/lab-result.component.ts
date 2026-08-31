@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  signal
+  ElementRef,
+  signal,
+  ViewChild
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -15,6 +17,7 @@ import { LabResultModel } from 'src/app/core/Models/lab-result.model';
 
 import { getMyLabResults } from 'src/app/Store/Lab-Results/lab-result.actions';
 import { selectMyAllLabResultList } from 'src/app/Store/Lab-Results/lab-result.selcetors';
+import { PdfService } from 'src/app/core/Services/pdf.service';
 
 // IMPORTANT:
 // इथे तुमच्या project मधील actual selector import करा.
@@ -48,7 +51,8 @@ type SortDirection =
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LabResultComponent {
-
+  @ViewChild('labReportPdf')
+  labReportPdf!: ElementRef<HTMLElement>;
   loginUser = JSON.parse(
     localStorage.getItem('user') || 'null'
   );
@@ -74,7 +78,8 @@ export class LabResultComponent {
 
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private pdfService: PdfService
   ) {
 
     this.store.dispatch(
@@ -301,6 +306,19 @@ export class LabResultComponent {
   }
 
 
+  async downloadLabReport(): Promise<void> {
+
+    if (!this.selectedResult()) {
+      return;
+    }
+
+    const element = this.labReportPdf.nativeElement;
+
+    await this.pdfService.downloadPdf(
+      element,
+      `Lab-Report-${this.selectedResult()?.testCode || 'Report'}.pdf`
+    );
+  }
 
   sortBy(value: string): void {
 

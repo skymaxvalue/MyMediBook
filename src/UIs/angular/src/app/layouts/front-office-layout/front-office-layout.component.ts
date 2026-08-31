@@ -97,6 +97,17 @@ export class FrontOfficeLayoutComponent implements OnInit {
       });
 
     }
+    else if (url.includes('doctor-availability')) {
+      this.breadcrumbs.push({
+        label: 'Book Appointment',
+        url: '/front-office/book-appointment'
+      });
+
+      this.breadcrumbs.push({
+        label: 'Doctor Availability',
+        url: '/front-office/doctor-availability'
+      });
+    }
 
   }
 }

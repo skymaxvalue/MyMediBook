@@ -4,27 +4,93 @@
     max-width: 1100px;
     margin: auto;
 }
-
-.availability-container h2 {
-    text-align: center;
-    margin: 10px 0 20px;
-    font-size: 25px;
-    font-weight: 900;
+.availability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+   
+    /* max-width: 950px; */
+    flex-wrap: wrap;
+    margin-block:2rem;
 }
 
-.availability-container .date-filter {
+.availability-heading h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b5bdb;
+    text-align: left;
+}
+
+.availability-heading .subtitle {
+    margin: 6px 0 0;
+    color: #667085;
+    font-size: 15px;
+}
+.back_btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #3b5bdb;
+    background: #fff;
+    color: #3b5bdb;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 22px;
+    font-weight: 600;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 25px;
+    gap: 8px;
 }
 
-.date-filter input {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+.back_btn:hover {
+    background: #f0f3ff;
 }
+
+.back-arrow {
+    font-size: 16px;
+}
+
+.date-filter {
+    text-align: right;
+}
+
+.date-filter label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #344054;
+    font-size: 16px;
+}
+
+.date-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #d7dde7;
+    border-radius: 10px;
+    padding: 16px 20px;
+    min-width: 260px;
+}
+
+.date-box .calendar-icon {
+    width: 20px;
+    opacity: 0.7;
+}
+
+.date-box input {
+    border: none;
+    outline: none;
+    font-size: 17px;
+    font-weight: 600;
+    color: #101828;
+    background: transparent;
+    width: 100%;
+}
+
 
 .availability-card {
     display: flex;

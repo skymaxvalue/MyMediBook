@@ -332,7 +332,12 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   }
 
   goBack(): void {
-    this.router.navigate(['/patient/dashboard/specialities'])
+    if (this.isFrontOfficePage) {
+      this.router.navigate(['/front-office/book-appointment'])
+    } else {
+      this.router.navigate(['/patient/dashboard/specialities'])
+
+    }
   }
   getAmPmTime(time: string): string {
 
