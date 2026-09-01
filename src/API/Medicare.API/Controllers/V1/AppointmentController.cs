@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Appointment;
+using Medicare.Application.Features.Commands.Claim;
 using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
+using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
 using Medicare.DAL.Services.Appointment;
@@ -53,7 +55,7 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetAvailableAppointments")]
+        [Route("GetAvailableAppointments/{associateId}")]
         public async Task<IActionResult> GetAvailableAppointments([FromQuery] int associateId)
         {
             List<AvailableAppointmentModel> response = new List<AvailableAppointmentModel>();
@@ -88,22 +90,31 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
-        [HttpPut]
-        [Route("UpdateAppointmentStatus/{appointmentId}")]
-        public async Task<IActionResult> UpdateAppointmentStatus(int associateId)
+        [HttpPost]
+        [Route("Associate/UpdateConsultationStatus")]
+        public async Task<IActionResult> UpdateConsultationStatus(UpdateConsultationStatusRequestModel model)
         {
-            List<PatientProfileModel> response = new List<PatientProfileModel>();
-            response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
-            return HandleListResponse(response);
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new UpdateConsultationStatusCommand(model));
+            return HandleResponse(response);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("ConfirmAppointmentStatus")]
+        [Route("Patient/ConfirmAppointmentStatus")]
         public async Task<IActionResult> ConfirmAppointmentStatus([FromQuery] string token)
         {
             ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new UpdateAppointmentStatusQuery(token));
+            response = await _mediator.Send(new ConfirmAppointmentStatusQuery(token));
+            return HandleResponse(response);
+        }
+
+        [HttpPost]
+        [Route("Associate/{appointmentId}/Copay")]
+        public async Task<IActionResult> CollectCopay(CollectCopayRequest request)
+        {
+            CollectCopayResponse response = new CollectCopayResponse();
+            response = await _mediator.Send(new CollectCopayCommand(request));
             return HandleResponse(response);
         }
     }

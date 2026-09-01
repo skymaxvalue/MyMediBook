@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Queries.Billing;
-using Medicare.Application.Models.Billing;
+using Medicare.Application.Models.Claim;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

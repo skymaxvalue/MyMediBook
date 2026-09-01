@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Medicare.Application.Models.Appointment
+﻿namespace Medicare.Application.Models.Appointment
 {
     public class AppointmentMasterModel
     {
