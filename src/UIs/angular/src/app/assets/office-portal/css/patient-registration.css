@@ -871,11 +871,6 @@
 
 
 
-
-
-
-
-/* Address section spacing */
 #residentialAddress{
     margin-bottom: 8px;
 }
@@ -884,13 +879,12 @@
     margin-bottom: 8px;
 }
 
-/* More space between Address fields */
 #residentialAddress + .contact-grid,
 #permanentAddress + .contact-grid{
     margin-top: 14px;
 }
 
-/* Space before the checkbox */
+
 .same-address-row{
     display: flex;
     align-items: center;
@@ -898,12 +892,12 @@
     margin: 18px 0 22px;
 }
 
-/* Space before Permanent Address heading */
+
 #permanentAddressGrid{
     margin-top: 6px;
 }
 
-/* Add breathing room between City/State/PIN labels */
+
 #permanentAddressGrid .contact-grid,
 .form-section .contact-grid{
     row-gap: 22px;
