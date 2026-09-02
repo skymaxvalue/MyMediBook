@@ -62,15 +62,15 @@
 <div class="top-fields">
 
     <div class="field-pair">
-        <label>Patient Type</label>
+        <label>Patient Selection</label>
         <div class="mobile-radio-group patient-type-group">
             <label class="radio-item">
                 <input type="radio" name="patientType" value="existing" checked>
-                <span>Select Existing Patient</span>
+                <span>Existing Patient</span>
             </label>
             <label class="radio-item">
                 <input type="radio" name="patientType" value="new">
-                <span>Add New Patient</span>
+                <span>New Patient</span>
             </label>
         </div>
     </div>
@@ -91,15 +91,15 @@
 </div>
 
 <div class="field-pair" id="accountHolderQuestion" hidden>
-    <label>Who is the Account Holder? <span class="req">*</span></label>
+    <label>Who will manage this patient's account and billing? <span class="req">*</span></label>
     <div class="mobile-radio-group account-holder-group">
         <label class="radio-item">
             <input type="radio" name="accountHolder" value="self" required disabled>
-            <span>This Patient</span>
+            <span>The Patient</span>
         </label>
         <label class="radio-item">
             <input type="radio" name="accountHolder" value="other" disabled>
-            <span>Someone Else (Parent / Guardian / Spouse)</span>
+            <span>Another Person</span>
         </label>
     </div>
 </div>
@@ -110,7 +110,7 @@
         <label for="accountHolderName">Account Holder Name <span class="req">*</span></label>
         <input type="text" id="accountHolderName" placeholder="Enter account holder name" disabled>
     </div>
-
+ 
     <div class="field-pair">
         <label for="relationToPatient">Relationship to Patient <span class="req">*</span></label>
         <select id="relationToPatient" disabled>
