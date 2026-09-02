@@ -73,7 +73,7 @@ export class FrontofficeLoginComponent {
         this.router.navigate(['/front-office/otp-verification'], {
           state: {
             emailId: this.emailId,
-            isLoginFollw: true
+            isLoginFollow: true
           }
         });
       }

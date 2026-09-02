@@ -44,14 +44,7 @@
         <!-- OTP FORM -->
         <form (ngSubmit)="verifyOtp()" #otpForm="ngForm">
 
-            <!-- OTP INPUTS -->
-            <!-- <div class="otp-group" (paste)="onPaste($event)">
 
-                <input *ngFor="let value of otp; let i = index" #otpInput type="text" inputmode="numeric" maxlength="1"
-                    class="otp-input" autocomplete="one-time-code" [(ngModel)]="otp[i]" [name]="'otp' + i"
-                    (input)="onOtpInput($event, i)" (keydown)="onKeyDown($event, i)" />
-
-            </div> -->
             <div class="otp-group">
                 @for (item of otpArray; track $index) {
 

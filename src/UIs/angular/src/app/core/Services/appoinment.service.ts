@@ -42,4 +42,13 @@ export class AppoinmentService {
   getAppointmentListByAssociateId(associateId: number) {
     return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST}${associateId}`)
   }
+  getDashboardSummery(associateId: number, fromDate: string, toDate: string) {
+    return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DASHBOARD_DATA}`, { associateId, fromDate, toDate })
+  }
+  getDashboardSummeryForReceptionist(associateId: number, fromDate: string, toDate: string) {
+    return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DASHBOARD_DATA_FOR_RECEPTIONIST}`, { associateId, fromDate, toDate })
+  }
+  getDashboardSummeryForDoctor(associateId: number, fromDate: string, toDate: string) {
+    return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DASHBOARD_DATA_FOR_DOCTOR}`, { associateId, fromDate, toDate })
+  }
 }

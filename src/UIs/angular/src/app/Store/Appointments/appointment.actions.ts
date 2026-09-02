@@ -105,3 +105,48 @@ export const getAppointmentListByAssociateIdFailure = createAction(
     '[Appointments by associate list] get  Failure',
     props<{ error: string }>()
 );
+export const getDashboardData = createAction(
+    '[Dashboard Data] get ',
+    props<{ associateId: number, fromDate: string, toDate: string }>()
+
+);
+
+export const getDashboardDataSuccess = createAction(
+    '[Dashboard Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getDashboardDataFailure = createAction(
+    '[Dashboard Data] get  Failure',
+    props<{ error: string }>()
+);
+export const getDashboardDataByReceptionist = createAction(
+    '[Dashboard Receptionist Data] get ',
+    props<{ associateId: number, fromDate: "string", toDate: "string" }>()
+
+);
+
+export const getDashboardDataByReceptionistSuccess = createAction(
+    '[Dashboard Receptionist Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getDashboardDataByReceptionistFailure = createAction(
+    '[Dashboard Receptionist Data] get  Failure',
+    props<{ error: string }>()
+);
+export const getDashboardDataByDoctor = createAction(
+    '[Dashboard Doctor Data] get ',
+    props<{ associateId: number, fromDate: "string", toDate: "string" }>()
+
+);
+
+export const getDashboardDataByDoctorSuccess = createAction(
+    '[Dashboard Doctor Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getDashboardDataByDoctorFailure = createAction(
+    '[Dashboard Doctor Data] get  Failure',
+    props<{ error: string }>()
+);

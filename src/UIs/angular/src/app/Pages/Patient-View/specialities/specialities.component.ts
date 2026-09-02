@@ -24,6 +24,7 @@ export class SpecialitiesComponent implements OnInit {
   searchedText: string = '';
   isFrontOfficePage: boolean = false
   constructor(private router: Router, private toast: ToastService, private store: Store<AppState>, private cdr: ChangeDetectorRef) {
+
     this.isFrontOfficePage = history.state.isFrontOfficePage
     this.store.dispatch(
       loadDoctorSpecialities());

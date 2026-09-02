@@ -266,7 +266,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
     }
     await this.store.dispatch(getTimeSloteByDoctorID({ payload }))
-    await this.store.select(selectGetTimeSlotOfDoctor).pipe(take(1))
+    await this.store.select(selectGetTimeSlotOfDoctor)
       .subscribe((res: any) => {
 
         if (res?.data) {
@@ -277,9 +277,10 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
             slotId: slot.slotId,
             isAvailable: slot.isAvailable
           }));
+          this.showSlotsModal = true;
           if (this.slots.length > 1) {
 
-            this.showSlotsModal = true;
+
           } else {
             this.toast.info('info', "Time slote is not available")
           }

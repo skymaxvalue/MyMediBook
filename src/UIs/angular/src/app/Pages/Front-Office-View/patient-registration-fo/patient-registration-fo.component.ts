@@ -1,10 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  FormsModule,
-  NgForm
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
+import * as AuthActions from 'src/app/Store/Auth/auth.actions';
+import { selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
 
 
 interface InsuranceData {
@@ -45,95 +51,748 @@ interface Appointment {
 @Component({
   selector: "app-patient-registration-fo",
   imports: [CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     RouterModule],
   templateUrl: "./patient-registration-fo.component.html",
   styleUrl: "./patient-registration-fo.component.css",
 })
-export class PatientRegistrationFOComponent {
+export class PatientRegistrationFOComponent implements OnInit {
+  registrationForm!: FormGroup;
+  countries: any[] = [];
+  states: any[] = [];
+  cities: any[] = [];
+  maxDateOfBirth: string = '';
+  permanentStates: any[] = [];
+  permanentCities: any[] = [];
+  addressType: 'present' | 'permanent' = 'present';
 
 
-  firstName = '';
-  lastName = '';
-  phone = '';
-  email = '';
-
-  dateOfBirth = '';
-  age: number | '' = '';
-  ageUnit = 'Years';
-
-  gender = '';
-
-  address = '';
-  cityVillage = '';
-  state = '';
-  pinCode = '';
-
-  insuranceChoice = '';
-
-  otpMethod = '';
-
-
-  // =========================
-  // INSURANCE
-  // =========================
 
   showInsuranceModal = false;
 
-  insuranceData: InsuranceData | null = null;
-
-  provider = '';
-  policy = '';
-  groupId = '';
-  holderName = '';
-  insuranceAddress = '';
-
-  insuranceError = '';
-
-
-  // =========================
-  // PAYMENT
-  // =========================
 
   showPaymentModal = false;
-
-  paymentData: PaymentData | null = null;
-
-  paymentType = '';
-  cardHolder = '';
-  cardNumber = '';
-  expiry = '';
-  cvv = '';
-
-  paymentError = '';
+  paymentError: string = "";
+  paymentData: any = null;
+  insuranceData: any;
+  insuranceError: string = "";
 
 
   constructor(
+    private fb: FormBuilder,
+    private store: Store<AppState>,
     private router: Router
   ) { }
 
+  ngOnInit(): void {
+    this.setMaxDateOfBirth();
+    this.createForm();
 
-  // =========================
-  // DOB → AGE
-  // =========================
+    this.initialAPICalls();
+    this.store.select(
+      state => state.auth.getStates
+    ).subscribe((response: any) => {
 
-  updateAgeFromDob(): void {
+      if (!response?.data) {
+        return;
+      }
 
-    if (!this.dateOfBirth) {
-      this.age = '';
-      this.ageUnit = 'Years';
+      if (this.addressType === 'present') {
+
+        this.states = response.data;
+
+        const presentAddress =
+          this.registrationForm.get(
+            'contactInformation.presentAddress'
+          ) as FormGroup;
+
+        presentAddress.get('stateId')?.enable();
+
+      } else {
+
+        this.permanentStates = response.data;
+
+        const permanentAddress =
+          this.registrationForm.get(
+            'contactInformation.permanentAddress'
+          ) as FormGroup;
+
+        permanentAddress.get('stateId')?.enable();
+
+      }
+
+    });
+
+    this.store.select(
+      state => state.auth.getCities
+    ).subscribe((response: any) => {
+
+      if (!response?.data) {
+        return;
+      }
+
+      if (this.addressType === 'present') {
+
+        this.cities = response.data;
+
+        const presentAddress =
+          this.registrationForm.get(
+            'contactInformation.presentAddress'
+          ) as FormGroup;
+
+        presentAddress.get('cityId')?.enable();
+
+      } else {
+
+        this.permanentCities = response.data;
+
+        const permanentAddress =
+          this.registrationForm.get(
+            'contactInformation.permanentAddress'
+          ) as FormGroup;
+
+        permanentAddress.get('cityId')?.enable();
+
+      }
+
+    });
+
+    // this.store.select(
+    //   state => state.auth.getStates
+    // ).subscribe((response: any) => {
+
+    //   if (!response?.data) {
+    //     return;
+    //   }
+
+
+    //   if (this.addressType === 'present') {
+
+    //     this.states = response.data;
+
+    //     const presentAddress =
+    //       this.registrationForm.get(
+    //         'contactInformation.presentAddress'
+    //       ) as FormGroup;
+
+    //     presentAddress.get('stateId')?.enable();
+
+    //   } else {
+
+    //     this.permanentStates = response.data;
+
+    //     const permanentAddress =
+    //       this.registrationForm.get(
+    //         'contactInformation.permanentAddress'
+    //       ) as FormGroup;
+
+    //     permanentAddress.get('stateId')?.enable();
+
+    //   }
+
+    // });
+
+    // this.store.select(
+    //   state => state.auth.getCities
+    // ).subscribe((response: any) => {
+
+    //   if (!response?.data) {
+    //     return;
+    //   }
+
+
+    //   if (this.addressType === 'present') {
+
+    //     this.cities = response.data;
+
+    //     const presentAddress =
+    //       this.registrationForm.get('presentAddress') as FormGroup;
+
+    //     presentAddress.get('cityId')?.enable();
+
+    //   } else {
+
+    //     this.permanentCities = response.data;
+
+    //     const permanentAddress =
+    //       this.registrationForm.get('permanentAddress') as FormGroup;
+
+    //     permanentAddress.get('cityId')?.enable();
+
+    //   }
+
+    // });
+
+    // this.registrationForm = this.fb.group({
+
+    //   // =========================
+    //   // PERSONAL DETAILS
+    //   // =========================
+
+    //   personalDetails: this.fb.group({
+
+    //     firstName: ['', Validators.required],
+
+    //     lastName: ['', Validators.required],
+
+    //     gender: ['', Validators.required],
+
+    //     dateOfBirth: ['', Validators.required],
+
+    //     age: [
+    //       { value: '', disabled: true },
+    //       Validators.required
+    //     ],
+
+    //     ageUnit: [
+    //       { value: 'Years', disabled: true }
+    //     ],
+
+    //     insuranceChoice: ['', Validators.required]
+
+    //   }),
+
+
+    //   // =========================
+    //   // PRESENT ADDRESS
+    //   // =========================
+
+    //   presentAddress: this.fb.group({
+
+    //     address: ['', Validators.required],
+
+    //     country: ['', Validators.required],
+
+    //     state: [
+    //       { value: '', disabled: true },
+    //       Validators.required
+    //     ],
+
+    //     cityVillage: [
+    //       { value: '', disabled: true },
+    //       Validators.required
+    //     ],
+
+    //     pinCode: [
+    //       '',
+    //       [
+    //         Validators.required,
+    //         Validators.pattern(/^[0-9]{6}$/)
+    //       ]
+    //     ],
+
+    //     phone: [
+    //       '',
+    //       [
+    //         Validators.required,
+    //         Validators.pattern(/^[0-9]{10}$/)
+    //       ]
+    //     ],
+
+    //     email: [
+    //       '',
+    //       Validators.email
+    //     ]
+
+    //   }),
+
+
+    //   // =========================
+    //   // PERMANENT ADDRESS
+    //   // =========================
+
+    //   permanentAddress: this.fb.group({
+
+    //     sameAsPresentAddress: [false],
+
+    //     address: ['', Validators.required],
+
+    //     country: ['', Validators.required],
+
+    //     state: [
+    //       { value: '', disabled: true },
+    //       Validators.required
+    //     ],
+
+    //     cityVillage: [
+    //       { value: '', disabled: true },
+    //       Validators.required
+    //     ],
+
+    //     pinCode: [
+    //       '',
+    //       [
+    //         Validators.required,
+    //         Validators.pattern(/^[0-9]{6}$/)
+    //       ]
+    //     ]
+
+    //   }),
+
+
+    //   // =========================
+    //   // VERIFICATION
+    //   // =========================
+
+    //   verification: this.fb.group({
+
+    //     otpMethod: ['', Validators.required]
+
+    //   }),
+
+
+    //   // =========================
+    //   // INSURANCE
+    //   // =========================
+
+    //   insuranceDetails: this.fb.group({
+
+    //     provider: [''],
+
+    //     policy: [''],
+
+    //     groupId: [''],
+
+    //     holderName: [''],
+
+    //     insuranceAddress: ['']
+
+    //   }),
+
+
+    //   // =========================
+    //   // PAYMENT
+    //   // =========================
+
+    //   paymentDetails: this.fb.group({
+
+    //     paymentType: [''],
+
+    //     cardHolder: [''],
+
+    //     cardNumber: [''],
+
+    //     expiry: [''],
+
+    //     cvv: ['']
+
+    //   })
+
+    // });
+
+  }
+
+
+
+  createForm(): void {
+
+    this.registrationForm = this.fb.group({
+
+      // =========================
+      // PERSONAL DETAILS
+      // =========================
+
+      personalDetails: this.fb.group({
+
+        firstName: ['', Validators.required],
+
+        lastName: ['', Validators.required],
+
+        gender: ['', Validators.required],
+
+        dateOfBirth: ['', Validators.required],
+
+        age: [
+          { value: '', disabled: true },
+          Validators.required
+        ],
+
+        ageUnit: [
+          { value: 'Years', disabled: true }
+        ],
+
+        insuranceChoice: ['', Validators.required]
+
+      }),
+
+
+      // =========================
+      // CONTACT INFORMATION
+      // =========================
+
+      contactInformation: this.fb.group({
+
+        // =========================
+        // PRESENT ADDRESS
+        // =========================
+
+        presentAddress: this.fb.group({
+
+          address: [
+            '',
+            Validators.required
+          ],
+
+          countryId: [
+            '',
+            Validators.required
+          ],
+
+          stateId: [
+            { value: '', disabled: true },
+            Validators.required
+          ],
+
+          cityId: [
+            { value: '', disabled: true },
+            Validators.required
+          ],
+
+          pinCode: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^[0-9]{6}$/)
+            ]
+          ],
+          phoneCode: [
+            '',
+            Validators.required
+          ],
+
+          phone: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^[0-9]{10}$/)
+            ]
+          ],
+
+          email: [
+            '',
+            Validators.email
+          ]
+
+        }),
+
+
+        // =========================
+        // PERMANENT ADDRESS
+        // =========================
+
+        permanentAddress: this.fb.group({
+
+          sameAsPresentAddress: [
+            false
+          ],
+
+          address: [
+            '',
+            Validators.required
+          ],
+
+          countryId: [
+            '',
+            Validators.required
+          ],
+
+          stateId: [
+            { value: '', disabled: true },
+            Validators.required
+          ],
+
+          cityId: [
+            { value: '', disabled: true },
+            Validators.required
+          ],
+
+          pinCode: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^[0-9]{6}$/)
+            ]
+          ]
+
+        })
+
+      }),
+
+
+      // =========================
+      // VERIFICATION
+      // =========================
+
+      verification: this.fb.group({
+
+        otpMethod: [
+          '',
+          Validators.required
+        ]
+
+      }),
+
+
+      // =========================
+      // INSURANCE DETAILS
+      // =========================
+
+      insuranceDetails: this.fb.group({
+
+        provider: [
+          '',
+          Validators.required
+        ],
+
+        policy: [
+          '',
+          Validators.required
+        ],
+
+        groupId: [
+          ''
+        ],
+
+        holderName: [
+          '',
+          Validators.required
+        ],
+
+        insuranceAddress: [
+          '',
+          Validators.required
+        ]
+
+      }),
+
+
+      // =========================
+      // PAYMENT DETAILS
+      // =========================
+
+      paymentDetails: this.fb.group({
+
+        paymentType: [
+          '',
+          // Validators.required
+        ],
+
+        cardHolder: [
+          '',
+          // Validators.required
+        ],
+
+        cardNumber: [
+          '',
+          // Validators.required
+        ],
+
+        expiry: [
+          '',
+          // Validators.required
+        ],
+
+        cvv: [
+          '',
+          // Validators.required
+        ]
+
+      })
+
+    });
+
+  }
+  initialAPICalls(): void {
+
+
+    this.store.dispatch(
+      AuthActions.getCountries()
+    );
+
+
+    this.store.select(
+      state => state.auth.getCountries
+    ).subscribe((response: any) => {
+
+      if (!response?.data) {
+        return;
+      }
+
+      console.log("Countries:", response.data);
+      this.countries = response.data;
+
+    });
+
+  }
+
+  onCountryChange(event: Event): void {
+
+    const countryId = Number(
+      (event.target as HTMLSelectElement).value
+    );
+
+    const presentAddress = this.registrationForm.get(
+      'contactInformation.presentAddress'
+    ) as FormGroup;
+
+    // Present address select झाला आहे हे आधी set करा
+    this.addressType = 'present';
+
+    // Reset State & City
+    presentAddress.patchValue({
+      stateId: '',
+      cityId: ''
+    });
+
+    // Clear dropdown arrays
+    this.states = [];
+    this.cities = [];
+
+    // Disable dependent dropdowns
+    presentAddress.get('stateId')?.disable();
+    presentAddress.get('cityId')?.disable();
+
+    if (!countryId) {
       return;
     }
 
-    const dob = new Date(this.dateOfBirth + 'T00:00:00');
+    console.log('Present Country ID:', countryId);
+
+    // Get States API
+    this.store.dispatch(
+      AuthActions.getStates({
+        countryId
+      })
+    );
+  }
+  onPermanentCountryChange(event: Event): void {
+
+    const countryId =
+      Number((event.target as HTMLSelectElement).value);
+
+    const permanentAddress =
+      this.registrationForm.get(
+        'contactInformation.permanentAddress'
+      ) as FormGroup;
+
+    permanentAddress.patchValue({
+      stateId: '',
+      cityId: ''
+    });
+
+    this.permanentStates = [];
+    this.permanentCities = [];
+
+    permanentAddress.get('stateId')?.disable();
+    permanentAddress.get('cityId')?.disable();
+
+    if (!countryId) {
+      return;
+    }
+
+    this.addressType = 'permanent';
+
+    this.store.dispatch(
+      AuthActions.getStates({
+        countryId
+      })
+    );
+
+  }
+
+
+  onStateChange(event: Event): void {
+
+    const stateId =
+      Number((event.target as HTMLSelectElement).value);
+
+    const presentAddress =
+      this.registrationForm.get(
+        'contactInformation.presentAddress'
+      ) as FormGroup;
+
+    presentAddress.patchValue({
+      cityId: ''
+    });
+
+    this.cities = [];
+
+    presentAddress.get('cityId')?.disable();
+
+    if (!stateId) {
+      return;
+    }
+
+    this.addressType = 'present';
+
+    this.store.dispatch(
+      AuthActions.getCities({
+        stateId
+      })
+    );
+
+  }
+  onPermanentStateChange(event: Event): void {
+
+    const stateId =
+      Number((event.target as HTMLSelectElement).value);
+
+    const permanentAddress =
+      this.registrationForm.get(
+        'contactInformation.permanentAddress'
+      ) as FormGroup;
+
+    permanentAddress.patchValue({
+      cityId: ''
+    });
+
+    this.permanentCities = [];
+
+    permanentAddress.get('cityId')?.disable();
+
+    if (!stateId) {
+      return;
+    }
+
+    this.addressType = 'permanent';
+
+    this.store.dispatch(
+      AuthActions.getCities({
+        stateId
+      })
+    );
+
+  }
+
+
+  updateAgeFromDob(): void {
+    const dobValue = this.registrationForm.get(
+      'personalDetails.dateOfBirth'
+    )?.value;
+
+    const ageControl = this.registrationForm.get(
+      'personalDetails.age'
+    );
+
+    const ageUnitControl = this.registrationForm.get(
+      'personalDetails.ageUnit'
+    );
+
+    if (!dobValue) {
+      ageControl?.setValue('');
+      ageUnitControl?.setValue('Years');
+      return;
+    }
+
+    const dob = new Date(`${dobValue}T00:00:00`);
     const today = new Date();
 
     if (
       Number.isNaN(dob.getTime()) ||
       dob > today
     ) {
-      this.age = '';
-      this.ageUnit = 'Years';
+      ageControl?.setValue('');
+      ageUnitControl?.setValue('Years');
       return;
     }
 
@@ -158,80 +817,68 @@ export class PatientRegistrationFOComponent {
       months += 12;
     }
 
+    // Less than one year
     if (years <= 0) {
 
-      const totalMonths =
-        Math.max(0, months);
+      const totalMonths = Math.max(0, months);
 
-      this.age = totalMonths;
+      ageControl?.setValue(totalMonths);
 
-      this.ageUnit =
+      ageUnitControl?.setValue(
         totalMonths === 1
           ? 'Month'
-          : 'Months';
+          : 'Months'
+      );
 
       return;
     }
 
-    this.age = years;
+    // One year or more
+    ageControl?.setValue(years);
 
-    this.ageUnit =
+    ageUnitControl?.setValue(
       years === 1
         ? 'Year'
-        : 'Years';
+        : 'Years'
+    );
   }
-
-
-  // =========================
-  // INSURANCE
-  // =========================
-
   onInsuranceChange(): void {
 
     this.insuranceError = '';
 
-    if (this.insuranceChoice === 'yes') {
+    const insuranceChoice =
+      this.registrationForm.get(
+        'personalDetails.insuranceChoice'
+      )?.value;
 
+    if (insuranceChoice === 'yes') {
+
+      this.showPaymentModal = false;
       this.showInsuranceModal = true;
 
-    }
+    } else if (insuranceChoice === 'no') {
 
-    if (this.insuranceChoice === 'no') {
-
+      this.showInsuranceModal = false;
       this.showPaymentModal = true;
-
     }
   }
-
-
-  closeInsuranceModal(): void {
-
-    this.showInsuranceModal = false;
-
-    this.insuranceChoice = '';
-
-    this.insuranceData = null;
-
-    this.provider = '';
-    this.policy = '';
-    this.groupId = '';
-    this.holderName = '';
-    this.insuranceAddress = '';
-
-    this.insuranceError = '';
-  }
-
 
   confirmInsurance(): void {
 
     this.insuranceError = '';
 
-    if (
-      !this.provider.trim() ||
-      !this.policy.trim() ||
-      !this.holderName.trim() ||
-      !this.insuranceAddress.trim()
-    ) {
+    const insuranceForm =
+      this.registrationForm.get(
+        'insuranceDetails'
+      );
+
+    if (!insuranceForm) {
+      return;
+    }
+
+    insuranceForm.markAllAsTouched();
+
+    if (insuranceForm.invalid) {
 
       this.insuranceError =
         'Please fill all required insurance details.';
@@ -239,58 +886,80 @@ export class PatientRegistrationFOComponent {
       return;
     }
 
+    const data = insuranceForm.getRawValue();
+
     this.insuranceData = {
-
-      provider: this.provider.trim(),
-
-      policy: this.policy.trim(),
-
-      groupId: this.groupId.trim(),
-
-      holderName:
-        this.holderName.trim(),
-
+      provider: data.provider?.trim() || '',
+      policy: data.policy?.trim() || '',
+      groupId: data.groupId?.trim() || '',
+      holderName: data.holderName?.trim() || '',
       insuranceAddress:
-        this.insuranceAddress.trim()
+        data.insuranceAddress?.trim() || ''
     };
 
     this.showInsuranceModal = false;
   }
+  closeInsuranceModal(): void {
 
+    this.showInsuranceModal = false;
 
-  // =========================
-  // PAYMENT
-  // =========================
+    this.registrationForm
+      .get('personalDetails.insuranceChoice')
+      ?.setValue('');
+
+    this.registrationForm
+      .get('insuranceDetails')
+      ?.reset();
+
+    this.insuranceData = null;
+
+    this.insuranceError = '';
+  }
 
   closePaymentModal(): void {
 
     this.showPaymentModal = false;
 
-    this.insuranceChoice = '';
+    this.registrationForm
+      .get('personalDetails.insuranceChoice')
+      ?.setValue('');
+
+    this.registrationForm
+      .get('paymentDetails')
+      ?.reset();
 
     this.paymentData = null;
-
-    this.paymentType = '';
-    this.cardHolder = '';
-    this.cardNumber = '';
-    this.expiry = '';
-    this.cvv = '';
 
     this.paymentError = '';
   }
 
+  // =========================
+  // DOB → AGE
+  // =========================
 
+  setMaxDateOfBirth(): void {
+    const today = new Date();
+
+    today.setFullYear(today.getFullYear() - 18);
+
+    this.maxDateOfBirth = today.toISOString().split('T')[0];
+  }
   confirmPayment(): void {
 
     this.paymentError = '';
 
-    if (
-      !this.paymentType ||
-      !this.cardHolder.trim() ||
-      !this.cardNumber.trim() ||
-      !this.expiry.trim() ||
-      !this.cvv.trim()
-    ) {
+    const paymentForm =
+      this.registrationForm.get(
+        'paymentDetails'
+      );
+
+    if (!paymentForm) {
+      return;
+    }
+
+    paymentForm.markAllAsTouched();
+
+    if (paymentForm.invalid) {
 
       this.paymentError =
         'Please fill all required payment details.';
@@ -298,139 +967,56 @@ export class PatientRegistrationFOComponent {
       return;
     }
 
+    const data = paymentForm.getRawValue();
+
     this.paymentData = {
 
       paymentType:
-        this.paymentType,
+        data.paymentType,
 
       cardHolder:
-        this.cardHolder.trim(),
+        data.cardHolder?.trim() || '',
 
       cardNumber:
-        this.cardNumber.trim(),
+        data.cardNumber?.trim() || '',
 
       expiry:
-        this.expiry.trim(),
+        data.expiry?.trim() || '',
 
       cvv:
-        this.cvv.trim()
+        data.cvv?.trim() || ''
     };
 
     this.showPaymentModal = false;
   }
 
-
   // =========================
   // FORM SUBMIT
   // =========================
 
-  submitRegistration(form: NgForm): void {
+  async submitRegistration(): Promise<void> {
 
-    if (form.invalid) {
-
-      form.control.markAllAsTouched();
-
+    if (this.registrationForm.invalid) {
+      console.log(this.registrationForm)
+      this.registrationForm.markAllAsTouched();
       return;
     }
 
-    // Insurance validation
-    if (!this.insuranceChoice) {
-      return;
-    }
+    const formData = this.registrationForm.getRawValue();
 
-    if (
-      this.insuranceChoice === 'yes' &&
-      !this.insuranceData
-    ) {
-
-      this.showInsuranceModal = true;
-
-      return;
-    }
-
-    if (
-      this.insuranceChoice === 'no' &&
-      !this.paymentData
-    ) {
-
-      this.showPaymentModal = true;
-
-      return;
-    }
-
-    const appointment: Appointment = {
-
-      firstName:
-        this.firstName.trim(),
-
-      lastName:
-        this.lastName.trim(),
-
-      phone:
-        this.phone.trim(),
-
-      email:
-        this.email.trim(),
-
-      dateOfBirth:
-        this.dateOfBirth,
-
-      age:
-        this.age,
-
-      ageUnit:
-        this.ageUnit,
-
-      gender:
-        this.gender,
-
-      address:
-        this.address.trim(),
-
-      cityVillage:
-        this.cityVillage.trim(),
-
-      state:
-        this.state,
-
-      pinCode:
-        this.pinCode.trim(),
-
-      insurance:
-        this.insuranceChoice,
-
-      insuranceData:
-        this.insuranceData,
-
-      paymentData:
-        this.paymentData,
-
-      otpMethod:
-        this.otpMethod
-    };
-
-
-    // Save appointment
-    localStorage.setItem(
-      'tempAppointment',
-      JSON.stringify(appointment)
-    );
-
-
-    // Navigation
-    if (this.otpMethod === 'none') {
-
-      this.router.navigate([
-        '/patient-registration-success'
-      ]);
-
-      return;
-    }
-
-
-    this.router.navigate([
-      '/registration-otp'
-    ]);
+    console.log('Registration Data:', formData);
+    await this.store.dispatch(AuthActions.requestOTP({ email: formData.contactInformation.presentAddress.email }));
+    await this.store.select(selectRequestedOTP).subscribe((res: any) => {
+      if (res?.data) {
+        this.router.navigate(['/front-office/otp-verification-for-appointment'], {
+          state: {
+            registrationData: formData,
+            isBookAppointment: true
+          }
+        })
+        // API call here
+      }
+    })
   }
 
 
@@ -438,46 +1024,106 @@ export class PatientRegistrationFOComponent {
   // CLEAR FORM
   // =========================
 
-  clearForm(form: NgForm): void {
+  clearForm(): void {
 
-    form.resetForm();
+    this.registrationForm.reset();
 
-    this.firstName = '';
-    this.lastName = '';
-    this.phone = '';
-    this.email = '';
+    this.states = [];
+    this.cities = [];
+    this.permanentStates = [];
+    this.permanentCities = [];
 
-    this.dateOfBirth = '';
-    this.age = '';
-    this.ageUnit = 'Years';
+    this.registrationForm
+      .get('contactInformation.presentAddress.stateId')
+      ?.disable();
 
-    this.gender = '';
+    this.registrationForm
+      .get('contactInformation.presentAddress.cityId')
+      ?.disable();
 
-    this.address = '';
-    this.cityVillage = '';
-    this.state = '';
-    this.pinCode = '';
+    this.registrationForm
+      .get('contactInformation.permanentAddress.stateId')
+      ?.disable();
 
-    this.insuranceChoice = '';
-    this.otpMethod = '';
+    this.registrationForm
+      .get('contactInformation.permanentAddress.cityId')
+      ?.disable();
+
+    this.registrationForm
+      .get('personalDetails.ageUnit')
+      ?.setValue('Years');
+
+    this.registrationForm
+      .get('personalDetails.age')
+      ?.setValue('');
 
     this.insuranceData = null;
     this.paymentData = null;
 
+    this.insuranceError = '';
+    this.paymentError = '';
+
     this.showInsuranceModal = false;
     this.showPaymentModal = false;
 
-    this.provider = '';
-    this.policy = '';
-    this.groupId = '';
-    this.holderName = '';
-    this.insuranceAddress = '';
+    this.addressType = 'present';
 
-    this.paymentType = '';
-    this.cardHolder = '';
-    this.cardNumber = '';
-    this.expiry = '';
-    this.cvv = '';
+  }
+
+  onSameAsPresentAddressChange(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    const presentAddress = this.registrationForm.get(
+      'contactInformation.presentAddress'
+    ) as FormGroup;
+
+    const permanentAddress = this.registrationForm.get(
+      'contactInformation.permanentAddress'
+    ) as FormGroup;
+
+    if (checked) {
+
+      const presentValue = presentAddress.getRawValue();
+
+      console.log('Present Address:', presentValue);
+
+      permanentAddress.patchValue({
+        address: presentValue.address,
+        countryId: presentValue.countryId,
+        stateId: presentValue.stateId,
+        cityId: presentValue.cityId,
+        pinCode: presentValue.pinCode
+      });
+
+      // Enable controls if required
+      permanentAddress.get('stateId')?.enable();
+      permanentAddress.get('cityId')?.enable();
+
+      // Optional: copy dropdown lists also
+      this.permanentStates = [...this.states];
+      this.permanentCities = [...this.cities];
+
+      console.log(
+        'Permanent Address After Patch:',
+        permanentAddress.getRawValue()
+      );
+
+    } else {
+
+      permanentAddress.patchValue({
+        address: '',
+        countryId: '',
+        stateId: '',
+        cityId: '',
+        pinCode: ''
+      });
+
+      this.permanentStates = [];
+      this.permanentCities = [];
+
+      permanentAddress.get('stateId')?.disable();
+      permanentAddress.get('cityId')?.disable();
+    }
   }
 
 
@@ -506,37 +1152,36 @@ export class PatientRegistrationFOComponent {
     }
   }
 
+  formatCardNumber(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
-  formatCardNumber(): void {
+    let value = input.value
+      .replace(/\D/g, '')
+      .slice(0, 16);
 
-    this.cardNumber =
-      this.cardNumber
-        .replace(/\D/g, '')
-        .slice(0, 16)
-        .replace(/(.{4})/g, '$1 ')
-        .trim();
+    value = value.replace(/(.{4})/g, '$1 ').trim();
+
+    this.registrationForm
+      .get('paymentDetails.cardNumber')
+      ?.setValue(value, { emitEvent: false });
   }
 
+  formatExpiry(event: Event): void {
+    const input = event.target as HTMLInputElement;
 
-  formatExpiry(): void {
-
-    let value =
-      this.expiry.replace(/\D/g, '');
-
-    if (value.length > 4) {
-      value = value.substring(0, 4);
-    }
+    let value = input.value
+      .replace(/\D/g, '')
+      .slice(0, 4);
 
     if (value.length >= 3) {
-
-      this.expiry =
+      value =
         value.substring(0, 2) +
         ' / ' +
         value.substring(2);
-
-    } else {
-
-      this.expiry = value;
     }
+
+    this.registrationForm
+      .get('paymentDetails.expiry')
+      ?.setValue(value, { emitEvent: false });
   }
 }

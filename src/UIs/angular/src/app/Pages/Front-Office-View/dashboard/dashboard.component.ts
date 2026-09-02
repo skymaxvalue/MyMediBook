@@ -9,6 +9,10 @@ import {
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
+import { getDashboardData } from 'src/app/Store/Appointments/appointment.actions';
+import { selectDashboardDataSummery } from 'src/app/Store/Appointments/appointment.selcetors';
 
 
 interface DashboardStat {
@@ -77,6 +81,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   activePage = 'dashboard';
 
   private timer: any;
+  user: any = JSON.parse(localStorage.getItem('user') || '{}');
 
 
   // ==============================
@@ -96,7 +101,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private store: Store<AppState>
   ) { }
 
 
@@ -111,6 +117,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loadUser();
 
     this.startClock();
+    this.store.select(selectDashboardDataSummery).subscribe((res: any) => {
+      if (res) {
+
+        this.dashboardData = res
+        console.log('Dashboard Data from Store:', this.dashboardData, res);
+      }
+    })
 
   }
 
@@ -120,6 +133,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ==============================
 
   loadDashboardData(): void {
+    const today = new Date();
+
+    const fromDate = new Date(today);
+    fromDate.setHours(0, 0, 0, 0);
+
+    const toDate = new Date(today);
+    toDate.setHours(23, 59, 59, 999);
+
+    this.store.dispatch(getDashboardData({
+      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
+      toDate: toDate.toISOString()
+    }));
 
     this.http
       .get<DashboardData>(

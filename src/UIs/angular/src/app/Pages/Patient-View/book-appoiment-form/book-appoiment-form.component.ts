@@ -63,6 +63,7 @@ export class BookAppoimentFormComponent implements OnInit {
 
   ageType: any[] = [];
   relations: any;
+  selectedProfileData: any;
   selectMember(member: any) {
     this.selectedMember.set(member);
   }
@@ -221,24 +222,115 @@ export class BookAppoimentFormComponent implements OnInit {
     })
   }
 
+  // async onProfileChange(event: any) {
+  //   await this.store.dispatch(getProfileDataByProfileId({ profileId: event.profileId }))
+  //   this.store.select(selectGetProfileDataByProfileId).subscribe((res: any) => {
+  //     if (res) {
+  //       this.selectedProfileData = res.data
+  //       console.log("Profile Data", '============++++++++', res);
+  //       this.selectedPatientName.set(event.fullName)
+  //       this.bookingForm.patchValue(event)
+  //       this.bookingForm.get('phone')?.setValue(event.phoneNumber)
+  //       this.bookingForm.get('insuranceData')?.setValue(res.data.insuranceData)
+  //       const dob = event.dateOfBirth;
+
+  //       const date = new Date(dob);
+
+  //       const formattedDate =
+  //         `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+  //       this.bookingForm.patchValue({
+  //         dateOfBirth: formattedDate
+  //       });
+  //       this.isPatientDropdownOpen = false
+  //     }
+  //   })
+
+
+  // }
   async onProfileChange(event: any) {
+    this.store.dispatch(
+      getProfileDataByProfileId({ profileId: event.profileId })
+    );
 
-    this.selectedPatientName.set(event.fullName)
-    this.bookingForm.patchValue(event)
-    this.bookingForm.get('phone')?.setValue(event.phoneNumber)
-    this.bookingForm.get('insuranceData')?.get('holderName')?.setValue(event.fullName)
-    const dob = event.dateOfBirth;
+    this.store.select(selectGetProfileDataByProfileId).subscribe((res: any) => {
+      if (!res?.data) {
+        return;
+      }
 
-    const date = new Date(dob);
+      this.selectedProfileData = res.data;
 
-    const formattedDate =
-      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      console.log('Profile Data:', res.data);
 
-    this.bookingForm.patchValue({
-      dateOfBirth: formattedDate
+      this.selectedPatientName.set(event.fullName);
+
+      // Patch basic patient information
+      this.bookingForm.patchValue({
+        firstName: event.firstName,
+        lastName: event.lastName,
+        profileId: event.profileId,
+        relationTypeId: event.relationTypeId,
+        gender: event.gender,
+        address: event.address,
+        email: event.email,
+        phone: event.phoneNumber
+      });
+
+      // DOB
+      if (event.dateOfBirth) {
+        const date = new Date(event.dateOfBirth);
+
+        const formattedDate =
+          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+        this.bookingForm.patchValue({
+          dateOfBirth: formattedDate
+        });
+      }
+
+      // ==============================
+      // INSURANCE HANDLING
+      // ==============================
+
+      const insuranceData = res.data.insuranceData;
+
+      if (insuranceData) {
+
+        // Existing insurance details available
+        console.log('Existing Insurance:', insuranceData);
+
+        this.bookingForm.patchValue({
+          insurance: null
+        });
+
+        this.insuranceForm.patchValue({
+          provider: insuranceData.provider || '',
+          policy: insuranceData.policy || '',
+          groupId: insuranceData.groupId || 0,
+          holderName: insuranceData.holderName || '',
+          address: insuranceData.address || ''
+        });
+
+      } else {
+
+        // No insurance details available
+        console.log('No existing insurance details');
+
+        this.bookingForm.patchValue({
+          insurance: null
+        });
+
+        this.insuranceForm.reset({
+          provider: '',
+          policy: '',
+          groupId: 0,
+          holderName: '',
+          address: ''
+        });
+      }
+
+      this.isPatientDropdownOpen = false;
     });
-    this.isPatientDropdownOpen = false
-
   }
 
 
@@ -303,22 +395,83 @@ export class BookAppoimentFormComponent implements OnInit {
     return '';
   }
 
+  // handleInsuranceChange(): void {
+  //   this.bookingForm.get('insurance')?.valueChanges.subscribe(value => {
+  //     this.InsurenceValue = value;
+  //     if (value === 'yes') {
+  //       if (this.selectedProfileData?.insuranceData) {
+
+  //       }
+  //       this.showInsuranceModal = true;
+  //       this.showPaymentModal = false;
+
+  //       this.setRequiredValidators(this.insuranceForm);
+  //       this.clearValidators(this.paymentForm);
+  //     } else if (value === 'no') {
+  //       this.showPaymentModal = true;
+  //       this.showInsuranceModal = false;
+
+  //       this.setRequiredValidators(this.paymentForm);
+  //       this.clearValidators(this.insuranceForm);
+  //     }
+  //   });
+  // }
   handleInsuranceChange(): void {
+
     this.bookingForm.get('insurance')?.valueChanges.subscribe(value => {
+
       this.InsurenceValue = value;
-      if (value === 'yes') {
-        this.showInsuranceModal = true;
-        this.showPaymentModal = false;
 
-        this.setRequiredValidators(this.insuranceForm);
-        this.clearValidators(this.paymentForm);
-      } else if (value === 'no') {
-        this.showPaymentModal = true;
-        this.showInsuranceModal = false;
+      const hasExistingInsurance =
+        !!this.selectedProfileData?.insuranceData;
 
-        this.setRequiredValidators(this.paymentForm);
-        this.clearValidators(this.insuranceForm);
+      if (hasExistingInsurance) {
+
+        // Existing insurance already available
+        if (value === 'yes') {
+
+          // User wants to change insurance
+          this.showInsuranceModal = true;
+          this.showPaymentModal = false;
+
+          this.setRequiredValidators(this.insuranceForm);
+          this.clearValidators(this.paymentForm);
+
+        } else if (value === 'no') {
+
+          // Keep existing insurance
+          this.showInsuranceModal = false;
+          this.showPaymentModal = false;
+
+          this.clearValidators(this.insuranceForm);
+          this.clearValidators(this.paymentForm);
+        }
+
+      } else {
+
+        // No existing insurance
+        if (value === 'yes') {
+
+          // User wants to add insurance
+          this.showInsuranceModal = true;
+          this.showPaymentModal = false;
+
+          this.setRequiredValidators(this.insuranceForm);
+          this.clearValidators(this.paymentForm);
+
+        } else if (value === 'no') {
+
+          // No insurance -> payment
+          this.showInsuranceModal = false;
+          this.showPaymentModal = true;
+
+          this.clearValidators(this.insuranceForm);
+          this.setRequiredValidators(this.paymentForm);
+
+        }
+
       }
+
     });
   }
 
