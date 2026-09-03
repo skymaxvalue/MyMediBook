@@ -90,8 +90,6 @@
 
 </div>
 
-<div id="responsiblePartySection" hidden>
-
 <div class="field-pair" id="accountHolderQuestion" hidden>
     <label>Who will manage this patient's account and billing? <span class="req">*</span></label>
     <div class="mobile-radio-group account-holder-group">
@@ -106,65 +104,7 @@
     </div>
 </div>
 
-<div class="field-pair rp-card" id="responsiblePartySearchCard" hidden>
-    <h3 class="rp-card-title">Search Responsible Party</h3>
-    <p class="rp-card-subtitle">Search using the account holder's registered mobile number.</p>
-
-    <div class="rp-search-row">
-        <div class="rp-search-option">
-            <div class="mobile-search-input">
-                <span class="mobile-prefix">+91</span>
-                <input type="tel" id="responsiblePartyMobile" placeholder="Enter mobile number" inputmode="numeric" maxlength="10">
-            </div>
-        </div>
-
-        <div class="rp-search-divider" aria-hidden="true">
-            <span class="rp-search-divider-line"></span>
-            <span class="rp-search-divider-label">OR</span>
-            <span class="rp-search-divider-line"></span>
-        </div>
-
-        <div class="rp-search-option rp-search-name-dob">
-            <div class="field-pair">
-                <label for="responsiblePartyName">Patient Full Name</label>
-                <div class="rp-name-input">
-                    <span class="rp-name-icon" aria-hidden="true"><img src="images/profile-outline.png" alt="" class="btn-icon-img"></span>
-                    <input type="text" id="responsiblePartyName" placeholder="Enter full name">
-                </div>
-            </div>
-            <div class="field-pair">
-                <label for="responsiblePartyDob">Date of Birth</label>
-                <input type="date" id="responsiblePartyDob">
-            </div>
-        </div>
-
-        <button type="button" class="book-btn rp-search-btn" id="searchResponsiblePartyBtn">Search</button>
-    </div>
-
-    <p class="rp-search-error" id="responsiblePartySearchError" hidden>Enter a mobile number, or a full name (with optional date of birth), to search.</p>
-</div>
-
-<div class="field-pair rp-card" id="responsiblePartyFoundCard" hidden>
-    <p class="rp-card-title rp-found-title">&#9989; Responsible Party Found</p>
-
-    <div class="saved-info-card" id="responsiblePartyFoundContent"></div>
-
-    <div class="rp-card-actions">
-        <button type="button" class="book-btn" id="continueWithAccountBtn">Continue</button>
-        <button type="button" class="clear-btn" id="searchAgainFoundBtn">Search Again</button>
-    </div>
-</div>
-
-<div class="field-pair rp-card" id="responsiblePartyNotFoundCard" hidden>
-    <p class="rp-card-title rp-warning-title">&#9888; No Responsible Party Found</p>
-    <p class="rp-card-subtitle">No account exists for this mobile number.</p>
-
-    <div class="rp-card-actions">
-        <button type="button" class="clear-btn" id="searchAgainNotFoundBtn">Search Again</button>
-    </div>
-</div>
-
-<div class="detail-grid" id="accountHolderFields" hidden>
+<div class="detail-grid" id="accountHolderDetails" hidden>
 
     <div class="field-pair">
         <label for="accountHolderName">Account Holder Name <span class="req">*</span></label>
@@ -186,10 +126,6 @@
     </div>
 
 </div>
-
-</div>
-
-<div id="linkedAccountBadge" class="success-badge" hidden></div>
 
 <div class="section-header">Patient Details</div>
 
@@ -239,27 +175,9 @@
 
 </div>
 
-<div id="contactDetailsGrid">
+<div class="section-header">Contact Details</div>
 
-<div class="section-header">Contact Information</div>
-
-<div class="detail-grid">
-
-    <div class="field-pair">
-        <label for="phone">Mobile Number <span class="req">*</span></label>
-        <input type="tel" id="phone" placeholder="Enter Mobile Number" required>
-    </div>
-
-    <div class="field-pair">
-        <label for="email">Email Address <span class="req">*</span></label>
-        <input type="email" id="email" placeholder="Enter email address" required>
-    </div>
-
-</div>
-
-<div class="section-header">Address Information</div>
-
-<div class="detail-grid">
+<div class="detail-grid" id="contactDetailsGrid">
 
     <div class="field-pair full-width-field">
         <label for="address">Present Address <span class="req">*</span></label>
@@ -372,11 +290,15 @@
         </div>
     </div>
 
-</div>
+    <div class="field-pair">
+        <label for="phone">Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="Enter Mobile Number" required>
+    </div>
 
-<div class="section-header">Additional Details</div>
-
-<div class="detail-grid">
+    <div class="field-pair">
+        <label for="email">Email Address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="Enter email address" required>
+    </div>
 
     <div class="field-pair">
         <label for="visitPurpose">Dr. Visit Purpose <span class="req">*</span></label>
@@ -426,8 +348,6 @@
 
 </div>
 
-</div>
-
 <div class="form-actions">
 <button type="submit" class="book-btn"><span class="btn-icon">&#10003;</span> Confirm</button>
 <button type="reset" class="clear-btn" id="clearFormBtn"><span class="btn-icon">&#8635;</span> Clear</button>
@@ -453,18 +373,15 @@
 
 <div class="patient-search-row">
     <div class="patient-search-box">
-        <input type="text" id="patientSearchInput" placeholder="Search by full name">
-        <button type="button" class="patient-search-btn" id="patientSearchBtn" aria-label="Search">
-            <span class="search-icon"><img src="images/search-white.png" alt="" class="btn-icon-img"></span>
-        </button>
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="patientSearchInput" placeholder="Search by name">
     </div>
     <input type="date" id="patientDobFilter" class="patient-dob-input">
 </div>
 
-<p class="patient-modal-hint patient-modal-hint-lg">Search by name, date of birth, or both to avoid selecting the wrong record.</p>
+<p class="patient-modal-hint">Search by name, date of birth, or both to avoid selecting the wrong record.</p>
 
 <div class="patient-list" id="patientList"></div>
-
 
 <div class="form-actions">
 <button type="button" class="clear-btn" onclick="closeSelectPatientModal()">Cancel</button>
@@ -493,89 +410,6 @@
 <div class="form-actions">
 <button type="button" class="clear-btn" onclick="useNewInfo()">Add New</button>
 <button type="button" class="book-btn" id="useSavedInfoBtn" onclick="useSavedInfo()">Continue with Saved</button>
-</div>
-
-</div>
-</div>
-
-
-<div id="responsiblePartyChannelModal" class="modal">
-<div class="modal-content saved-info-modal-content rp-channel-modal-content">
-<div class="close-icon" onclick="closeResponsiblePartyChannelModal()">X</div>
-
-<div class="patient-modal-header">
-    <span class="icon-badge" aria-hidden="true">
-        <img src="images/patient-icon-blue.png" alt="">
-    </span>
-    <h2>Verify Responsible Party</h2>
-</div>
-
-<p class="patient-modal-hint patient-modal-hint-lg">Choose how the account holder should receive their verification code.</p>
-
-<div class="field-pair rp-channel-field">
-    <label>Send OTP Via <span class="req">*</span></label>
-    <div class="mobile-radio-group otp-channel-group">
-        <label class="radio-item">
-            <input type="radio" name="rpOtpChannel" value="phone" checked>
-            <span>Phone</span>
-        </label>
-        <label class="radio-item">
-            <input type="radio" name="rpOtpChannel" value="email">
-            <span>Email</span>
-        </label>
-        <label class="radio-item">
-            <input type="radio" name="rpOtpChannel" value="none">
-            <span>None</span>
-        </label>
-    </div>
-</div>
-
-<div class="form-actions">
-<button type="button" class="clear-btn" onclick="closeResponsiblePartyChannelModal()">Cancel</button>
-<button type="button" class="book-btn" id="continueRpChannelBtn">Continue</button>
-</div>
-
-</div>
-</div>
-
-
-<div id="responsiblePartyOtpModal" class="modal">
-<div class="modal-content saved-info-modal-content rp-otp-modal-content">
-<div class="close-icon" onclick="closeResponsiblePartyOtpModal()">X</div>
-
-<div class="patient-modal-header">
-    <span class="icon-badge" aria-hidden="true">
-        <img src="images/patient-icon-blue.png" alt="">
-    </span>
-    <h2>Enter Verification Code</h2>
-</div>
-
-<div class="rp-otp-hint-row">
-    <p class="patient-modal-hint patient-modal-hint-lg rp-otp-hint" id="responsiblePartyOtpHint">An OTP has been sent to the registered mobile number.</p>
-    <button type="button" class="rp-otp-change-channel" id="changeRpOtpChannelBtn">Change</button>
-</div>
-
-<div class="field-pair rp-otp-field-pair" id="responsiblePartyOtpFieldPair">
-    <label class="rp-otp-label">Enter OTP <span class="req">*</span></label>
-
-    <div class="rp-otp-group" id="responsiblePartyOtpGroup">
-        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="OTP digit 1">
-        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
-        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
-        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
-    </div>
-
-    <div class="rp-otp-meta">
-        <span class="rp-otp-timer" id="responsiblePartyOtpTimerWrap">Expires in <strong id="responsiblePartyOtpTimer">01:00</strong></span>
-        <button type="button" class="rp-otp-resend" id="resendResponsiblePartyOtpBtn">Resend OTP</button>
-    </div>
-</div>
-
-<p class="otp-error-text" id="responsiblePartyOtpError" hidden>Incorrect OTP. Please try again.</p>
-
-<div class="form-actions">
-<button type="button" class="clear-btn" onclick="closeResponsiblePartyOtpModal()">Cancel</button>
-<button type="button" class="book-btn" id="verifyResponsiblePartyOtpBtn">Verify OTP</button>
 </div>
 
 </div>

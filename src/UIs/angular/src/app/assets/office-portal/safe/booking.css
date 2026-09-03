@@ -38,6 +38,7 @@ input[type="date"] {
     box-shadow: 0 6px 14px rgba(0,0,0,0.06);
 }
 
+
 .patient-info-header {
     text-align: center;
     margin-bottom: 25px;
@@ -102,12 +103,14 @@ input[type="date"] {
     text-transform: uppercase;
 }
 
+
 .top-fields {
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
     align-items: start;
 }
+
 
 .detail-grid {
     display: grid;
@@ -118,6 +121,7 @@ input[type="date"] {
 .patient-details-grid {
     grid-template-columns: 1fr 1fr 1fr;
 }
+
 
 .full-width-field {
     grid-column: 1 / -1;
@@ -198,6 +202,7 @@ input[type="date"] {
     transform: rotate(45deg);
 }
 
+
 .checkbox-row {
     display: flex;
     align-items: center;
@@ -208,18 +213,14 @@ input[type="date"] {
 }
 
 .checkbox-row input[type="checkbox"] {
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    box-sizing: border-box !important;
-    width: 18px !important;
-    height: 18px !important;
-    min-width: 18px !important;
-    max-width: 18px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    margin: 0;
     border: 1.5px solid #9aa6c3;
-    border-radius: 5px;
+    border-radius: 6px;
     background: #fff;
     position: relative;
     cursor: pointer;
@@ -233,18 +234,13 @@ input[type="date"] {
 .checkbox-row input[type="checkbox"]:checked::after {
     content: "";
     position: absolute;
-    left: 5px;
+    left: 6px;
     top: 2px;
     width: 5px;
-    height: 9px;
+    height: 10px;
     border: solid #fff;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
-}
-
-.checkbox-row input[type="checkbox"]:focus-visible {
-    outline: 3px solid rgba(47, 91, 234, 0.25);
-    outline-offset: 2px;
 }
 
 .checkbox-row-text {
@@ -352,10 +348,6 @@ textarea {
 
 .btn-icon {
     font-size: 15px;
-}
-
-[hidden] {
-    display: none !important;
 }
 
 .modal {
@@ -485,6 +477,7 @@ textarea {
     flex: 1;
 }
 
+
 .iti {
     width: 100%;
 }
@@ -556,6 +549,7 @@ textarea {
     height: 16px;
 }
 
+
 .patient-dropdown {
     position: relative;
 }
@@ -617,30 +611,6 @@ textarea {
 
 .patient-modal-content {
     width: 560px;
-    padding: 32px 36px 36px;
-}
-
-.patient-modal-content .patient-modal-header {
-    margin-bottom: 14px;
-    justify-content: flex-start;
-}
-
-.patient-modal-content .icon-badge {
-    width: 56px;
-    height: 56px;
-}
-
-.patient-modal-content .icon-badge img {
-    width: 26px;
-    height: 26px;
-}
-
-.patient-modal-content .patient-modal-header h2 {
-    font-size: 26px;
-}
-
-.patient-modal-content .patient-modal-hint {
-    margin: 12px 2px 16px;
 }
 
 .saved-info-modal-content {
@@ -705,12 +675,6 @@ textarea {
     font-size: 12px;
 }
 
-.patient-modal-hint-lg {
-    font-size: 14px;
-    line-height: 1.5;
-    color: #5d6b82;
-}
-
 .patient-item-details {
     flex: 1;
 }
@@ -737,12 +701,12 @@ textarea {
 
 .patient-search-box {
     display: flex;
-    align-items: stretch;
-    margin: 0;
-    background: #fff;
-    border: 1px solid #d0d5dd;
-    border-radius: 10px;
-    overflow: hidden;
+    align-items: center;
+    gap: 10px;
+    margin: 14px;
+    padding: 10px 14px;
+    background: #f5f6f8;
+    border-radius: 8px;
 }
 
 .patient-search-box input {
@@ -751,27 +715,7 @@ textarea {
     outline: none;
     flex: 1;
     font-size: 14px;
-    padding: 12px 16px;
-    min-width: 0;
-}
-
-.patient-search-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 46px;
-    background: #3b5edb;
-    border: none;
-    cursor: pointer;
-}
-
-.patient-search-btn:hover {
-    opacity: 0.92;
-}
-
-.patient-search-btn .search-icon {
-    color: #fff;
+    padding: 0;
 }
 
 .search-icon {
@@ -780,13 +724,8 @@ textarea {
 
 .patient-list {
     max-height: 260px;
-    min-height: 140px;
     overflow-y: auto;
-    padding: 6px;
-    background: #f5f6f8;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
+    padding: 0 6px 10px;
 }
 
 .patient-item {
@@ -796,16 +735,10 @@ textarea {
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;
-    background: #fff;
-    margin-bottom: 6px;
-}
-
-.patient-item:last-child {
-    margin-bottom: 0;
 }
 
 .patient-item:hover {
-    background: #eef2ff;
+    background: #f5f7fb;
 }
 
 .patient-item-avatar {
@@ -835,40 +768,10 @@ textarea {
 }
 
 .patient-item-empty {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    padding: 36px 20px;
+    padding: 20px;
     text-align: center;
-    color: #55627a;
-    font-size: 17px;
-}
-
-.patient-item-empty p {
-    margin: 0;
-}
-
-.patient-item-empty-icon {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: #e3ebff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.patient-item-empty-icon svg {
-    width: 26px;
-    height: 26px;
-}
-
-.patient-item-empty-icon-muted {
-    background: #eef0f3;
+    color: #98a2b3;
+    font-size: 14px;
 }
 
 .doctor-card {
@@ -903,6 +806,7 @@ textarea {
     padding: 12px 35px;
     border-radius: 25px;
 }
+
 
 @media (max-width: 900px) {
     .top-fields {
@@ -945,247 +849,85 @@ textarea {
         justify-content: center;
         width: 100%;
     }
-
-    .rp-search-name-dob{
-        flex-direction: column;
-    }
-
-    .rp-search-divider{
-        flex-direction: row;
-        min-height: 0;
-        width: 100%;
-    }
-
-    .rp-search-divider-line{
-        width: auto;
-        height: 1px;
-    }
 }
 
-@media (max-width: 600px){
-    .rp-search-row{
-        flex-direction: column;
-        align-items: stretch;
-    }
 
-    .rp-search-row .book-btn{
-        width: 100%;
-        justify-content: center;
-    }
 
-    .rp-card-actions{
-        flex-direction: column;
-    }
-
-    .rp-card-actions .book-btn,
-    .rp-card-actions .clear-btn{
-        width: 100%;
-        justify-content: center;
-    }
+.saved-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #E5E7EB;
 }
 
-.success-badge{
-    background:#ECFDF5;
-    border:1px solid #BBF7D0;
-    color:#166534;
-    padding:12px 16px;
-    border-radius:10px;
+.saved-row:last-child{
+    border-bottom:none;
+}
+
+.saved-row strong{
+    color:#64748B;
     font-size:14px;
-    margin:16px 0;
+    font-weight:600;
 }
 
-#responsiblePartyOtpModal .field-pair{
-    text-align: left;
-    margin: 4px 0 12px;
+.saved-row span{
+    color:#042251;
+    font-size:15px;
+    font-weight:700;
 }
 
-.otp-error-text{
-    color:#e53935;
-    font-size:14px;
-    margin:-10px 0 4px;
-    text-align: left;
+
+
+
+
+
+
+
+
+#accountHolderQuestion{
+    margin: 18px 0 12px;
 }
 
-.rp-channel-modal-content {
-    width: 440px;
+#accountHolderQuestion label{
+    margin-bottom: 10px;
+    display:block;
 }
 
-.rp-channel-modal-content .patient-modal-hint {
-    text-align: center;
+.account-holder-group{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    flex-wrap:wrap;
 }
 
-.rp-channel-field {
-    text-align: left;
+#accountHolderDetails{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:24px !important;
+    row-gap:0 !important;
+    margin:0 0 24px;
+    align-items:start;
 }
 
-.rp-channel-field .mobile-radio-group {
-    justify-content: center;
+#accountHolderDetails .field-pair{
+    gap:8px;
+    margin:0;
 }
 
-.rp-otp-modal-content {
-    width: 400px;
+#accountHolderDetails label{
+    margin-bottom:0;
 }
 
-.rp-otp-hint-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.rp-otp-hint-row .rp-otp-hint {
-    flex: 1;
-    text-align: left;
-    margin: 0 0 16px;
-}
-
-.rp-otp-change-channel {
-    flex-shrink: 0;
-    border: none;
-    background: none;
-    padding: 0;
-    margin-top: 10px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 700;
-    color: #3b5bdb;
-}
-
-.rp-otp-change-channel:hover {
-    text-decoration: underline;
-}
-
-.rp-otp-field-pair {
-    text-align: center;
-}
-
-.rp-otp-label {
-    display: block;
-    margin-bottom: 12px;
-    text-align: left;
-}
-
-.rp-otp-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-#responsiblePartyOtpGroup .rp-otp-input {
-    width: 54px !important;
-    height: 60px !important;
-    padding: 0 !important;
-    border: 1.5px solid #D6E2F3;
-    border-radius: 10px;
-    background: #fff;
-    outline: none;
-    text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    color: #23344d;
-    caret-color: #3b5bdb;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.15s ease;
-}
-
-#responsiblePartyOtpGroup .rp-otp-input:hover,
-#responsiblePartyOtpGroup .rp-otp-input:focus {
-    border-color: #3b5bdb;
-    box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.14);
-}
-
-#responsiblePartyOtpGroup .rp-otp-input:focus {
-    transform: translateY(-1px);
-}
-
-#responsiblePartyOtpGroup .rp-otp-input.filled {
-    border-color: #2F5BEA;
-    background: #eef2ff;
-}
-
-#responsiblePartyOtpGroup .rp-otp-input.rp-otp-error {
-    border-color: #e53935;
-    background: #fff5f5;
-}
-
-#responsiblePartyOtpGroup .rp-otp-input:disabled {
-    background: #eef1f5;
-    color: #98a2b3;
-    cursor: not-allowed;
-}
-
-.rp-otp-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.rp-otp-timer {
-    font-size: 13px;
-    font-weight: 600;
-    color: #7b8798;
-}
-
-.rp-otp-timer strong {
-    margin-left: 4px;
-    font-size: 14px;
-    color: #3b5bdb;
-}
-
-.rp-otp-timer.expired strong {
-    color: #e53935;
-}
-
-.rp-otp-resend {
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 700;
-    color: #3b5bdb;
-}
-
-.rp-otp-resend:hover:not(:disabled) {
-    text-decoration: underline;
-}
-
-.rp-otp-resend:disabled {
-    color: #b7c1cf;
-    cursor: not-allowed;
-}
-
-.rp-otp-shake {
-    animation: rpOtpShake 0.4s ease;
-}
-
-@keyframes rpOtpShake {
-    0% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-    100% { transform: translateX(0); }
-}
-
-@media (max-width: 480px) {
-    #responsiblePartyOtpGroup .rp-otp-input {
-        width: 46px !important;
-        height: 54px !important;
-        font-size: 20px;
+@media (max-width:768px){
+    #accountHolderDetails{
+        grid-template-columns:1fr;
+        row-gap:16px !important;
     }
 
-    .rp-otp-group {
-        gap: 10px;
-    }
-
-    .rp-otp-hint-row {
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .rp-otp-change-channel {
-        margin-top: 0;
+    .account-holder-group{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
     }
 }
