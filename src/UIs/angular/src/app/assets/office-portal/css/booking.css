@@ -38,6 +38,7 @@ input[type="date"] {
     box-shadow: 0 6px 14px rgba(0,0,0,0.06);
 }
 
+
 .patient-info-header {
     text-align: center;
     margin-bottom: 25px;
@@ -102,12 +103,14 @@ input[type="date"] {
     text-transform: uppercase;
 }
 
+
 .top-fields {
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
     align-items: start;
 }
+
 
 .detail-grid {
     display: grid;
@@ -118,6 +121,7 @@ input[type="date"] {
 .patient-details-grid {
     grid-template-columns: 1fr 1fr 1fr;
 }
+
 
 .full-width-field {
     grid-column: 1 / -1;
@@ -197,6 +201,7 @@ input[type="date"] {
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
+
 
 .checkbox-row {
     display: flex;
@@ -354,6 +359,7 @@ textarea {
     font-size: 15px;
 }
 
+
 [hidden] {
     display: none !important;
 }
@@ -485,6 +491,7 @@ textarea {
     flex: 1;
 }
 
+
 .iti {
     width: 100%;
 }
@@ -555,6 +562,7 @@ textarea {
     width: 16px;
     height: 16px;
 }
+
 
 .patient-dropdown {
     position: relative;
@@ -704,6 +712,7 @@ textarea {
     color: #98a2b3;
     font-size: 12px;
 }
+
 
 .patient-modal-hint-lg {
     font-size: 14px;
@@ -904,6 +913,7 @@ textarea {
     border-radius: 25px;
 }
 
+
 @media (max-width: 900px) {
     .top-fields {
         grid-template-columns: 1fr;
@@ -945,7 +955,291 @@ textarea {
         justify-content: center;
         width: 100%;
     }
+}
 
+
+
+.saved-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #E5E7EB;
+}
+
+.saved-row:last-child{
+    border-bottom:none;
+}
+
+.saved-row strong{
+    color:#64748B;
+    font-size:14px;
+    font-weight:600;
+}
+
+.saved-row span{
+    color:#042251;
+    font-size:15px;
+    font-weight:700;
+}
+
+
+
+
+
+
+
+
+
+#accountHolderQuestion{
+    margin: 18px 0 12px;
+}
+
+#accountHolderQuestion label{
+    margin-bottom: 10px;
+    display:block;
+}
+
+.account-holder-group{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+#accountHolderDetails{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:24px !important;
+    row-gap:0 !important;
+    margin:0 0 24px;
+    align-items:start;
+}
+
+#accountHolderDetails .field-pair{
+    gap:8px;
+    margin:0;
+}
+
+#accountHolderDetails label{
+    margin-bottom:0;
+}
+
+@media (max-width:768px){
+    #accountHolderDetails{
+        grid-template-columns:1fr;
+        row-gap:16px !important;
+    }
+
+    .account-holder-group{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+}
+
+
+
+.rp-card{
+    margin: 18px 0 24px;
+    background: #f8f9fb;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    padding: 18px 20px;
+    gap: 12px;
+}
+
+.rp-card-title{
+    margin: 0;
+    color: #3b5bdb;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.rp-found-title{
+    color: #1e7e34;
+}
+
+.rp-warning-title{
+    color: #e53935;
+}
+
+.rp-card-subtitle{
+    margin: -6px 0 0;
+    color: #667085;
+    font-size: 14px;
+}
+
+.rp-search-row{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.rp-search-row .book-btn{
+    flex-shrink: 0;
+}
+
+
+.mobile-search-input{
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    min-width: 220px;
+    height: 48px;
+    border: 1px solid #D6E2F3;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mobile-search-input:focus-within{
+    border-color: #3b5bdb;
+    box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.14);
+}
+
+.mobile-prefix{
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background: #f5f6f8;
+    border-right: 1px solid #D6E2F3;
+    font-weight: 600;
+    color: #333;
+}
+
+.mobile-search-input input{
+    flex: 1;
+    border: none;
+    border-radius: 0;
+    height: 100%;
+}
+
+.mobile-search-input input:focus{
+    box-shadow: none;
+}
+
+.rp-card-actions{
+    display: flex;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+
+
+.rp-search-option{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.rp-search-name-dob{
+    flex-direction: row;
+    gap: 14px;
+    flex: 1.6;
+    min-width: 320px;
+}
+
+.rp-search-name-dob .field-pair{
+    flex: 1;
+    gap: 6px;
+}
+
+.rp-name-input{
+    display: flex;
+    align-items: center;
+    height: 48px;
+    border: 1px solid #D6E2F3;
+    border-radius: 10px;
+    background: #fff;
+    padding: 0 14px;
+    gap: 10px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rp-name-input:focus-within{
+    border-color: #3b5bdb;
+    box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.14);
+}
+
+.rp-name-icon{
+    color: #3b5bdb;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.btn-icon-img{
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    display: block;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+    box-shadow: 0 0 0 1000px #fff inset !important;
+    -webkit-text-fill-color: #333 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.rp-name-input input{
+    flex: 1;
+    border: none;
+    height: 100%;
+    padding: 0;
+}
+
+.rp-name-input input:focus{
+    box-shadow: none;
+}
+
+.rp-search-divider{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    gap: 8px;
+    flex-shrink: 0;
+    min-height: 70px;
+}
+
+.rp-search-divider-line{
+    flex: 1;
+    width: 1px;
+    background: #e4e7ec;
+}
+
+.rp-search-divider-label{
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #e4e7ec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #98a2b3;
+}
+
+.rp-search-error{
+    color: #e53935;
+    font-size: 13px;
+    margin: 2px 0 0;
+}
+
+@media (max-width: 600px){
     .rp-search-name-dob{
         flex-direction: column;
     }
@@ -984,6 +1278,8 @@ textarea {
     }
 }
 
+
+
 .success-badge{
     background:#ECFDF5;
     border:1px solid #BBF7D0;
@@ -1006,6 +1302,7 @@ textarea {
     text-align: left;
 }
 
+
 .rp-channel-modal-content {
     width: 440px;
 }
@@ -1021,6 +1318,7 @@ textarea {
 .rp-channel-field .mobile-radio-group {
     justify-content: center;
 }
+
 
 .rp-otp-modal-content {
     width: 400px;
