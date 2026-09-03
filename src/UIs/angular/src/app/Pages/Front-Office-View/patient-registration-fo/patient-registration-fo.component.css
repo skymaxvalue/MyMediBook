@@ -10,6 +10,25 @@
 }
 
 
+.address-title h4{
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    font-weight: 600;
+    color: #223354;
+    font-size: 14.2px;
+    margin-block: 5px;
+}
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 16px;
+    color: #253a5d;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .payment-header h2,
 .insurance-header h2,
 .modal-content h2 {
@@ -116,6 +135,110 @@
     line-height: 38px;
 }
 
+/* ================================
+   PHONE NUMBER
+================================ */
+
+.phone-number-field {
+    min-width: 0;
+}
+
+.phone-control {
+    display: grid;
+    grid-template-columns: 85px minmax(0, 2fr);
+    width: 100%;
+    height: 45px;
+}
+
+/* Country Code */
+
+.phone-code-select {
+    width: 100% !important;
+    height: 45px;
+
+    padding: 0 30px 0 11px !important;
+
+    border: 1px solid #cfdaea;
+    border-right: none !important;
+
+    border-radius: 6px 0 0 6px !important;
+
+    background-color: #f8fafc;
+    color: #243b61;
+
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+
+    outline: none;
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    appearance: auto;
+    -webkit-appearance: auto;
+}
+
+/* Mobile Number */
+
+.phone-number-input {
+    width: 100%;
+    height: 45px;
+
+    padding: 0 11px;
+
+    border: 1px solid #cfdaea;
+    border-left: none !important;
+    border-radius: 0 6px 6px 0 !important;
+
+    background: #ffffff;
+    color: #243b61;
+
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+
+    outline: none;
+    box-sizing: border-box;
+}
+
+.phone-number-input::placeholder {
+    color: #7b8eac;
+    opacity: 1;
+}
+
+/* Focus */
+
+.phone-code-select:focus,
+.phone-number-input:focus {
+    border-color: #3b6ff5;
+    box-shadow: 0 0 0 2px rgba(59, 111, 245, 0.08);
+}
+
+.phone-code-select:focus {
+    border-right: 1px solid #3b6ff5;
+}
+
+.phone-number-input:focus {
+    border-left: 1px solid #3b6ff5;
+}
+
+/* Mobile responsive */
+
+@media (max-width: 700px) {
+
+    .phone-control {
+        grid-template-columns: 105px minmax(0, 1fr);
+    }
+
+    .phone-code-select {
+        font-size: 12px;
+    }
+
+    .phone-number-input {
+        font-size: 13px;
+    }
+}
 .page-header p {
     margin: 2px 0 0;
     color: #7c8799;
@@ -184,6 +307,10 @@
     grid-column: 1 / -1;
 }
 
+.form-group.full-half-width {
+    grid-column: 1 / -2;
+}
+
 .form-group label,
 .verification-label {
     display: block;
@@ -219,6 +346,10 @@
     font-weight: 400;
     line-height: 45px;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+hr{
+        border-top: 1px dashed #d5deeb;
+
 }
 
 .form-group input::placeholder,
@@ -578,13 +709,18 @@
 
 
 
-
+.error-text{
+    color: #e53935;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+}
 
 .modal {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;

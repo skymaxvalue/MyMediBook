@@ -7,6 +7,9 @@ export const APIEndpoints = {
     GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
     GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
     GET_ROLES: "Role/GetRoleList",
+    GET_DASHBOARD_DATA: "Dashboard/Receptionist/GetDashboardSummary",
+    GET_DASHBOARD_DATA_FOR_DOCTOR: "Dashboard/Receptionist/GetRecentPatientList",
+    GET_DASHBOARD_DATA_FOR_RECEPTIONIST: "Dashboard/Receptionist/GetPatientQueueList",
 
 }
 export const MedicineOrderEndPoints = {

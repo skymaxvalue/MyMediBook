@@ -45,6 +45,8 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   resetPasswordToken: any;
   emailId: any;
   isLoginFlow: boolean = false;
+  isBookAppointmentFlow: boolean = false;
+  registrationData: any;
 
 
   constructor(
@@ -56,38 +58,21 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-
     this.emailId = history.state.emailId;
-    this.isLoginFlow = history.state.isLoginFollw
-
-    console.log('Email ID:', this.emailId);
-
-    // if (this.currentUrl !== "/front-office/sendotp-verification") {
-    //   const pendingUser = localStorage.getItem('pendingUser');
-
-    //   if (!pendingUser) {
-
-    //     this.router.navigate(['/front-office/login']);
-
-    //     return;
-    //   }
-
-    //   try {
-
-    //     this.pendingUser = JSON.parse(pendingUser);
-
-    //   } catch {
-
-    //     this.pendingUser = pendingUser;
-
-    //   }
-    // }
-
-    // Check pending user
+    this.isLoginFlow = history.state.isLoginFollow;
+    if (this.isLoginFlow) {
+      this.emailId = history.state.emailId;
+    }
+    this.isBookAppointmentFlow = history.state.isBookAppointment;
+    console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
+    if (this.isBookAppointmentFlow) {
+      this.emailId = history.state.registrationData.contactInformation.presentAddress.email;
+      this.registrationData = history.state.registrationData,
+        console.log('Form Data:', this.registrationData);
+      console.log('Email ID:', this.emailId);
+    }
 
 
-
-    // Start timer
     this.startTimer();
 
   }
@@ -318,6 +303,21 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
             '/front-office/dashboard'
           ]
           );
+        } else if (this.isBookAppointmentFlow) {
+
+          this.router.navigate([
+            '/front-office/appointment-success'
+          ], {
+            state: {
+              successData: {
+                h1: 'Patient Registered Successfully!',
+                span: 'The patient has been registered successfully.',
+                p: 'You can now view their details and manage their appointments.',
+                buttonText: 'Go to Dashboard',
+                route: '/front-office/dashboard'
+              }
+            }
+          })
         } else {
           this.router.navigate([
             '/front-office/reset-password'
@@ -327,7 +327,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
             }
           }
           );
-
         }
 
         console.log("OTP verified successfully.");
@@ -348,6 +347,11 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.router.navigate([
       '/front-office/login'
     ]);
+    if (this.isBookAppointmentFlow) {
+      this.router.navigate([
+        '/front-office/patient-registration'
+      ]);
+    }
 
   }
 

@@ -126,4 +126,65 @@ export const appointmentReducer = createReducer(
         isLoading: false,
         error: action.error
     }))
+
+
+
+
+
+
+
+
+    , on(AppointmentActions.getDashboardData, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getDashboardDataSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        Appointments: action.Appointments
+    })),
+
+    on(AppointmentActions.getDashboardDataFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    }))
+
+    , on(AppointmentActions.getDashboardDataByReceptionist, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getDashboardDataByReceptionistSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        Appointments: action.Appointments
+    })),
+
+    on(AppointmentActions.getDashboardDataByReceptionistFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    })),
+
+    on(AppointmentActions.getDashboardDataByDoctor, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getDashboardDataByDoctorSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        Appointments: action.Appointments
+    })),
+
+    on(AppointmentActions.getDashboardDataByDoctorFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    }))
 );

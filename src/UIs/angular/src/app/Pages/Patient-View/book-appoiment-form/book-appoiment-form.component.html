@@ -183,6 +183,30 @@
                 </div>
 
                 <!-- Insurance -->
+                <!-- @if(selectedProfileData?.insuranceData){
+                <label>Do you want change insurance?</label>
+                <div class="field-container">
+                    <div class="mobile-radio-group">
+                        <label class="radio-item">
+                            <input type="radio" value="yes" formControlName="insurance" />
+                            <span>Yes</span>
+                        </label>
+
+                        <label class="radio-item">
+                            <input type="radio" value="no" formControlName="insurance" />
+                            <span>No</span>
+                        </label>
+                    </div>
+
+                    @if (getErrorMessage('insurance')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('insurance') }}
+                    </small>
+                    }
+                </div>
+
+                }
+                @else{
                 <label>Do you have insurance?</label>
                 <div class="field-container">
                     <div class="mobile-radio-group">
@@ -202,6 +226,37 @@
                         {{ getErrorMessage('insurance') }}
                     </small>
                     }
+                </div>
+                } -->
+
+                <label>
+                    {{ selectedProfileData?.insuranceData
+                    ? 'Do you want to change insurance?'
+                    : 'Do you have insurance?' }}
+                </label>
+
+                <div class="field-container">
+
+                    <div class="mobile-radio-group">
+
+                        <label class="radio-item">
+                            <input type="radio" value="yes" formControlName="insurance" />
+                            <span>Yes</span>
+                        </label>
+
+                        <label class="radio-item">
+                            <input type="radio" value="no" formControlName="insurance" />
+                            <span>No</span>
+                        </label>
+
+                    </div>
+
+                    @if (getErrorMessage('insurance')) {
+                    <small class="error-message">
+                        {{ getErrorMessage('insurance') }}
+                    </small>
+                    }
+
                 </div>
 
                 <!-- Address -->

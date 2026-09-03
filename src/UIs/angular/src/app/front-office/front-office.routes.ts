@@ -100,6 +100,18 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                 loadComponent: () =>
                     import('../Pages/Patient-View/specialities/specialities.component')
                         .then(m => m.SpecialitiesComponent)
+            },
+            {
+                path: 'otp-verification-for-appointment',
+                loadComponent: () =>
+                    import('../auth/frontoffice-login/otp-verification/otp-verification.component')
+                        .then(m => m.OtpVerificationComponent)
+            },
+            {
+                path: 'appointment-success',
+                loadComponent: () =>
+                    import('../Pages/Front-Office-View/succses/succses.component')
+                        .then(m => m.SuccsesComponent)
             }
 
         ]

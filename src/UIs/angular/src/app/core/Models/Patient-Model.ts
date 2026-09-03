@@ -1,3 +1,5 @@
+import { InsuranceData, PaymentData } from "./Appointment-Model";
+
 export interface PatientRegister {
     patientId?: number;
     firstName: string;
@@ -81,4 +83,35 @@ export interface MedicineOrder {
     // UI fields
     refill?: boolean;
     image?: string;
+}
+interface Appointment {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+
+    dateOfBirth: string;
+    age: number | '';
+    ageUnit: string;
+    gender: string;
+
+    // Present Address
+    address: string;
+    country: string;
+    state: string;
+    cityVillage: string;
+    pinCode: string;
+
+    // Permanent Address
+    sameAsPresentAddress: boolean;
+    permanentAddress: string;
+    permanentCountry: string;
+    permanentState: string;
+    permanentCityVillage: string;
+    permanentPinCode: string;
+
+    insurance: string;
+    insuranceData: InsuranceData | null;
+    paymentData: PaymentData | null;
+    otpMethod: string;
 }

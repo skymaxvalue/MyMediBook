@@ -34,3 +34,18 @@ export const selectAppointmentListByAssociateID = createSelector(
     selectAppointmentState,
     state => state.Appointments
 );
+export const selectDashboardDataSummery = createSelector(
+    selectAppointmentState,
+    state => state.Appointments
+);
+
+export const selectDashboardDataSummeryForReceptionist = createSelector(
+    selectAppointmentState,
+    state => state.Appointments
+);
+
+export const selectDashboardDataSummeryForDoctor = createSelector(
+    selectAppointmentState,
+    state => state.Appointments
+);
+

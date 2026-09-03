@@ -16,406 +16,803 @@
         </div>
 
 
-        <form #bookingForm="ngForm" (ngSubmit)="submitRegistration(bookingForm)" novalidate>
+        <div class="patient-registration-container">
+
+            <form [formGroup]="registrationForm" (ngSubmit)="submitRegistration()" novalidate>
+
+                <section class="form-section" formGroupName="personalDetails">
+
+                    <div class="section-title">
+
+                        <img src="/assets/images/front-office/images/profile-outline.png" alt="Personal">
+
+                        <h2>
+
+                            Personal Details
+
+                        </h2>
+
+                    </div>
+
+                    <div class="form-grid">
+
+                        <!-- First Name -->
+                        <div class="form-group">
+                            <label for="firstName">
+                                First Name <span class="required">*</span>
+                            </label>
+
+                            <input id="firstName" type="text" class="form-control" formControlName="firstName"
+                                placeholder="Enter first name" />
+
+                            @if (
+                            registrationForm.get('personalDetails.firstName')?.touched &&
+                            registrationForm.get('personalDetails.firstName')?.invalid
+                            ) {
+                            <small class="error-text">
+                                First name is required.
+                            </small>
+                            }
+                        </div>
 
 
-            <!-- =========================
-                 PERSONAL DETAILS
-            ========================== -->
+                        <!-- Last Name -->
+                        <div class="form-group">
+                            <label for="lastName">
+                                Last Name <span class="required">*</span>
+                            </label>
 
-            <section class="form-section">
+                            <input id="lastName" type="text" class="form-control" formControlName="lastName"
+                                placeholder="Enter last name" />
 
-                <div class="section-title">
-
-                    <img src="/assets/images/front-office/images/profile-outline.png" alt="Personal">
-
-                    <h2>
-                        Personal Details
-                    </h2>
-
-                </div>
-
-
-                <div class="form-grid">
+                            @if (
+                            registrationForm.get('personalDetails.lastName')?.touched &&
+                            registrationForm.get('personalDetails.lastName')?.invalid
+                            ) {
+                            <small class="error-text">
+                                Last name is required.
+                            </small>
+                            }
+                        </div>
 
 
-                    <!-- FIRST NAME -->
+                        <!-- Gender -->
+                        <div class="form-group">
+                            <label for="gender">
+                                Gender <span class="required">*</span>
+                            </label>
 
-                    <div class="form-group">
+                            <select id="gender" class="form-control" formControlName="gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
 
-                        <label>
-                            First Name
-                            <span>*</span>
-                        </label>
+                            @if (
+                            registrationForm.get('personalDetails.gender')?.touched &&
+                            registrationForm.get('personalDetails.gender')?.invalid
+                            ) {
+                            <small class="error-text">
+                                Please select gender.
+                            </small>
+                            }
+                        </div>
 
-                        <input type="text" name="firstName" placeholder="First name" [(ngModel)]="firstName" required>
+
+                        <!-- Date of Birth -->
+                        <div class="form-group">
+                            <label for="dateOfBirth">
+                                Date of Birth <span class="required">*</span>
+                            </label>
+
+                            <input id="dateOfBirth" type="date" class="form-control" formControlName="dateOfBirth"
+                                (change)="updateAgeFromDob()" [max]="maxDateOfBirth" />
+
+                            @if (
+                            registrationForm.get('personalDetails.dateOfBirth')?.touched &&
+                            registrationForm.get('personalDetails.dateOfBirth')?.invalid
+                            ) {
+                            <small class="error-text">
+                                Date of birth is required.
+                            </small>
+                            }
+                        </div>
+
+
+                        <!-- Age -->
+                        <div class="form-group">
+                            <label for="age">Age</label>
+
+                            <div class="age-wrapper">
+
+                                <input id="age" type="text" class="form-control" formControlName="age" readonly />
+
+                                <span class="age-unit">
+                                    {{ registrationForm.get('personalDetails.ageUnit')?.value }}
+                                </span>
+
+                            </div>
+                        </div>
+
+
+                        <!-- Insurance -->
+                        <div class="form-group insurance-group">
+
+                            <label>
+                                Do you have Insurance?
+                                <span class="required">*</span>
+                            </label>
+
+                            <div class="radio-group">
+
+                                <label class="radio-label">
+                                    <input type="radio" formControlName="insuranceChoice" value="yes"
+                                        (change)="onInsuranceChange()" />
+
+                                    <span>Yes</span>
+                                </label>
+
+
+                                <label class="radio-label">
+                                    <input type="radio" formControlName="insuranceChoice" value="no"
+                                        (change)="onInsuranceChange()" />
+
+                                    <span>No</span>
+                                </label>
+
+                            </div>
+
+                            @if (
+                            registrationForm.get('personalDetails.insuranceChoice')?.touched &&
+                            registrationForm.get('personalDetails.insuranceChoice')?.invalid
+                            ) {
+                            <small class="error-text">
+                                Please select an option.
+                            </small>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+
+                <section class="form-section" formGroupName="contactInformation">
+
+                    <div class="section-title">
+
+                        <img src="/assets/images/front-office/images/location.png" alt="Location">
+
+                        <h2>
+
+                            Contact Information
+
+                        </h2>
 
                     </div>
 
 
-                    <!-- LAST NAME -->
-
-                    <div class="form-group">
-
-                        <label>
-                            Last Name
-                            <span>*</span>
-                        </label>
-
-                        <input type="text" name="lastName" placeholder="Last name" [(ngModel)]="lastName" required>
-
-                    </div>
 
 
-                    <!-- GENDER -->
+                    <div class="address-section" formGroupName="presentAddress">
 
-                    <div class="form-group">
-
-                        <label>
-                            Gender
-                            <span>*</span>
-                        </label>
-
-                        <select name="gender" [(ngModel)]="gender" required>
-
-                            <option value="" disabled>
-                                Select gender
-                            </option>
-
-                            <option value="Male">
-                                Male
-                            </option>
-
-                            <option value="Female">
-                                Female
-                            </option>
-
-                            <option value="Other">
-                                Other
-                            </option>
-
-                        </select>
-
-                    </div>
+                        <div class="address-title">
+                            <h4>Present Address</h4>
+                        </div>
 
 
-                    <!-- DOB -->
+                        <div class="form-grid">
 
-                    <div class="form-group">
+                            <!-- Address -->
+                            <div class="form-group full-width">
 
-                        <label>
-                            Date of Birth
-                            <span>*</span>
-                        </label>
+                                <label for="presentAddress">
+                                    Address <span class="required">*</span>
+                                </label>
 
-                        <div class="date-field">
+                                <textarea id="presentAddress" class="form-control" formControlName="address"
+                                    placeholder="Enter present address" rows="3"></textarea>
 
-                            <input type="date" name="dateOfBirth" [(ngModel)]="dateOfBirth"
-                                (change)="updateAgeFromDob()" required>
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.address'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.address'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Address is required.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- Country -->
+                            <div class="form-group">
+
+                                <label for="presentCountry">
+                                    Country <span class="required">*</span>
+                                </label>
+
+                                <select id="presentCountry" class="form-control" formControlName="countryId"
+                                    (change)="onCountryChange($event)">
+
+                                    <option value="">
+                                        Select Country
+                                    </option>
+
+                                    @for (country of countries; track country.countryId) {
+
+                                    <option [value]="country.countryId">
+                                        {{ country.countryName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.countryId'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.countryId'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please select country.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- State -->
+                            <div class="form-group">
+
+                                <label for="presentState">
+                                    State <span class="required">*</span>
+                                </label>
+
+                                <select id="presentState" class="form-control" formControlName="stateId"
+                                    (change)="onStateChange($event)">
+
+                                    <option value="">
+                                        Select State
+                                    </option>
+
+                                    @for (state of states; track state.stateId) {
+
+                                    <option [value]="state.stateId">
+                                        {{ state.stateName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.stateId'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.stateId'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please select state.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- City -->
+                            <div class="form-group">
+
+                                <label for="presentCity">
+                                    City / Village <span class="required">*</span>
+                                </label>
+
+                                <select id="presentCity" class="form-control" formControlName="cityId">
+
+                                    <option value="">
+                                        Select City / Village
+                                    </option>
+
+                                    @for (city of cities; track city.cityId) {
+
+                                    <option [value]="city.cityId">
+                                        {{ city.cityName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.cityId'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.cityId'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please select city.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- PIN Code -->
+                            <div class="form-group">
+
+                                <label for="presentPinCode">
+                                    PIN Code <span class="required">*</span>
+                                </label>
+
+                                <input id="presentPinCode" type="text" maxlength="6" class="form-control"
+                                    formControlName="pinCode" placeholder="Enter PIN code"
+                                    (input)="allowOnlyNumbers($event)" />
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.pinCode'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.pinCode'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Enter a valid 6 digit PIN code.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- Mobile -->
+                            <!-- Mobile Number -->
+                            <div class="form-group phone-number-field">
+
+                                <label for="phoneNumber">
+                                    Phone Number <span class="required">*</span>
+                                </label>
+
+                                <div class="phone-control">
+
+                                    <!-- Country Code -->
+                                    <select id="phoneCountryCode" formControlName="phoneCode" class="phone-code-select">
+
+                                        @for (c of countries; track c.countryId) {
+                                        <option [value]="c.phoneCode">
+                                            {{ c.countryCode }} {{ c.phoneCode }}
+                                        </option>
+                                        }
+
+                                    </select>
+
+                                    <!-- Mobile Number -->
+                                    <input id="phoneNumber" type="tel" formControlName="phone"
+                                        class="phone-number-input" placeholder="Enter phone number" maxlength="10"
+                                        (keypress)="allowOnlyNumbers($event)" />
+
+                                </div>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.phone'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.phone'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Enter a valid 10 digit mobile number.
+                                </small>
+                                }
+
+                            </div>
+                            <!-- <div class="form-group">
+
+                                <label for="phone">
+                                    Mobile Number <span class="required">*</span>
+                                </label>
+
+                                <input id="phone" type="text" maxlength="10" class="form-control"
+                                    formControlName="phone" placeholder="Enter mobile number"
+                                    (input)="allowOnlyNumbers($event)" />
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.phone'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.phone'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Enter a valid 10 digit mobile number.
+                                </small>
+                                }
+
+                            </div> -->
+
+
+                            <!-- Email -->
+                            <div class="form-group">
+
+                                <label for="email">
+                                    Email Address
+                                </label>
+
+                                <input id="email" type="email" class="form-control" formControlName="email"
+                                    placeholder="Enter email address" />
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.presentAddress.email'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.presentAddress.email'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please enter a valid email address.
+                                </small>
+                                }
+
+                            </div>
 
                         </div>
 
                     </div>
 
 
-                    <!-- AGE -->
 
-                    <div class="form-group">
+                    <hr>
+                    <div class="address-section permanent-address" formGroupName="permanentAddress">
 
-                        <label>
-                            Age
-                            <span>*</span>
-                        </label>
+                        <div class="address-header">
 
-                        <div class="age-wrapper">
+                            <div class="address-title">
+                                <h4>Permanent Address</h4>
+                            </div>
 
-                            <input type="text" name="age" placeholder="--" [value]="age" readonly required>
 
-                            <span class="age-unit">
-                                {{ ageUnit }}
-                            </span>
+                            <!-- Same as Present -->
+                            <label class="checkbox-label same-address-row">
+
+                                <input type="checkbox" formControlName="sameAsPresentAddress"
+                                    (change)="onSameAsPresentAddressChange($event)" />
+
+                                <span>
+                                    Same as Present Address
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+
+
+                        <div class="form-grid">
+
+                            <!-- Address -->
+                            <div class="form-group full-half-width">
+
+                                <label for="permanentAddress">
+                                    Address <span class="required">*</span>
+                                </label>
+
+                                <textarea id="permanentAddress" class="form-control" formControlName="address"
+                                    placeholder="Enter permanent address" rows="3"></textarea>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.address'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.address'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Address is required.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- Country -->
+                            <div class="form-group">
+
+                                <label for="permanentCountry">
+                                    Country <span class="required">*</span>
+                                </label>
+
+                                <select id="permanentCountry" class="form-control" formControlName="countryId"
+                                    (change)="onPermanentCountryChange($event)">
+
+                                    <option value="">
+                                        Select Country
+                                    </option>
+
+                                    @for (
+                                    country of countries;
+                                    track country.countryId
+                                    ) {
+
+                                    <option [value]="country.countryId">
+                                        {{ country.countryName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.countryId'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.countryId'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please select country.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- State -->
+                            <div class="form-group">
+
+                                <label for="permanentState">
+                                    State <span class="required">*</span>
+                                </label>
+
+                                <select id="permanentState" class="form-control" formControlName="stateId"
+                                    (change)="onPermanentStateChange($event)">
+
+                                    <option value="">
+                                        Select State
+                                    </option>
+
+                                    @for (
+                                    state of permanentStates;
+                                    track state.stateId
+                                    ) {
+
+                                    <option [value]="state.stateId">
+                                        {{ state.stateName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.stateId'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.stateId'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please select state.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- City -->
+                            <div class="form-group">
+
+                                <label for="permanentCity">
+                                    City / Village <span class="required">*</span>
+                                </label>
+
+                                <select id="permanentCity" class="form-control" formControlName="cityId">
+
+                                    <option value="">
+                                        Select City / Village
+                                    </option>
+
+                                    @for (
+                                    city of permanentCities;
+                                    track city.cityName
+                                    ) {
+
+                                    <option [value]="city.cityId">
+                                        {{ city.cityName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.cityId'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.cityId'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Please select city.
+                                </small>
+                                }
+
+                            </div>
+
+
+                            <!-- PIN -->
+                            <div class="form-group">
+
+                                <label for="permanentPinCode">
+                                    PIN Code <span class="required">*</span>
+                                </label>
+
+                                <input id="permanentPinCode" type="text" maxlength="6" class="form-control"
+                                    formControlName="pinCode" placeholder="Enter PIN code"
+                                    (input)="allowOnlyNumbers($event)" />
+
+                                @if (
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.pinCode'
+                                )?.touched &&
+                                registrationForm.get(
+                                'contactInformation.permanentAddress.pinCode'
+                                )?.invalid
+                                ) {
+                                <small class="error-text">
+                                    Enter a valid 6 digit PIN code.
+                                </small>
+                                }
+
+                            </div>
 
                         </div>
 
                     </div>
 
+                </section>
 
-                    <!-- INSURANCE -->
 
-                    <div class="form-group">
+                <section class="form-section" formGroupName="verification">
 
-                        <label>
-                            Insurance Coverage
+                    <div class="section-title">
+
+                        <img src="/assets/images/security-icon.png" alt="Verification">
+
+                        <h2>
+
+                            Verification
+
+                        </h2>
+
+                    </div>
+
+
+                    <div class="verification-row">
+
+                        <label class="verification-label">
+
+                            Receive OTP Via
+
                             <span>*</span>
+
                         </label>
+
 
                         <div class="radio-group">
 
-                            <label>
+                            <!-- Mobile -->
+                            <label class="radio-label">
 
-                                <input type="radio" name="insurance" value="yes" [(ngModel)]="insuranceChoice"
-                                    (change)="onInsuranceChange()" required>
+                                <input type="radio" formControlName="otpMethod" value="mobile" />
 
                                 <span>
-                                    Yes
+                                    Mobile Number
                                 </span>
 
                             </label>
 
 
-                            <label>
+                            <!-- Email -->
+                            <label class="radio-label">
 
-                                <input type="radio" name="insurance" value="no" [(ngModel)]="insuranceChoice"
-                                    (change)="onInsuranceChange()">
+                                <input type="radio" formControlName="otpMethod" value="email" />
 
                                 <span>
-                                    No
+                                    Email
+                                </span>
+
+                            </label>
+                            <label class="radio-label">
+
+                                <input type="radio" formControlName="otpMethod" value="none" />
+
+                                <span>
+                                    None
                                 </span>
 
                             </label>
 
                         </div>
 
+
+                        @if (
+                        registrationForm.get('verification.otpMethod')?.touched &&
+                        registrationForm.get('verification.otpMethod')?.invalid
+                        ) {
+
+                        <small class="error-text">
+                            Please select OTP verification method.
+                        </small>
+
+                        }
+
                     </div>
+
+                </section>
+
+
+
+                <div class="form-actions">
+
+                    <button type="submit" class="primary-btn">
+
+                        Continue
+
+                        <img src="/assets/images/front-office/images/arrow-right.png" alt="Arrow">
+
+                    </button>
+
+                    <button type="reset" class="secondary-btn" (click)="clearForm()">
+
+                        Clear
+
+                        <img src="/assets/images/front-office/images/clear-blue.png" alt="Refresh">
+
+                    </button>
 
                 </div>
 
-            </section>
+            </form>
 
+        </div>
 
-            <!-- =========================
-                 CONTACT INFORMATION
-            ========================== -->
 
-            <section class="form-section">
 
-                <div class="section-title">
-
-                    <img src="/assets/images/front-office/images/location.png" alt="Location">
-
-                    <h2>
-                        Contact Information
-                    </h2>
-
-                </div>
-
-
-                <div class="contact-grid">
-
-
-                    <!-- ADDRESS -->
-
-                    <div class="form-group full-width">
-
-                        <label>
-                            Address
-                            <span>*</span>
-                        </label>
-
-                        <input type="text" name="address" placeholder="Enter address" [(ngModel)]="address" required>
-
-                    </div>
-
-
-                    <!-- CITY -->
-
-                    <div class="form-group">
-
-                        <label>
-                            City / Village
-                            <span>*</span>
-                        </label>
-
-                        <input type="text" name="cityVillage" placeholder="City / Village" [(ngModel)]="cityVillage"
-                            required>
-
-                    </div>
-
-
-                    <!-- STATE -->
-
-                    <div class="form-group">
-
-                        <label>
-                            State
-                            <span>*</span>
-                        </label>
-
-                        <select name="state" [(ngModel)]="state" required>
-
-                            <option value="" disabled>
-                                State / Province
-                            </option>
-
-                            <option value="West Bengal">
-                                West Bengal
-                            </option>
-
-                            <option value="Other">
-                                Other
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- PIN -->
-
-                    <div class="form-group">
-
-                        <label>
-                            PIN Code
-                            <span>*</span>
-                        </label>
-
-                        <input type="text" name="pinCode" inputmode="numeric" maxlength="6" placeholder="PIN Code"
-                            [(ngModel)]="pinCode" (keydown)="allowOnlyNumbers($event)" required>
-
-                    </div>
-
-
-                    <!-- MOBILE -->
-
-                    <div class="form-group">
-
-                        <label>
-                            Mobile Number
-                            <span>*</span>
-                        </label>
-
-                        <input type="tel" name="phone" placeholder="Enter Mobile Number" [(ngModel)]="phone" required>
-
-                    </div>
-
-
-                    <!-- EMAIL -->
-
-                    <div class="form-group">
-
-                        <label>
-                            Email Address
-                        </label>
-
-                        <input type="email" name="email" placeholder="Email address" [(ngModel)]="email">
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 VERIFICATION
-            ========================== -->
-
-            <section class="form-section verification-section">
-
-                <div class="section-title">
-
-                    <img src="assets/images/security-icon.png" alt="Verification">
-
-                    <h2>
-                        Verification
-                    </h2>
-
-                </div>
-
-
-                <div class="verification-row">
-
-                    <label class="verification-label">
-
-                        Receive OTP Via
-
-                        <span>*</span>
-
-                    </label>
-
-
-                    <div class="radio-group">
-
-                        <label>
-
-                            <input type="radio" name="otp" value="mobile" [(ngModel)]="otpMethod" required>
-
-                            <span>
-                                Mobile Number
-                            </span>
-
-                        </label>
-
-
-                        <label>
-
-                            <input type="radio" name="otp" value="email" [(ngModel)]="otpMethod">
-
-                            <span>
-                                Email Address
-                            </span>
-
-                        </label>
-
-
-                        <label>
-
-                            <input type="radio" name="otp" value="none" [(ngModel)]="otpMethod">
-
-                            <span>
-                                None
-                            </span>
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 ACTIONS
-            ========================== -->
-
-            <div class="form-actions">
-
-                <button type="submit" class="primary-btn">
-
-                    Continue
-
-                    <img src="/assets/images/front-office/images/arrow-right.png" alt="Arrow">
-
-                </button>
-
-
-                <button type="button" class="secondary-btn" (click)="clearForm(bookingForm)">
-
-                    Clear
-
-                    <img src="/assets/images/front-office/images/clear-blue.png" alt="Clear">
-
-                </button>
-
-            </div>
-
-        </form>
 
     </section>
 
 </main>
 
 
-<!-- =================================================
-     INSURANCE MODAL
-================================================= -->
+
 
 @if (showInsuranceModal) {
 
 <div class="modal">
 
-    <div class="modal-content insurance-modal">
+    <div class="modal-content insurance-modal" [formGroup]="registrationForm">
 
         <button type="button" class="modal-close" (click)="closeInsuranceModal()">
 
@@ -428,7 +825,7 @@
 
             <div class="insurance-icon">
 
-                <img src="/assets/images/front-office/images/security-icon.png" alt="Insurance">
+                <img src="/assets/images/security-icon.png" alt="Insurance">
 
             </div>
 
@@ -447,7 +844,7 @@
         </div>
 
 
-        <div class="insurance-form">
+        <div class="insurance-form" formGroupName="insuranceDetails">
 
 
             <div class="insurance-row">
@@ -461,7 +858,7 @@
 
                 </label>
 
-                <input type="text" [(ngModel)]="provider" placeholder="Enter provider name">
+                <input type="text" formControlName="provider" placeholder="Enter provider name">
 
             </div>
 
@@ -477,7 +874,7 @@
 
                 </label>
 
-                <input type="text" [(ngModel)]="policy" placeholder="Enter policy ID">
+                <input type="text" formControlName="policy" placeholder="Enter policy ID">
 
             </div>
 
@@ -492,7 +889,7 @@
 
                 </label>
 
-                <input type="text" [(ngModel)]="groupId" placeholder="Enter group ID">
+                <input type="text" formControlName="groupId" placeholder="Enter group ID">
 
             </div>
 
@@ -508,7 +905,7 @@
 
                 </label>
 
-                <input type="text" [(ngModel)]="holderName" placeholder="Enter primary holder name">
+                <input type="text" formControlName="holderName" placeholder="Enter primary holder name">
 
             </div>
 
@@ -524,7 +921,7 @@
 
                 </label>
 
-                <input type="text" [(ngModel)]="insuranceAddress" placeholder="Enter primary address">
+                <input type="text" formControlName="insuranceAddress" placeholder="Enter primary address">
 
             </div>
 
@@ -572,7 +969,7 @@
 
 <div class="modal">
 
-    <div class="modal-content payment-modal">
+    <div class="modal-content payment-modal" [formGroup]="registrationForm">
 
         <button type="button" class="modal-close" (click)="closePaymentModal()">
 
@@ -604,7 +1001,7 @@
         </div>
 
 
-        <div class="payment-form">
+        <div class="payment-form" formGroupName="paymentDetails">
 
 
             <!-- PAYMENT TYPE -->
@@ -613,14 +1010,14 @@
 
                 <label>
 
-                    <img src="/assets/images/front-office/imagess/card.png">
+                    <img src="/assets/images/front-office/images/card.png" alt="Card">
 
                     Payment Type
                     <span>*</span>
 
                 </label>
 
-                <select [(ngModel)]="paymentType">
+                <select formControlName="paymentType">
 
                     <option value="" disabled>
 
@@ -654,7 +1051,7 @@
 
                 </label>
 
-                <input type="text" [(ngModel)]="cardHolder" placeholder="Enter card holder name">
+                <input type="text" formControlName="cardHolder" placeholder="Enter card holder name">
 
             </div>
 
@@ -672,7 +1069,7 @@
 
                 </label>
 
-                <input type="text" maxlength="19" [(ngModel)]="cardNumber" (input)="formatCardNumber()"
+                <input type="text" maxlength="19" formControlName="cardNumber" (input)="formatCardNumber($event)"
                     placeholder="Enter card number">
 
             </div>
@@ -694,7 +1091,7 @@
 
                 <div class="expiry-wrapper">
 
-                    <input type="text" maxlength="7" [(ngModel)]="expiry" (input)="formatExpiry()"
+                    <input type="text" maxlength="7" formControlName="expiry" (input)="formatExpiry($event)"
                         placeholder="MM / YY">
 
 
@@ -706,7 +1103,7 @@
                     </span>
 
 
-                    <input type="password" maxlength="3" [(ngModel)]="cvv" placeholder="Enter CVV">
+                    <input type="password" maxlength="3" formControlName="cvv" placeholder="Enter CVV">
 
                 </div>
 
