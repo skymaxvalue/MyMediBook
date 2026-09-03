@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/Store/app.state';
-import { getDashboardData } from 'src/app/Store/Appointments/appointment.actions';
+import { getDashboardData, getDashboardDataByDoctor, getDashboardDataByReceptionist } from 'src/app/Store/Appointments/appointment.actions';
 import { selectDashboardDataSummery } from 'src/app/Store/Appointments/appointment.selcetors';
 
 
@@ -145,6 +145,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       associateId: this.user?.refId, fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString()
     }));
+    this.store.dispatch(getDashboardDataByReceptionist({
+      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
+      toDate: toDate.toISOString()
+    }));
+    this.store.dispatch(getDashboardDataByDoctor({
+      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
+      toDate: toDate.toISOString()
+    }));
+
 
     this.http
       .get<DashboardData>(

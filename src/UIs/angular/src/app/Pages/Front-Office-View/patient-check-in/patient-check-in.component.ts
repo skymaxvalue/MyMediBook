@@ -398,7 +398,7 @@ export class PatientCheckInComponent implements OnInit {
     appointment: any
   ): void {
 
-    this.selectedAppointment = appointment;
+    this.selectedAppointment = { ...appointment };
   }
 
   handleCheckIn(): void {
@@ -417,6 +417,7 @@ export class PatientCheckInComponent implements OnInit {
     }
 
     this.selectedAppointment.checkedIn = true;
+    console.log('Check-in confirmed for:', this.selectedAppointment);
 
     const checkInData = {
 
@@ -424,19 +425,19 @@ export class PatientCheckInComponent implements OnInit {
         this.selectedAppointment.id,
 
       patientName:
-        this.selectedAppointment.patientName,
+        this.selectedAppointment.fullName,
 
       uhid:
         this.selectedAppointment.uhid,
 
       doctor:
-        this.selectedAppointment.doctor,
+        this.selectedAppointment.doctor ? this.selectedAppointment?.doctor : this.selectedDoctor.name,
 
       department:
-        this.selectedAppointment.department,
+        this.selectedAppointment.department ? this.selectedAppointment.department : this.selectedDoctor.department,
 
       room:
-        this.selectedAppointment.room,
+        this.selectedAppointment.room ? this.selectedAppointment.room : 2,
 
       appointmentTime:
         this.selectedAppointment.appointmentTime,

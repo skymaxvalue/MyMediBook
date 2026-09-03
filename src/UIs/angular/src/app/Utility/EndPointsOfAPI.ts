@@ -10,6 +10,8 @@ export const APIEndpoints = {
     GET_DASHBOARD_DATA: "Dashboard/Receptionist/GetDashboardSummary",
     GET_DASHBOARD_DATA_FOR_DOCTOR: "Dashboard/Receptionist/GetRecentPatientList",
     GET_DASHBOARD_DATA_FOR_RECEPTIONIST: "Dashboard/Receptionist/GetPatientQueueList",
+    APPOINTMENT_STATUS_KEY: "Master/GetStatusKeyList",
+
 
 }
 export const MedicineOrderEndPoints = {

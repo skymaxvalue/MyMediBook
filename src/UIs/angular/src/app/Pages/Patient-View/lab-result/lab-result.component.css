@@ -145,6 +145,10 @@ body {
   border-radius: 12px;
   padding-left: 54px;
   padding-right: 16px;
+  outline: none;
+}
+.search-box input:focus{
+  border-color: #2157F4;
 }
 
 .sort-select {
@@ -209,7 +213,22 @@ grid-template-columns:
   font-weight: 700;
 }
 
+.status-badge {
+  min-width: 145px;
+  min-height: 82px;
 
+  padding: 14px 16px;
+
+  border-radius: 16px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: flex-start;
+
+  box-sizing: border-box;
+}
 
 .status-normal,
 .status-critical,
@@ -225,21 +244,47 @@ grid-template-columns:
 }
 .status-normal {
   background: #DDF4E5;
-  color: #156A37;
+  color: #087A2D;
+
+  border: 1px solid #DDF4E5;
 }
 .status-critical {
-  background: #FFE3E3;
-  color: #C62828;
+  background: #FFE1E1;
+  color: #D52B2B;
+
+  border: 1px solid #FFE1E1;
 }
 .status-pending {
-  background: #FFF4D8;
-  color: #9A6400;
+  background: #FFF2D2;
+  color: #A86A00;
+
+  border: 1px solid #FFF2D2;
 }
-.status-normal small,
-.status-critical small,
-.status-pending small {
-  font-size: 12px;
-  margin-top: 2px;
+
+.badge-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  gap: 10px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+.badge-title img {
+  width: 22px;
+  height: 22px;
+
+  object-fit: contain;
+
+  flex-shrink: 0;
+}
+.status-badge small {
+  margin-top: 5px;
+
+  font-size: 13px;
   font-weight: 600;
 }
 .badge-title {
@@ -339,9 +384,9 @@ grid-template-columns:
 
 .header-icon {
   
-
+  padding: 10px;
   border-radius: 14px;
-
+  background-color:#EEF2FF ;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -373,7 +418,7 @@ grid-template-columns:
 
 .lab-modal-body {
   padding: 28px 34px;
-  max-height: calc(96vh - 108px);
+     max-height: calc(93vh - 92px);
   overflow-y: auto;
 }
 
@@ -459,7 +504,7 @@ grid-template-columns:
 .report-main h1 {
   margin: 0 0 12px;
 
-  color: #17233f;
+  color: #0F172A;
 
      font-size: 28px;
     font-weight: 600;
@@ -471,8 +516,8 @@ grid-template-columns:
     margin-top: 8px;
     padding: 8px 20px;
     border-radius: 12px;
-    background: #e4edff;
-    color: #155bea;
+    background: #EAF2FF;
+    color: #1F2937;
     font-size: 18px;
     font-weight: 600;
 }
@@ -485,7 +530,7 @@ grid-template-columns:
   align-items: center;
   gap: 10px;
 
-  color: #26334f;
+  color: #334155;
 
   font-size: 20px;
 }
@@ -501,16 +546,20 @@ grid-template-columns:
 .report-status {
   
  padding: 1px 39px;
-  border: 1px solid #ffd88b;
+ display: flex;
+     flex-direction: row;
+ justify-content: center;
+ align-items: center;
+ gap:10px;
   border-radius: 15px;
   color: #1760eb;
-  /* background: #fffaf0; */
+
   font-size: 18px;
   font-weight: 600;
 }
-.report-status img{
+/* .report-status img{
   width: 40px;
-}
+} */
 .divided{
   display: flex;
   justify-content: space-between;
@@ -603,7 +652,7 @@ grid-template-columns:
 
   border-radius: 14px;
 
-  background: #edf3ff;
+  background: #EAF2FF;
 
   color: #1760eb;
 
@@ -626,15 +675,30 @@ grid-template-columns:
 
 
 .detail-label {
-  color: #53617c;
+  color: #64748B;
   font-size: 19px;
 }
 
 
 .detail-item strong {
-  color: #17233f;
+  color: #0F172A;
      font-size: 16px;
     font-weight: 700;
+}
+.status-entered{
+      display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #14833b !important;
+    background: #E8F7EC !important;
+    border: 1px solid #B7E4C7 !important;
+ 
+}
+.status-icon{
+  width: 22px;
+  height: 22px;
+color:#E8F7EC ;
 }
 
 
@@ -699,9 +763,10 @@ grid-template-columns:
 
 .download-btn,
 .print-btn {
-  height: 50px;
+  height: 40px;
 
-  padding: 0 30px;
+  padding: 0 20px;
+  margin-bottom: 10px;
 
   border-radius: 12px;
 
@@ -878,6 +943,7 @@ grid-template-columns:
 .report-info {
   font-size: 10px;
   line-height: 1.8;
+  font-weight: 600;
 }
 
 .report-info div {
@@ -897,12 +963,14 @@ grid-template-columns:
   margin: 0;
   color: #0b3780;
   font-size: 21px;
+  font-weight: 700;
 }
 
 .title_section p {
   margin: 3px 0 0;
   color: #7a7f8a;
   font-size: 11px;
+  font-weight: 500;
 }
 
 
@@ -928,6 +996,7 @@ grid-template-columns:
   font-size: 11px;
   color: #0b3780;
   margin: 0 0 4mm;
+  font-weight: 600;
 }
 
 .info-row {
