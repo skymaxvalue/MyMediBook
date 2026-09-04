@@ -88,8 +88,11 @@ body{
 
     padding-left:54px;
     padding-right:16px;
+  outline: none;
 }
-
+.search-box input:focus{
+  border-color: #2157F4;
+}
 
 .sort-select{
         display:none;
