@@ -41,13 +41,12 @@ class _BookingFormViewState extends State<BookingFormView> {
   final _formKey = GlobalKey<FormState>();
 
   // ── form controllers ──────────────────────────────────────────────────────
-  final _firstNameCtrl      = TextEditingController();
-  final _lastNameCtrl       = TextEditingController();
-  final _dobCtrl            = TextEditingController();
-  final _ageCtrl            = TextEditingController();
-  final _patientAddressCtrl = TextEditingController();
-  final _contactCtrl        = TextEditingController();
-  final _emailCtrl          = TextEditingController();
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl  = TextEditingController();
+  final _dobCtrl       = TextEditingController();
+  final _ageCtrl       = TextEditingController();
+  final _contactCtrl   = TextEditingController();
+  final _emailCtrl     = TextEditingController();
   final _visitPurposeCtrl   = TextEditingController();
   final _insProviderCtrl    = TextEditingController();
   final _insPolicyCtrl      = TextEditingController();
@@ -133,7 +132,8 @@ class _BookingFormViewState extends State<BookingFormView> {
     final result = await ApiService.fetchSavedCards();
     if (!mounted) return;
     setState(() {
-      _savedCards   = result;
+      // List.from() ensures the local list is mutable so .add() works later
+      _savedCards   = List.from(result);
       _loadingCards = false;
       if (_savedCards.isNotEmpty) {
         _useExistingCard = true;
@@ -147,7 +147,8 @@ class _BookingFormViewState extends State<BookingFormView> {
     final result = await ApiService.fetchSavedInsurances();
     if (!mounted) return;
     setState(() {
-      _savedInsurances   = result;
+      // List.from() ensures the local list is mutable so .add() works later
+      _savedInsurances   = List.from(result);
       _loadingInsurances = false;
       if (_savedInsurances.isNotEmpty) {
         _useExistingInsurance = true;
@@ -162,8 +163,12 @@ class _BookingFormViewState extends State<BookingFormView> {
     final result = await ApiService.fetchRelationTypeList();
     if (!mounted) return;
     setState(() {
-      // Exclude 'Self' (id=1) from the new-patient relation list
-      _relationTypes = result.where((r) => r['relationTypeId'] != 1).toList();
+      // Exclude 'Self' (id=1) and deduplicate by relationTypeId
+      final seen = <int>{};
+      _relationTypes = result
+          .where((r) => r['relationTypeId'] != 1)
+          .where((r) => seen.add(r['relationTypeId'] as int))
+          .toList();
       _loadingRelationTypes = false;
     });
   }
@@ -172,14 +177,22 @@ class _BookingFormViewState extends State<BookingFormView> {
     final result = await ApiService.fetchAgeTypeList();
     if (!mounted) return;
     setState(() {
-      _ageTypes = result;
+      // Deduplicate by ageTypeId to avoid DropdownButtonFormField assertion
+      final seen = <int>{};
+      _ageTypes = result
+          .where((a) => seen.add(a['ageTypeId'] as int))
+          .toList();
       _loadingAgeTypes = false;
       // Default to Years (id=3) if present
-      final years = result.firstWhere(
+      final years = _ageTypes.firstWhere(
         (a) => (a['ageTypeName'] as String).toLowerCase() == 'years',
-        orElse: () => result.isNotEmpty ? result.last : {'ageTypeId': 3},
+        orElse: () => _ageTypes.isNotEmpty ? _ageTypes.last : {'ageTypeId': 3},
       );
-      _ageTypeId = years['ageTypeId'] as int?;
+      final candidate = years['ageTypeId'] as int?;
+      // Only set if it actually exists in the deduplicated list
+      _ageTypeId = _ageTypes.any((a) => a['ageTypeId'] == candidate)
+          ? candidate
+          : (_ageTypes.isNotEmpty ? _ageTypes.first['ageTypeId'] as int? : null);
     });
   }
 
@@ -201,26 +214,28 @@ class _BookingFormViewState extends State<BookingFormView> {
 
   void _fillSelf() {
     final self = ApiService.mockSelfProfile;
-    _firstNameCtrl.text      = self['firstName']     ?? '';
-    _lastNameCtrl.text       = self['lastName']      ?? '';
-    _dobCtrl.text            = self['dateOfBirth']   ?? '';
-    _ageCtrl.text            = self['age']           ?? '';
-    _patientAddressCtrl.text = self['address']       ?? '';
-    _contactCtrl.text        = self['contactNumber'] ?? '';
-    _emailCtrl.text          = self['emailAddress']  ?? '';
+    _firstNameCtrl.text = self['firstName']     ?? '';
+    _lastNameCtrl.text  = self['lastName']      ?? '';
+    _dobCtrl.text       = self['dateOfBirth']   ?? '';
+    _ageCtrl.text       = self['age']           ?? '';
+    _contactCtrl.text   = self['contactNumber'] ?? '';
+    _emailCtrl.text     = self['emailAddress']  ?? '';
+    // Sanitize gender: only use value if it matches one of the dropdown options
+    final rawGender = self['gender'] as String?;
     setState(() {
-      _gender  = self['gender'];
+      _gender = (rawGender != null && _genderOptions.contains(rawGender))
+          ? rawGender
+          : null;
     });
   }
 
   void _fillFromSaved(SavedPatient p) {
-    _firstNameCtrl.text      = p.firstName;
-    _lastNameCtrl.text       = p.lastName;
-    _dobCtrl.text            = p.dateOfBirth;
-    _ageCtrl.text            = p.age;
-    _patientAddressCtrl.text = p.address;
-    _contactCtrl.text        = p.contactNumber;
-    _emailCtrl.text          = p.emailAddress;
+    _firstNameCtrl.text = p.firstName;
+    _lastNameCtrl.text  = p.lastName;
+    _dobCtrl.text       = p.dateOfBirth;
+    _ageCtrl.text       = p.age;
+    _contactCtrl.text   = p.contactNumber;
+    _emailCtrl.text     = p.emailAddress;
     setState(() {
       _gender  = p.gender.isEmpty ? null : p.gender;
     });
@@ -231,7 +246,6 @@ class _BookingFormViewState extends State<BookingFormView> {
     _lastNameCtrl.clear();
     _dobCtrl.clear();
     _ageCtrl.clear();
-    _patientAddressCtrl.clear();
     _contactCtrl.clear();
     _emailCtrl.clear();
     setState(() {
@@ -259,7 +273,7 @@ class _BookingFormViewState extends State<BookingFormView> {
   void dispose() {
     for (final c in [
       _firstNameCtrl, _lastNameCtrl, _dobCtrl, _ageCtrl,
-      _patientAddressCtrl, _contactCtrl, _emailCtrl, _visitPurposeCtrl,
+      _contactCtrl, _emailCtrl, _visitPurposeCtrl,
       _insProviderCtrl, _insPolicyCtrl, _insGroupCtrl,
       _insHolderNameCtrl, _insHolderAddrCtrl,
       _cardHolderNameCtrl, _cardNumberCtrl, _cardExpiryCtrl, _cardCvvCtrl,
@@ -384,6 +398,7 @@ class _BookingFormViewState extends State<BookingFormView> {
     final pendingBookingData = <String, dynamic>{
       'doctorName':  widget.doctor.name,
       'associateId': widget.doctor.associateId,
+      'associateRole': widget.doctor.associateRole,
       'slotId':      widget.selectedSlotId,
       'date':        widget.slot.date,
       'dayName':     widget.slot.dayName,
@@ -401,19 +416,20 @@ class _BookingFormViewState extends State<BookingFormView> {
       'insuranceGroupId':              _insGroupCtrl.text.trim(),
       'insurancePrimaryHolderName':    _insHolderNameCtrl.text.trim(),
       'insurancePrimaryHolderAddress': _insHolderAddrCtrl.text.trim(),
-      'patientAddress':  _patientAddressCtrl.text.trim(),
       'contactNumber':   _contactCtrl.text.trim(),
       'emailAddress':    _emailCtrl.text.trim(),
       'visitPurpose':    _visitPurposeCtrl.text.trim(),
       'visitType':       _visitType,
       'otpChannel':      _otpChannel,
-      'profileId': _patientMode == _PatientMode.existing
-          ? (_selectedExisting?.profileId ?? 0)
-          : 0,
+      'profileId': _patientMode == _PatientMode.self
+          ? ApiService.currentProfileId
+          : _patientMode == _PatientMode.existing
+              ? (_selectedExisting?.profileId ?? 0)
+              : 0,
       'relatonTypeId': _patientMode == _PatientMode.self
           ? 1
           : _patientMode == _PatientMode.existing
-              ? 0
+              ? (_selectedExisting?.relationTypeId ?? 1)
               : (_newPatientRelationTypeId ?? 0),
       'cardHolderName': cardHolderName,
       'cardExpiry':     cardExpiry,
@@ -500,8 +516,9 @@ class _BookingFormViewState extends State<BookingFormView> {
             const Expanded(
               child: Text(
                 'Patient Information',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textDark),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textDark),
                 overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ]),
@@ -524,8 +541,10 @@ class _BookingFormViewState extends State<BookingFormView> {
                 child: Text(
                   '${widget.doctor.name}  •  ${widget.slot.date}  •  ${widget.selectedTime}',
                   style: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary,
+                    fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.primary,
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ),
             ]),
@@ -772,15 +791,6 @@ class _BookingFormViewState extends State<BookingFormView> {
                       const SizedBox(height: 12),
 
                       // ── contact fields ─────────────────────────────────────
-                      _FormLabel('Patient Address'),
-                      _FormField(
-                        controller: _patientAddressCtrl,
-                        hint: 'Enter patient address',
-                        readOnly: _patientMode == _PatientMode.self ||
-                            _patientMode == _PatientMode.existing,
-                        validator: (v) => v!.trim().isEmpty ? 'Required' : null,
-                      ),
-                      const SizedBox(height: 12),
                       _FormLabel('Contact Number'),
                       _FormField(
                         controller: _contactCtrl,
@@ -831,23 +841,32 @@ class _BookingFormViewState extends State<BookingFormView> {
                       ),
                       const SizedBox(height: 12),
                       _FormLabel('OTP Verification'),
-                      Row(children: [
-                        _RadioOption<String>(
-                          label: 'Mobile Number',
-                          value: 'mobile',
-                          groupValue: _otpChannel,
-                          onChanged: (v) =>
-                              setState(() => _otpChannel = v!),
-                        ),
-                        const SizedBox(width: 16),
-                        _RadioOption<String>(
-                          label: 'Email Address',
-                          value: 'email',
-                          groupValue: _otpChannel,
-                          onChanged: (v) =>
-                              setState(() => _otpChannel = v!),
-                        ),
-                      ]),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final isNarrow = constraints.maxWidth < 300;
+                          final children = [
+                            _RadioOption<String>(
+                              label: 'Mobile Number',
+                              value: 'mobile',
+                              groupValue: _otpChannel,
+                              onChanged: (v) => setState(() => _otpChannel = v!),
+                            ),
+                            SizedBox(width: isNarrow ? 0 : 16, height: isNarrow ? 4 : 0),
+                            _RadioOption<String>(
+                              label: 'Email Address',
+                              value: 'email',
+                              groupValue: _otpChannel,
+                              onChanged: (v) => setState(() => _otpChannel = v!),
+                            ),
+                          ];
+                          return isNarrow
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: children,
+                                )
+                              : Row(children: children);
+                        },
+                      ),
                       const SizedBox(height: 20),
 
                       // ── action buttons ─────────────────────────────────────
@@ -1031,8 +1050,8 @@ class _InsuranceCard extends StatelessWidget {
                 icon: Icons.shield_outlined,
                 label: 'Saved Insurance',
                 selected: useExistingInsurance,
-                disabled: savedInsurances.isEmpty,
-                onTap: savedInsurances.isEmpty
+                disabled: loadingInsurances || savedInsurances.isEmpty,
+                onTap: (loadingInsurances || savedInsurances.isEmpty)
                     ? null
                     : () => onToggleMode(true),
               ),
@@ -1048,8 +1067,43 @@ class _InsuranceCard extends StatelessWidget {
 
           const SizedBox(height: 10),
 
+          // ── loading spinner ────────────────────────────────────────────────
+          if (loadingInsurances)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F9FF),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFE8EEF8)),
+                ),
+                child: const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 22, height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Loading saved insurances…',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textGrey),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
           // ── existing insurance picker ──────────────────────────────────────
-          if (useExistingInsurance && savedInsurances.isNotEmpty)
+          if (!loadingInsurances && useExistingInsurance && savedInsurances.isNotEmpty)
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
               child: Column(
@@ -1323,8 +1377,10 @@ class _PaymentCard extends StatelessWidget {
                 icon: Icons.account_balance_wallet_outlined,
                 label: 'Saved Card',
                 selected: useExistingCard,
-                disabled: savedCards.isEmpty,
-                onTap: savedCards.isEmpty ? null : () => onToggleMode(true),
+                disabled: loadingCards || savedCards.isEmpty,
+                onTap: (loadingCards || savedCards.isEmpty)
+                    ? null
+                    : () => onToggleMode(true),
               ),
               const SizedBox(width: 8),
               _CardModeTab(
@@ -1338,8 +1394,43 @@ class _PaymentCard extends StatelessWidget {
 
           const SizedBox(height: 10),
 
+          // ── loading spinner ────────────────────────────────────────────────
+          if (loadingCards)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F9FF),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFE8EEF8)),
+                ),
+                child: const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 22, height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Loading saved cards…',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textGrey),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
           // ── existing card picker ───────────────────────────────────────────
-          if (useExistingCard && savedCards.isNotEmpty)
+          if (!loadingCards && useExistingCard && savedCards.isNotEmpty)
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
               child: Column(
@@ -2027,24 +2118,34 @@ class _ModeTile extends StatelessWidget {
                        : disabled ? const Color(0xFFBDBDBD)
                        : AppColors.textDark;
 
+    final screenW = MediaQuery.of(context).size.width;
+    final isNarrow = screenW < 360;
+
+    // Shorten label on very narrow phones
+    String displayLabel = label;
+    if (isNarrow) {
+      if (label == 'Saved Patient') displayLabel = 'Saved';
+      if (label == 'New Patient') displayLabel = 'New';
+    }
+
     return Expanded(
       child: GestureDetector(
         onTap: disabled ? null : onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: isNarrow ? 8 : 10),
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: border),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, size: 20, color: fg),
-            const SizedBox(height: 4),
-            Text(label,
+            Icon(icon, size: isNarrow ? 18 : 20, color: fg),
+            SizedBox(height: isNarrow ? 3 : 4),
+            Text(displayLabel,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 11,
+                    fontSize: isNarrow ? 10 : 11,
                     fontWeight: FontWeight.w700,
                     color: fg)),
           ]),

@@ -88,7 +88,10 @@ class _OtpScreenState extends State<OtpScreen> {
     setState(() => _isLoading = true);
 
     final result = widget.flowType == OtpFlowType.forgotPassword
-        ? await ApiService.verifyForgotPasswordOtp(otp: _otp)
+        ? await ApiService.verifyForgotPasswordOtp(
+            email: widget.contactInfo ?? '',
+            otp: _otp,
+          )
         : await ApiService.verifyOtp(otp: _otp);
 
     setState(() => _isLoading = false);
@@ -97,9 +100,13 @@ class _OtpScreenState extends State<OtpScreen> {
 
     if (result['success'] == true) {
       if (widget.flowType == OtpFlowType.forgotPassword) {
+        // Pass the reset token returned by the API to ResetPasswordScreen
+        final resetToken = result['resetToken'] as String? ?? '';
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
+          MaterialPageRoute(
+            builder: (_) => ResetPasswordScreen(resetToken: resetToken),
+          ),
         );
       } else {
         Navigator.pushAndRemoveUntil(

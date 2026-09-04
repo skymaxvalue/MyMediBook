@@ -789,7 +789,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildTabBar(bool isTablet) {
-    final labels     = ['PERSONAL\nINFO', 'ADDRESS', 'CREDENTIALS'];
+    final screenW = MediaQuery.of(context).size.width;
+    final isNarrow = screenW < 360;
+    final labels     = isNarrow ? ['INFO', 'ADDR', 'CRED'] : ['PERSONAL\nINFO', 'ADDRESS', 'CREDENTIALS'];
     final fullLabels = ['PERSONAL INFORMATION', 'ADDRESS', 'CREDENTIALS'];
     return Padding(
       padding: EdgeInsets.fromLTRB(isTablet ? 32 : 16, 16, isTablet ? 32 : 16, 0),
@@ -802,7 +804,10 @@ class _SignupScreenState extends State<SignupScreen> {
           return Expanded(
             child: Container(
               margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
-              padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 4),
+              padding: EdgeInsets.symmetric(
+                vertical: isNarrow ? 10 : 13,
+                horizontal: 4,
+              ),
               decoration: BoxDecoration(
                 color: bg,
                 borderRadius: const BorderRadius.only(
@@ -815,7 +820,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: isTablet ? 12 : 10,
+                    fontSize: isTablet ? 12 : (isNarrow ? 9 : 10),
                     color: fg, height: 1.3,
                   ),
                 ),
@@ -828,6 +833,10 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildButtons() {
+    final screenW = MediaQuery.of(context).size.width;
+    final isNarrow = screenW < 360;
+    final btnPad = isNarrow ? 11.0 : 15.0;
+    final btnFontSize = isNarrow ? 13.0 : 15.0;
     return Row(
       children: [
         Expanded(
@@ -835,13 +844,13 @@ class _SignupScreenState extends State<SignupScreen> {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: AppColors.primary),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              padding: EdgeInsets.symmetric(vertical: btnPad),
             ),
             onPressed: _prevStep,
             child: Text(
               _currentStep == 0 ? 'Cancel' : 'Back',
-              style: const TextStyle(
-                color: AppColors.primary, fontWeight: FontWeight.w600, fontSize: 15,
+              style: TextStyle(
+                color: AppColors.primary, fontWeight: FontWeight.w600, fontSize: btnFontSize,
               ),
             ),
           ),
@@ -859,7 +868,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 15),
+                padding: EdgeInsets.symmetric(vertical: btnPad),
               ),
               onPressed: _isLoading ? null : _nextStep,
               child: _isLoading
@@ -867,8 +876,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                   : Text(
                       _currentStep == 2 ? 'Submit' : 'Save and Next',
-                      style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15,
+                      style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600, fontSize: btnFontSize,
                       ),
                     ),
             ),

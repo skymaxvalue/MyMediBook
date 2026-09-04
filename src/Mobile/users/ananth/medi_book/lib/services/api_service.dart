@@ -34,13 +34,17 @@ class ApiService {
   /// Injected as `Authorization: Bearer <token>` on every authenticated call.
   static String? _authToken;
 
+  /// The refresh token returned by the login response.
+  static String? _refreshToken;
+
   /// Whether the user is currently authenticated.
   static bool get isAuthenticated => _authToken != null;
 
   /// Clears the session (call on logout).
   static void clearSession() {
     currentPatient = null;
-    _authToken = null;
+    _authToken     = null;
+    _refreshToken  = null;
   }
 
   /// Headers for authenticated GET requests.
@@ -67,13 +71,16 @@ class ApiService {
       return {
         'firstName':     'Guest',
         'lastName':      '',
+        'fullName':      'Guest',
         'dateOfBirth':   '',
         'age':           '',
         'ageUnit':       'years',
         'gender':        '',
         'address':       '',
-        'contactNumber': p?['phoneNumber']?.toString() ?? '',
+        'contactNumber': '',
         'emailAddress':  '',
+        'username':      '',
+        'roleName':      '',
       };
     }
     // Convert ISO dateOfBirth to dd/MM/yyyy for display
@@ -85,9 +92,17 @@ class ApiService {
         dob = '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
       }
     } catch (_) {}
+
+    // firstName/lastName are normalised in login(); fullName also stored there.
+    final firstName = p['firstName'] as String? ?? '';
+    final lastName  = p['lastName']  as String? ?? '';
+    final fullName  = p['fullName']  as String?
+        ?? '$firstName $lastName'.trim();
+
     return {
-      'firstName':     p['firstName']   as String? ?? '',
-      'lastName':      p['lastName']    as String? ?? '',
+      'firstName':     firstName,
+      'lastName':      lastName,
+      'fullName':      fullName,
       'dateOfBirth':   dob,
       'age':           '',
       'ageUnit':       'years',
@@ -95,6 +110,8 @@ class ApiService {
       'address':       '${p['addressLine1'] ?? ''} ${p['addressLine2'] ?? ''}'.trim(),
       'contactNumber': p['phoneNumber'] as String? ?? '',
       'emailAddress':  p['email']       as String? ?? '',
+      'username':      p['username']    as String? ?? '',
+      'roleName':      p['roleName']    as String? ?? '',
     };
   }
 
@@ -120,45 +137,45 @@ class ApiService {
   // ];
 
 
-  // ── mock saved cards ───────────────────────────────────────────────────────
-  static final List<SavedCard> _savedCards = [
-    SavedCard(
-      id:         'CARD-001',
-      holderName: 'Suresh Kumar',
-      cardNumber: '4111111111113456',
-      expiry:     '08/27',
-      cvv:        '123',
-      cardType:   'Visa',
-    ),
-    SavedCard(
-      id:         'CARD-002',
-      holderName: 'Suresh Kumar',
-      cardNumber: '5200828282827890',
-      expiry:     '12/26',
-      cvv:        '456',
-      cardType:   'Mastercard',
-    ),
-  ];
+  // ── MOCK saved cards (kept for reference) ─────────────────────────────────
+  // static final List<SavedCard> _savedCards = [
+  //   SavedCard(
+  //     id:         'CARD-001',
+  //     holderName: 'Suresh Kumar',
+  //     cardNumber: '4111111111113456',
+  //     expiry:     '08/27',
+  //     cvv:        '123',
+  //     cardType:   'Visa',
+  //   ),
+  //   SavedCard(
+  //     id:         'CARD-002',
+  //     holderName: 'Suresh Kumar',
+  //     cardNumber: '5200828282827890',
+  //     expiry:     '12/26',
+  //     cvv:        '456',
+  //     cardType:   'Mastercard',
+  //   ),
+  // ];
 
-  // ── mock saved insurances ──────────────────────────────────────────────────
-  static final List<SavedInsurance> _savedInsurances = [
-    SavedInsurance(
-      id:                   'INS-001',
-      providerName:         'Star Health Insurance',
-      policyId:             'POL-SH-987654',
-      groupId:              'GRP-001',
-      primaryHolderName:    'Suresh Kumar',
-      primaryHolderAddress: '12, MG Road, Kochi, Kerala - 682001',
-    ),
-    SavedInsurance(
-      id:                   'INS-002',
-      providerName:         'HDFC ERGO Health',
-      policyId:             'POL-HE-112233',
-      groupId:              'GRP-002',
-      primaryHolderName:    'Suresh Kumar',
-      primaryHolderAddress: '12, MG Road, Kochi, Kerala - 682001',
-    ),
-  ];
+  // ── MOCK saved insurances (kept for reference) ──────────────────────────
+  // static final List<SavedInsurance> _savedInsurances = [
+  //   SavedInsurance(
+  //     id:                   'INS-001',
+  //     providerName:         'Star Health Insurance',
+  //     policyId:             'POL-SH-987654',
+  //     groupId:              'GRP-001',
+  //     primaryHolderName:    'Suresh Kumar',
+  //     primaryHolderAddress: '12, MG Road, Kochi, Kerala - 682001',
+  //   ),
+  //   SavedInsurance(
+  //     id:                   'INS-002',
+  //     providerName:         'HDFC ERGO Health',
+  //     policyId:             'POL-HE-112233',
+  //     groupId:              'GRP-002',
+  //     primaryHolderName:    'Suresh Kumar',
+  //     primaryHolderAddress: '12, MG Road, Kochi, Kerala - 682001',
+  //   ),
+  // ];
 
   // ── patients CRUD ──────────────────────────────────────────────────────────
 
@@ -194,62 +211,162 @@ class ApiService {
     return [];
   }
 
-  // ── old mock fetchSavedPatients (replaced by fetchPatientProfiles above) ────
-  // static Future<List<SavedPatient>> fetchSavedPatients() async {
-  //   await Future.delayed(const Duration(milliseconds: 400));
-  //   return List.unmodifiable(_savedPatients);
-  // }
+  // ── GET /api/v1/Patient/GetPatientProfileByProfileId/{profileId} ───────────
+  /// Returns the full profile detail including insuranceData and paymentData.
+  static Future<Map<String, dynamic>?> fetchPatientProfileByProfileId(
+      int profileId) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse(
+                '$baseUrl/v1/Patient/GetPatientProfileByProfileId/$profileId'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 20));
 
-  // ── old mock saveNewPatient (new patients are booked without a profileId) ──
-  // static Future<Map<String, dynamic>> saveNewPatient(
-  //     SavedPatient patient) async {
-  //   await Future.delayed(const Duration(milliseconds: 500));
-  //   _savedPatients.add(patient);
-  //   return {'success': true, 'message': 'Patient saved.', 'id': patient.id};
-  // }
+      debugPrint('fetchPatientProfileByProfileId($profileId) status: ${response.statusCode}');
 
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        if (decoded['result'] == 1 || decoded['statusCode'] == 200) {
+          return decoded['data'] as Map<String, dynamic>?;
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchPatientProfileByProfileId error: $e');
+    }
+    return null;
+  }
 
   // ── cards CRUD ─────────────────────────────────────────────────────────────
 
-  /// GET saved cards for the logged-in user.
-  /// Real endpoint: GET /api/v1/Payment/GetSavedCards?userId=<userId>
+  /// Fetches saved cards by calling GetPatientProfileByProfileId for every
+  /// profile returned by GetPatientProfileListById **in parallel**, then
+  /// extracting paymentData blocks that have a non-empty cardNumber.
+  /// One card entry is produced per unique profileId that has card data.
   static Future<List<SavedCard>> fetchSavedCards() async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return List.unmodifiable(_savedCards);
+    // ── MOCK (kept for reference) ────────────────────────────────────────────
+    // await Future.delayed(const Duration(milliseconds: 400));
+    // return List.unmodifiable(_savedCards);
+    // ────────────────────────────────────────────────────────────────────────
+    final profiles = await fetchPatientProfiles();
+    if (profiles.isEmpty) return [];
+
+    // Fetch all profile details in parallel for speed
+    final validProfiles = profiles.where((p) => p.profileId != 0).toList();
+    final details = await Future.wait(
+      validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
+    );
+
+    final cards   = <SavedCard>[];
+    final seenIds = <int>{}; // deduplicate by profileId
+
+    for (var i = 0; i < validProfiles.length; i++) {
+      final detail = details[i];
+      if (detail == null) continue;
+
+      final pay = detail['paymentData'] as Map<String, dynamic>?;
+      if (pay == null) continue;
+      final cardNumber = pay['cardNumber'] as String?;
+      if (cardNumber == null || cardNumber.isEmpty) continue;
+
+      final profileId = validProfiles[i].profileId;
+      if (!seenIds.contains(profileId)) {
+        seenIds.add(profileId);
+        cards.add(SavedCard.fromProfileApiJson(profileId, pay));
+      }
+    }
+    debugPrint('fetchSavedCards: found ${cards.length} card(s) from profiles');
+    return List.unmodifiable(cards);
   }
 
-  /// POST /api/v1/Payment/SaveCard
+  // ── MOCK saveNewCard (kept for reference) ─────────────────────────────
+  // static Future<Map<String, dynamic>> saveNewCard(SavedCard card) async {
+  //   await Future.delayed(const Duration(milliseconds: 500));
+  //   _savedCards.add(card);
+  //   return {'success': true, 'message': 'Card saved successfully.', 'id': card.id};
+  // }
+
+  /// Saves a new card (local-only for now; a real POST endpoint can be wired here later).
   static Future<Map<String, dynamic>> saveNewCard(SavedCard card) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    _savedCards.add(card);
-    return {
-      'success': true,
-      'message': 'Card saved successfully.',
-      'id': card.id,
-    };
+    // TODO: wire to POST /api/v1/Payment/SaveCard when available
+    return {'success': true, 'message': 'Card saved successfully.', 'id': card.id};
   }
 
-  /// DELETE /api/v1/Payment/DeleteCard/{cardId}
+  // ── MOCK deleteCard (kept for reference) ──────────────────────────────
+  // static Future<Map<String, dynamic>> deleteCard(String cardId) async {
+  //   await Future.delayed(const Duration(milliseconds: 400));
+  //   _savedCards.removeWhere((c) => c.id == cardId);
+  //   return {'success': true, 'message': 'Card removed successfully.'};
+  // }
+
+  /// Deletes a card (local-only for now; a real DELETE endpoint can be wired here later).
   static Future<Map<String, dynamic>> deleteCard(String cardId) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    _savedCards.removeWhere((c) => c.id == cardId);
+    // TODO: wire to DELETE /api/v1/Payment/DeleteCard/{cardId} when available
     return {'success': true, 'message': 'Card removed successfully.'};
   }
 
   // ── insurances CRUD ────────────────────────────────────────────────────────
 
-  /// GET saved insurances for the logged-in user.
-  /// Real endpoint: GET /api/v1/Insurance/GetSavedInsurances?userId=<userId>
+  /// Fetches saved insurances by calling GetPatientProfileByProfileId for every
+  /// profile returned by GetPatientProfileListById **in parallel**, then
+  /// extracting insuranceData blocks where insurance == 1.
+  /// One insurance entry is produced per unique profileId that has insurance data.
+  ///
+  /// Real endpoint used: GET /api/v1/Patient/GetPatientProfileByProfileId/{id}
   static Future<List<SavedInsurance>> fetchSavedInsurances() async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return List.unmodifiable(_savedInsurances);
+    // ── MOCK (kept for reference) ────────────────────────────────────────────
+    // await Future.delayed(const Duration(milliseconds: 400));
+    // return List.unmodifiable(_savedInsurances);
+    // ────────────────────────────────────────────────────────────────────────
+    final profiles = await fetchPatientProfiles();
+    if (profiles.isEmpty) return [];
+
+    // Fetch all profile details in parallel for speed
+    final validProfiles = profiles.where((p) => p.profileId != 0).toList();
+    final details = await Future.wait(
+      validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
+    );
+
+    final insurances = <SavedInsurance>[];
+    final seenIds    = <int>{}; // deduplicate by profileId
+
+    for (var i = 0; i < validProfiles.length; i++) {
+      final detail = details[i];
+      if (detail == null) continue;
+
+      // insurance flag == 1 means this profile has insurance data
+      final hasInsurance = (detail['insurance'] as int? ?? 0) == 1;
+      if (!hasInsurance) continue;
+
+      final ins = detail['insuranceData'] as Map<String, dynamic>?;
+      if (ins == null) continue;
+      final provider = ins['provider'] as String?;
+      if (provider == null || provider.isEmpty) continue;
+
+      final profileId = validProfiles[i].profileId;
+      if (!seenIds.contains(profileId)) {
+        seenIds.add(profileId);
+        insurances.add(SavedInsurance.fromProfileApiJson(profileId, ins));
+      }
+    }
+    debugPrint(
+        'fetchSavedInsurances: found ${insurances.length} insurance(s) from profiles');
+    return List.unmodifiable(insurances);
   }
 
-  /// POST /api/v1/Insurance/SaveInsurance
+
+  // ── MOCK saveNewInsurance (kept for reference) ───────────────────────────
+  // static Future<Map<String, dynamic>> saveNewInsurance(SavedInsurance insurance) async {
+  //   await Future.delayed(const Duration(milliseconds: 500));
+  //   _savedInsurances.add(insurance);
+  //   return {'success': true, 'message': 'Insurance saved successfully.', 'id': insurance.id};
+  // }
+
+  /// Saves a new insurance (local-only for now; a real POST endpoint can be wired here later).
   static Future<Map<String, dynamic>> saveNewInsurance(
       SavedInsurance insurance) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    _savedInsurances.add(insurance);
+    // TODO: wire to POST /api/v1/Insurance/SaveInsurance when available
     return {
       'success': true,
       'message': 'Insurance saved successfully.',
@@ -257,11 +374,17 @@ class ApiService {
     };
   }
 
-  /// DELETE /api/v1/Insurance/DeleteInsurance/{insuranceId}
+  // ── MOCK deleteInsurance (kept for reference) ────────────────────────────
+  // static Future<Map<String, dynamic>> deleteInsurance(String insuranceId) async {
+  //   await Future.delayed(const Duration(milliseconds: 400));
+  //   _savedInsurances.removeWhere((i) => i.id == insuranceId);
+  //   return {'success': true, 'message': 'Insurance removed successfully.'};
+  // }
+
+  /// Deletes an insurance (local-only for now; a real DELETE endpoint can be wired here later).
   static Future<Map<String, dynamic>> deleteInsurance(
       String insuranceId) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    _savedInsurances.removeWhere((i) => i.id == insuranceId);
+    // TODO: wire to DELETE /api/v1/Insurance/DeleteInsurance/{id} when available
     return {'success': true, 'message': 'Insurance removed successfully.'};
   }
 
@@ -282,13 +405,17 @@ class ApiService {
         return data.cast<Map<String, dynamic>>();
       }
     } catch (_) {}
-    // fallback
+    // fallback – mirrors the live API response exactly
     return [
-      {'relationTypeId': 1, 'relationTypeName': 'Self'},
-      {'relationTypeId': 2, 'relationTypeName': 'Spouse'},
-      {'relationTypeId': 3, 'relationTypeName': 'Child'},
-      {'relationTypeId': 4, 'relationTypeName': 'Parent'},
-      {'relationTypeId': 5, 'relationTypeName': 'Sibling'},
+      {'relationTypeId': 1,  'relationTypeName': 'Self'},
+      {'relationTypeId': 3,  'relationTypeName': 'Child'},
+      {'relationTypeId': 7,  'relationTypeName': 'Grandchild'},
+      {'relationTypeId': 6,  'relationTypeName': 'Grandparent'},
+      {'relationTypeId': 9,  'relationTypeName': 'Guardian'},
+      {'relationTypeId': 8,  'relationTypeName': 'In-Law'},
+      {'relationTypeId': 4,  'relationTypeName': 'Parent'},
+      {'relationTypeId': 5,  'relationTypeName': 'Sibling'},
+      {'relationTypeId': 2,  'relationTypeName': 'Spouse'},
       {'relationTypeId': 10, 'relationTypeName': 'Other'},
     ];
   }
@@ -384,7 +511,7 @@ class ApiService {
 
       final response = await http
           .post(
-            Uri.parse('$baseUrl/v1/Auth/LoginPatient'),
+            Uri.parse('$baseUrl/v1/Auth/doLogin'),
             headers: {
               'Content-Type': 'application/json',
               'Accept':       'application/json',
@@ -402,14 +529,43 @@ class ApiService {
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           (decoded['result'] == 1 || decoded['statusCode'] == 200)) {
-        // Store patient data and auth token globally
-        currentPatient = decoded['data'] as Map<String, dynamic>?;
-        _authToken = decoded['tokenKey'] as String?;
-        debugPrint('=== SESSION: patientId=${currentPatient?['patientId']}  profileId=${currentPatient?['profileId']}  token=${_authToken != null ? "present" : "missing"} ===');
+
+        final rawData = decoded['data'] as Map<String, dynamic>? ?? {};
+
+        // refId from the login response is the numeric patientId
+        final int refId = (rawData['refId'] as num?)?.toInt() ?? 0;
+
+        // Store token immediately so the next authenticated call works
+        _authToken    = decoded['tokenKey']    as String?;
+        _refreshToken = decoded['refreshToken'] as String?;
+
+        // ── Fetch full patient profile using patientId ─────────────────────
+        // This call uses the auth token we just stored above.
+        final fullProfile = await fetchPatientById(refId);
+
+        if (fullProfile != null) {
+          // GetPatientById returns real profileId, firstName, lastName, DOB,
+          // gender, phoneNumber, email, addressLine1/2, etc.
+          currentPatient = fullProfile;
+        } else {
+          // Fallback: normalise the login data if profile fetch fails
+          currentPatient = Map<String, dynamic>.from(rawData)
+            ..['patientId'] = refId
+            ..['profileId'] = refId
+            ..['firstName'] = _splitFirst(rawData['fullName'] as String? ?? '')
+            ..['lastName']  = _splitLast(rawData['fullName']  as String? ?? '')
+            ..['email']     = rawData['email']    ?? ''
+            ..['username']  = rawData['username'] ?? username;
+        }
+
+        debugPrint('=== SESSION: patientId=${currentPatient?['patientId']}  '
+            'profileId=${currentPatient?['profileId']}  '
+            'token=${_authToken != null ? "present" : "missing"} ===');
+
         return {
           'success': true,
           'message': decoded['statusMessage'] as String? ?? 'Login successful',
-          'data':    decoded['data'],
+          'data':    currentPatient,
         };
       } else {
         final msg = decoded['statusMessage'] as String? ??
@@ -425,6 +581,51 @@ class ApiService {
       return {'success': false, 'message': 'Unexpected error: $e'};
     }
   }
+
+  // ── GET /api/v1/Patient/GetPatientById/{id} ────────────────────────────────
+  /// Fetches the complete patient record. Returns null on failure.
+  /// The `data` object from this endpoint has the correct patientId, profileId,
+  /// firstName, lastName, dateOfBirth, gender, phoneNumber, addressLine1/2, etc.
+  static Future<Map<String, dynamic>?> fetchPatientById(int patientId) async {
+    if (patientId == 0) return null;
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/v1/Patient/GetPatientById/$patientId'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 20));
+
+      debugPrint('fetchPatientById($patientId) status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        if (decoded['result'] == 1 || decoded['statusCode'] == 200) {
+          final data = decoded['data'] as Map<String, dynamic>?;
+          if (data != null) {
+            debugPrint('fetchPatientById: patientId=${data['patientId']}  '
+                'profileId=${data['profileId']}  name=${data['firstName']} ${data['lastName']}');
+            return data;
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchPatientById error: $e');
+    }
+    return null;
+  }
+
+  // ── helper: split fullName into first / last ──────────────────────────────
+  static String _splitFirst(String fullName) {
+    final parts = fullName.trim().split(' ');
+    return parts.isNotEmpty ? parts.first : fullName;
+  }
+
+  static String _splitLast(String fullName) {
+    final parts = fullName.trim().split(' ');
+    return parts.length > 1 ? parts.sublist(1).join(' ') : '';
+  }
+
 
   // static Future<Map<String, dynamic>> login({
   //   required String username,
@@ -465,42 +666,183 @@ class ApiService {
     return {'success': true, 'message': 'OTP resent successfully'};
   }
 
+  // ── POST /api/v1/Auth/ForgotPassword ──────────────────────────────────────
+  /// Sends an OTP to the given email for password reset.
   static Future<Map<String, dynamic>> sendForgotPasswordOtp({
     required String emailOrPhone,
   }) async {
-    await Future.delayed(const Duration(seconds: 1));
-    if (emailOrPhone.isNotEmpty) {
-      return {'success': true, 'message': 'OTP sent to $emailOrPhone'};
+    // ── MOCK (kept for reference) ──────────────────────────────────────────
+    // await Future.delayed(const Duration(seconds: 1));
+    // if (emailOrPhone.isNotEmpty) {
+    //   return {'success': true, 'message': 'OTP sent to $emailOrPhone'};
+    // }
+    // return {'success': false, 'message': 'Please enter a valid email or phone'};
+    // ──────────────────────────────────────────────────────────────────────
+    try {
+      final body = jsonEncode({'email': emailOrPhone});
+      debugPrint('========== FORGOT PASSWORD REQUEST ==========');
+      debugPrint(body);
+      debugPrint('=============================================');
+
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/v1/Auth/ForgotPassword'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: body,
+          )
+          .timeout(const Duration(seconds: 30));
+
+      debugPrint('========== FORGOT PASSWORD RESPONSE ==========');
+      debugPrint('Status: ${response.statusCode}');
+      debugPrint('Body: ${response.body}');
+      debugPrint('==============================================');
+
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 200 &&
+          (decoded['result'] == 1 || decoded['statusCode'] == 200)) {
+        final data = decoded['data'] as Map<String, dynamic>? ?? {};
+        final msg = data['responseMessage'] as String? ??
+            decoded['statusMessage'] as String? ??
+            'OTP sent to $emailOrPhone';
+        return {'success': true, 'message': msg};
+      } else {
+        final msg = decoded['statusMessage'] as String? ??
+            decoded['message'] as String? ??
+            'Failed to send OTP';
+        return {'success': false, 'message': msg};
+      }
+    } on TimeoutException {
+      return {'success': false, 'message': 'Request timed out. Please try again.'};
+    } catch (e) {
+      return {'success': false, 'message': 'Unexpected error: $e'};
     }
-    return {
-      'success': false,
-      'message': 'Please enter a valid email or phone'
-    };
   }
 
-  static Future<Map<String, dynamic>> verifyForgotPasswordOtp(
-      {required String otp}) async {
-    await Future.delayed(const Duration(seconds: 1));
-    if (otp == '1234') {
-      return {
-        'success':    true,
-        'resetToken': 'mock_reset_token_abc',
-        'message':    'OTP verified',
-      };
+  // ── POST /api/v1/Auth/VerifyForgotPasswordOtp ──────────────────────────────
+  /// Verifies the OTP and returns the reset [token] on success.
+  static Future<Map<String, dynamic>> verifyForgotPasswordOtp({
+    required String email,
+    required String otp,
+  }) async {
+    // ── MOCK (kept for reference) ──────────────────────────────────────────
+    // await Future.delayed(const Duration(seconds: 1));
+    // if (otp == '1234') {
+    //   return {
+    //     'success':    true,
+    //     'resetToken': 'mock_reset_token_abc',
+    //     'message':    'OTP verified',
+    //   };
+    // }
+    // return {'success': false, 'message': 'Invalid OTP. (Hint: use 1234)'};
+    // ──────────────────────────────────────────────────────────────────────
+    try {
+      final body = jsonEncode({'email': email, 'otpCode': otp});
+      debugPrint('========== VERIFY FORGOT OTP REQUEST ==========');
+      debugPrint(body);
+      debugPrint('================================================');
+
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/v1/Auth/VerifyForgotPasswordOtp'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: body,
+          )
+          .timeout(const Duration(seconds: 30));
+
+      debugPrint('========== VERIFY FORGOT OTP RESPONSE ==========');
+      debugPrint('Status: ${response.statusCode}');
+      debugPrint('Body: ${response.body}');
+      debugPrint('=================================================');
+
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 200 &&
+          (decoded['result'] == 1 || decoded['statusCode'] == 200)) {
+        final data = decoded['data'] as Map<String, dynamic>? ?? {};
+        final resetToken = data['token'] as String? ?? '';
+        final msg = data['responseMessage'] as String? ??
+            decoded['statusMessage'] as String? ??
+            'OTP verified successfully';
+        return {'success': true, 'resetToken': resetToken, 'message': msg};
+      } else {
+        final msg = decoded['statusMessage'] as String? ??
+            decoded['message'] as String? ??
+            'Invalid OTP';
+        return {'success': false, 'message': msg};
+      }
+    } on TimeoutException {
+      return {'success': false, 'message': 'Request timed out. Please try again.'};
+    } catch (e) {
+      return {'success': false, 'message': 'Unexpected error: $e'};
     }
-    return {'success': false, 'message': 'Invalid OTP. (Hint: use 1234)'};
   }
 
-  static Future<Map<String, dynamic>> resendForgotPasswordOtp(
-      {required String emailOrPhone}) async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    return {'success': true, 'message': 'OTP resent to $emailOrPhone'};
+  // ── Resend OTP (re-calls ForgotPassword endpoint) ─────────────────────────
+  static Future<Map<String, dynamic>> resendForgotPasswordOtp({
+    required String emailOrPhone,
+  }) async {
+    // ── MOCK (kept for reference) ──────────────────────────────────────────
+    // await Future.delayed(const Duration(milliseconds: 800));
+    // return {'success': true, 'message': 'OTP resent to $emailOrPhone'};
+    // ──────────────────────────────────────────────────────────────────────
+    return sendForgotPasswordOtp(emailOrPhone: emailOrPhone);
   }
 
-  static Future<Map<String, dynamic>> resetPassword(
-      {required String newPassword}) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return {'success': true, 'message': 'Password reset successfully'};
+  // ── POST /api/v1/Auth/ResetForgotPassword ─────────────────────────────────
+  /// Resets the password using the [token] returned by VerifyForgotPasswordOtp.
+  static Future<Map<String, dynamic>> resetPassword({
+    required String token,
+    required String newPassword,
+  }) async {
+    // ── MOCK (kept for reference) ──────────────────────────────────────────
+    // await Future.delayed(const Duration(seconds: 1));
+    // return {'success': true, 'message': 'Password reset successfully'};
+    // ──────────────────────────────────────────────────────────────────────
+    try {
+      final body = jsonEncode({'token': token, 'password': newPassword});
+      debugPrint('========== RESET PASSWORD REQUEST ==========');
+      debugPrint(body);
+      debugPrint('============================================');
+
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/v1/Auth/ResetForgotPassword'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: body,
+          )
+          .timeout(const Duration(seconds: 30));
+
+      debugPrint('========== RESET PASSWORD RESPONSE ==========');
+      debugPrint('Status: ${response.statusCode}');
+      debugPrint('Body: ${response.body}');
+      debugPrint('=============================================');
+
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 200 &&
+          (decoded['result'] == 1 || decoded['statusCode'] == 200)) {
+        final msg = decoded['statusMessage'] as String? ??
+            decoded['message'] as String? ??
+            'Password reset successfully';
+        return {'success': true, 'message': msg};
+      } else {
+        final msg = decoded['statusMessage'] as String? ??
+            decoded['message'] as String? ??
+            'Failed to reset password';
+        return {'success': false, 'message': msg};
+      }
+    } on TimeoutException {
+      return {'success': false, 'message': 'Request timed out. Please try again.'};
+    } catch (e) {
+      return {'success': false, 'message': 'Unexpected error: $e'};
+    }
   }
 
   // ── registration ───────────────────────────────────────────────────────────
@@ -613,7 +955,7 @@ class ApiService {
     try {
       final response = await http
           .get(
-            Uri.parse('$baseUrl/api/v1/Appointment/GetMyAppointmentList/$patientId'),
+            Uri.parse('$baseUrl/v1/Appointment/Patient/GetMyAppointmentList/$patientId'),
             headers: _authHeaders,
           )
           .timeout(const Duration(seconds: 30));
@@ -1157,15 +1499,15 @@ class ApiService {
         ? {
             'provider':   bookingData['insuranceProviderName']         ?? '',
             'policy':     bookingData['insurancePolicyId']             ?? '',
-            'groupId':    int.tryParse(bookingData['insuranceGroupId']?.toString() ?? '') ?? 0,
+            'groupId':    bookingData['insuranceGroupId']?.toString()  ?? '', // string per API schema
             'holderName': bookingData['insurancePrimaryHolderName']    ?? '',
             'address':    bookingData['insurancePrimaryHolderAddress'] ?? '',
           }
         : {
-            // insurance not used – send empty/zero values so backend int fields don't fail
+            // insurance not used – send empty values
             'provider':   null,
             'policy':     null,
-            'groupId':    0,     // int field – cannot be null in C# (System.Int32)
+            'groupId':    '',   // string field – send empty string
             'holderName': null,
             'address':    null,
           };
@@ -1188,8 +1530,10 @@ class ApiService {
           };
 
     // ── relationTypeId: 1(Self) for self, saved patient's type, or selected for new ──
-    // The booking form sends the correct value; 0 is a safe fallback.
-    final relatonTypeId = bookingData['relatonTypeId'] as int? ?? 0;
+    // Never send 0 — the backend rejects it with a FK constraint error.
+    // Default to 1 (Self) as a safe fallback.
+    final rawRelatonTypeId = bookingData['relatonTypeId'] as int? ?? 0;
+    final relatonTypeId = rawRelatonTypeId > 0 ? rawRelatonTypeId : 1;
 
     final requestBody = <String, dynamic>{
       'patientId':       patientId,
@@ -1321,134 +1665,309 @@ class ApiService {
 
   // ── lab results ────────────────────────────────────────────────────────────
 
-  /// POST /api/v1/LabResult/GetLabResultsByPatientProfileId
+  /// GET /api/v1/Lab/GetLabResultsByPatientId/{patientId}
   ///
-  /// Returns all lab results for the logged-in patient across all profiles.
-  /// Currently returns mock data; replace body with real HTTP call when ready.
-  static Future<List<Map<String, dynamic>>> fetchLabResults() async {
-    // Simulate network latency
-    await Future.delayed(const Duration(milliseconds: 900));
-
-    // ── Mock data ── mirrors the screenshot exactly ─────────────────────────
-    return [
-      {
-        'resultId':       1,
-        'profileId':      1,
-        'patientName':    'Ramesh',
-        'testName':       'Blood Test',
-        'testCode':       'B101',
-        'labName':        'Lab Corp',
-        'reportDate':     '01 May 2026',
-        'resultValue':    'Insufficient',
-        'referenceRange': '90-110',
-        'resultStatus':   'Normal',
-        'notes':          'Fasting sample required.',
-      },
-      {
-        'resultId':       2,
-        'profileId':      0,
-        'patientName':    'Self',
-        'testName':       'Urine Test',
-        'testCode':       'B209',
-        'labName':        'Lab Corp',
-        'reportDate':     '06 May 2026',
-        'resultValue':    'Hemolyzed',
-        'referenceRange': '5-12',
-        'resultStatus':   'Critical',
-        'notes':          'Sample may have been compromised.',
-      },
-      {
-        'resultId':       3,
-        'profileId':      2,
-        'patientName':    'Anita',
-        'testName':       'Urine Test',
-        'testCode':       'T401',
-        'labName':        'Lab Corp',
-        'reportDate':     '11 May 2026',
-        'resultValue':    'Pending',
-        'referenceRange': 'Awaiting',
-        'resultStatus':   'Pending',
-        'notes':          'Results expected within 24 hours.',
-      },
-      {
-        'resultId':       4,
-        'profileId':      1,
-        'patientName':    'Ramesh',
-        'testName':       'Lipid Panel',
-        'testCode':       'L305',
-        'labName':        'Quest Diagnostics',
-        'reportDate':     '15 May 2026',
-        'resultValue':    '185 mg/dL',
-        'referenceRange': '<200 mg/dL',
-        'resultStatus':   'Normal',
-        'notes':          'Total cholesterol within acceptable range.',
-      },
-      {
-        'resultId':       5,
-        'profileId':      0,
-        'patientName':    'Self',
-        'testName':       'HbA1c Test',
-        'testCode':       'H508',
-        'labName':        'Lab Corp',
-        'reportDate':     '18 May 2026',
-        'resultValue':    '7.8%',
-        'referenceRange': '<5.7%',
-        'resultStatus':   'Out of Range',
-        'notes':          'Consult physician for diabetes management.',
-      },
-      {
-        'resultId':       6,
-        'profileId':      2,
-        'patientName':    'Anita',
-        'testName':       'Complete Blood Count',
-        'testCode':       'C210',
-        'labName':        'Quest Diagnostics',
-        'reportDate':     '20 May 2026',
-        'resultValue':    'Normal',
-        'referenceRange': 'See report',
-        'resultStatus':   'Normal',
-        'notes':          'All parameters within normal limits.',
-      },
-      {
-        'resultId':       7,
-        'profileId':      1,
-        'patientName':    'Ramesh',
-        'testName':       'Thyroid Profile',
-        'testCode':       'T702',
-        'labName':        'Lab Corp',
-        'reportDate':     '22 May 2026',
-        'resultValue':    '6.2 mIU/L',
-        'referenceRange': '0.5-4.5 mIU/L',
-        'resultStatus':   'Critical',
-        'notes':          'TSH elevated; follow-up required.',
-      },
-      {
-        'resultId':       8,
-        'profileId':      0,
-        'patientName':    'Self',
-        'testName':       'Liver Function Test',
-        'testCode':       'L901',
-        'labName':        'SRL Diagnostics',
-        'reportDate':     '25 May 2026',
-        'resultValue':    'Pending',
-        'referenceRange': 'Awaiting',
-        'resultStatus':   'Pending',
-        'notes':          '',
-      },
-    ];
+  /// Returns all lab results for the given patient across all profiles.
+  static Future<List<Map<String, dynamic>>> fetchLabResultsByPatientId(
+      int patientId) async {
+    debugPrint('===== GET Lab Results By PatientId ($patientId) =====');
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/v1/Lab/GetLabResultsByPatientId/$patientId'),
+        headers: _authHeaders,
+      );
+      debugPrint('Status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (body['result'] == 1 && body['data'] != null) {
+          return List<Map<String, dynamic>>.from(
+              body['data'] as List<dynamic>);
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchLabResultsByPatientId error: $e');
+    }
+    return [];
   }
 
-  /// GET /api/v1/LabResult/GetLabResultDetailById/{resultId}
+  /// GET /api/v1/Lab/GetLabResultsByProfileId{profileId}
   ///
-  /// Returns detailed information for a specific lab result.
-  /// Currently returns mock data; replace with real HTTP call when ready.
-  static Future<Map<String, dynamic>?> fetchLabResultDetail(int resultId) async {
-    await Future.delayed(const Duration(milliseconds: 600));
-    final all = await fetchLabResults();
+  /// Returns all lab results for a specific patient profile.
+  static Future<List<Map<String, dynamic>>> fetchLabResultsByProfileId(
+      int profileId) async {
+    debugPrint('===== GET Lab Results By ProfileId ($profileId) =====');
     try {
-      return all.firstWhere((r) => r['resultId'] == resultId);
-    } catch (_) {
-      return null;
+      final response = await http.get(
+        Uri.parse('$baseUrl/v1/Lab/GetLabResultsByProfileId$profileId'),
+        headers: _authHeaders,
+      );
+      debugPrint('Status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (body['result'] == 1 && body['data'] != null) {
+          return List<Map<String, dynamic>>.from(
+              body['data'] as List<dynamic>);
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchLabResultsByProfileId error: $e');
     }
+    return [];
+  }
+
+  /// GET /api/v1/Lab/GetLabResultDetailById{id}
+  ///
+  /// Returns detailed information for a specific lab result by its ID.
+  static Future<Map<String, dynamic>?> fetchLabResultDetailById(
+      int resultId) async {
+    debugPrint('===== GET Lab Result Detail By Id ($resultId) =====');
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/v1/Lab/GetLabResultDetailById$resultId'),
+        headers: _authHeaders,
+      );
+      debugPrint('Status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (body['result'] == 1 && body['data'] != null) {
+          return Map<String, dynamic>.from(
+              body['data'] as Map<String, dynamic>);
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchLabResultDetailById error: $e');
+    }
+    return null;
+  }
+
+  /// Convenience wrapper: fetches all lab results for the currently logged-in
+  /// patient using [fetchLabResultsByPatientId].
+  static Future<List<Map<String, dynamic>>> fetchLabResults() async {
+    final patientId = currentPatient?['patientId'] as int?;
+    if (patientId == null) return [];
+    return fetchLabResultsByPatientId(patientId);
+  }
+
+  /// Convenience wrapper: fetches a single lab result detail for the currently
+  /// logged-in patient using [fetchLabResultDetailById].
+  static Future<Map<String, dynamic>?> fetchLabResultDetail(
+      int resultId) async {
+    return fetchLabResultDetailById(resultId);
+  }
+
+  // ── Messages ──────────────────────────────────────────────────────────────
+
+  /// GET /api/v1/Message/MessageListById/{id}
+  ///
+  /// Returns all messages/notifications for the logged-in patient.
+  /// Uses the patient's numeric patientId (refId) from the login response.
+  static Future<List<Map<String, dynamic>>> fetchMessages() async {
+    final patientId = currentPatient?['patientId'] as int?;
+    if (patientId == null) return [];
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/v1/Message/MessageListById/$patientId'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 30));
+
+      debugPrint('fetchMessages status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        final List raw = decoded['data'] ?? [];
+        return raw.cast<Map<String, dynamic>>();
+      }
+    } catch (e) {
+      debugPrint('fetchMessages error: $e');
+    }
+    return [];
+  }
+
+  /// PUT /api/v1/Message/UpdateMessageToRead
+  ///
+  /// Marks a specific message as read.
+  /// Body: { "messageId": <id>, "isRead": true }
+  static Future<Map<String, dynamic>> markMessageAsRead(int messageId) async {
+    try {
+      final body = jsonEncode({'messageId': messageId, 'isRead': true});
+      final response = await http
+          .put(
+            Uri.parse('$baseUrl/v1/Message/UpdateMessageToRead'),
+            headers: _authJsonHeaders,
+            body: body,
+          )
+          .timeout(const Duration(seconds: 15));
+
+      debugPrint('markMessageAsRead($messageId) status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        try {
+          final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+          final ok = decoded['result'] == 1 || decoded['statusCode'] == 200;
+          return {
+            'success': ok,
+            'message': decoded['statusMessage'] as String? ?? (ok ? 'Marked as read.' : 'Failed.'),
+          };
+        } catch (_) {
+          return {'success': true, 'message': 'Marked as read.'};
+        }
+      }
+    } catch (e) {
+      debugPrint('markMessageAsRead error: $e');
+    }
+    return {'success': false, 'message': 'Could not mark message as read.'};
+  }
+
+  /// PUT /api/v1/Message/Archive/{messageId}  (kept for UI archive feature)
+  static Future<Map<String, dynamic>> archiveMessage(int messageId) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return {'success': true, 'message': 'Message archived successfully.'};
+  }
+
+  /// PUT /api/v1/Message/Unarchive/{messageId}
+  static Future<Map<String, dynamic>> unarchiveMessage(int messageId) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return {'success': true, 'message': 'Message unarchived successfully.'};
+  }
+
+  /// DELETE /api/v1/Message/Delete/{messageId}
+  static Future<Map<String, dynamic>> deleteMessage(int messageId) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return {'success': true, 'message': 'Message deleted permanently.'};
+  }
+
+  // ── Billing ───────────────────────────────────────────────────────────────
+
+  // ── MOCK fetchBills (kept for reference) ─────────────────────────────────
+  // static Future<List<Map<String, dynamic>>> fetchBills() async {
+  //   await Future.delayed(const Duration(milliseconds: 600));
+  //   return [
+  //     {
+  //       'billId':               1,
+  //       'patientName':          'Ramesh',
+  //       'doctorName':           'Dr. Arun',
+  //       'clinicName':           'ABC Health Centre',
+  //       'visitDate':            '10 May 2026',
+  //       'orderDate':            '01 May 2026',
+  //       'paymentDate':          '05 May 2026',
+  //       'totalCharge':          500.0,
+  //       'insuranceCovered':     300.0,
+  //       'adjustments':          50.0,
+  //       'patientResponsibility':150.0,
+  //       'remainingBalance':     0.0,
+  //       'status':               'Paid',
+  //     },
+  //     {
+  //       'billId':               2,
+  //       'patientName':          'Ramesh',
+  //       'doctorName':           'Dr. Tarun',
+  //       'clinicName':           'City Centre Clinic',
+  //       'visitDate':            '08 May 2026',
+  //       'orderDate':            '08 May 2026',
+  //       'paymentDate':          '05 May 2026',
+  //       'totalCharge':          1200.0,
+  //       'insuranceCovered':     800.0,
+  //       'adjustments':          100.0,
+  //       'patientResponsibility':300.0,
+  //       'remainingBalance':     100.0,
+  //       'status':               'Pending',
+  //     },
+  //     {
+  //       'billId':               3,
+  //       'patientName':          'Priya',
+  //       'doctorName':           'Dr. Meena',
+  //       'clinicName':           'City Centre Clinic',
+  //       'visitDate':            '02 May 2026',
+  //       'orderDate':            '02 May 2026',
+  //       'paymentDate':          '10 May 2026',
+  //       'totalCharge':          800.0,
+  //       'insuranceCovered':     500.0,
+  //       'adjustments':          0.0,
+  //       'patientResponsibility':300.0,
+  //       'remainingBalance':     300.0,
+  //       'status':               'Overdue',
+  //     },
+  //     {
+  //       'billId':               4,
+  //       'patientName':          'Anita',
+  //       'doctorName':           'Dr. Arun',
+  //       'clinicName':           'ABC Health Centre',
+  //       'visitDate':            '15 May 2026',
+  //       'orderDate':            '15 May 2026',
+  //       'paymentDate':          '20 May 2026',
+  //       'totalCharge':          650.0,
+  //       'insuranceCovered':     400.0,
+  //       'adjustments':          50.0,
+  //       'patientResponsibility':200.0,
+  //       'remainingBalance':     0.0,
+  //       'status':               'Paid',
+  //     },
+  //   ];
+  // }
+
+  /// GET /api/v1/Billing/GetBillingListByPatientId/{patientId}
+  ///
+  /// Returns the raw `data[]` array from the API. Each element contains
+  /// claims[], lineItems[], insurancePayments[], adjustments[], and
+  /// patientResponsibility[].  Pass each element to Bill.fromApiJson().
+  static Future<List<Map<String, dynamic>>> fetchBills() async {
+    final patientId = currentPatient?['patientId'] as int?;
+    if (patientId == null) return [];
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/v1/Billing/GetBillingListByPatientId/$patientId'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 30));
+
+      debugPrint('fetchBills status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        if (decoded['result'] == 1 || decoded['statusCode'] == 200) {
+          final List raw = decoded['data'] ?? [];
+          return raw.cast<Map<String, dynamic>>();
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchBills error: $e');
+    }
+    return [];
+  }
+
+  /// GET /api/v1/Billing/GetBillByClaimId/{id}
+  ///
+  /// Returns the raw detail map for a single claim. Pass to Bill.fromApiJson().
+  static Future<Map<String, dynamic>?> fetchBillByClaimId(int claimId) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/v1/Billing/GetBillByClaimId/$claimId'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 20));
+
+      debugPrint('fetchBillByClaimId($claimId) status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        if (decoded['result'] == 1 || decoded['statusCode'] == 200) {
+          // API may wrap single record in data[] or data directly
+          final data = decoded['data'];
+          if (data is List && data.isNotEmpty) {
+            return data.first as Map<String, dynamic>;
+          } else if (data is Map<String, dynamic>) {
+            return data;
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchBillByClaimId error: $e');
+    }
+    return null;
   }
 }
+
