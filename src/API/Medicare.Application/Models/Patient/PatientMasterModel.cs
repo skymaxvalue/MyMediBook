@@ -36,7 +36,7 @@ namespace Medicare.Application.Models.Patient
         public string ResponseMessage { get; set; }
     }
 
-    public class CreatePatientRequestModel  //PATIENT REQUEST DTO MODEL
+    public class CreatePatientRequestModel  
     {
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
@@ -83,5 +83,44 @@ namespace Medicare.Application.Models.Patient
         public bool IsActive { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+    }
+
+    public class CreateFrontOfficePatientRequestModel  
+    {
+        public string FirstName { get; set; }
+        public string? MiddleName { get; set; }
+        public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string PhoneCountryCode { get; set; }
+        public string PhoneNumber { get; set; }
+        public string EmailId { get; set; }
+        public string? Gender { get; set; }
+        public string Address { get; set; }
+        public int CityId { get; set; }
+        public string ZipCode { get; set; }
+        public int? StateId { get; set; }
+        public int CountryId { get; set; }
+        public string BillingAddress { get; set; }
+        public int BillingCityId { get; set; }
+        public string BillingZipCode { get; set; }
+        public int? BillingStateId { get; set; }
+        public int BillingCountryId { get; set; }
+        public int Insurance { get; set; }
+        [JsonIgnore]
+        public string? Password { get; set; }
+        public bool IsActive { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string? UpdatedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+    }
+    public class CreateFrontOfficePatientResponseModel : IErrorHandling
+    {
+        public Guid UserId { get; set; }
+        public string PatientId { get; set; }
+        public string ResponseMessage { get; set; }
+        public int IsSuccess { get; set; }
+        public int Status { get; set; }
+        public int ResponseId { get; set; }
     }
 }

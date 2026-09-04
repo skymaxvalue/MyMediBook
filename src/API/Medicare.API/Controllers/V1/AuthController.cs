@@ -81,6 +81,16 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
+        [Authorize(Roles = "Receptionist")]
+        [HttpPost]
+        [Route("Receptionist/CreatePatientAccount")]
+        public async Task<IActionResult> CreateFrontOfficePatientAccount([FromBody] CreateFrontOfficePatientRequestModel model)
+        {
+            CreateFrontOfficePatientResponseModel response = new CreateFrontOfficePatientResponseModel();
+            response = await _mediator.Send(new CreateFrontOfficePatientCommand(model));
+            return HandleResponse(response);
+        }
+
         [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("RegisterAssociate")]

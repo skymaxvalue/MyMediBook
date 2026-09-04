@@ -1,11 +1,5 @@
 ﻿namespace Medicare.Application.Models.Dashboard
 {
-    public class DashboardDataRequestModel
-    {
-        public int AssociateId { get; set; }
-        public string FromDate { get; set; }
-        public string ToDate { get; set; }
-    }
     public class RecentPatientDataModel
     {
         public string FirstName { get; set; }

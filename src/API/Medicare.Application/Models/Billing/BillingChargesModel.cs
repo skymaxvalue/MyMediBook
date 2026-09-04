@@ -1,4 +1,6 @@
-﻿namespace Medicare.Application.Models.Billing
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Billing
 {
     //  Consultation Charges
     public class AddConsultationRequest
@@ -122,13 +124,13 @@
     }
 
      // Line Item Response
-    public class LineItemResponse
+    public class LineItemResponse : IErrorHandling
     {
         public int LineItemId { get; set; }
         public int ClaimId { get; set; }
         public string ServiceCategory { get; set; } = string.Empty;
         public decimal ChargeAmount { get; set; }
-        public bool IsSuccess { get; set; }
-        public string ResponseMessage { get; set; } = string.Empty;
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; } 
     }
 }

@@ -8,6 +8,7 @@ using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.Email;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.Patient;
 using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
 
@@ -162,7 +163,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
                                <div style='text-align:center;margin:30px 0;'>
 
-                                 <a href='https://medibook.com/set-password?token={token}'
+                                 <a href='https://mymedibook.runasp.net/set-password?token={token}'
                                     style='display:inline-block;
                                            background:#0066cc;
                                            color:white;
@@ -241,6 +242,206 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
+        public async Task<ResponseModel> CreatePatientDetails(PatientMasterModel model)
+        {
+            string procName = "USP_RegisterPatientAccount";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("FirstName", model.FirstName);
+                param.Add("MiddleName", model.MiddleName);
+                param.Add("LastName", model.LastName);
+                param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("PhoneCountryCode", model.PhoneCountryCode);
+                param.Add("PhoneNumber", model.PhoneNumber);
+                param.Add("Email", model.Email);
+                param.Add("Gender", model.Gender);
+                param.Add("AddressLine1", model.AddressLine1);
+                param.Add("AddressLine2", model.AddressLine2);
+                param.Add("CityId", model.CityId);
+                param.Add("ZipCode", model.ZipCode);
+                param.Add("StateId", model.StateId);
+                param.Add("CountryId", model.CountryId);
+                param.Add("Username", model.Username);
+                param.Add("Password", model.PasswordHash);
+                param.Add("SecurityQuestionId", model.SecurityQuestionId);
+                param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
+                param.Add("CreatedBy", model.CreatedBy);
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+
+            return returnData;
+        }
+        public async Task<CreateFrontOfficePatientResponseModel> CreateFrontOfficePatientDetails(CreateFrontOfficePatientRequestModel model)
+        {
+            string procName = "USP_RegisterFrontOfficePatientAccount";
+            CreateFrontOfficePatientResponseModel returnData = new CreateFrontOfficePatientResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("FirstName", model.FirstName);
+                param.Add("MiddleName", model.MiddleName);
+                param.Add("LastName", model.LastName);
+                param.Add("DateOfBirth", model.DateOfBirth);
+                param.Add("PhoneCountryCode", model.PhoneCountryCode);
+                param.Add("PhoneNumber", model.PhoneNumber);
+                param.Add("EmailId", model.EmailId);
+                param.Add("Password", model.Password);
+                param.Add("Gender", model.Gender);
+                param.Add("Insurance", model.Insurance);
+                param.Add("Address", model.Address);
+                param.Add("CityId", model.CityId);
+                param.Add("ZipCode", model.ZipCode);
+                param.Add("StateId", model.StateId);
+                param.Add("CountryId", model.CountryId);
+                param.Add("BillingAddress", model.BillingAddress);
+                param.Add("BillingCityId", model.BillingCityId);
+                param.Add("BillingZipCode", model.BillingZipCode);
+                param.Add("BillingStateId", model.BillingStateId);
+                param.Add("BillingCountryId", model.BillingCountryId);
+                param.Add("CreatedBy", model.CreatedBy);
+
+                returnData = await _context.QuerySingleStoredProcAsync<CreateFrontOfficePatientResponseModel>(procName, param);
+
+                if (returnData.IsSuccess == 1 && returnData.Status == 1)
+                {
+                    string token = _jwtTokenRepository.GeneratePasswordResetToken(
+                         returnData.UserId.ToString(),
+                         returnData.PatientId
+                     );
+
+                    var body = $"""
+                        <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;'>
+
+                             <div style='background:#0066cc;padding:24px;text-align:center;'>
+                               <h1 style='color:white;margin:0;'>Welcome to MediBook</h1>
+                               <p style='color:#cce5ff;margin:8px 0 0;'>
+                                 Your Healthcare Management Platform
+                               </p>
+                             </div>
+
+                             <div style='padding:24px;'>
+
+                               <h2 style='color:#333;margin-top:0;'>
+                                 Welcome, {model.FirstName} {model.LastName}!
+                               </h2>
+
+                               <p style='color:#444;line-height:1.6;'>
+                                 Your MediBook account has been successfully created.
+                                 You can now set your password and access your account.
+                               </p>
+
+                               <table style='width:100%;border-collapse:collapse;margin:20px 0;'>
+
+                                 <tr>
+                                   <td style='padding:12px;font-weight:bold;'>
+                                     Username
+                                   </td>
+                                   <td style='padding:12px;'>
+                                     {returnData.PatientId}
+                                   </td>
+                                 </tr>
+
+                               </table>
+
+                               <p style='color:#444;line-height:1.6;'>
+                                 To secure your account, please set your password using the button below.
+                                 This link will expire in <strong>30 minutes</strong>.
+                               </p>
+
+                               <div style='text-align:center;margin:30px 0;'>
+
+                                 <a href='https://mymedibook.runasp.net/set-password?token={token}'
+                                    style='display:inline-block;
+                                           background:#0066cc;
+                                           color:white;
+                                           padding:13px 28px;
+                                           text-decoration:none;
+                                           border-radius:5px;
+                                           font-weight:bold;
+                                           font-size:15px;'>
+                                   Set My Password
+                                 </a>
+
+                               </div>
+
+                               <div style='background:#fff5f5;
+                                           border-left:4px solid #dc3545;
+                                           padding:14px 16px;
+                                           margin:20px 0;'>
+
+                                 <p style='margin:0;color:#721c24;font-size:13px;line-height:1.6;'>
+                                   <strong>🔒 Security Notice</strong><br>
+                                   This password setup link is unique to your account.
+                                   Never share this link with anyone.
+                                 </p>
+
+                               </div>
+
+                               <p style='color:#666;font-size:13px;line-height:1.6;'>
+                                 If you did not expect this account creation email,
+                                 please contact the MediBook support team immediately.
+                               </p>
+
+                             </div>
+
+                             <div style='background:#f5f5f5;padding:16px;text-align:center;'>
+                               <p style='color:#999;font-size:12px;margin:0;'>
+                                 MediBook — Your Health, Our Priority
+                               </p>
+                             </div>
+
+                           </div>
+                        """;
+
+                    var emailmodel = new EmailModel
+                    {
+                        ToEmail = model.EmailId,
+                        ToName = $"{model.FirstName} {model.LastName}",
+                        Subject = "Associate Login - Rest Password Link",
+                        Body = body,
+                        IsHtml = true
+                    };
+                    bool resetPasswrodMail = await _emailService.SendEmailAsync(emailmodel);
+
+                    if (!resetPasswrodMail)
+                    {
+                        returnData = new CreateFrontOfficePatientResponseModel
+                        {
+                            PatientId = string.Empty,
+                            UserId = Guid.Empty,
+                            IsSuccess = 0,
+                            ResponseMessage = "An Error Occured While Creating Assoicate",
+                            ResponseId = 0,
+                            Status = 0
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+
+            return returnData;
+        }
         public async Task<AuthDetailModel> GetPasswordByUsernameAsync(string Username)
         {
             string procName = "USP_GetPasswordByUsername";
@@ -289,7 +490,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-
         public async Task<ResponseModel> ClearOtpAsync(string email)
         {
             string procName = "USP_ClearPatientOtp";
@@ -314,7 +514,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-
         public async Task<ResponseModel> SaveOtpAsync(OtpDetailModel model)
         {
             string procName = "USP_SavePatientOtp";
@@ -367,7 +566,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-
         public async Task<ResponseModel> SendOtpEmailAsync(string toEmail, string toName, string otpCode)
         {
             try
@@ -478,7 +676,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
                 </div>";
         }
-
         public async Task<ResponseModel> ResetFailedAttemptsAsync(string email)
         {
             string procName = "USP_ResetFailedAttempts";
@@ -502,7 +699,6 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-
         public async Task<ResponseModel> ResetPasswordAsync(Guid userId, string passwordHash)
         {
             string procName = "USP_ResetAssociatePassword";
@@ -573,7 +769,6 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-
         public async Task<OtpDetailModel> GetOtpDetailByUserIdAsync(Guid userId)
         {
             string procName = "USP_GetPatientOtpDetail";

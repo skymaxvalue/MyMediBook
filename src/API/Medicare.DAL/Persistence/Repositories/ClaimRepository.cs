@@ -4,6 +4,7 @@ using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.Billing;
 using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.ErrorLog;
+using Medicare.Application.Models.CommonModels.Response;
 using Medicare.DAL.Persistence.Dapper;
 
 namespace Medicare.DAL.Persistence.Repositories
@@ -506,6 +507,49 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("Notes", model.Notes);
 
                 returnData = await _context.QuerySingleStoredProcAsync<ForwardToSecondaryResponse>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<ClaimAuditResponse> GetClaimAuditById(int claimId)
+        {
+            string procName = "USP_GetClaimAuditById";
+            ClaimAuditResponse returnData = new ClaimAuditResponse();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("ClaimId", claimId);
+
+                returnData = await _context.QueryMultipleAsync(procName, param, async multi =>
+                {
+                    var claims = (await multi.ReadSingleAsync<ClaimAuditSummary>());
+                    var lineItems = (await multi.ReadAsync<AuditLineItem>()).ToList();
+                    var payments = (await multi.ReadAsync<AuditPayment>()).ToList();
+                    var adjustments = (await multi.ReadAsync<AuditAdjustment>()).ToList();
+                    var responsibilities = (await multi.ReadAsync<AuditResponsibility>()).ToList();
+                    var response = await multi.ReadFirstOrDefaultAsync<ProcResponseModel>();
+
+                    return new ClaimAuditResponse
+                    {
+                        Claim = claims,
+                        LineItems = lineItems,
+                        InsurancePayments = payments,
+                        Adjustments = adjustments,
+                        PatientResponsibility = responsibilities,
+                        IsSuccess = response.IsSuccess,
+                        ResponseMessage = response?.ResponseMessage
+                    };
+                });
             }
             catch (Exception ex)
             {
