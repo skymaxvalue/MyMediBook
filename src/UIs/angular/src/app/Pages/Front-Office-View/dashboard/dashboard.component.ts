@@ -96,6 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     recentPatients: [],
     todaysQueue: []
   };
+  dashboardDataCount: any;
 
 
   constructor(
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.store.select(selectDashboardDataSummery).subscribe((res: any) => {
       if (res) {
 
-        this.dashboardData = res
+        this.dashboardDataCount = res
         console.log('Dashboard Data from Store:', this.dashboardData, res);
       }
     })

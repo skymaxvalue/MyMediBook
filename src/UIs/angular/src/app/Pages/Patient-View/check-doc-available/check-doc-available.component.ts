@@ -45,6 +45,8 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   showSlotsModal = false;
   selectedDateGlobal = '';
   selectedSlot: any = null;
+  ShowAddbookingAppoinmentForm: boolean = false;
+  isFrontOfficePageBookForm: boolean = false;
   highlightDate = '';
   otpDevice: { otpDevice: string, value: string } = { otpDevice: 'email', value: '' };
 
@@ -320,14 +322,16 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
 
   goToBooking(): void {
 
+
     if (!this.selectedSlot) {
       this.toast.error('Error', 'Please select a time slot');
       return;
     }
-    if (this.updatesheduledpatient) {
+    if (this.isFrontOfficePage) {
+      this.showAddbookingAppoinmentForm = true;
+      this.isFrontOfficePageBookForm = true;
 
     }
-    this.showAddbookingAppoinmentForm = true
 
 
   }
