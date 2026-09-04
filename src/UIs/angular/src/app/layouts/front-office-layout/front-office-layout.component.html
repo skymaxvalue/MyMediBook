@@ -1,0 +1,38 @@
+<!-- <app-front-office-header></app-front-office-header> -->
+<div class="layout">
+
+
+    <app-front-office-header></app-front-office-header>
+    <div>
+
+        <div class="breadcrumb">
+
+            @for (item of breadcrumbs; track item.url; let last = $last) {
+
+            @if (!last) {
+            <a [routerLink]="item.url">
+                {{ item.label }}
+            </a>
+
+            <span class="breadcrumb-arrow">›</span>
+            }
+
+            @if (last) {
+            <span class="current">
+                {{ item.label }}
+            </span>
+            }
+
+            }
+
+        </div>
+        <!-- <app-front-office-sidebar></app-front-office-sidebar> -->
+
+        <main class="content">
+            <router-outlet></router-outlet>
+        </main>
+
+    </div>
+
+    <app-front-office-footer></app-front-office-footer>
+</div>

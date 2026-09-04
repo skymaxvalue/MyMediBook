@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Registration | My Medi Book</title>
+
+
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+
+    <link rel="stylesheet"
+          href="css/patient-registration.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+
+</head>
+
+<body>
+
+  
+
+    <div id="navbar-container"></div>
+
+
+
+    <main class="dashboard-container">
+
+
+        <section class="breadcrumb">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <span class="separator">
+
+                <img src="images/right-arrow-blue.png"
+                     alt="Arrow">
+
+            </span>
+
+            <span class="active">
+
+                Patient Registration
+
+            </span>
+
+        </section>
+
+
+
+        <section class="registration-card">
+
+
+            <div class="page-header">
+
+                <h1>
+
+                    Patient Registration
+
+                </h1>
+
+                <p>
+
+                    Provide the patient's details to schedule an appointment
+
+                </p>
+
+            </div>
+
+
+            <form id="bookingForm">
+
+
+                <section class="form-section">
+
+                    <div class="section-title">
+
+                        <img src="images/profile-outline.png"
+                             alt="Personal">
+
+                        <h2>
+
+                            Personal Details
+
+                        </h2>
+
+                    </div>
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                First Name
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input type="text"
+                                   id="firstName"
+                                   placeholder="First name"
+                                   required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Last Name
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input type="text"
+                                   id="lastName"
+                                   placeholder="Last name"
+                                   required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Gender
+
+                                <span>*</span>
+
+                            </label>
+
+                            <select required>
+
+                                <option value=""
+                                        selected
+                                        disabled>
+
+                                    Select gender
+
+                                </option>
+
+                                <option>
+
+                                    Male
+
+                                </option>
+
+                                <option>
+
+                                    Female
+
+                                </option>
+
+                                <option>
+
+                                    Other
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Date of Birth
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="date-field">
+
+                                <input type="date"
+                                       id="dateOfBirth"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Age
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="age-wrapper">
+                                <input
+                                    type="text"
+                                    id="age"
+                                    placeholder="--"
+                                    readonly
+                                    aria-readonly="true"
+                                    required>
+                                <span class="age-unit">Years</span>
+                            </div>
+
+                        </div>
+
+
+                        
+
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Insurance Coverage
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="radio-group">
+
+                                <label>
+
+                                    <input type="radio"
+                                           name="insurance"
+                                           value="yes"
+                                           required>
+
+                                    <span>
+
+                                        Yes
+
+                                    </span>
+
+                                </label>
+
+                                <label>
+
+                                    <input type="radio"
+                                           name="insurance"
+                                           value="no">
+
+                                    <span>
+
+                                        No
+
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+
+            
+<section class="form-section">
+    <div class="section-title">
+        <img src="images/contact.png" alt="Contact">
+        <h2>Contact Information</h2>
+    </div>
+
+    <div class="contact-grid">
+
+        <div class="form-group">
+            <label>Mobile Number <span>*</span></label>
+            <input type="tel"
+                   id="phone"
+                   placeholder="Enter Mobile Number"
+                   autocomplete="tel"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email"
+                   id="email"
+                   placeholder="Email address">
+        </div>
+
+    </div>
+</section>
+
+
+<section class="form-section">
+    <div class="section-title">
+        <img src="images/location.png" alt="Address">
+        <h2>Address Information</h2>
+    </div>
+
+   
+    <div class="form-group full-width">
+        <label>Present Address <span>*</span></label>
+        <input type="text"
+               id="residentialAddress"
+               placeholder="Enter present address"
+               required>
+    </div>
+
+    <div class="contact-grid">
+
+        <div class="form-group">
+            <label>City <span>*</span></label>
+            <input type="text"
+                   id="cityVillage"
+                   placeholder="City"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>State <span>*</span></label>
+            <select id="state" required>
+                <option value="" selected disabled>State / Province</option>
+                <option>West Bengal</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <div class="form-group pin-field">
+            <label>PIN Code <span>*</span></label>
+            <input type="text"
+                   id="pinCode"
+                   inputmode="numeric"
+                   maxlength="6"
+                   placeholder="PIN Code"
+                   required>
+        </div>
+
+    </div>
+
+    <label class="checkbox-label same-address-row">
+        <input type="checkbox" id="sameAsPresentAddress">
+        <span>Same as Present Address</span>
+    </label>
+
+
+    <div id="permanentAddressGrid">
+
+        <div class="form-group full-width">
+            <label>Permanent Address <span>*</span></label>
+            <input type="text"
+                   id="permanentAddress"
+                   placeholder="Enter permanent address"
+                   required>
+        </div>
+
+        <div class="contact-grid">
+
+            <div class="form-group">
+                <label>City <span>*</span></label>
+                <input type="text"
+                       id="permanentCity"
+                       placeholder="City"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>State <span>*</span></label>
+                <select id="permanentState" required>
+                    <option value="" selected disabled>State / Province</option>
+                    <option>West Bengal</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="form-group pin-field">
+                <label>PIN Code <span>*</span></label>
+                <input type="text"
+                       id="permanentPinCode"
+                       inputmode="numeric"
+                       maxlength="6"
+                       placeholder="PIN Code"
+                       required>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+               
+                <section class="form-section verification-section">
+
+                    <div class="section-title">
+
+                        <img src="images/security-icon.png"
+                             alt="Verification">
+
+                        <h2>
+
+                            Verification
+
+                        </h2>
+
+                    </div>
+
+                    <div class="verification-row">
+
+                        <label class="verification-label">
+
+                            Receive OTP Via
+
+                            <span>*</span>
+
+                        </label>
+
+                       <div class="radio-group">
+
+    <label>
+        <input
+            type="radio"
+            name="otp"
+            value="mobile"
+            required>
+
+        <span>
+            Mobile Number
+        </span>
+    </label>
+
+    <label>
+        <input
+            type="radio"
+            name="otp"
+            value="email">
+
+        <span>
+            Email Address
+        </span>
+    </label>
+
+    <label>
+        <input
+            type="radio"
+            name="otp"
+            value="none">
+
+        <span>
+            None
+        </span>
+    </label>
+
+</div>
+
+                    </div>
+
+                       </section>
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="primary-btn">
+
+                Continue
+
+                <img
+                    src="images/arrow-right.png"
+                    alt="Arrow">
+
+            </button>
+
+            <button
+                type="reset"
+                class="secondary-btn">
+
+                Clear
+
+                <img
+                    src="images/clear-blue.png"
+                    alt="Refresh">
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+</main>
+    
+
+
+    <div id="footer-container"></div>
+
+
+<div id="insuranceModal" class="modal">
+
+    <div class="modal-content insurance-modal">
+
+        <button
+            type="button"
+            class="modal-close"
+            onclick="closeInsuranceModal()">
+
+            &times;
+
+        </button>
+
+        <div class="insurance-header">
+
+            <div class="insurance-icon">
+
+                <img src="images/security-icon.png"
+                     alt="Insurance">
+
+            </div>
+
+            <div>
+
+                <h2>Insurance Details</h2>
+
+                <p>Please provide insurance information</p>
+
+            </div>
+
+        </div>
+
+        <div class="insurance-form">
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="images/provider.png">
+
+                    Provider Name
+                    <span>*</span>
+
+                </label>
+
+                <input
+                    id="provider"
+                    type="text"
+                    placeholder="Enter provider name">
+
+            </div>
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="images/id-card.png">
+
+                    Insurance Policy ID
+                    <span>*</span>
+
+                </label>
+
+                <input
+                    id="policy"
+                    type="text"
+                    placeholder="Enter policy ID">
+
+            </div>
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="images/group.png">
+
+                    Insurance Group ID
+
+                </label>
+
+                <input
+                    id="groupId"
+                    type="text"
+                    placeholder="Enter group ID">
+
+            </div>
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="images/profile-outline.png">
+
+                    Primary Holder Name
+                    <span>*</span>
+
+                </label>
+
+                <input
+                    id="holderName"
+                    type="text"
+                    placeholder="Enter primary holder name">
+
+            </div>
+
+            <div class="insurance-row">
+
+                <label>
+
+                    <img src="images/location.png">
+
+                    Primary Address
+                    <span>*</span>
+
+                </label>
+
+                <input
+                    id="insuranceAddress"
+                    type="text"
+                    placeholder="Enter primary address">
+
+            </div>
+
+        </div>
+
+        <div class="insurance-footer">
+
+            <button
+                type="button"
+                class="secondary-btn"
+                onclick="closeInsuranceModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="confirmInsurance()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="paymentModal" class="modal">
+
+    <div class="modal-content payment-modal">
+
+        <button
+            type="button"
+            class="modal-close"
+            onclick="closePaymentModal()">
+
+            &times;
+
+        </button>
+
+        <div class="payment-header">
+
+            <div class="payment-icon">
+
+                <img src="images/card.png"
+                     alt="Payment">
+
+            </div>
+
+            <div>
+
+                <h2>Payment Details</h2>
+
+                <p>Please provide payment information</p>
+
+            </div>
+
+        </div>
+
+        <div class="payment-form">
+
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="images/card.png">
+
+                    Payment Type
+                    <span>*</span>
+
+                </label>
+
+                <select id="paymentType">
+
+                    <option value="" selected disabled>Select payment type</option>
+
+                    <option>Credit Card</option>
+
+                    <option>Debit Card</option>
+
+                
+
+                </select>
+
+            </div>
+
+
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="images/profile-outline.png">
+
+                    Card Holder Name
+                    <span>*</span>
+
+                </label>
+
+                <input
+                    id="cardHolder"
+                    type="text"
+                    placeholder="Enter card holder name">
+
+            </div>
+
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="images/card.png">
+
+                    Card Number
+                    <span>*</span>
+
+                </label>
+
+                <input
+                    id="cardNumber"
+                    type="text"
+                    maxlength="19"
+                    placeholder="Enter card number">
+
+            </div>
+
+
+
+            <div class="payment-row">
+
+                <label>
+
+                    <img src="images/calendar2.png">
+
+                    Expiry Date
+                    <span>*</span>
+
+                </label>
+
+                <div class="expiry-wrapper">
+
+                    <input
+                        id="expiry"
+                        type="text"
+                        maxlength="5"
+                        placeholder="MM / YY">
+
+                    <span class="cvv-text">
+
+                        CVV
+                        <span>*</span>
+
+                    </span>
+
+                    <input
+                        id="cvv"
+                        type="password"
+                        maxlength="3"
+                        placeholder="Enter CVV">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="payment-footer">
+
+            <button
+                type="button"
+                class="secondary-btn"
+                onclick="closePaymentModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="confirmPayment()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+    <script src="js/navbar.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+    <script src="js/patient-registration.js"></script>
+
+</body>
+
+</html>

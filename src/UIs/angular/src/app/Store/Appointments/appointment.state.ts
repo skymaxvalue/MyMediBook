@@ -1,4 +1,4 @@
-import { AppointmentBooking } from '../../Models/Appointment-Model';
+import { AppointmentBooking } from '../../core/Models/Appointment-Model';
 
 export interface AppointmentState {
     appointment: AppointmentBooking | null;
@@ -9,6 +9,8 @@ export interface AppointmentState {
     Appointments: any[];
     canceledAppoint: any;
     rescheduledAppointment: any;
+    DashboardDataSummery: any;
+    TodaysAppointments: any;
 }
 
 export const initialAppointmentState: AppointmentState = {
@@ -19,5 +21,7 @@ export const initialAppointmentState: AppointmentState = {
     relations: [],
     Appointments: [],
     canceledAppoint: null,
-    rescheduledAppointment: null
+    rescheduledAppointment: null,
+    DashboardDataSummery: null,
+    TodaysAppointments: [],
 };

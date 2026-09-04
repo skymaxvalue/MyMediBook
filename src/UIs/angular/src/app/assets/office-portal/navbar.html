@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+</head>
+
+<body>
+
+
+
+<header class="dashboard-header">
+
+
+
+    <div class="top-header">
+
+
+        <div class="header-left">
+
+            <div class="hospital-brand">
+
+                <img src="../images/hospital2.png"
+                     alt="Hospital Logo">
+
+                <div class="hospital-text">
+
+                    <h2>
+                        HEALTH HAVEN
+                    </h2>
+
+                    <span>
+                        MEDICAL CENTER
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-center">
+
+            <h1>
+                Front Office Dashboard
+            </h1>
+
+            <div class="dashboard-info">
+
+                <div class="info-item">
+
+                    <img src="../images/calendar.png"
+                         alt="Calendar">
+
+                    <span id="currentDate">
+                        Tuesday, 14 July 2026
+                    </span>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-item">
+
+                    <img src="images/clock2.png"
+                         alt="Clock">
+
+                    <span id="currentTime">
+                        10:45 AM
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <div class="medibook-brand">
+
+                <img src="images/logo2.png"
+                     alt="My Medi Book">
+
+                <span>
+
+                    My
+
+                    <strong>
+                        Medi
+                    </strong>
+
+                    Book
+
+                </span>
+
+            </div>
+
+
+            <div class="user-profile"
+                 id="userProfile">
+
+                <img src="../images/user.png"
+                     alt="User"
+                     class="profile-image">
+
+                <div class="profile-info">
+
+                    <h4 id="username">
+
+                        User Name
+
+                    </h4>
+
+                    <span>
+
+                        Front Office
+
+                    </span>
+
+                </div>
+
+                <button id="profileToggle"
+                        class="profile-toggle">
+
+                    <img src="images/down-arrow.png"
+                         alt="Menu">
+
+                </button>
+
+
+
+                <div class="profile-dropdown"
+                     id="profileDropdown">
+
+                    <button id="profileBtn">
+
+                        My Profile
+
+                    </button>
+
+                    <button id="logoutBtn">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <nav class="dashboard-nav">
+
+        <button class="nav-item"
+                data-page="dashboard">
+
+            <img src="images/dashboard.png"
+                 alt="Dashboard">
+
+            <span>
+
+                Dashboard
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="patient-registration">
+
+            <img src="images/patient-registration.png"
+                 alt="Patient Registration">
+
+            <span>
+
+                Patient Registration
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="book-appointment">
+
+            <img src="images/book-appointment.png"
+                 alt="Appointment">
+
+            <span>
+
+                Book Appointment
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="patient-checkin">
+
+            <img src="images/checkin.png"
+                 alt="Check In">
+
+            <span>
+
+                Patient Check-In
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="lab-service">
+
+            <img src="images/lab-service.png"
+                 alt="Lab">
+
+            <span>
+
+                Lab Service
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="insurance">
+
+            <img src="images/insurance.png"
+                 alt="Insurance">
+
+            <span>
+
+                Insurance & Billing
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="queue">
+
+            <img src="images/queue.png"
+                 alt="Queue">
+
+            <span>
+
+                Queue Management
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="doctor-schedule">
+
+            <img src="images/doctor-schedule.png"
+                 alt="Doctor">
+
+            <span>
+
+                Doctor Schedule
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="reports">
+
+            <img src="images/reports.png"
+                 alt="Reports">
+
+            <span>
+
+                Reports
+
+            </span>
+
+        </button>
+
+        <button class="nav-item"
+                data-page="settings">
+
+            <img src="images/settings.png"
+                 alt="Settings">
+
+            <span>
+
+                Settings
+
+            </span>
+
+        </button>
+
+    </nav>
+
+</header>
+
+
+<div id="logoutModal" class="modal-overlay">
+  <div class="logout-modal">
+    <button class="modal-close" id="closeLogoutModal">×</button>
+
+    <div class="logout-icon">
+      ⚠️
+    </div>
+
+    <h2>Confirm Logout</h2>
+
+    <p>Are you sure you want to logout from your account?</p>
+
+    <div class="modal-actions">
+      <button class="btn-outline" id="cancelLogout">Cancel</button>
+      <button class="btn-danger" id="confirmLogout">Logout</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/navbar.js"></script>
+
+
+
+</body>
+
+</html>

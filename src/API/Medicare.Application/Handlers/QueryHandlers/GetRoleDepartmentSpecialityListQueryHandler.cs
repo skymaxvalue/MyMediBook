@@ -15,6 +15,12 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<List<RoleHierarchyModel>> Handle(GetRoleDepartmentSpecialityListQuery request, CancellationToken cancellationToken)
         {
+            var excludedRole = request.role switch
+            {
+                "Admin" => new[] { 1, 2 },
+                _ => new[] { 1, 2 }
+            };
+
             var result = await _masterRepository.GetRoleDepartmentSpecialityHierarchyAsync();
 
             var returnData = result
@@ -58,7 +64,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
                 })
                 .ToList();
 
-            return returnData;
+            return returnData.Where(r => !excludedRole.Contains(r.RoleId)).ToList();
         }
     }
 }

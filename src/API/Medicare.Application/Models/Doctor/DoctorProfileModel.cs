@@ -34,6 +34,6 @@
         public string ToTime { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
-        public string AvailableWeekDates { get; set; }
+        public string AvailableWeekDays { get; set; }
     }
 }

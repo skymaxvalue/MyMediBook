@@ -11,11 +11,18 @@ export const authReducer = createReducer(
         isLoading: true
     })),
 
-    on(AuthActions.loginSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        loginPatient: action.patient
-    })),
+    on(AuthActions.loginSuccess, (state, action) => {
+
+        return {
+            ...state,
+            isLoading: false,
+            loginUser: action.user,
+            user: action.user.data,
+            token: action.user.accessToken ?? action.user.tokenKey,
+
+            refreshToken: action.user.refreshToken
+        };
+    }),
 
     on(AuthActions.loginFailure, (state, action) => ({
         ...state,
@@ -31,9 +38,8 @@ export const authReducer = createReducer(
     on(AuthActions.refreshTokenSuccess, (state, { accessToken, refreshToken }) => ({
 
         ...state,
-
+        token: accessToken,
         accessToken,
-
         refreshToken
 
     })),
@@ -53,7 +59,7 @@ export const authReducer = createReducer(
     on(AuthActions.requestOTPSuccess, (state, action) => ({
         ...state,
         isLoading: false,
-        requestedOtp: action.requesteOTP
+        requestedOtp: action.requestedOtp
     })),
 
     on(AuthActions.requestOTPFailure, (state, action) => ({
@@ -137,6 +143,40 @@ export const authReducer = createReducer(
         ...state,
         isLoading: false,
         error: action.error,
+    })),
+
+    on(AuthActions.verifyOTP, (state) => ({
+        ...state,
+        isLoading: true,
+    })),
+
+    on(AuthActions.verifyOTPSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        otpres: action.otpres,
+    })),
+
+    on(AuthActions.verifyOTPFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    })),
+
+    on(AuthActions.ForrgetResetPassword, (state) => ({
+        ...state,
+        isLoading: true,
+    })),
+
+    on(AuthActions.ForrgetResetPasswordSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        resetPassRes: action.resetPassRes,
+    })),
+
+    on(AuthActions.ForrgetResetPasswordFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
     })),
 
 )

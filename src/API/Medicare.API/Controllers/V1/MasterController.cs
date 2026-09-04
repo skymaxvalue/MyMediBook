@@ -7,6 +7,7 @@ using Medicare.Application.Models.Speciality;
 using Medicare.Application.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Medicare.API.Controllers.V1
 {
@@ -57,12 +58,14 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         [Route("GetRoleList")]
         public async Task<IActionResult> GetRoleList()
         {
+            var role = User.FindFirst(ClaimTypes.Role)!.Value;
             List<RoleDataModel> response = new List<RoleDataModel>();
-            response = await _mediator.Send(new GetRoleListQuery());
+            response = await _mediator.Send(new GetRoleListQuery(role));
             return HandleListResponse(response);
         }
 
@@ -93,12 +96,14 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [Authorize(Roles =("Admin"))]
         [HttpGet]
         [Route("GetRoleDepartmentSpecialityList")]
         public async Task<IActionResult> GetRoleDepartmentSpecialityList()
         {
+            var role = User.FindFirst(ClaimTypes.Role)!.Value;
             List<RoleHierarchyModel> response = new List<RoleHierarchyModel>();
-            response = await _mediator.Send(new GetRoleDepartmentSpecialityListQuery());
+            response = await _mediator.Send(new GetRoleDepartmentSpecialityListQuery(role));
             return HandleListResponse(response);
         }
 

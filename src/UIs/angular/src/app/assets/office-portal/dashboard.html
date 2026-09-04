@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Front Office Dashboard | My Medi Book</title>
+
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+  
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/dashboard.css">
+
+
+
+</head>
+
+<body>
+
+
+
+    <div id="navbar-container"></div>
+
+   
+
+
+
+
+<main class="dashboard-container">
+
+ 
+
+    <section class="stats-section">
+
+       
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+                <img src="../images/calendar2.png" alt="Appointments">
+            </div>
+
+            <div class="stat-content">
+
+                <p>Today's Appointments</p>
+
+                <h2>52</h2>
+
+            </div>
+
+        </div>
+
+
+      
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+                <img src="images/walkin.png" alt="Walkins">
+            </div>
+
+            <div class="stat-content">
+
+                <p>Walk-ins Waiting</p>
+
+                <h2>08</h2>
+
+            </div>
+
+        </div>
+
+
+        
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+                <img src="images/checked-in.png" alt="Checked In">
+            </div>
+
+            <div class="stat-content">
+
+                <p>Checked In</p>
+
+                <h2>27</h2>
+
+            </div>
+
+        </div>
+
+
+     
+
+        <div class="stat-card">
+
+            <div class="stat-icon orange">
+                <img src="images/payment.png" alt="Payment">
+            </div>
+
+            <div class="stat-content">
+
+                <p>Pending Payments</p>
+
+                <h2>05</h2>
+
+            </div>
+
+        </div>
+
+
+    
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+
+                <img src="images/lab.png" alt="Lab">
+
+            </div>
+
+            <div class="stat-content">
+
+                <p>Lab Results</p>
+
+                <h2>09</h2>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+    <section class="feature-grid">
+
+
+
+    
+
+        <section class="dashboard-card quick-actions">
+
+            <div class="card-header">
+
+                <h3>QUICK ACTIONS</h3>
+
+            </div>
+
+
+           
+
+           <div class="search-box">
+
+    <button
+        type="button"
+        class="search-btn"
+        id="dashboardSearchBtn">
+
+        <img
+            src="images/search.png"
+            alt="Search">
+
+    </button>
+
+    <input
+        type="text"
+        id="dashboardSearch"
+        placeholder="Search patient">
+
+</div>
+
+
+
+            <div class="action-list">
+
+             
+
+                <div
+                    class="action-card"
+                    data-page="patient-registration.html"
+                    tabindex="0"
+                    role="button">
+
+                    <div class="action-left">
+
+                        <div class="action-icon blue">
+
+                            <img src="images/patient-registration2.png">
+
+                        </div>
+
+                        <div>
+
+                            <h4>Patient Registration</h4>
+
+                            <p>Register new patient</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                        src="images/right-arrow.png">
+
+                </div>
+
+
+
+              
+
+                <div
+                    class="action-card"
+                    data-page="patient-checkin.html"
+                    tabindex="0"
+                    role="button">
+
+                    <div class="action-left">
+
+                        <div class="action-icon green">
+
+                            <img src="images/checkin2.png">
+
+                        </div>
+
+                        <div>
+
+                            <h4>Patient Check-in</h4>
+
+                            <p>Check-in existing patient</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                        src="images/right-arrow.png">
+
+                </div>
+
+
+
+       
+
+                <div
+                    class="action-card"
+                    data-page="book-appointment.html"
+                    tabindex="0"
+                    role="button">
+
+                    <div class="action-left">
+
+                        <div class="action-icon orange">
+
+                            <img src="images/book.png">
+
+                        </div>
+
+                        <div>
+
+                            <h4>Book Appointment</h4>
+
+                            <p>Schedule new appointment</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                        src="images/right-arrow.png">
+
+                </div>
+
+
+
+         
+
+                <div
+                class="action-card"
+                data-page="next-in-queue.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="action-left">
+
+                        <div class="action-icon purple">
+
+                            <img src="images/queue2.png">
+
+                        </div>
+
+                        <div>
+
+                            <h4>Next in Queue</h4>
+
+                            <p>View next patient in queue</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                        src="images/right-arrow.png">
+
+                </div>
+
+
+
+        
+
+                
+
+            </div>
+
+        </section>
+
+
+
+  
+
+        <section class="dashboard-card services">
+
+            <div class="card-header">
+
+                <h3>SERVICES</h3>
+
+            </div>
+
+            <div class="service-list">
+
+           
+
+                <div
+                class="service-card"
+                data-page="lab-service.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="service-left">
+
+                        <div class="service-icon purple">
+
+                            <img src="images/lab2.png" alt="Lab Service">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>Lab Service</h4>
+
+                            <p>Create lab request</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+        
+
+                <div
+                    class="service-card"
+                    data-page="room-service.html"
+                    tabindex="0"
+                    role="button">
+
+                    <div class="service-left">
+
+                        <div class="service-icon blue">
+
+                            <img src="images/room-service.png" alt="Room Service">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>Room Service</h4>
+
+                            <p>Manage room allotment</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+           
+
+               <div
+                    class="service-card"
+                    data-page="consultation.html"
+                    tabindex="0"
+                    role="button"> 
+
+                    <div class="service-left">
+
+                        <div class="service-icon green">
+
+                            <img src="images/consultation.png" alt="Consultation">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>Consultation</h4>
+
+                            <p>Create OP consultation</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+   
+
+                <div
+                class="service-card"
+                data-page="followup-visits.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="service-left">
+
+                        <div class="service-icon blue">
+
+                            <img src="images/doctor.png" alt="Follow-up">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>Follow-up Visits</h4>
+
+                            <p>Schedule follow-up</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+      
+
+                <div
+                    class="service-card"
+                    data-page="prescription-refill.html"
+                    tabindex="0"
+                    role="button">
+
+                    <div class="service-left">
+
+                        <div class="service-icon purple">
+
+                            <img src="images/prescription.png" alt="Prescription">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>Prescription Refill</h4>
+
+                            <p>E-prescription &amp; refills</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+               
+
+                <div
+                class="service-card"
+                data-page="payment.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="service-left">
+
+                        <div class="service-icon green">
+
+                            <img src="images/payment2.png" alt="Payment">
+
+                        </div>
+
+                        <div class="service-content">
+
+                            <h4>Payment</h4>
+
+                            <p>Collect and manage payments</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+ 
+
+        <section class="dashboard-card billing">
+
+            <div class="card-header">
+
+                <h3>BILLING &amp; CLAIMS</h3>
+
+            </div>
+
+            <div class="billing-list">
+
+
+                <div
+                class="billing-card"
+                data-page="claims-dashboard.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="billing-left">
+
+                        <div class="billing-icon blue">
+
+                            <img src="images/claims.png" alt="Claims">
+
+                        </div>
+
+                        <div class="billing-content">
+
+                            <h4>Claims Dashboard</h4>
+
+                            <p>View claims overview</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+            
+
+               <div
+                class="billing-card"
+                data-page="credit-card-processing.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="billing-left">
+
+                        <div class="billing-icon green">
+
+                            <img src="images/payment2.png" alt="Card">
+
+                        </div>
+
+                        <div class="billing-content">
+
+                            <h4>Credit Card Processing</h4>
+
+                            <p>Integrated Credit Card Processing</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+          
+
+                <div
+                class="billing-card"
+                data-page="insurance-billing.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="billing-left">
+
+                        <div class="billing-icon blue">
+
+                            <img src="images/insurance2.png" alt="Insurance">
+
+                        </div>
+
+                        <div class="billing-content">
+
+                            <h4>Insurance &amp; Billing</h4>
+
+                            <p>Manage insurance &amp; billing</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+
+
+      
+
+                <div
+                class="billing-card"
+                data-page="payment-queue.html"
+                tabindex="0"
+                role="button">
+
+                    <div class="billing-left">
+
+                        <div class="billing-icon orange">
+
+                            <img src="images/payment.png" alt="Payment Queue">
+
+                        </div>
+
+                        <div class="billing-content">
+
+                            <h4>Payment Queue</h4>
+
+                            <p>View pending payments</p>
+
+                        </div>
+
+                    </div>
+
+                    <img class="arrow"
+                         src="images/right-arrow.png"
+                         alt="Arrow">
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </section>
+
+
+
+    <section class="bottom-grid">
+
+
+
+        <section class="dashboard-card recent-patients">
+
+            <div class="card-header">
+
+                <h3>RECENT PATIENTS</h3>
+
+                <a href="#">View all</a>
+
+            </div>
+
+            <div class="patient-list">
+
+          
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar blue">
+
+                            RK
+
+                        </div>
+
+                        <span class="patient-name">
+
+                            Ramesh Kumar
+
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+
+                        UHID: HH24567
+
+                    </span>
+
+                    <span class="badge checked-in">
+
+                        Checked In
+
+                    </span>
+
+                    <span class="time">
+
+                        10 mins ago
+
+                    </span>
+
+                   
+
+                </div>
+
+
+
+       
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar green">
+
+                            LP
+
+                        </div>
+
+                        <span class="patient-name">
+
+                            Lakshmi Patel
+
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+
+                        UHID: HH24568
+
+                    </span>
+
+                    <span class="badge pending-payment">
+
+                        Pending Payment
+
+                    </span>
+
+                    <span class="time">
+
+                        15 mins ago
+
+                    </span>
+
+                 
+                </div>
+
+
+
+         
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar purple">
+
+                            RS
+
+                        </div>
+
+                        <span class="patient-name">
+
+                            Rahul Singh
+
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+
+                        UHID: HH24569
+
+                    </span>
+
+                    <span class="badge waiting">
+
+                        Waiting
+
+                    </span>
+
+                    <span class="time">
+
+                        20 mins ago
+
+                    </span>
+
+
+                </div>
+
+
+
+           
+
+                <div class="patient-row">
+
+                    <div class="patient-info">
+
+                        <div class="patient-avatar cyan">
+
+                            AS
+
+                        </div>
+
+                        <span class="patient-name">
+
+                            Anita Sharma
+
+                        </span>
+
+                    </div>
+
+                    <span class="patient-id">
+
+                        UHID: HH24570
+
+                    </span>
+
+                    <span class="badge lab-pending">
+
+                        Lab Pending
+
+                    </span>
+
+                    <span class="time">
+
+                        25 mins ago
+
+                    </span>
+
+                  
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="dashboard-card todays-queue">
+
+            <div class="card-header">
+
+                <h3>TODAY'S QUEUE</h3>
+
+                <a href="#">View all</a>
+
+            </div>
+
+            <div class="queue-list">
+
+  
+
+                <div class="queue-row">
+
+                    <div class="queue-number blue">
+
+                        RV
+
+                    </div>
+
+                    <span class="queue-patient">
+
+                        Rajesh Verma
+
+                    </span>
+
+                    <span class="queue-doctor">
+
+                        Dr. Arun Sharma
+
+                    </span>
+
+                    <span class="queue-time">
+
+                        10:30 AM
+
+                    </span>
+
+                    <span class="badge waiting">
+
+                        Waiting
+
+                    </span>
+
+                </div>
+
+
+
+
+                <div class="queue-row">
+
+                    <div class="queue-number green">
+
+                        AG
+
+                    </div>
+
+                    <span class="queue-patient">
+
+                        Anita Gupta
+
+                    </span>
+
+                    <span class="queue-doctor">
+
+                        Dr. Priya Singh
+
+                    </span>
+
+                    <span class="queue-time">
+
+                        10:45 AM
+
+                    </span>
+
+                    <span class="badge consultation">
+
+                        In Consultation
+
+                    </span>
+
+                </div>
+
+
+
+   
+
+                <div class="queue-row">
+
+                    <div class="queue-number purple">
+
+                        SD
+
+                    </div>
+
+                    <span class="queue-patient">
+
+                        Suman Das
+
+                    </span>
+
+                    <span class="queue-doctor">
+
+                        Dr. Kumar
+
+                    </span>
+
+                    <span class="queue-time">
+
+                        11:00 AM
+
+                    </span>
+
+                    <span class="badge waiting">
+
+                        Waiting
+
+                    </span>
+
+                </div>
+
+
+
+               
+
+                <div class="queue-row">
+
+                    <div class="queue-number blue">
+
+                        MI
+
+                    </div>
+
+                    <span class="queue-patient">
+
+                        Mohd. Irfan
+
+                    </span>
+
+                    <span class="queue-doctor">
+
+                        Dr. Neha Patel
+
+                    </span>
+
+                    <span class="queue-time">
+
+                        11:15 AM
+
+                    </span>
+
+                    <span class="badge waiting">
+
+                        Waiting
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+ <div id="footer-container"></div>
+
+    <script src="js/navbar.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

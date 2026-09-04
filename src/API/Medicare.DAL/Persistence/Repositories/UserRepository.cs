@@ -2,7 +2,6 @@
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.CommonModels.ErrorLog;
-using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.User;
 using Medicare.DAL.Persistence.Dapper;
 
@@ -10,9 +9,9 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
-        public UserRepository(DapperContext context, IErrorLogRepository errorLog)
+        public UserRepository(IDapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;
@@ -67,16 +66,16 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<ResponseModel> GetUserByEmailAsync(string email)
+        public async Task<UserDetailModel> GetUserByEmailAsync(string email)
         {
             string procName = "USP_GetUserByEmail";
-            ResponseModel returnData = new ResponseModel();
+            UserDetailModel returnData = new UserDetailModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("Email", email);
 
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+                returnData = await _context.QuerySingleStoredProcAsync<UserDetailModel>(procName, param);
 
             }
             catch (Exception ex)

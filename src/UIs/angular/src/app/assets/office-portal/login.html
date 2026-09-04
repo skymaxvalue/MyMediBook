@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Front Office Login | My Medi Book</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <section class="login-left">
+
+        <div class="left-overlay"></div>
+
+
+        <div class="hospital-logo">
+
+            <img
+                src="../images/hospital2.png"
+                alt="Hospital Logo">
+
+        </div>
+
+        <div class="left-content">
+
+            <h4>
+                HEALTH HEAVEN MEDICAL CENTER
+            </h4>
+
+            <h1>
+                Front Office Portal
+            </h1>
+
+            <p>
+                Appointment Check-ins
+                <span>•</span>
+                Walk-In Registration
+                <span>•</span>
+                Patient Queue
+            </p>
+
+        </div>
+
+
+        <div class="illustration-wrapper">
+
+            <img
+                src="images/front-office.png"
+                alt="Front Office Illustration">
+
+        </div>
+
+
+        <div class="left-footer">
+
+            <img
+                src="images/shield.png"
+                alt="Shield">
+
+            <span>
+                Manage patient arrivals efficiently.
+            </span>
+
+        </div>
+
+    </section>
+
+    <section class="login-right">
+
+        <div class="login-card">
+
+    
+
+            <div class="brand">
+
+                <img
+                    src="../images/logo.png"
+                    alt="My Medi Book">
+
+                <div class="brand-text">
+
+                    <span class="black-text">My</span>
+
+                    <span class="green-text">Medi</span>
+
+                    <span class="blue-text">Book</span>
+
+                </div>
+
+            </div>
+
+
+            <h2>
+                Front Office Login
+            </h2>
+
+            <p class="login-subtitle">
+                Sign in to manage today's appointments.
+            </p>
+
+
+            <form id="loginForm">
+
+
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Employee ID
+                    </label>
+
+                    <div class="input-box">
+
+                        <img
+                            src="images/emp.png"
+                            alt="User">
+
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-box password-box">
+
+                        <img
+                            src="images/lock.png"
+                            alt="Password">
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required>
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="toggle-password">
+
+                            <img
+                                src="../images/show.png"
+                                alt="Show Password">
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="remember">
+
+                        <span class="checkmark"></span>
+
+                        Remember me
+
+                    </label>
+
+                    <a href="forgot-password.html">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="login-btn">
+
+                    <img
+                        src="images/login-icon.png"
+                        alt="Login">
+
+                    <span>
+                        Sign In
+                    </span>
+
+                </button>
+
+
+
+                <div class="secure-access">
+
+                    <img
+                        src="images/secure.png"
+                        alt="Secure">
+
+                    <span>
+                        Secure Hospital Access
+                    </span>
+
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <div class="support">
+
+                    <h5>
+                        Trouble Signing In?
+                    </h5>
+
+                    <p>
+
+                        Contact
+
+                        <a href="#">
+                            System Support
+                        </a>
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="divider bottom-divider"></div>
+
+
+
+        
+
+                <div class="powered-by">
+
+                    <small>
+                        Powered By
+                    </small>
+
+                    <div class="company">
+
+                        <img
+                            src="images/skymax-footer.png"
+                            alt="SkyMaxValue">
+
+                        <span>
+                            SkyMaxValue Technology Solutions
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>

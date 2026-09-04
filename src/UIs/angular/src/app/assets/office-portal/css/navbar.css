@@ -1,0 +1,600 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+.dashboard-header{
+    position:relative;
+    width:100%;
+    z-index:1000;
+    user-select:none;
+}
+
+.top-header{
+    position:relative;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+    height:96px;
+    padding:0 30px;
+    background:#112B66;
+    color:#fff;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    transition:.25s ease;
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    width:30%;
+}
+
+.hospital-brand{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    transition:.25s ease;
+}
+
+.hospital-brand img{
+    width:52px;
+    height:52px;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+.hospital-text{
+    display:flex;
+    flex-direction:column;
+    line-height:1.05;
+}
+
+.hospital-text h2{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.4px;
+    color:#fff;
+}
+
+.hospital-text span{
+    margin-top:4px;
+    font-size:20px;
+    font-weight:400;
+    color:#fff;
+}
+
+.header-center{
+    position:absolute;
+    left:50%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    transform:translateX(-50%);
+}
+
+.header-center h1{
+    margin-bottom:8px;
+    font-size:26px;
+    font-weight:600;
+    color:#fff;
+}
+
+.dashboard-info{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.info-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:400;
+    color:#fff;
+}
+
+.info-item img{
+    width:16px;
+    height:16px;
+    object-fit:contain;
+}
+
+.divider{
+    width:1px;
+    height:20px;
+    background:rgba(255,255,255,.35);
+}
+
+.header-right{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:34px;
+    width:30%;
+}
+
+.medibook-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:.25s ease;
+}
+
+.medibook-brand img{
+    width:28px;
+    height:28px;
+    object-fit:contain;
+}
+
+.medibook-brand span{
+    font-size:18px;
+    font-weight:600;
+    color:#fff;
+}
+
+.medibook-brand strong{
+    font-weight:700;
+    color:#22C4D6;
+}
+
+.user-profile{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    transition:.25s ease;
+}
+
+.profile-image{
+    width:42px;
+    height:42px;
+    border:2px solid rgba(255,255,255,.35);
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.profile-info{
+    display:flex;
+    flex-direction:column;
+    line-height:1.2;
+}
+
+.profile-info h4{
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+}
+
+.profile-info span{
+    margin-top:4px;
+    font-size:12px;
+    font-weight:400;
+    color:#E5ECFF;
+}
+
+.profile-toggle{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:34px;
+    height:34px;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+}
+
+.profile-toggle img{
+    width:16px;
+    height:16px;
+    object-fit:contain;
+    pointer-events:none;
+    transition:.25s;
+}
+
+.profile-toggle:hover img{
+    transform:rotate(180deg);
+}
+
+.profile-dropdown{
+    position:absolute;
+    top:82px;
+    right:0;
+    width:220px;
+    background:#fff;
+    border-radius:14px;
+    box-shadow:0 20px 40px rgba(15,23,42,.18);
+    overflow:hidden;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(10px);
+    transition:opacity .25s,transform .25s,visibility .25s;
+    z-index:100;
+}
+
+.profile-dropdown.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
+
+.profile-dropdown button{
+    width:100%;
+    height:54px;
+    padding:0 22px;
+    border:none;
+    background:#fff;
+    text-align:left;
+    cursor:pointer;
+    font-family:'Source Sans Pro',sans-serif;
+    font-size:16px;
+    font-weight:600;
+    color:#24304D;
+    transition:.2s;
+}
+
+.profile-dropdown button:first-child{
+    border-bottom:1px solid #EEF2F7;
+}
+
+.profile-dropdown button:hover{
+    background:#EEF4FF;
+    color:#2457E5;
+}
+
+.dashboard-nav{
+    position:sticky;
+    top:0;
+    z-index:900;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    width:100%;
+    height:58px;
+    padding:0 18px;
+    gap:2px;
+    background:#143A78;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    transition:.25s ease;
+}
+
+.dashboard-nav::-webkit-scrollbar{
+    display:none;
+}
+
+.nav-item{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    min-width:max-content;
+    height:46px;
+    padding:0 14px;
+    border:none;
+    border-radius:14px;
+    background:transparent;
+    cursor:pointer;
+    white-space:nowrap;
+    font-family:'Source Sans Pro',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+    transition:
+        background .25s,
+        color .25s,
+        transform .2s,
+        box-shadow .25s;
+}
+
+.nav-item span{
+    line-height:1;
+}
+
+.nav-item img{
+    width:20px;
+    height:20px;
+    object-fit:contain;
+    flex-shrink:0;
+    pointer-events:none;
+    filter:brightness(0) invert(1);
+    transition:.25s;
+}
+
+.nav-item:hover{
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    transform:translateY(-1px);
+}
+
+.nav-item:hover img{
+    filter:brightness(0) invert(1);
+}
+
+.nav-item.active{
+    position:relative;
+    overflow:hidden;
+    background:#2457E5;
+    color:#fff;
+    box-shadow:0 8px 20px rgba(36,87,229,.25);
+}
+
+.nav-item.active img{
+    filter:brightness(0) invert(1);
+}
+
+.nav-item.active::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,.15),
+        transparent
+    );
+    pointer-events:none;
+}
+
+.nav-item:focus-visible{
+    outline:3px solid rgba(36,87,229,.25);
+    outline-offset:2px;
+}
+
+.nav-item:active{
+    transform:scale(.98);
+}
+
+
+.mobile-menu{
+    display:none;
+    justify-content:center;
+    align-items:center;
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:10px;
+    background:transparent;
+    cursor:pointer;
+}
+
+.mobile-menu img{
+    width:24px;
+    height:24px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width:1200px){
+
+    .top-header{
+
+        padding:0 20px;
+
+    }
+
+    .header-right{
+
+        gap:22px;
+
+    }
+
+    .dashboard-nav{
+
+        padding:0 14px;
+
+    }
+
+}
+
+
+
+@media (max-width:992px){
+
+    .top-header{
+
+        height:auto;
+
+        padding:20px;
+
+        flex-wrap:wrap;
+
+        gap:18px;
+
+    }
+
+    .header-left{
+
+        width:100%;
+
+    }
+
+    .header-center{
+
+        position:static;
+
+        width:100%;
+
+        order:3;
+
+        transform:none;
+
+        text-align:center;
+
+    }
+
+    .header-right{
+
+        margin-left:auto;
+
+    }
+
+    .dashboard-nav{
+
+        padding:0 12px;
+
+        gap:10px;
+
+    }
+
+}
+
+@media (max-width:768px){
+
+    .divider,
+
+    .medibook-brand,
+
+    .profile-info{
+
+        display:none;
+
+    }
+
+    .hospital-brand{
+
+        gap:12px;
+
+    }
+
+    .hospital-brand img{
+
+        width:44px;
+
+        height:44px;
+
+    }
+
+    .hospital-text h2{
+
+        font-size:18px;
+
+    }
+
+    .hospital-text span{
+
+        font-size:14px;
+
+    }
+
+    .header-center h1{
+
+        font-size:22px;
+
+    }
+
+    .dashboard-info{
+
+        flex-direction:column;
+
+        gap:6px;
+
+    }
+
+    .profile-image{
+
+        width:42px;
+
+        height:42px;
+
+    }
+
+}
+
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.45);
+  backdrop-filter:blur(4px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.modal-overlay.show{
+  display:flex;
+}
+
+.logout-modal{
+  width:460px;
+  background:#fff;
+  border-radius:20px;
+  padding:32px;
+  box-shadow:0 24px 60px rgba(0,0,0,.18);
+  position:relative;
+  text-align:center;
+}
+
+.logout-icon{
+  width:72px;
+  height:72px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:#FEECEC;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+}
+
+.logout-modal h2{
+  color:#0B2458;
+  margin-bottom:10px;
+}
+
+.logout-modal p{
+  color:#64748B;
+  margin-bottom:28px;
+}
+
+.modal-close{
+  position:absolute;
+  top:18px;
+  right:18px;
+  background:none;
+  border:none;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.modal-actions{
+  display:flex;
+  gap:14px;
+}
+
+.btn-outline,
+.btn-danger{
+  flex:1;
+  height:48px;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-outline{
+  border:1px solid #2563EB;
+  background:#fff;
+  color:#2563EB;
+}
+
+.btn-danger{
+  border:none;
+  background:#DC2626;
+  color:#fff;
+}

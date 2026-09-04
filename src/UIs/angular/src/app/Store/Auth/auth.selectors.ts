@@ -9,10 +9,10 @@ export const selectRegisteredPatient =
         selectAuthState,
         state => state.registeredPatient
     );
-export const selectLoginPatient =
+export const selectLoginUser =
     createSelector(
         selectAuthState,
-        state => state.loginPatient
+        state => state.loginUser
     );
 
 
@@ -65,4 +65,18 @@ export const selectCity =
         selectAuthState,
         state => state.getCities
     );
+
+export const selectVerifyOTP =
+    createSelector(
+        selectAuthState,
+        state => state.otpres
+    );
+
+export const selectForgotPassReset =
+    createSelector(
+        selectAuthState,
+        state => state.resetPassRes
+    );
+
+
 

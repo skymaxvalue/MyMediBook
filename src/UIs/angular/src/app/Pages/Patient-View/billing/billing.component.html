@@ -1,0 +1,512 @@
+<div class="billing-page">
+
+    <div class="billing-container">
+
+        <!-- Header -->
+        <div class="billing-header">
+
+            <div class="title-section">
+
+                <div class="billing-icon">
+                    <img src="/assets/images/billing-icon.png" alt="">
+                </div>
+
+                <h2>Billing</h2>
+
+            </div>
+
+            <div class="header-actions">
+
+                <div class="search-box">
+
+                    <img src="/assets/images/search-icon.png" alt="Search" class="search-icon">
+
+                    <input type="text" placeholder="Search by patient, doctor or clinic..." [ngModel]="searchText()"
+                        (ngModelChange)="searchText.set($event); searchBills()">
+
+                </div>
+
+                <select class="sort-select" [ngModel]="sortValue()"
+                    (ngModelChange)="sortValue.set($event); sortBills()">
+
+                    <option value="" disabled>Sort By</option>
+                    <option value="nameAsc">Patient A-Z</option>
+                    <option value="nameDesc">Patient Z-A</option>
+                    <option value="newest">Newest Visit</option>
+                    <option value="oldest">Oldest Visit</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- Table Header -->
+        <div class="billing-table-wrapper">
+
+            <div class="billing-table">
+
+                <div class="table-header">
+
+                    <div (click)="sortTable('patient')">
+                        Patient Name
+                        <span class="sort-icon">
+                            {{ getSortIcon('patient') }}
+                        </span>
+                    </div>
+
+                    <div (click)="sortTable('visitDate')">
+                        Visit Date
+                        <span class="sort-icon">
+                            {{ getSortIcon('visitDate') }}
+                        </span>
+                    </div>
+
+                    <div>Doctor Name</div>
+
+                    <div>Clinic Address</div>
+
+                    <div>Total Charge</div>
+
+                    <div>Insurance Covered</div>
+
+                    <div>Adjustments / Write-Offs</div>
+
+                    <div>Patient Responsibility</div>
+
+                    <div>Payment Date</div>
+
+                    <div>Remaining Balance</div>
+
+                    <div>Action</div>
+
+                </div>
+
+                <!-- Bills -->
+
+                <div id="billingContainer">
+
+                    @if(paginatedBills().length > 0){
+
+                    @for(bill of paginatedBills(); track bill.id){
+
+                    <div class="bill-card">
+
+                        <!-- Patient -->
+
+                        <div class="patient">
+
+                            <img [src]="bill.image" alt="Patient">
+
+                            <div>
+
+                                <strong>{{ bill.patient }}</strong>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Visit Date -->
+
+                        <div>
+
+                            {{ formatDate(bill.visitDate) }}
+
+                        </div>
+
+                        <!-- Doctor -->
+
+                        <div>
+
+                            {{ bill.doctor }}
+
+                        </div>
+
+                        <!-- Clinic -->
+
+                        <div class="pharmacy-info">
+
+                            <a href="javascript:void(0)" (click)="openMap(bill.clinicAddress)">
+
+                                <img src="/assets/images/location-icon.png" class="location-icon">
+
+                            </a>
+
+                            <span>
+
+                                {{ bill.clinicAddress }}
+
+                            </span>
+
+                        </div>
+
+                        <!-- Total -->
+
+                        <div>
+
+                            ₹{{ bill.totalCharge }}
+
+                        </div>
+
+                        <!-- Insurance -->
+
+                        <div>
+
+                            ₹{{ bill.insuranceCovered }}
+
+                        </div>
+
+                        <!-- Adjustments -->
+
+                        <div>
+
+                            ₹{{ bill.adjustments }}
+
+                        </div>
+
+                        <!-- Responsibility -->
+
+                        <div>
+
+                            ₹{{ bill.patientResponsibility }}
+
+                        </div>
+
+                        <!-- Payment -->
+
+                        <div>
+
+                            {{ formatDate(bill.paymentDate) }}
+
+                        </div>
+
+                        <!-- Balance -->
+
+                        <div [class.balance-paid]="bill.remainingBalance===0"
+                            [class.balance-due]="bill.remainingBalance>0">
+
+                            ₹{{ bill.remainingBalance }}
+
+                        </div>
+
+                        <!-- Button -->
+
+                        <div>
+
+                            <button class="details-btn" (click)="showDetails(bill)">
+
+                                View Details
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    }
+
+                    }
+
+                    @else{
+
+                    <div class="empty-state">
+
+                        <h3>No Billing Records Found</h3>
+
+                        <p>
+
+                            No billing records match your search.
+
+                        </p>
+
+                    </div>
+
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pagination -->
+
+    <div class="pagination-wrapper">
+
+        <button (click)="previousPage()" [disabled]="currentPage()===1">
+
+            ←
+
+        </button>
+
+        <span id="pageNumber">
+
+            {{ currentPage() }}
+
+        </span>
+
+        <button (click)="nextPage()" [disabled]="currentPage()===totalPages()">
+
+            →
+
+        </button>
+
+    </div>
+
+</div>
+
+@if (selectedBill(); as bill) {
+
+<div class="billing-modal-backdrop">
+
+    <div class="billing-modal">
+
+        <!-- HEADER -->
+        <div class="billing-modal-header">
+
+            <div class="billing-title">
+
+                <div class="billing-title-icon">
+                    <img src="/assets/images/billing.png" alt="">
+                </div>
+
+                <h2>Billing Summary</h2>
+
+            </div>
+
+            <button type="button" class="close-btn" (click)="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- BODY -->
+        <div class="billing-modal-body" #printArea>
+
+            <!-- BILLING INVOICE -->
+            <section class="invoice-section">
+
+                <h3>Billing Invoice</h3>
+
+                <div class="invoice-info">
+
+                    <!-- PATIENT -->
+                    <div class="invoice-item">
+
+                        <div class="info-icon">
+                            <img src="/assets/images/blueUser.png" alt="">
+                        </div>
+
+                        <div>
+                            <span>Patient</span>
+                            <strong [title]="bill.patient">{{ bill.patient }}</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- DOCTOR -->
+                    <div class="invoice-item">
+
+                        <div class="info-icon">
+                            <img src="/assets/images/docMod.png" alt="">
+                        </div>
+
+                        <div>
+                            <span>Doctor</span>
+                            <strong [title]="bill.doctor">{{ bill.doctor }}</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- VISIT DATE -->
+                    <div class="invoice-item">
+
+                        <div class="info-icon">
+                            <img src="/assets/images/calendar-icon.png" alt="">
+                        </div>
+
+                        <div>
+                            <span>Visit Date</span>
+                            <strong>{{ formatDate(bill.visitDate) }}</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- CLINIC -->
+                    <div class="invoice-item">
+
+                        <div class="info-icon">
+                            <img src="/assets/images/location-icon.png" alt="">
+                        </div>
+
+                        <div>
+                            <span>Clinic</span>
+                            <strong [title]="bill.clinicAddress">{{ bill.clinicAddress }}</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- BILLING BREAKDOWN -->
+            <section class="breakdown-section">
+
+                <h3>Billing Breakdown</h3>
+
+
+                <!-- TOTAL CHARGE -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon blue">
+                            <img src="/assets/images/icon-reports.png" alt="">
+                        </div>
+
+                        <span>Total Charge</span>
+
+                    </div>
+
+                    <strong>
+                        ₹{{ bill.totalCharge }}
+                    </strong>
+
+                </div>
+
+
+                <!-- INSURANCE -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon green">
+                            <img src="/assets/images/security-icon copy.png" alt="">
+                        </div>
+
+                        <span>Insurance Covered</span>
+
+                    </div>
+
+                    <strong class="green-text">
+                        -₹{{ bill.insuranceCovered }}
+                    </strong>
+
+                </div>
+
+
+                <!-- ADJUSTMENTS -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon orange">
+                            <img src="/assets/images/icon-pending.png" alt="">
+                        </div>
+
+                        <span>Adjustments</span>
+
+                    </div>
+
+                    <strong class="orange-text">
+                        -₹{{ bill.adjustments }}
+                    </strong>
+
+                </div>
+
+
+                <!-- PATIENT RESPONSIBILITY -->
+                <div class="billing-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon blue">
+                            <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+                        </div>
+
+                        <span>Patient Responsibility</span>
+
+                    </div>
+
+                    <strong>
+                        ₹{{ bill.patientResponsibility }}
+                    </strong>
+
+                </div>
+
+
+                <!-- REMAINING BALANCE -->
+                <div class="billing-row balance-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon blue">
+                            <img src="/assets/images/icons8-wallet-100.png" alt="">
+                        </div>
+
+                        <strong>Remaining Balance</strong>
+
+                    </div>
+
+                    <strong class="balance-text">
+                        ₹{{ bill.remainingBalance }}
+                    </strong>
+
+                </div>
+
+
+                <!-- PAYMENT DATE -->
+                <div class="billing-row payment-row">
+
+                    <div class="billing-label">
+
+                        <div class="row-icon purple">
+                            <img src="/assets/images/calendar2.png" alt="">
+                        </div>
+
+                        <span>Payment Date</span>
+
+                    </div>
+
+                    <strong>
+                        {{ formatDate(bill.paymentDate) }}
+                    </strong>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="billing-modal-footer">
+
+            <button type="button" class="download-btn" (click)="downloadPDF()">
+
+                <img src="/assets/images/icons8-installing-updates-100.png" alt="">
+                Download PDF
+
+            </button>
+
+
+            <button type="button" class="print-btn" (click)="printBill()">
+
+                <img src="/assets/images/print.png" alt="">
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

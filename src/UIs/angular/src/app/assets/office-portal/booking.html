@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Patient Information</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/booking.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css">
+
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+<main class="dashboard-container">
+
+    <section class="breadcrumb">
+    <a href="dashboard.html">Dashboard</a>
+
+    <span class="separator">
+        <img src="images/right-arrow-blue.png" alt="">
+    </span>
+
+    <a href="book-appointment.html">Book Appointment</a>
+
+      <span class="separator">
+        <img src="images/right-arrow-blue.png" alt="">
+    </span>
+
+    <a href="availability.html">Doctor Availability</a>
+
+    <span class="separator">
+        <img src="images/right-arrow-blue.png" alt="">
+    </span>
+
+    <span class="active">Patient Information</span>
+
+
+</div>
+   </section>
+<div class="availability-container">
+
+<div class="schedule-box">
+
+<div class="patient-info-header">
+    <div class="header-title-row">
+        <span class="icon-badge" aria-hidden="true">
+            <img src="images/patient-icon-blue.png" alt="">
+        </span>
+        <h2>Patient Information</h2>
+    </div>
+    <p>Please provide patient details to continue with the appointment booking.</p>
+</div>
+
+
+<form id="bookingForm">
+
+<div class="top-fields">
+
+    <div class="field-pair">
+        <label>Patient Selection</label>
+        <div class="mobile-radio-group patient-type-group">
+            <label class="radio-item">
+                <input type="radio" name="patientType" value="existing" checked>
+                <span>Existing Patient</span>
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="patientType" value="new">
+                <span>New Patient</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="field-pair">
+        <label id="patientProfileLabel">Select Patient Profile</label>
+        <div class="patient-dropdown" id="patientDropdown">
+            <button type="button" class="patient-dropdown-trigger" id="patientDropdownTrigger">
+                <span class="patient-avatar-icon" aria-hidden="true">
+                    <img src="images/patient-icon-blue.png" alt="">
+                </span>
+                <span class="patient-dropdown-label" id="patientDropdownLabel">Select Patient</span>
+                <span class="chevron">&#9662;</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<div id="responsiblePartySection" hidden>
+
+<div class="field-pair" id="accountHolderQuestion" hidden>
+    <label>Who will manage this patient's account and billing? <span class="req">*</span></label>
+    <div class="mobile-radio-group account-holder-group">
+        <label class="radio-item">
+            <input type="radio" name="accountHolder" value="self" required disabled>
+            <span>The Patient</span>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="accountHolder" value="other" disabled>
+            <span>Another Person</span>
+        </label>
+    </div>
+</div>
+
+<div class="field-pair rp-card" id="responsiblePartySearchCard" hidden>
+    <h3 class="rp-card-title">Search Responsible Party</h3>
+    <p class="rp-card-subtitle">Search using the account holder's registered mobile number.</p>
+
+    <div class="rp-search-row">
+        <div class="rp-search-option">
+            <div class="mobile-search-input">
+                <span class="mobile-prefix">+91</span>
+                <input type="tel" id="responsiblePartyMobile" placeholder="Enter mobile number" inputmode="numeric" maxlength="10">
+            </div>
+        </div>
+
+        <div class="rp-search-divider" aria-hidden="true">
+            <span class="rp-search-divider-line"></span>
+            <span class="rp-search-divider-label">OR</span>
+            <span class="rp-search-divider-line"></span>
+        </div>
+
+        <div class="rp-search-option rp-search-name-dob">
+            <div class="field-pair">
+                <label for="responsiblePartyName">Patient Full Name</label>
+                <div class="rp-name-input">
+                    <span class="rp-name-icon" aria-hidden="true"><img src="images/profile-outline.png" alt="" class="btn-icon-img"></span>
+                    <input type="text" id="responsiblePartyName" placeholder="Enter full name">
+                </div>
+            </div>
+            <div class="field-pair">
+                <label for="responsiblePartyDob">Date of Birth</label>
+                <input type="date" id="responsiblePartyDob">
+            </div>
+        </div>
+
+        <button type="button" class="book-btn rp-search-btn" id="searchResponsiblePartyBtn">Search</button>
+    </div>
+
+    <p class="rp-search-error" id="responsiblePartySearchError" hidden>Enter a mobile number, or a full name (with optional date of birth), to search.</p>
+</div>
+
+<div class="field-pair rp-card" id="responsiblePartyFoundCard" hidden>
+    <p class="rp-card-title rp-found-title">&#9989; Responsible Party Found</p>
+
+    <div class="saved-info-card" id="responsiblePartyFoundContent"></div>
+
+    <div class="rp-card-actions">
+        <button type="button" class="book-btn" id="continueWithAccountBtn">Continue</button>
+        <button type="button" class="clear-btn" id="searchAgainFoundBtn">Search Again</button>
+    </div>
+</div>
+
+<div class="field-pair rp-card" id="responsiblePartyNotFoundCard" hidden>
+    <p class="rp-card-title rp-warning-title">&#9888; No Responsible Party Found</p>
+    <p class="rp-card-subtitle">No account exists for this mobile number.</p>
+
+    <div class="rp-card-actions">
+        <button type="button" class="clear-btn" id="searchAgainNotFoundBtn">Search Again</button>
+    </div>
+</div>
+
+<div class="detail-grid" id="accountHolderFields" hidden>
+
+    <div class="field-pair">
+        <label for="accountHolderName">Account Holder Name <span class="req">*</span></label>
+        <input type="text" id="accountHolderName" placeholder="Enter account holder name" disabled>
+    </div>
+ 
+    <div class="field-pair">
+        <label for="relationToPatient">Relationship to Patient <span class="req">*</span></label>
+        <select id="relationToPatient" disabled>
+            <option value="" disabled selected>Select relation</option>
+            <option>Father</option>
+            <option>Mother</option>
+            <option>Spouse</option>
+            <option>Son</option>
+            <option>Daughter</option>
+            <option>Guardian</option>
+            <option>Other</option>
+        </select>
+    </div>
+
+</div>
+
+</div>
+
+<div id="linkedAccountBadge" class="success-badge" hidden></div>
+
+<div class="section-header">Patient Details</div>
+
+<div class="detail-grid patient-details-grid">
+
+    <div class="field-pair">
+        <label for="firstName">First Name <span class="req">*</span></label>
+        <input type="text" id="firstName" placeholder="Enter patient first name" required>
+    </div>
+
+    <div class="field-pair">
+        <label for="lastName">Last Name <span class="req">*</span></label>
+        <input type="text" id="lastName" placeholder="Enter patient last name" required>
+    </div>
+
+    <div class="field-pair">
+        <label for="gender">Gender <span class="req">*</span></label>
+        <select id="gender" required>
+            <option value="" disabled selected>Select patient gender</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+    </div>
+
+    <div class="field-pair">
+        <label for="dateOfBirth">Date Of Birth <span class="req">*</span></label>
+        <input type="date" id="dateOfBirth" required>
+    </div>
+
+    <div class="field-pair">
+        <label for="age">Age <span class="req">*</span></label>
+        <input type="number" id="age" placeholder="Enter age" required>
+    </div>
+
+    <div class="field-pair age-type-pair">
+        <div class="mobile-radio-group age-type-group" role="group" aria-label="Age Type">
+            <label class="radio-item">
+                <input type="radio" name="ageType" value="years" required>
+                <span>Year(s)</span>
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="ageType" value="months" required>
+                <span>Month(s)</span>
+            </label>
+        </div>
+    </div>
+
+</div>
+
+<div id="contactDetailsGrid">
+
+<div class="section-header">Contact Information</div>
+
+<div class="detail-grid">
+
+    <div class="field-pair">
+        <label for="phone">Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="Enter Mobile Number" required>
+    </div>
+
+    <div class="field-pair">
+        <label for="email">Email Address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="Enter email address" required>
+    </div>
+
+</div>
+
+<div class="section-header">Address Information</div>
+
+<div class="detail-grid">
+
+    <div class="field-pair full-width-field">
+        <label for="address">Present Address <span class="req">*</span></label>
+        <textarea id="address" placeholder="Enter present address" required></textarea>
+
+        <div class="address-subfields">
+            <div class="field-pair">
+                <label for="city">City <span class="req">*</span></label>
+                <input type="text" id="city" placeholder="Enter city" required>
+            </div>
+
+            <div class="field-pair">
+                <label for="state">State <span class="req">*</span></label>
+                <select id="state" required>
+                    <option value="" disabled selected>Select state</option>
+                    <option>Andhra Pradesh</option>
+                    <option>Arunachal Pradesh</option>
+                    <option>Assam</option>
+                    <option>Bihar</option>
+                    <option>Chhattisgarh</option>
+                    <option>Goa</option>
+                    <option>Gujarat</option>
+                    <option>Haryana</option>
+                    <option>Himachal Pradesh</option>
+                    <option>Jharkhand</option>
+                    <option>Karnataka</option>
+                    <option>Kerala</option>
+                    <option>Madhya Pradesh</option>
+                    <option>Maharashtra</option>
+                    <option>Manipur</option>
+                    <option>Meghalaya</option>
+                    <option>Mizoram</option>
+                    <option>Nagaland</option>
+                    <option>Odisha</option>
+                    <option>Punjab</option>
+                    <option>Rajasthan</option>
+                    <option>Sikkim</option>
+                    <option>Tamil Nadu</option>
+                    <option>Telangana</option>
+                    <option>Tripura</option>
+                    <option>Uttar Pradesh</option>
+                    <option>Uttarakhand</option>
+                    <option>West Bengal</option>
+                    <option>Delhi</option>
+                </select>
+            </div>
+
+            <div class="field-pair">
+                <label for="pinCode">PIN Code <span class="req">*</span></label>
+                <input type="text" id="pinCode" placeholder="Enter PIN code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="field-pair full-width-field">
+        <label class="checkbox-row" for="sameAsPresentAddress">
+            <input type="checkbox" id="sameAsPresentAddress">
+            <span class="checkbox-row-text">Same as Present Address</span>
+        </label>
+
+        <label for="permanentAddress">Permanent Address <span class="req">*</span></label>
+        <textarea id="permanentAddress" placeholder="Enter permanent address" required></textarea>
+
+        <div class="address-subfields">
+            <div class="field-pair">
+                <label for="permanentCity">City <span class="req">*</span></label>
+                <input type="text" id="permanentCity" placeholder="Enter city" required>
+            </div>
+
+            <div class="field-pair">
+                <label for="permanentState">State <span class="req">*</span></label>
+                <select id="permanentState" required>
+                    <option value="" disabled selected>Select state</option>
+                    <option>Andhra Pradesh</option>
+                    <option>Arunachal Pradesh</option>
+                    <option>Assam</option>
+                    <option>Bihar</option>
+                    <option>Chhattisgarh</option>
+                    <option>Goa</option>
+                    <option>Gujarat</option>
+                    <option>Haryana</option>
+                    <option>Himachal Pradesh</option>
+                    <option>Jharkhand</option>
+                    <option>Karnataka</option>
+                    <option>Kerala</option>
+                    <option>Madhya Pradesh</option>
+                    <option>Maharashtra</option>
+                    <option>Manipur</option>
+                    <option>Meghalaya</option>
+                    <option>Mizoram</option>
+                    <option>Nagaland</option>
+                    <option>Odisha</option>
+                    <option>Punjab</option>
+                    <option>Rajasthan</option>
+                    <option>Sikkim</option>
+                    <option>Tamil Nadu</option>
+                    <option>Telangana</option>
+                    <option>Tripura</option>
+                    <option>Uttar Pradesh</option>
+                    <option>Uttarakhand</option>
+                    <option>West Bengal</option>
+                    <option>Delhi</option>
+                </select>
+            </div>
+
+            <div class="field-pair">
+                <label for="permanentPinCode">PIN Code <span class="req">*</span></label>
+                <input type="text" id="permanentPinCode" placeholder="Enter PIN code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="section-header">Additional Details</div>
+
+<div class="detail-grid">
+
+    <div class="field-pair">
+        <label for="visitPurpose">Dr. Visit Purpose <span class="req">*</span></label>
+        <textarea id="visitPurpose" placeholder="Enter visit purpose / symptoms" required></textarea>
+    </div>
+
+    <div class="field-pair">
+        <label for="visitType">Type Of Visit <span class="req">*</span></label>
+        <select id="visitType" required>
+            <option value="" disabled selected>Select type of visit</option>
+            <option>Consultation</option>
+            <option>Follow-up</option>
+        </select>
+    </div>
+
+    <div class="field-pair">
+        <label>OTP Verification <span class="req">*</span></label>
+        <div class="mobile-radio-group otp-method-group">
+            <label class="radio-item">
+                <input type="radio" name="otp" value="mobile" required>
+                <span>Mobile Number</span>
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="otp" value="email">
+                <span>Email Address</span>
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="otp" value="none">
+                <span>None</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="field-pair" id="insuranceFieldPair">
+        <label>Insurance Coverage <span class="req">*</span></label>
+        <div class="mobile-radio-group insurance-group">
+            <label class="radio-item">
+                <input type="radio" name="insurance" value="yes" required>
+                <span>Yes</span>
+            </label>
+            <label class="radio-item">
+                <input type="radio" name="insurance" value="no">
+                <span>No</span>
+            </label>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+<div class="form-actions">
+<button type="submit" class="book-btn"><span class="btn-icon">&#10003;</span> Confirm</button>
+<button type="reset" class="clear-btn" id="clearFormBtn"><span class="btn-icon">&#8635;</span> Clear</button>
+</div>
+
+</form>
+
+</main>
+</div>
+</div>
+
+
+<div id="selectPatientModal" class="modal">
+<div class="modal-content patient-modal-content">
+<div class="close-icon" onclick="closeSelectPatientModal()">X</div>
+
+<div class="patient-modal-header">
+    <span class="icon-badge" aria-hidden="true">
+        <img src="images/patient-icon-blue.png" alt="">
+    </span>
+    <h2>Select Existing Patient</h2>
+</div>
+
+<div class="patient-search-row">
+    <div class="patient-search-box">
+        <input type="text" id="patientSearchInput" placeholder="Search by full name">
+        <button type="button" class="patient-search-btn" id="patientSearchBtn" aria-label="Search">
+            <span class="search-icon"><img src="images/search-white.png" alt="" class="btn-icon-img"></span>
+        </button>
+    </div>
+    <input type="date" id="patientDobFilter" class="patient-dob-input">
+</div>
+
+<p class="patient-modal-hint patient-modal-hint-lg">Search by name, date of birth, or both to avoid selecting the wrong record.</p>
+
+<div class="patient-list" id="patientList"></div>
+
+
+<div class="form-actions">
+<button type="button" class="clear-btn" onclick="closeSelectPatientModal()">Cancel</button>
+<button type="button" class="book-btn" id="selectPatientConfirmBtn" disabled>Select patient</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="savedInfoModal" class="modal">
+<div class="modal-content saved-info-modal-content">
+<div class="close-icon" onclick="closeSavedInfoModal()">X</div>
+
+<div class="patient-modal-header">
+    <span class="icon-badge" aria-hidden="true">
+        <img src="images/patient-icon-blue.png" alt="">
+    </span>
+    <h2 id="savedInfoTitle">Saved Details Found</h2>
+</div>
+
+<p class="patient-modal-hint" id="savedInfoText"></p>
+
+<div class="saved-info-card" id="savedInfoCard"></div>
+
+<div class="form-actions">
+<button type="button" class="clear-btn" onclick="useNewInfo()">Add New</button>
+<button type="button" class="book-btn" id="useSavedInfoBtn" onclick="useSavedInfo()">Continue with Saved</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="responsiblePartyChannelModal" class="modal">
+<div class="modal-content saved-info-modal-content rp-channel-modal-content">
+<div class="close-icon" onclick="closeResponsiblePartyChannelModal()">X</div>
+
+<div class="patient-modal-header">
+    <span class="icon-badge" aria-hidden="true">
+        <img src="images/patient-icon-blue.png" alt="">
+    </span>
+    <h2>Verify Responsible Party</h2>
+</div>
+
+<p class="patient-modal-hint patient-modal-hint-lg">Choose how the account holder should receive their verification code.</p>
+
+<div class="field-pair rp-channel-field">
+    <label>Send OTP Via <span class="req">*</span></label>
+    <div class="mobile-radio-group otp-channel-group">
+        <label class="radio-item">
+            <input type="radio" name="rpOtpChannel" value="phone" checked>
+            <span>Phone</span>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="rpOtpChannel" value="email">
+            <span>Email</span>
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="rpOtpChannel" value="none">
+            <span>None</span>
+        </label>
+    </div>
+</div>
+
+<div class="form-actions">
+<button type="button" class="clear-btn" onclick="closeResponsiblePartyChannelModal()">Cancel</button>
+<button type="button" class="book-btn" id="continueRpChannelBtn">Continue</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="responsiblePartyOtpModal" class="modal">
+<div class="modal-content saved-info-modal-content rp-otp-modal-content">
+<div class="close-icon" onclick="closeResponsiblePartyOtpModal()">X</div>
+
+<div class="patient-modal-header">
+    <span class="icon-badge" aria-hidden="true">
+        <img src="images/patient-icon-blue.png" alt="">
+    </span>
+    <h2>Enter Verification Code</h2>
+</div>
+
+<div class="rp-otp-hint-row">
+    <p class="patient-modal-hint patient-modal-hint-lg rp-otp-hint" id="responsiblePartyOtpHint">An OTP has been sent to the registered mobile number.</p>
+    <button type="button" class="rp-otp-change-channel" id="changeRpOtpChannelBtn">Change</button>
+</div>
+
+<div class="field-pair rp-otp-field-pair" id="responsiblePartyOtpFieldPair">
+    <label class="rp-otp-label">Enter OTP <span class="req">*</span></label>
+
+    <div class="rp-otp-group" id="responsiblePartyOtpGroup">
+        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="OTP digit 1">
+        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+        <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+    </div>
+
+    <div class="rp-otp-meta">
+        <span class="rp-otp-timer" id="responsiblePartyOtpTimerWrap">Expires in <strong id="responsiblePartyOtpTimer">01:00</strong></span>
+        <button type="button" class="rp-otp-resend" id="resendResponsiblePartyOtpBtn">Resend OTP</button>
+    </div>
+</div>
+
+<p class="otp-error-text" id="responsiblePartyOtpError" hidden>Incorrect OTP. Please try again.</p>
+
+<div class="form-actions">
+<button type="button" class="clear-btn" onclick="closeResponsiblePartyOtpModal()">Cancel</button>
+<button type="button" class="book-btn" id="verifyResponsiblePartyOtpBtn">Verify OTP</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="insuranceModal" class="modal">
+<div class="modal-content">
+<div class="close-icon" onclick="closeInsuranceModal()">X</div>
+
+<h2>Insurance Details</h2>
+
+<div class="form-grid">
+
+    <label>Provider Name</label>
+    <input id="provider" placeholder="Enter Value" required>
+
+    <label>Insurance Policy Id</label>
+   <input id="policy" placeholder="Enter Value" required>
+
+    <label>Insurance Group Id</label>
+    <input id="groupId" placeholder="Enter Value" required>
+
+
+    <label>Primary Holder Name</label>
+    <input id="holderName" placeholder="Enter Value" required>
+
+    <label>Primary Address</label>
+    <input id="insuranceAddress" placeholder="Enter Value" required>
+
+
+</div>
+<div class="form-actions">
+<button class="book-btn" onclick="confirmInsurance()">Confirm</button>
+<button class="cancel-btn" onclick="closeInsuranceModal()">Cancel</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="paymentModal" class="modal">
+  <div class="modal-content">
+
+    <div class="close-icon" onclick="closePaymentModal()">X</div>
+
+    <h2 class="modal-title">Payment Details</h2>
+
+    <div class="form-grid">
+
+        <label>Payment Type</label>
+        <input id="paymentType" placeholder="Enter Value" required>
+
+        <label>Card Holder Name</label>
+        <input id="cardHolder" placeholder="Enter Value" required>
+
+        <label>Card Number</label>
+        <input id="cardNumber" placeholder="Enter Value" required>
+
+        <label>Expiry Date</label>
+        <div class="inline-row">
+            <input id="expiry" placeholder="MM/YY" required>
+            <span class="cvv-label">CVV</span>
+            <input id="cvv" placeholder="XXX" required>
+
+            
+
+        </div>
+
+    </div>
+
+  
+    <div class="form-actions">
+        <button onclick="confirmPayment()">Confirm</button>
+        <button class="cancel-btn" onclick="closePaymentModal()">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div id="footer-container"></div>
+
+<script src="js/footer.js"></script>
+
+<script src="js/navbar.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+<script src="js/booking.js"></script>
+
+</body>
+</html>

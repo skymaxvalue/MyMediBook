@@ -38,12 +38,34 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [Route("CreateAssociateSchedule")]
         public async Task<IActionResult> CreateAssociateSchedule(AssociateScheduleModel model)
         {
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateAssociateScheduleCommand(model));
+            return HandleResponse(response);
+        }
+
+
+        [Authorize(Roles = "Admin")]    
+        [HttpPost]
+        [Route("UpdateAssociateDetail")]
+        public async Task<IActionResult> UpdateAssociateDetail(UpdateAssociateRequestModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new UpdateAssociateDetailCommand(model));
+            return HandleResponse(response);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        [Route("DeleteAssociate")]
+        public async Task<IActionResult> DeleteAssociate(DeleteAssociateRequestModel model)
+        {
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new DeleteAssociateCommand(model));
             return HandleResponse(response);
         }
     }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AuthService } from '../../Services/auth.service';
+import { AuthService } from '../../core/Services/auth.service';
 import * as AuthActions from './auth.actions';
 import { catchError, mergeMap, map, of, exhaustMap, tap } from 'rxjs';
 
@@ -22,7 +22,7 @@ export class AuthEffects {
                 this.authService.loginPatient({
                     username: action.username,
                     password: action.password
-                }).pipe(
+                }, action.role).pipe(
 
                     tap((response: any) => {
 
@@ -35,7 +35,7 @@ export class AuthEffects {
                     }),
 
                     map((response: any) =>
-                        AuthActions.loginSuccess({ patient: response })
+                        AuthActions.loginSuccess({ user: response })
                     ),
                     catchError((error) =>
                         of(AuthActions.loginFailure({
@@ -56,7 +56,7 @@ export class AuthEffects {
             mergeMap((action) =>
                 this.authService.requestOTP({ email: action.email }).pipe(
                     map((response: any) =>
-                        AuthActions.requestOTPSuccess({ requesteOTP: response })
+                        AuthActions.requestOTPSuccess({ requestedOtp: response })
                     ),
                     catchError((error) =>
                         of(AuthActions.requestOTPFailure({ error: error.message || 'Login Failed' }))
@@ -180,6 +180,41 @@ export class AuthEffects {
         )
     )
 
+    verifyOTPRequest$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.verifyOTP),
+            mergeMap((action) =>
+                this.authService.verifyOTP(action.email, action.otpCode).pipe(
+                    map((response: any) =>
+                        AuthActions.verifyOTPSuccess({ otpres: response.data })
+                    ),
+                    catchError((error) =>
+                        of(AuthActions.verifyOTPFailure({ error: error.message || 'Otp verification Failed' }))
+                    )
+                )
+            )
+
+        )
+
+    )
+
+    ForrgetResetPasswordRequest$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.ForrgetResetPassword),
+            mergeMap((action) =>
+                this.authService.ForgotPassReset(action.password, action.token, action.isAssociate).pipe(
+                    map((response: any) =>
+                        AuthActions.ForrgetResetPasswordSuccess({ resetPassRes: response })
+                    ),
+                    catchError((error) =>
+                        of(AuthActions.ForrgetResetPasswordFailure({ error: error.message || 'Otp verification Failed' }))
+                    )
+                )
+            )
+
+        )
+
+    )
 
 
 }

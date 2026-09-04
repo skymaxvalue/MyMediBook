@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AssociateRequest } from 'src/app/Models/Association-model';
+import { AssociateRequest, UpdateAssociateScheduleRequest } from 'src/app/core/Models/Association-model';
 
 export const loadDoctorSpecialities = createAction(
     '[Doctor Speciality] Load'
@@ -7,7 +7,7 @@ export const loadDoctorSpecialities = createAction(
 
 export const loadDoctorSpecialitiesSuccess = createAction(
     '[Doctor Speciality] Load Success',
-    props<{ specialities: any[] }>()
+    props<{ doctorList: any[] }>()
 );
 
 export const loadDoctorSpecialitiesFailure = createAction(
@@ -74,6 +74,7 @@ export const registerAssociotionFailure = createAction(
 export const getRoleDepaSpecia = createAction(
     'Get RoleDepaSpecia',
 
+
 );
 
 export const getRoleDepaSpeciaSuccess = createAction(
@@ -86,7 +87,7 @@ export const getRoleDepaSpeciaFailure = createAction(
     props<{ error: any }>()
 );
 export const getWeekDays = createAction(
-    'Get RoleDepaSpecia',
+    'Get WeekDays',
 
 );
 
@@ -112,6 +113,22 @@ export const getAllAssociatesSuccess = createAction(
 
 export const getAllAssociatesFailure = createAction(
     'Get Associates Failure',
+    props<{ error: any }>()
+);
+
+export const getAssociatesByID = createAction(
+    'Get Associates By ID',
+    props<{ associateId: any }>()
+
+);
+
+export const getAssociatesByIDSuccess = createAction(
+    'Get Associates By ID Success',
+    props<{ accociateDetails: any }>()
+);
+
+export const getAssociatesByIDFailure = createAction(
+    'Get Associates By ID Failure',
     props<{ error: any }>()
 );
 export const createAssociatesSchedule = createAction(
@@ -142,5 +159,35 @@ export const getTimeSloteByDoctorIDSuccess = createAction(
 
 export const getTimeSloteByDoctorIDFailure = createAction(
     'Create Time Schedule Failure',
+    props<{ error: any }>()
+);
+export const updateAssociatesAndItsSchedule = createAction(
+    'Update Associates Schedule',
+    props<{ associate: any }>()
+
+);
+
+export const updateAssociatesAndItsScheduleSuccess = createAction(
+    'Update Associates Schedule Success',
+    props<{ updatedAssociate: any }>()
+);
+
+export const updateAssociatesAndItsScheduleFailure = createAction(
+    'Update Associates Schedule Failure',
+    props<{ error: any }>()
+);
+export const deleteAssociatesAndItsSchedule = createAction(
+    'Delete Associates Schedule',
+    props<{ associate: {} }>()
+
+);
+
+export const deleteAssociatesAndItsScheduleSuccess = createAction(
+    'Delete Associates Schedule Success',
+    props<{ associate: any }>()
+);
+
+export const deleteAssociatesAndItsScheduleFailure = createAction(
+    'Delete Associates Schedule Failure',
     props<{ error: any }>()
 );

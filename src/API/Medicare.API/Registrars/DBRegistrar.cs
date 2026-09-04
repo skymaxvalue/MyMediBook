@@ -13,7 +13,7 @@ namespace Medicare.API.Registrars
 
             builder.Services.AddSingleton<IDbConnectionFactory>(sp => new DapperConnectionFactory(cs));
 
-            builder.Services.AddSingleton<DapperContext>();
+            builder.Services.AddSingleton<IDapperContext, DapperContext>();
         }
     }
 }

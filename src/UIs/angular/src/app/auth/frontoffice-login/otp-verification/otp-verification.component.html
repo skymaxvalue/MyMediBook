@@ -1,0 +1,118 @@
+<div class="main">
+    <div class="otp-card">
+
+        <!-- BRAND -->
+        <div class="brand">
+
+            <img src="assets/images/logo.png" alt="My MediBook" />
+
+            <div class="brand-text">
+
+                <span class="black-text">
+                    My
+                </span>
+
+                <span class="green-text">
+                    Medi
+                </span>
+
+                <span class="blue-text">
+                    Book
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- TITLE -->
+        <h1 class="otp-title">
+            LOGIN VERIFICATION
+        </h1>
+
+
+        <!-- DESCRIPTION -->
+        <p class="otp-description">
+
+            We've sent a 4-digit verification code
+            to your registered mobile number/email.
+            Please enter it below.
+
+        </p>
+
+
+        <!-- OTP FORM -->
+        <form (ngSubmit)="verifyOtp()" #otpForm="ngForm">
+
+
+            <div class="otp-group">
+                @for (item of otpArray; track $index) {
+
+                <input #otpInput type="tel" maxlength="1" class="otp-input" [id]="'otp-' + $index"
+                    [name]="'otp' + $index" [(ngModel)]="otp[$index]" (input)="moveNext($event, $index)"
+                    (keydown)="movePrevious($event, $index)" inputmode="numeric" autocomplete="one-time-code" />
+
+
+                }
+
+            </div>
+
+
+            <!-- ERROR -->
+            <div class="error-message" *ngIf="errorMessage">
+
+                {{ errorMessage }}
+
+            </div>
+
+
+            <!-- TIMER -->
+            <div class="otp-info">
+
+                <span class="timer">
+
+                    <span *ngIf="!isExpired">
+                        Expires in
+                    </span>
+
+                    <strong>
+                        {{ timerText }}
+                    </strong>
+
+                </span>
+
+
+                <button type="button" class="resend-btn" [disabled]="!isExpired" (click)="resendOtp()">
+
+                    Resend OTP
+
+                </button>
+
+            </div>
+
+
+            <!-- VERIFY -->
+            <button type="submit" class="verify-btn" [disabled]="isLoading">
+
+                <span *ngIf="!isLoading">
+                    Verify
+                </span>
+
+                <span *ngIf="isLoading">
+                    Verifying...
+                </span>
+
+            </button>
+
+
+            <!-- CANCEL -->
+            <button type="button" class="back-btn" (click)="cancel()">
+
+                Cancel
+
+            </button>
+
+        </form>
+
+    </div>
+</div>

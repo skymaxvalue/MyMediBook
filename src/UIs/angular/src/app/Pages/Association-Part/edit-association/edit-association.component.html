@@ -1,0 +1,589 @@
+<div class="master-page">
+
+
+    <h1 class="page-title">Edit Associate Schedule</h1>
+    <p class="page-subtitle">Click on the Pencil Icon to Edit Entries</p>
+    <div class="form-center">
+        <div class="glass-card edit-card">
+            <div class="shape shape-left shape-top" aria-hidden="true"></div>
+            <div class="shape shape-right shape-end" aria-hidden="true"></div>
+            <form [formGroup]="form">
+                <div class="edit-grid">
+                    <label>Name</label>
+                    <div class="static-value">
+                        {{ form.get('firstName')?.value }} {{ form.get('middleName')?.value }} {{
+                        form.get('lastName')?.value }}
+                    </div>
+                    <div></div>
+                    <label>Role</label>
+                    <div class="field-inline">
+                        <input type="text" formControlName="roleName">
+                        <button class="icon-pencil" type="button" (click)="openRole()">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+                    @if(selectedRole){
+                    @if(selectedRole.designations?.length > 0){
+
+                    <label>Designation</label>
+                    <div class="field-inline">
+                        <input type="text" formControlName="designationName">
+                        <button class="icon-pencil" type="button" (click)="openDesignation()">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+                    }}
+
+                    <label>Department</label>
+                    <div class="field-inline">
+                        <input type="text" formControlName="departmentName">
+                        <button class="icon-pencil" type="button" (click)="openDepartment()">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+
+
+
+                    <label>Speciality</label>
+                    <div class="field-inline field-inline-small">
+                        <input #spec type="text" formControlName="specialityName">
+                        <button class="icon-pencil" type="button" (click)="openSpecialityModal()">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div></div>
+                </div>
+
+                <section class="section-block">
+
+                    <h2>Availability Period</h2>
+
+                    <div class="two-col">
+
+                        <div class="stack">
+
+                            <label>From Date</label>
+
+                            <div class="field-inline date-field">
+
+                                <input #fromDate type="date" formControlName="fromDate">
+
+                                <button class="icon-pencil" type="button" (click)="enableField('fromDate',fromDate)">
+
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.7" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stack">
+
+                            <label>To Date</label>
+
+                            <div class="field-inline date-field">
+
+                                <input #toDate type="date" formControlName="toDate">
+
+                                <button class="icon-pencil" type="button" (click)="enableField('toDate',toDate)">
+
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.7" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="section-block">
+
+                    <h2>Availability Time</h2>
+
+                    <div class="two-col">
+
+                        <div class="stack">
+
+                            <label>From Time</label>
+
+                            <div class="field-inline time-field">
+
+                                <select #fromTime formControlName="fromTime">
+
+                                    <option>09:00 AM</option>
+
+                                    <option>10:00 AM</option>
+
+                                    <option>11:00 AM</option>
+
+                                    <option>02:00 PM</option>
+
+                                </select>
+
+                                <button class="icon-pencil" type="button" (click)="enableField('fromTime',fromTime)">
+
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.7" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stack">
+
+                            <label>To Time</label>
+
+                            <div class="field-inline time-field">
+
+                                <select #toTime formControlName="toTime">
+
+                                    <option>06:00 PM</option>
+
+                                    <option>08:00 PM</option>
+
+                                    <option>10:00 PM</option>
+
+                                </select>
+
+                                <button class="icon-pencil" type="button" (click)="enableField('toTime',toTime)">
+
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.7" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="section-block dayPelar">
+
+                    <h2>Availability Days</h2>
+
+                    <div class="days-row" [class.disabled-days]="daysDisabled()">
+
+                        @for(day of weekDays; track day.weekdayId){
+
+                        <label class="day-pill" [class.active]="isSelected(day.dayName)"
+                            (click)="toggleDay(day.dayName)">
+                            {{ day.dayName | slice:0:3 }}
+                        </label>
+
+                        }
+                        <button class="icon-pencil" type="button" (click)="daysDisabled.set(false)"
+                            aria-label="Edit availability days">
+
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+
+                        </button>
+
+                    </div>
+
+
+                </section>
+
+                <section class="section-block">
+
+                    <h2>Breaks</h2>
+
+                    <div class="two-col">
+
+                        <div class="stack">
+
+                            <label>From Time</label>
+
+                            <div class="field-inline time-field">
+
+                                <select #breakFrom formControlName="breakTimeFrom">
+
+                                    <option>01:00 PM</option>
+
+                                    <option>02:00 PM</option>
+
+                                    <option>03:00 PM</option>
+
+                                </select>
+                                <button class="icon-pencil" type="button"
+                                    (click)="enableField('breakTimeFrom',breakFrom)">
+
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.7" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stack">
+
+                            <label>To Time</label>
+
+                            <div class="field-inline time-field">
+
+                                <select #breakTo formControlName="breakTimeTo">
+
+                                    <option>05:00 PM</option>
+
+                                    <option>06:00 PM</option>
+
+                                    <option>07:00 PM</option>
+
+                                </select>
+                                <button class="icon-pencil" type="button" (click)="enableField('breakTimeTo',breakTo)">
+
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.7" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                            stroke-linecap="round" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="section-block">
+                    <h2>Consultation Duration</h2>
+                    <div class="single-field">
+                        <input #consultationDuration formControlName="consultationTime" type="text">
+                        <button class="icon-pencil" type="button"
+                            (click)="enableField('consultationTime', consultationDuration)"
+                            aria-label="Edit consultation duration">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="section-block">
+                    <h2>Average Charge Per Visit</h2>
+                    <div class="single-field single-field-small">
+                        <input #averageCharge formControlName="averageCharge" type="text" value="600Rs">
+                        <button class="icon-pencil" type="button" (click)="enableField('averageCharge', averageCharge)"
+                            aria-label="Edit charge">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linejoin="round" />
+                                <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <div class="actions-row">
+                    <button type="button" class="secondary-btn" (click)="back()">Back</button>
+                    <button type="button" class="primary-btn" (click)="save()">Save Changes</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
+
+<!-- Department Modal -->
+
+
+@if(showDepartmentModal()) {
+
+<div class="modal-overlay">
+    <div class="modal-card">
+
+        <form [formGroup]="form">
+
+            <button type="button" class="modal-close" (click)="closeDepartment()">
+                ✕
+            </button>
+
+            <h3>Department Assignment</h3>
+
+            <div class="modal-grid">
+
+                <label>Dept ID</label>
+
+                <select formControlName="departmentId" (change)="onDepartmentChange()">
+
+                    @for(dept of departments; track dept.departmentId){
+                    <option [value]="dept.departmentId">
+                        {{dept.departmentName}}
+                    </option>
+                    }
+
+                </select>
+
+                <!-- <label>Department</label>
+
+                <input type="text" formControlName="departmentName"> -->
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="button" class="secondary-btn" (click)="closeDepartment()">
+                    Back
+                </button>
+
+                <button type="button" class="primary-btn" (click)="confirmDepartment()">
+                    Confirm
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+}
+@if(showSpecialityModal() ) {
+<div class="modal-overlay">
+    <div class="modal-card">
+
+        <form [formGroup]="form">
+
+            <button type="button" class="modal-close" (click)="closeSpecialityModal()">
+                ✕
+            </button>
+
+            <h3>Department Assignment</h3>
+
+            <div class="modal-grid">
+
+                <label>Select Speciality</label>
+
+                <select formControlName="specialityId" (change)="onSpecialitiesChange()">
+
+                    @for(spec of specialities; track spec.specialityId){
+                    <option [value]="spec.specialityId">
+                        {{spec.specialityName}}
+                    </option>
+                    }
+
+                </select>
+
+                <!-- <label>Department</label>
+
+                <input type="text" formControlName="departmentName"> -->
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="button" class="secondary-btn" (click)="closeSpecialityModal()">
+                    Back
+                </button>
+
+                <button type="button" class="primary-btn" (click)="confirmSpeciality()">
+                    Confirm
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+}
+
+@if(showDesignationModal() && (designations?.length ?? 0) > 0) {
+<div class="modal-overlay">
+    <div class="modal-card">
+
+        <form [formGroup]="form">
+
+            <button type="button" class="modal-close" (click)="closeDesignation()">
+                ✕
+            </button>
+
+            <h3>Department Assignment</h3>
+
+            <div class="modal-grid">
+
+                <label>Select Designation</label>
+
+                <select formControlName="designationId" (change)="onDesignationChange()">
+
+                    @for(desi of designations; track desi.designationId){
+                    <option [value]="desi.designationId">
+                        {{desi.designationName}}
+                    </option>
+                    }
+
+                </select>
+
+                <!-- <label>Department</label>
+
+                <input type="text" formControlName="departmentName"> -->
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button type="button" class="secondary-btn" (click)="closeDesignation()">
+                    Back
+                </button>
+
+                <button type="button" class="primary-btn" (click)="confirmDesignation()">
+                    Confirm
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+}
+
+
+<!-- Role Modal -->
+@if(showRoleModal()){
+
+<div class="modal-overlay">
+
+    <div class="modal-card">
+
+        <button class="modal-close" type="button" (click)="closeRole()">
+
+            ✕
+
+        </button>
+
+        <h3>Role Assignment</h3>
+
+        <form [formGroup]="form">
+            <div class="modal-grid">
+
+                <!-- <label>Dept ID</label>
+
+                <select formControlName="roleId" (change)="onRoleChange()">
+
+                    @for(role of allRoles; track role.roleId){
+
+                    <option [value]="role.roleId">
+
+                        {{role.roleName}}
+
+                    </option>
+
+                    }
+
+                </select> -->
+
+                <label>Select Role</label>
+
+                <select #roleid formControlName="roleId" (change)="onRoleChange(roleid.value)">
+
+                    @for(role of allRoles; track role.roleId){
+
+                    <option [value]="role.roleId">
+
+                        {{role.roleName}}
+
+                    </option>
+
+                    }
+
+                </select>
+
+                <!-- <label>Select Department</label>
+
+                <input type="text" formControlName="departmentName"> -->
+
+            </div>
+        </form>
+
+        <div class="modal-actions">
+
+            <button type="button" class="secondary-btn" (click)="closeRole()">
+
+                Back
+
+            </button>
+
+            <button type="button" class="primary-btn" (click)="confirmRole()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

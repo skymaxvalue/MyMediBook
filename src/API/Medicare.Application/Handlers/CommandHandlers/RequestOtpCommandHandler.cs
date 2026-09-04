@@ -6,7 +6,6 @@ using Medicare.Application.Interfaces.UserRepository;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Medicare.Application.Handlers.CommandHandlers
 {
@@ -15,36 +14,41 @@ namespace Medicare.Application.Handlers.CommandHandlers
         private readonly IAuthRepository _authRepository;
         private readonly IEmailJobService _emailJobService;
         private readonly IUserRepository _userRepository;
-        public RequestOtpCommandHandler(IAuthRepository authRepository, IEmailJobService emailJobService, IUserRepository userRepository)
+        private readonly PasswordHelper _passwordHelper;
+        public RequestOtpCommandHandler(IAuthRepository authRepository, IEmailJobService emailJobService, IUserRepository userRepository, PasswordHelper passwordHelper)
         {
             _authRepository = authRepository;
             _emailJobService = emailJobService;
             _userRepository = userRepository;
+            _passwordHelper = passwordHelper;
         }
 
         public async Task<ResponseModel> Handle(RequestOtpCommand request, CancellationToken ct)
         {
-            var checkIfEmailExists = await _userRepository.GetUserByEmailAsync(request.Model.Email);
-            if (checkIfEmailExists.Status == 0) 
+            var user = await _userRepository.GetUserByEmailAsync(request.model.Email);
+            if (user.Status == 0) 
             {
-                return checkIfEmailExists;
+                return new ResponseModel
+                {
+                    IsSuccess = 0,
+                    Status = 0,
+                    ResponseId = 0,
+                    ResponseMessage = "Invalid Email Address."
+                };
             }
             // Generate OTP
             var rawOtp = GenerateOtp();
 
-            //Hash OTP 
-            using var hmac = new HMACSHA512();
-            var otpSalt = hmac.Key;
-            var otpHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawOtp));
+            var otpHash = _passwordHelper.HashPassword(rawOtp);
 
             var expiry = DateTime.UtcNow.AddMinutes(5);
 
             var otpModel = new OtpDetailModel
-            {
-                Email = request.Model.Email,
+            { 
+                UserId = user.UserId,
+                UserType = user.UserType,
                 OtpHash = otpHash,
-                OtpSalt = otpSalt,
-                Expiry = expiry,
+                OtpExpiry = expiry,
                 OtpAttempts = 0
             };
 
@@ -52,8 +56,8 @@ namespace Medicare.Application.Handlers.CommandHandlers
             await _authRepository.SaveOtpAsync(otpModel);
 
             var jobId = _emailJobService.QueueOtpEmail(
-                toEmail: request.Model.Email,
-                toName: request.Model.Email,
+                toEmail: request.model.Email,
+                toName: request.model.Email,
                 otpCode: rawOtp
             );
 
@@ -61,14 +65,14 @@ namespace Medicare.Application.Handlers.CommandHandlers
             {
                 Status = 1,
                 IsSuccess = 1,
-                ResponseMessage = $"OTP has been sent to {request.Model.Email}.",
+                ResponseMessage = $"OTP has been sent to {request.model.Email}.",
                 ResponseId = 0
             };
         }
 
         private static string GenerateOtp()
         {
-            // Cryptographically secure random 6-digit OTP
+            // Cryptographically secure random 4-digit OTP
             var bytes = RandomNumberGenerator.GetBytes(4);
             var number = BitConverter.ToUInt32(bytes, 0) % 10_000;
             return number.ToString("D4");

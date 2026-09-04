@@ -1,0 +1,516 @@
+
+.availability-container {
+   padding: 20px 30px 30px;
+    background: #f5f7fb;
+}
+
+.availability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin: 0 auto 25px;
+    max-width: 950px;
+    flex-wrap: wrap;
+}
+
+.availability-heading h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b5bdb;
+    text-align: left;
+}
+
+.availability-heading .subtitle {
+    margin: 6px 0 0;
+    color: #667085;
+    font-size: 15px;
+}
+
+
+.date-filter {
+    text-align: right;
+}
+
+.date-filter label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #344054;
+    font-size: 16px;
+}
+
+.date-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #d7dde7;
+    border-radius: 10px;
+    padding: 16px 20px;
+    min-width: 260px;
+}
+
+.date-box .calendar-icon {
+    width: 20px;
+    opacity: 0.7;
+}
+
+.date-box input {
+    border: none;
+    outline: none;
+    font-size: 17px;
+    font-weight: 600;
+    color: #101828;
+    background: transparent;
+    width: 100%;
+}
+
+.availability-card {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+.doctor-info {
+    width: 280px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.doctor-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.doc-img-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    background: #e9edf3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.doc-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.doctor-top h3 {
+    margin: 4px 0 2px;
+    font-size: 19px;
+    color: #101828;
+}
+
+.doctor-top p {
+    margin: 0 0 8px;
+    color: #667085;
+    font-size: 14px;
+}
+
+.tag {
+    background: #3b5bdb;
+    padding: 5px 14px;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.doctor-department {
+    width: 100%;
+    border-top: 1px solid #e4e7ec;
+    margin-top: 20px;
+    padding-top: 18px;
+    text-align: center;
+}
+
+.dept-label {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #101828;
+}
+
+.dept-value {
+    margin: 0;
+    font-size: 14px;
+    color: #667085;
+}
+
+.back-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #3b5bdb;
+    background: #fff;
+    color: #3b5bdb;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 22px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background: #f0f3ff;
+}
+
+.back-arrow {
+    font-size: 16px;
+}
+
+
+.availability-container .schedule-box {
+    flex: 1;
+    max-width: 620px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 15px 30px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* Two-column schedule layout: dates on the left, status pills on the right.
+   No divider line and no row separators, matching the reference design. */
+#scheduleContainer {
+    display: flex;
+}
+
+.schedule-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-col-dates {
+    flex: 0 0 210px;
+    padding-right: 16px;
+}
+
+.schedule-col-status {
+    flex: 1;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.date-row,
+.status-row {
+    display: flex;
+    align-items: center;
+    height: 62px;
+    width: 100%;
+}
+
+.status-row {
+    justify-content: flex-end;
+}
+
+.row-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.row-date {
+    font-size: 16px;
+    font-weight: 700;
+    color: #101828;
+    letter-spacing: 0.2px;
+}
+
+.availability-container .badge {
+    padding: 10px 22px;
+    border-radius: 22px;
+    font-weight: 700;
+    color: white;
+    font-size: 14px;
+    min-width: 190px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.green { background: #1f7a3f; }
+.red { background: #d11a1a; }
+
+.beige {
+    background: #e7c29f;
+    color: #6b5133;
+    cursor: default;
+}
+
+.week-nav {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.week-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #344054;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.week-btn:hover .nav-arrow {
+    background: #c7d5fb;
+}
+
+.nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #dde6fc;
+    color: #3b5bdb;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.availability-container .legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px auto 0;
+    max-width: 950px;
+    font-size: 14px;
+    color: #344054;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.dot.green { background: #1f7a3f; }
+.dot.red { background: #d11a1a; }
+.dot.beige { background: #e7c29f; }
+
+.dot.available { background: #1f7a3f; }
+.dot.booked { background: #999; }
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.4);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    z-index: 1000;
+}
+
+.appointment-card {
+    width: 680px;
+    max-width: 92vw;
+    max-height: 90vh;
+    background: #fff;
+    border-radius: 18px;
+    padding: 15px 20px;
+    overflow: hidden;
+    position: relative;
+    transform: scale(1.05);
+    transform-origin: center;
+}
+
+.close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4d4f;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.appointment-card h2 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.slot-date {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.appointment-body {
+    display: flex;
+    gap: 20px;
+}
+
+.doctor-info-popup {
+    width: 150px;
+    text-align: center;
+}
+
+.doctor-info-popup h4 {
+    font-size: 16px;
+}
+
+.doctor-info-popup p {
+    font-size: 14px;
+}
+
+.doctor-img-popup {
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.slots-section {
+    flex: 1;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
+}
+
+.slot {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.slot.available {
+    background: #e6f7ee;
+    color: #1e7e34;
+}
+
+.slot.booked {
+    background: #ccc;
+    color: red;
+    cursor: not-allowed;
+}
+
+.slot.available:hover {
+    background: #1f7a3f;
+    color: white;
+}
+
+.slot.selected {
+    background: #3b5bdb !important;
+    color: white !important;
+}
+
+.legend-popup {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.book-btn {
+    width: 70%;
+    margin: 12px auto 0;
+    display: block;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #4A6CF7, #3B5BDB);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
+@media (max-width: 900px) {
+    .availability-card {
+        flex-direction: column;
+    }
+
+    .doctor-info {
+        width: 100%;
+    }
+
+    .availability-header {
+        flex-direction: column;
+    }
+
+    .date-filter {
+        text-align: left;
+    }
+}
+
+@media (max-width: 600px) {
+    #scheduleContainer {
+        flex-direction: column;
+    }
+
+    .schedule-col-dates {
+        flex: none;
+        padding-right: 0;
+        margin-bottom: 8px;
+    }
+
+    .schedule-col-status {
+        padding-left: 0;
+        align-items: stretch;
+    }
+
+    .status-row {
+        justify-content: flex-start;
+    }
+
+    .availability-container .badge {
+        width: 100%;
+    }
+
+    .appointment-body {
+        flex-direction: column;
+    }
+
+    .doctor-info-popup {
+        width: 100%;
+    }
+}

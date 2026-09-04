@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Appointment Check-Ins</title>
+
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/doctor-queue.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+</head>
+
+<body>
+
+    <div id="navbar-container"></div>
+
+   <main class="dashboard-container">
+
+    <section class="breadcrumb">
+    <a href="dashboard.html">Dashboard</a>
+
+    <span class="separator">
+        <img src="images/right-arrow-blue.png" alt="">
+    </span>
+
+    <a href="patient-checkin.html">Patient Check-In</a>
+
+    <span class="separator">
+        <img src="images/right-arrow-blue.png" alt="">
+    </span>
+
+    <span class="active">Appointment Check-Ins</span>
+</div>
+   </section>
+   <section class="queue-container">
+        <div class="queue-layout">
+
+            <aside class="doctor-card">
+
+                <div class="doctor-image-wrapper">
+                    <img
+                        src="images/doc.jpg"
+                        alt="Doctor Image"
+                    >
+                </div>
+
+                <h1 id="doctorName">
+                    Dr. Kumaravel
+                </h1>
+
+                <div class="doctor-qualification">
+                    MBBS, FRCS
+                </div>
+
+                <div class="doctor-divider"></div>
+
+                <div class="doctor-info-item">
+
+                    <div class="info-icon department-icon">
+                        <img
+                            src="images/department.png"
+                            alt=""
+                        >
+                    </div>
+
+                    <div>
+                        <span class="info-label">
+                            Department
+                        </span>
+
+                        <strong id="doctorDepartment">
+                            General Physician
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="doctor-info-item">
+
+                    <div class="info-icon room-icon">
+                        <img
+                            src="images/room.png"
+                            alt=""
+                        >
+                    </div>
+
+                    <div>
+                        <span class="info-label">
+                            Room Number
+                        </span>
+
+                        <strong id="doctorRoom">
+                            #5, 2nd Floor
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="doctor-info-item">
+
+                    <div class="info-icon appointment-icon">
+                        <img
+                            src="images/today.png"
+                            alt=""
+                        >
+                    </div>
+
+                    <div>
+                        <span class="info-label">
+                            Today's Appointments
+                        </span>
+
+                        <strong id="appointmentCount">
+                            08
+                        </strong>
+                    </div>
+
+                </div>
+
+            </aside>
+
+            <section class="queue-content">
+
+                <div class="queue-header">
+
+                    <div class="queue-title">
+
+                        <div class="queue-title-icon">
+                            <img
+                                src="images/calendar2.png"
+                                alt=""
+                            >
+                        </div>
+
+                        <h2>
+                            Appointment Check-Ins
+                        </h2>
+
+                    </div>
+
+                    <label class="date-selector">
+
+                        <img
+                            src="images/calendar2.png"
+                            alt=""
+                        >
+
+                        <span id="queueDate">
+                            10-Apr-2025 (THURSDAY)
+                        </span>
+
+                        <span class="date-arrow">
+                           ⌄
+                        </span>
+
+                        <input
+                            type="date"
+                            id="queueDateInput"
+                            value="2025-04-10"
+                        >
+
+                    </label>
+
+                </div>
+
+                <div class="queue-table-card">
+
+                    <table class="queue-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Patient Name</th>
+                                <th>Appointment Time</th>
+                                <th>Checked-in</th>
+                                <th>Consultation Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="queueTableBody">
+
+                            <tr>
+
+                                <td>1</td>
+
+                                <td>
+                                    Sundaram S
+                                </td>
+
+                                <td>
+                                    09:00 AM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in active"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select completed"
+                                        data-id="1"
+                                    >
+                                        <option>Completed</option>
+                                        <option>In consultation</option>
+                                        <option>Next in queue</option>
+                                        <option>--</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>2</td>
+
+                                <td>
+                                    Balan Pradeep
+                                </td>
+
+                                <td>
+                                    09:30 AM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in active"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select consultation"
+                                        data-id="2"
+                                    >
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                        <option>Next in queue</option>
+                                        <option>--</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>3</td>
+
+                                <td>
+                                    Sharath Kumar
+                                </td>
+
+                                <td>
+                                    10:00 AM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in active"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select next"
+                                        data-id="3"
+                                    >
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                        <option>--</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>4</td>
+
+                                <td>
+                                    Edwin Johnson
+                                </td>
+
+                                <td>
+                                    10:30 AM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select"
+                                        data-id="4"
+                                    >
+                                        <option>--</option>
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>5</td>
+
+                                <td>
+                                    Prakash
+                                </td>
+
+                                <td>
+                                    11:00 AM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in active"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select"
+                                        data-id="5"
+                                    >
+                                        <option>--</option>
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>6</td>
+
+                                <td>
+                                    Harini
+                                </td>
+
+                                <td>
+                                    11:30 AM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select"
+                                        data-id="6"
+                                    >
+                                        <option>--</option>
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>7</td>
+
+                                <td>
+                                    Geetham
+                                </td>
+
+                                <td>
+                                    12:00 PM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in active"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select"
+                                        data-id="7"
+                                    >
+                                        <option>--</option>
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>8</td>
+
+                                <td>
+                                    Mano
+                                </td>
+
+                                <td>
+                                    12:30 PM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select"
+                                        data-id="8"
+                                    >
+                                        <option>--</option>
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>9</td>
+
+                                <td>
+                                    Manjari
+                                </td>
+
+                                <td>
+                                    01:00 PM
+                                </td>
+
+                                <td>
+                                    <div class="checked-in"></div>
+                                </td>
+
+                                <td>
+                                    <select
+                                        class="status-select"
+                                        data-id="9"
+                                    >
+                                        <option>--</option>
+                                        <option>Next in queue</option>
+                                        <option>In consultation</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="queue-actions">
+
+                    <button
+                        type="button"
+                        class="back-search-btn"
+                        id="backToSearchBtn"
+                    >
+                        <span class="back-arrow">←</span>
+                        Back to Search Appointment
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+        </section>
+
+    </main>
+
+    <div id="queueConfirmModal" class="queue-modal">
+
+        <div class="queue-modal-content">
+
+            <button
+                type="button"
+                class="modal-close"
+                id="queueConfirmClose"
+            >
+                ×
+            </button>
+
+            <div class="modal-icon">
+                <img
+                    src="images/info-blue.png"
+                    alt=""
+                >
+            </div>
+
+            <h2>
+                Confirm Check-In
+            </h2>
+
+            <p class="modal-subtitle">
+                Please review the details below before
+                checking in the patient.
+            </p>
+
+            <div
+                class="queue-modal-details"
+                id="queueConfirmDetails"
+            ></div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="modal-secondary-btn"
+                    id="queueCancelBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="modal-primary-btn"
+                    id="queueConfirmBtn"
+                >
+                    Confirm Check-In
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="queueSuccessModal" class="queue-modal">
+
+        <div class="queue-modal-content">
+
+            <div class="success-icon">
+                <span>✓</span>
+            </div>
+
+            <h2>
+                Patient Checked In Successfully!
+            </h2>
+
+            <p class="modal-subtitle">
+                The patient has been checked in for the appointment.
+            </p>
+
+            <div
+                class="queue-modal-details"
+                id="queueSuccessDetails"
+            ></div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="modal-secondary-btn"
+                    id="successViewQueueBtn"
+                >
+                    View Queue
+                </button>
+
+                <button
+                    type="button"
+                    class="modal-primary-btn"
+                    id="successDoneBtn"
+                >
+                    Done
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<div id="footer-container"></div>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/doctor-queue.js"></script>
+
+</body>
+</html>

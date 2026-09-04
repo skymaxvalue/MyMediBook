@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AppointmentActions from './appointment.actions';
-import { AppoinmentService } from '../../Services/appoinment.service';
+import { AppoinmentService } from '../../core/Services/appoinment.service';
 import { catchError, map, mergeMap, of } from 'rxjs';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class AppointmentEffects {
                     .pipe(
                         map((response: any) =>
                             AppointmentActions.createAppointmentSuccess({
-                                appointment: response
+                                appointment: response.data
                             })
                         ),
 
@@ -127,7 +127,7 @@ export class AppointmentEffects {
 
             mergeMap((action) =>
                 this.appointmentService
-                    .cancelAppoitmentsByPatientID(action.patientId, action.appointmentId)
+                    .cancelAppoitmentsByPatientID(action.patientId, action.appointmentId, action.associateRole, action.lastUpdatedBy, action.cancelReason)
                     .pipe(
                         map((response: any) =>
                             AppointmentActions.cancelMyAppointmentSuccess({
@@ -156,7 +156,7 @@ export class AppointmentEffects {
 
             mergeMap((action) =>
                 this.appointmentService
-                    .rescheduleAppoitmentsByPatientID({ patientId: action.patientId, appointmentId: action.appointmentId, associateId: action.associateId, slotId: action.slotId, visitPurpose: action.visitPurpose, visitType: action.visitType })
+                    .rescheduleAppoitmentsByPatientID({ patientId: action.patientId, appointmentId: action.appointmentId, associateId: action.associateId, slotId: action.slotId, visitPurpose: action.visitPurpose, visitType: action.visitType, lastUpdatedBy: action.lastUpdatedBy, associateRole: action.associateRole, rescheduleReason: action.rescheduleReason })
                     .pipe(
                         map((response: any) =>
                             AppointmentActions.rescheduleMyAppointmentSuccess({
@@ -177,4 +177,116 @@ export class AppointmentEffects {
             )
         )
     );
+
+    getAppointmentListByAssociateList$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getAppointmentListByAssociateId),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getAppointmentListByAssociateId(action.associateId)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getAppointmentListByAssociateIdSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getAppointmentListByAssociateIdFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
+    getDashboardSummary$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getDashboardData),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getDashboardSummery(action.associateId, action.fromDate, action.toDate)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getDashboardDataSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getDashboardDataFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+    getDashboardDataForReceptionist$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getDashboardDataByReceptionist),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getDashboardSummeryForReceptionist(action.associateId, action.fromDate, action.toDate)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getDashboardDataByReceptionistSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getDashboardDataByReceptionistFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
+    getDashboardDataForDoctor$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getDashboardDataByDoctor),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getDashboardSummeryForDoctor(action.associateId, action.fromDate, action.toDate)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getDashboardDataByDoctorSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getDashboardDataByDoctorFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
 }

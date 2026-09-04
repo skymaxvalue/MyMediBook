@@ -1,12 +1,13 @@
 <router-outlet></router-outlet>
 
+<app-toast></app-toast>
 
 
 
-@if (isLoading$ | async) {
-<div class="loader-overlay">
+
+
+<div class="loader-overlay" *ngIf="isLoading$ | async">
     <div class="medical-loader">
         <div class="cross"></div>
     </div>
 </div>
-}

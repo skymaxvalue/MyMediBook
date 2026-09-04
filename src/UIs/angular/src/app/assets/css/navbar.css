@@ -297,65 +297,41 @@ body {
 .mobile-break{
     display:none;
 }
-
-
+.top-header{
+    min-height: 165px;
+}
 
 @media (max-width:1200px){
 
-
-
-
     .top-header{
+        display:grid;
+        grid-template-columns:1fr auto 1fr;
+        align-items:center;
         padding:20px 24px;
     }
 
-    
-    .title{
-        width:360px;
-        font-size:18px;
+    .left{
+        justify-self:start;
     }
-
-    .logo img{
-        width:44px;
-    }
-
-    .company-name{
-        font-size:20px;
-    }
-
-    .company-subtitle{
-        font-size:14px;
-    }
-
-    .user-pill{
-        min-width:160px;
-        height:46px;
-    }
-
-    .user-avatar{
-        width:30px;
-        height:30px;
-    }
-
-    .navbar{
-        gap:20px;
-    }
-
-    .nav-item{
-        font-size:15px;
-    }
-
 
     .center{
-        top:42%;
+        position:static;
+        transform:none;
+        justify-self:center;
+        text-align:center;
+    }
+
+    .right{
+        justify-self:end;
     }
 
     .hospital{
-        width:400px;
-        font-size:18px;
+        width:430px;
     }
 
-   
+    .title{
+        width:380px;
+    }
 }
 
 

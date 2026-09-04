@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AppointmentBooking } from '../../Models/Appointment-Model';
+import { AppointmentBooking } from '../../core/Models/Appointment-Model';
 
 export const createAppointment = createAction(
     '[Appointment] Create Appointment',
@@ -62,7 +62,7 @@ export const getMyAppointmentsFailure = createAction(
 );
 export const cancelMyAppointment = createAction(
     '[Appointments Cancel] delete ',
-    props<{ appointmentId: number, patientId: number }>()
+    props<{ appointmentId: number, patientId: number, cancelReason: string, lastUpdatedBy: string, associateRole: string }>()
 
 );
 
@@ -77,7 +77,7 @@ export const cancelMyAppointmentFailure = createAction(
 );
 export const rescheduleMyAppointment = createAction(
     '[Appointments reschedule] put ',
-    props<{ appointmentId: number, patientId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any }>()
+    props<{ appointmentId: number, patientId: number, associateId: number, slotId: number, visitPurpose: any, visitType: any, associateRole?: string, rescheduleReason?: string, lastUpdatedBy?: string }>()
 
 );
 
@@ -88,5 +88,65 @@ export const rescheduleMyAppointmentSuccess = createAction(
 
 export const rescheduleMyAppointmentFailure = createAction(
     '[Appointments reschedule] put  Failure',
+    props<{ error: string }>()
+);
+export const getAppointmentListByAssociateId = createAction(
+    '[Appointments by associate list] get ',
+    props<{ associateId: number }>()
+
+);
+
+export const getAppointmentListByAssociateIdSuccess = createAction(
+    '[Appointments by associate list] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getAppointmentListByAssociateIdFailure = createAction(
+    '[Appointments by associate list] get  Failure',
+    props<{ error: string }>()
+);
+export const getDashboardData = createAction(
+    '[Dashboard Data] get ',
+    props<{ associateId: number, fromDate: string, toDate: string }>()
+
+);
+
+export const getDashboardDataSuccess = createAction(
+    '[Dashboard Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getDashboardDataFailure = createAction(
+    '[Dashboard Data] get  Failure',
+    props<{ error: string }>()
+);
+export const getDashboardDataByReceptionist = createAction(
+    '[Dashboard Receptionist Data] get ',
+    props<{ associateId: number, fromDate: string, toDate: string }>()
+
+);
+
+export const getDashboardDataByReceptionistSuccess = createAction(
+    '[Dashboard Receptionist Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getDashboardDataByReceptionistFailure = createAction(
+    '[Dashboard Receptionist Data] get  Failure',
+    props<{ error: string }>()
+);
+export const getDashboardDataByDoctor = createAction(
+    '[Dashboard Doctor Data] get ',
+    props<{ associateId: number, fromDate: string, toDate: string }>()
+
+);
+
+export const getDashboardDataByDoctorSuccess = createAction(
+    '[Dashboard Doctor Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getDashboardDataByDoctorFailure = createAction(
+    '[Dashboard Doctor Data] get  Failure',
     props<{ error: string }>()
 );

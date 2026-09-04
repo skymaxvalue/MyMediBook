@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as PatientAction from "./patient.action"
 
 import { catchError, mergeMap, map, of } from 'rxjs';
-import { PatientService } from 'src/app/Services/patient.service';
+import { PatientService } from 'src/app/core/Services/patient.service';
 
 
 @Injectable()
@@ -76,6 +76,24 @@ export class PatientEffects {
                     ),
                     catchError((error) =>
                         of(PatientAction.getProfileDataByProfileIdFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
+    )
+
+    getMedicineDetailsByPatientID$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getAllMecineDetailByPatientID),
+            mergeMap((action) =>
+                this.patientService.getAllMediceneByPatientId(action.patientId).pipe(
+                    map((response: any) =>
+                        PatientAction.getAllMecineDetailByPatientIDSuccess({ patientMedicalData: response.data })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getAllMecineDetailByPatientIDFailure({ error: error.message || 'Login Failed' }))
                     )
 
                 )

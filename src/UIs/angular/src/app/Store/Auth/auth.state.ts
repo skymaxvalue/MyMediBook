@@ -1,10 +1,10 @@
-import { PatientRegister } from "../../Models/Patient-Model"
+import { PatientRegister } from "../../core/Models/Patient-Model"
 
 
 export interface AuthState {
     user: any,
     token: string | null,
-    loginPatient: any | null,
+    loginUser: any | null,
     registeredPatient: PatientRegister | null;
     isLoading: boolean;
     error: string | null;
@@ -14,6 +14,9 @@ export interface AuthState {
     getCities?: any[];
     requestedOtp: any;
     refreshToken: string | null;
+    associate: any;
+    otpres: any;
+    resetPassRes: any
 }
 
 export const initialAuthState: AuthState = {
@@ -26,7 +29,10 @@ export const initialAuthState: AuthState = {
     getCountries: [],
     getStates: [],
     getCities: [],
-    loginPatient: null,
+    loginUser: null,
     requestedOtp: null,
-    refreshToken: null
+    refreshToken: null,
+    associate: null,
+    otpres: null,
+    resetPassRes: null
 }

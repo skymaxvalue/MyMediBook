@@ -95,7 +95,7 @@ namespace Medicare.DAL.Services
             };
 
             var principal = new JwtSecurityTokenHandler().ValidateToken(token, validation, out SecurityToken securityToken);
-          
+
             if (securityToken is not JwtSecurityToken jwt || !jwt.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
                 throw new SecurityTokenException("Invalid token");
 
@@ -114,7 +114,7 @@ namespace Medicare.DAL.Services
                 ValidIssuer = _configuration["JwtSettings:Issuer"],
                 ValidateAudience = true,
                 ValidAudience = _configuration["JwtSettings:Audience"],
-                ValidateLifetime = true,  
+                ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
 
@@ -126,6 +126,63 @@ namespace Medicare.DAL.Services
                 throw new SecurityTokenException("Invalid token purpose.");
 
             return principal;
+        }
+        public string GenerateAppointmentConfirmationToken(int appointmentId)
+        {
+            var key = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+            new Claim("AppointmentId", appointmentId.ToString()),
+            new Claim("Purpose",       "AppointmentConfirmation"),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public int? ValidateAppointmentConfirmationToken(string token)
+        {
+            var key = new SymmetricSecurityKey(
+                          Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+
+            var parameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["JwtSettings:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["JwtSettings:Audience"],
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var principal = handler.ValidateToken(token, parameters, out _);
+
+                var purpose = principal.FindFirstValue("Purpose");
+                if (purpose != "AppointmentConfirmation")
+                    return null;
+
+                return int.Parse(principal.FindFirstValue("AppointmentId")!);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

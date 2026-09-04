@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Search Patient | My Medi Book</title>
+
+
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+  
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/search-patient.css">
+
+</head>
+
+<body>
+
+
+
+    <div id="navbar-container"></div>
+
+
+    <main class="dashboard-container">
+
+
+
+<section class="breadcrumb">
+
+    <a href="dashboard.html">Dashboard</a>
+
+    <span class="separator">
+
+        <img src="images/right-arrow-blue.png"
+             alt="Arrow">
+
+    </span>
+
+    <span class="active">
+
+        Search Patient
+
+    </span>
+
+</section>
+
+
+
+<section class="search-panel">
+
+    <div class="search-panel-header">
+
+        <div class="panel-title">
+
+            <img src="images/search.png"
+                 alt="Filter">
+
+            <h2>Search Filters</h2>
+
+        </div>
+
+        <button
+            id="clearFilters"
+            class="clear-btn">
+
+            <img src="images/refresh.png"
+                 alt="Clear">
+
+            Clear All
+
+        </button>
+
+    </div>
+
+
+
+    <div class="filter-grid">
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                First Name
+
+            </label>
+
+            <div class="input-box">
+
+                <img src="images/profile.png"
+                     alt="Patient">
+
+                <input
+                    type="text"
+                    id="firstName"
+                    placeholder="Enter first name">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                Last Name
+
+            </label>
+
+            <div class="input-box">
+
+                <img src="images/profile.png"
+                     alt="Patient">
+
+                <input
+                    type="text"
+                    id="lastName"
+                    placeholder="Enter last name">
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+
+                Date of Birth
+
+            </label>
+
+            <div class="input-box">
+
+               
+
+                <input
+                    type="date"
+                    id="dob">
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                Phone Number
+
+            </label>
+
+            <div class="input-box">
+
+                <img src="images/phone.png"
+                     alt="Phone">
+
+                <input
+                    type="text"
+                    id="phone"
+                    placeholder="Enter phone number">
+
+            </div>
+
+        </div>
+
+
+
+        <div class="search-button-wrapper">
+
+            <button
+                id="searchPatientBtn"
+                class="search-btn">
+
+                <img src="images/search-white.png"
+                     alt="Search">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="search-results">
+
+    <div class="results-header">
+
+        <div class="results-left">
+
+            <div class="results-icon">
+
+                <img src="images/search-patient.png"
+                     alt="Search">
+
+            </div>
+
+            <div>
+
+                <h2>
+
+                    Search Results
+
+<span class="result-count">
+
+    0 Patients Found
+
+</span>
+ </h2>
+
+<p id="showingResults">
+
+    Showing 0 to 0 of 0 results
+
+</p>
+            </div>
+
+        </div>
+
+   
+
+    </div>
+
+
+
+    <div class="table-wrapper">
+
+        <table class="patient-table">
+
+            <thead>
+
+<tr>
+
+    <th>Sl. No</th>
+
+    <th>Patient Name</th>
+
+    <th>D.O.B.</th>
+
+    <th>Gender</th>
+
+    <th>Phone Number</th>
+
+    <th>Email Address</th>
+
+    <th>Address</th>
+
+    <th>Last Visit</th>
+
+    <th>Action</th>
+
+</tr>
+
+            </thead>
+
+            <tbody id="patientTableBody">
+
+
+
+
+                
+
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <div class="table-footer">
+
+        <div class="entries">
+
+            Show
+
+            <select>
+
+                <option>25</option>
+
+                <option>50</option>
+
+                <option>100</option>
+
+            </select>
+
+            entries
+
+        </div>
+
+<div class="pagination">
+
+    <button
+        id="previousPage">
+
+        <img
+            src="images/arrow-left-nav.png"
+            alt="Previous">
+
+    </button>
+
+    <span
+        id="pageNumber">
+
+        Page 1 of 1
+
+    </span>
+
+    <button
+        id="nextPage">
+
+        <img
+            src="images/arrow-right-nav.png"
+            alt="Next">
+
+    </button>
+
+</div>
+
+    </div>
+
+</section>
+
+
+    </main>
+
+
+
+    <div id="footer-container"></div>
+
+
+
+    <script src="js/navbar.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/search-patient.js"></script>
+
+</body>
+
+</html>

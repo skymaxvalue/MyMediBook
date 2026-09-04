@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Medicare.DAL.Helper.Hubs;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace Medicare_API.Registrars
 {
@@ -28,6 +29,8 @@ namespace Medicare_API.Registrars
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.MapHub<NotificationHub>("/hubs/notifications");
 
             app.MapControllers();
         }

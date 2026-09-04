@@ -93,6 +93,7 @@ namespace Medicare.Application.Models.Associate
         public int AssociateId { get; set; }
         public Guid UserId { get; set; }
         public Guid TenantId { get; set; }
+        public string UserType { get; set; } = "Associate";
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }
         public string LastName { get; set; }

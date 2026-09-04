@@ -1,15 +1,15 @@
 import { createAction, props } from '@ngrx/store';
-import { PatientRegister } from "../../Models/Patient-Model";
+import { PatientRegister } from "../../core/Models/Patient-Model";
 
 // Login Actions
 export const login = createAction(
     '[Auth] Login',
-    props<{ username: string; password: string }>()
+    props<{ username: string; password: string, role: string }>()
 );
 
 export const loginSuccess = createAction(
     '[Auth] Login Success',
-    props<{ patient: any }>()
+    props<{ user: any }>()
 );
 
 export const loginFailure = createAction(
@@ -25,7 +25,7 @@ export const requestOTP = createAction(
 
 export const requestOTPSuccess = createAction(
     '[Auth] OTP Success',
-    props<{ requesteOTP: any }>()
+    props<{ requestedOtp: any }>()
 );
 
 export const requestOTPFailure = createAction(
@@ -130,5 +130,37 @@ export const refreshTokenFailure = createAction(
     '[Auth] Refresh Token Failure',
     props<{ error: string }>()
 );
+
+
+
+export const verifyOTP = createAction(
+    '[Auth] verifyOTP',
+    props<{ email: string; otpCode: string }>()
+);
+
+export const verifyOTPSuccess = createAction(
+    '[Auth] verifyOTP Success',
+    props<{ otpres: any }>()
+);
+
+export const verifyOTPFailure = createAction(
+    '[Auth] verifyOTP Failure',
+    props<{ error: string }>()
+);
+export const ForrgetResetPassword = createAction(
+    '[Auth] ForrgetResetPassword',
+    props<{ password: string; token: string, isAssociate?: boolean }>()
+);
+
+export const ForrgetResetPasswordSuccess = createAction(
+    '[Auth] ForrgetResetPassword Success',
+    props<{ resetPassRes: any }>()
+);
+
+export const ForrgetResetPasswordFailure = createAction(
+    '[Auth] ForrgetResetPassword Failure',
+    props<{ error: string }>()
+);
+
 
 

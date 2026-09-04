@@ -1,0 +1,1327 @@
+<div class="lab-page">
+    <div class="lab-container">
+
+
+        <div class="lab-header">
+            <div class="title-section">
+                <div class="lab-icon">
+                    <img src="assets/images/lab-icon.png" alt="">
+                </div>
+
+                <h2>Lab Results</h2>
+            </div>
+        </div>
+
+        <div class="top-controls">
+
+            <div class="summary-section">
+
+                <div class="summary-card total">
+                    <div class="summary-icon">
+                        <img src="assets/images/icon-total.png">
+                    </div>
+
+                    <div>
+                        <h6>Total Tests</h6>
+                        <h3>{{ totalTests() }}</h3>
+                        <p>All time</p>
+                    </div>
+                </div>
+
+                <div class="summary-card normal">
+                    <div class="summary-icon">
+                        <img src="assets/images/icon-normal.png">
+                    </div>
+
+                    <div>
+                        <h6>Normal</h6>
+                        <h3>{{ normalTests() }}</h3>
+                        <p>Tests</p>
+                    </div>
+                </div>
+
+                <div class="summary-card critical">
+                    <div class="summary-icon">
+                        <img src="assets/images/icon-critical.png">
+                    </div>
+
+                    <div>
+                        <h6>Critical</h6>
+                        <h3>{{ criticalTests() }}</h3>
+                        <!-- <p>Tests</p> -->
+                    </div>
+                </div>
+
+                <div class="summary-card pending">
+                    <div class="summary-icon">
+                        <img src="assets/images/icon-pending.png">
+                    </div>
+
+                    <div>
+                        <h6>Pending</h6>
+                        <h3>{{ pendingTests() }}</h3>
+                        <p>Tests</p>
+                    </div>
+                </div>
+
+                <div class="summary-card reports">
+                    <div class="summary-icon">
+                        <img src="assets/images/icon-reports.png">
+                    </div>
+
+                    <div>
+                        <h6>Reports</h6>
+                        <h3>{{ reportsReady() }}</h3>
+                        <p>Ready</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <div class="search-box">
+
+                    <img src="assets/images/search-icon.png" class="search-icon">
+
+                    <input type="text" placeholder="Search..." [ngModel]="searchText()"
+                        (ngModelChange)="onSearch($event)" />
+
+                </div>
+
+                <select class="sort-select" [ngModel]="selectedSort()" (ngModelChange)="sortBy($event)">
+
+                    <option value="">Sort By</option>
+
+                    <option value="nameAsc">Patient A-Z</option>
+
+                    <option value="nameDesc">Patient Z-A</option>
+
+                    <option value="newest">Newest Date</option>
+
+                    <option value="oldest">Oldest Date</option>
+
+                    <option value="testAsc">Test A-Z</option>
+
+                    <option value="testDesc">Test Z-A</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="table-header">
+
+            <div (click)="sortColumn('patientName')">
+                Patient Name
+
+                <span class="sort-icon">
+                    {{ getArrow('patientName') }}
+                </span>
+            </div>
+
+
+            <div (click)="sortColumn('testName')">
+                Test Name
+
+                <span class="sort-icon">
+                    {{ getArrow('testName') }}
+                </span>
+            </div>
+
+
+            <div>
+                Test Code
+            </div>
+
+
+            <div (click)="sortColumn('reportDate')">
+                Date
+
+                <span class="sort-icon">
+                    {{ getArrow('reportDate') }}
+                </span>
+            </div>
+
+
+            <div>
+                Result
+            </div>
+
+
+            <div>
+                Reference
+            </div>
+
+
+            <div>
+                Status
+            </div>
+
+
+            <div>
+                Lab
+            </div>
+
+
+            <div>
+                Action
+            </div>
+
+        </div>
+
+
+        @if(paginatedResults().length > 0){
+
+        @for(
+        item of paginatedResults();
+        track item.resultId
+        ) {
+
+        <div class="result-card">
+
+
+            <!-- PATIENT -->
+
+            <div class="patient">
+
+                <img src="assets/images/user.png" alt="Patient">
+
+                <span class="patient-name" [title]="item.patientName">
+                    <b>
+                        {{ item.patientName }}
+                    </b>
+                </span>
+
+            </div>
+
+
+            <!-- TEST -->
+
+            <div class="mobile-field">
+
+                <!-- <b>Test</b> -->
+
+                <span>
+                    {{ item.testName }}
+                </span>
+
+            </div>
+
+
+            <!-- CODE -->
+
+            <div class="mobile-field">
+
+                <!-- <b>Code</b> -->
+
+                <span>
+                    {{ item.testCode }}
+                </span>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="mobile-field">
+
+                <!-- <b>Date</b> -->
+
+                <span>
+                    {{ item.reportDate | date:'dd-MMM-yyyy' }}
+                </span>
+
+            </div>
+
+
+            <!-- RESULT -->
+
+            <div class="mobile-field">
+
+                <!-- <b>Result</b> -->
+
+                <span>
+                    {{ item.resultValue }}
+                </span>
+
+            </div>
+
+
+            <!-- REFERENCE -->
+
+            <div class="mobile-field">
+
+                <!-- <b>Reference</b> -->
+
+                <span>
+                    {{ item.referenceRange }}
+                </span>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <!-- <div>
+
+                <div [ngClass]="getStatusClass(item)">
+
+                    <div class="badge-title">
+
+                        {{ getStatusText(item) }}
+
+                    </div>
+
+
+                    @if(getResultStatus(item) === 'Normal') {
+
+                    <small>
+                        In Range
+                    </small>
+
+                    }
+
+                    @else if(getResultStatus(item) === 'Critical') {
+
+                    <small>
+                        Out Of Range
+                    </small>
+
+                    }
+
+                    @else {
+
+                    <small>
+                        {{ item.resultStatus }}
+                    </small>
+
+                    }
+
+                </div>
+
+            </div> -->
+
+
+
+            <!-- STATUS -->
+            <div>
+
+                <div class="status-badge" [ngClass]="getResultStatusClass(item)">
+
+                    <div class="badge-title">
+
+                        <span>
+                            {{ getResultStatus(item) }}
+                        </span>
+
+                        <img [src]="getStatusIcon(item)" [alt]="getResultStatus(item)">
+
+                    </div>
+
+                    @if (getResultStatus(item) === 'Normal') {
+
+                    <small>
+                        In Range
+                    </small>
+
+                    }
+                    @else if (getResultStatus(item) === 'Critical') {
+
+                    <small>
+                        Out Of Range
+                    </small>
+
+                    }
+                    @else {
+
+                    <small>
+                        Awaiting Report
+                    </small>
+
+                    }
+
+                </div>
+
+            </div>
+            <!-- LAB -->
+
+            <div>
+
+                {{ item.labName || 'N/A' }}
+
+            </div>
+
+
+            <!-- ACTION -->
+
+            <div>
+
+                <button class="details-btn" (click)="openDetails(item)">
+                    View Details
+                </button>
+
+            </div>
+
+        </div>
+
+        }
+        }
+        @else{
+        <div class="no-data-container">
+            <h3>No Data Available</h3>
+            <p>No lab results found.</p>
+        </div>
+        }
+
+
+    </div>
+
+
+
+    <div class="pagination-wrapper">
+
+        <button (click)="previousPage()" [disabled]="currentPage()==1">
+
+            ←
+
+        </button>
+
+        <span id="pageNumber">
+
+            {{ currentPage() }}
+
+        </span>
+
+        <button (click)="nextPage()" [disabled]="currentPage()==totalPages()">
+
+            →
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+@if (selectedResult()) {
+
+<div class="lab-modal-backdrop">
+
+    <div class="lab-modal">
+
+        <!-- HEADER -->
+        <div class="lab-modal-header">
+
+            <div class="lab-modal-title">
+                <div class="header-icon">
+                    <img src="/assets/images/billing2.png" alt="">
+                </div>
+
+                <h2>Lab Report Details</h2>
+            </div>
+
+            <button class="close-btn" type="button" (click)="closeModal()">
+                ✕
+            </button>
+
+        </div>
+
+
+        <!-- BODY -->
+        <div class="lab-modal-body">
+
+            <!-- TOP SUMMARY -->
+            <div class="report-summary">
+
+                <div class="report-icon">
+                    <img src="/assets/images/icon-total.png" alt="">
+                </div>
+
+                <div class="report-main">
+                    <div class="divided">
+                        <h1>
+                            {{ selectedResult()?.testName }}
+                        </h1>
+                        <div class="report-status" [ngClass]="getResultStatusClass(selectedResult()!)">
+
+                            {{ getResultStatus(selectedResult()!) }}
+
+                            <img class="status-icon" [src]="getStatusIcon(selectedResult()!)"
+                                [alt]="getResultStatus(selectedResult()!)">
+
+                        </div>
+
+
+                    </div>
+
+                    <span class="test-code">
+                        Test Code: {{ selectedResult()?.testCode }}
+                    </span>
+
+                    <div class="lab-name">
+                        <span><img src="/assets/images/front-office/images/location.png" alt=""> </span>
+                        {{ selectedResult()?.labName || 'N/A' }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DETAILS -->
+            <div class="report-details">
+
+                <!-- LEFT COLUMN -->
+                <div class="details-column">
+
+                    <!-- Patient -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Patient Name
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.patientName }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Collection Date -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/date new.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Collection Date
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.reportDate | date:'dd MMM yyyy' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Result -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/lab.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Result
+                            </span>
+
+                            <strong [class.result-normal]="getStatusText(selectedResult()!) === 'Normal'"
+                                [class.result-critical]="getStatusText(selectedResult()!) === 'Critical'">
+
+                                {{ selectedResult()?.resultValue || 'N/A' }}
+
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Reference Range -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/info-blue.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Reference Range
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.referenceRange || 'N/A' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT COLUMN -->
+                <div class="details-column">
+
+                    <!-- Test Name -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/icon-total.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Test Name
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.testName }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Lab Name -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/lab corp.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Lab Name
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.labName || 'N/A' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/clock2.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Status
+                            </span>
+
+                            <strong [class.status-text-normal]="getStatusText(selectedResult()!) === 'Normal'"
+                                [class.status-text-critical]="getStatusText(selectedResult()!) === 'Critical'"
+                                [class.status-text-pending]="getStatusText(selectedResult()!) === 'Pending'">
+
+                                {{ getStatusText(selectedResult()!) }}
+
+                                <span class="small-check" *ngIf="getStatusText(selectedResult()!) === 'Normal'">
+                                    <img src="/assets/images/security-icon.png" alt="">
+                                </span>
+
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Doctor Notes -->
+                    <div class="detail-item">
+
+                        <div class="detail-icon">
+                            <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+                        </div>
+
+                        <div>
+                            <span class="detail-label">
+                                Doctor Notes
+                            </span>
+
+                            <strong>
+                                {{ selectedResult()?.notes || 'No additional remarks.' }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="lab-modal-footer">
+
+            <button class="download-btn" type="button" (click)="downloadLabReport()">
+
+                <img src="/assets/images/icons8-installing-updates-100.png" alt="">
+                Download PDF
+
+            </button>
+
+            <button class="print-btn" type="button">
+
+                <img src="/assets/images/print.png" alt="">
+                Print
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+@if (selectedResult()) {
+
+<div #labReportPdf class="pdf-page">
+
+    <!-- HEADER -->
+    <div class="pdf-header">
+
+        <div class="logo-section">
+
+            <img src="assets/images/logo.png" alt="Logo" />
+
+            <div>
+                <h1>HEALTH HEAVEN</h1>
+                <h2>MEDICAL CENTER</h2>
+            </div>
+
+        </div>
+
+
+        <div class="report-info">
+
+            <div>
+                <strong>Report ID</strong>
+                <span>:</span>
+                <span>
+                    LAB-{{ selectedResult()?.resultId }}
+                </span>
+            </div>
+
+            <div>
+                <strong>Report Date</strong>
+                <span>:</span>
+                <span>
+                    {{ selectedResult()?.reportDate | date:'dd MMM yyyy' }}
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TITLE -->
+    <div class="title_section">
+
+        <h2>LAB REPORT</h2>
+
+        <p>
+            Official Electronic Medical Record
+        </p>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+    <div class="information-grid">
+
+
+        <!-- PATIENT INFORMATION -->
+        <div class="info-box">
+
+            <h3>PATIENT INFORMATION</h3>
+
+
+            <div class="info-row">
+
+                <b>Patient Name</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.patientName || 'N/A' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Patient ID</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.patientId || 'N/A' }}
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- LAB INFORMATION -->
+        <div class="info-box">
+
+            <h3>LAB & TEST INFORMATION</h3>
+
+
+            <div class="info-row">
+
+                <b>Lab Name</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.labName || 'N/A' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Test Name</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.testName || 'N/A' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Test Code</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.testCode || 'N/A' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Collection Date</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.reportDate | date:'dd MMM yyyy' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Report Date</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.reportDate | date:'dd MMM yyyy' }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TEST RESULTS -->
+    <div class="section-title">
+        TEST RESULTS
+    </div>
+
+
+    <table class="result-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Parameter</th>
+
+                <th>Result</th>
+
+                <th>Reference Range</th>
+
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            <tr>
+
+                <!-- TEST NAME -->
+                <td>
+                    {{ selectedResult()?.testName || 'N/A' }}
+                </td>
+
+
+                <!-- RESULT -->
+                <td [ngClass]="{
+                        'normal': getResultStatus(selectedResult()!) === 'Normal',
+                        'low': getResultStatus(selectedResult()!) === 'Critical'
+                    }">
+                    {{ selectedResult()?.resultValue || 'N/A' }}
+                </td>
+
+
+                <!-- REFERENCE -->
+                <td>
+                    {{ selectedResult()?.referenceRange || 'N/A' }}
+                </td>
+
+
+                <!-- STATUS -->
+                <td [ngClass]="{
+                        'normal': getResultStatus(selectedResult()!) === 'Normal',
+                        'low': getResultStatus(selectedResult()!) === 'Critical'
+                    }">
+                    {{ getResultStatus(selectedResult()!) }}
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+    <!-- BOTTOM -->
+    <div class="bottom-grid">
+
+
+        <!-- REPORT SUMMARY -->
+        <div class="summary-box">
+
+            <h3>REPORT SUMMARY</h3>
+
+
+            <div class="info-row">
+
+                <b>Result</b>
+
+                <span>:</span>
+
+                <span [ngClass]="{
+                        'normal': getResultStatus(selectedResult()!) === 'Normal',
+                        'low': getResultStatus(selectedResult()!) === 'Critical'
+                    }">
+                    {{ selectedResult()?.resultValue || 'N/A' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Reference Range</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.referenceRange || 'N/A' }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Status</b>
+
+                <span>:</span>
+
+                <span [ngClass]="{
+                        'normal': getResultStatus(selectedResult()!) === 'Normal',
+                        'low': getResultStatus(selectedResult()!) === 'Critical'
+                    }">
+                    {{ getResultStatus(selectedResult()!) }}
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <b>Doctor Notes</b>
+
+                <span>:</span>
+
+                <span>
+                    {{ selectedResult()?.notes || 'No additional remarks.' }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTE -->
+        <div class="summary-box">
+
+            <h3>NOTE</h3>
+
+            <ul>
+
+                <li>
+                    This is a computer generated report.
+                </li>
+
+                <li>
+                    Please consult your physician for interpretation of results.
+                </li>
+
+                <li>
+                    For any queries, please contact the lab.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <!-- SIGNATURE -->
+    <div class="signature">
+
+        <div class="signature-line"></div>
+
+        <span>
+            Authorized Signature
+        </span>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <div class="pdf-footer">
+
+        <div>
+
+            <small>
+                Powered By
+            </small>
+
+            <strong>
+                SkyMaxValue
+            </strong>
+
+            <span>
+                Technology Solutions
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Generated By
+            </small>
+
+            <strong>
+                MyMediBook
+            </strong>
+
+        </div>
+
+
+        <div class="footer-right">
+
+            <strong>
+                HEALTH HEAVEN
+            </strong>
+
+            <span>
+                MEDICAL CENTER
+            </span>
+
+            <span>
+                +91 98765 43210
+            </span>
+
+            <span>
+                www.healthheaven.in
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+<!-- <div #labReportPdf class="pdf-page">
+
+    <div class="pdf-header">
+        <div class="logo-section">
+            <img src="assets/images/logo.png" />
+
+            <div>
+                <h1>HEALTH HEAVEN</h1>
+                <h2>MEDICAL CENTER</h2>
+            </div>
+        </div>
+
+        <div class="report-info">
+            <div>
+                <strong>Report ID</strong>
+                <span>:</span>
+                <span>LAB-2026-00521</span>
+            </div>
+
+            <div>
+                <strong>Report Date</strong>
+                <span>:</span>
+                <span>01 May 2026</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="title_section">
+        <h2>LAB REPORTS</h2>
+        <p>Official Electronic Medical Record</p>
+    </div>
+
+
+    <div class="information-grid">
+
+        <div class="info-box">
+            <h3>PATIENT INFORMATION</h3>
+
+            <div class="info-row">
+                <b>Patient Name</b>
+                <span>:</span>
+                <span>Ramesh Kumar</span>
+            </div>
+
+            <div class="info-row">
+                <b>Age / Gender</b>
+                <span>:</span>
+                <span>42 Years / Male</span>
+            </div>
+
+            <div class="info-row">
+                <b>Patient ID</b>
+                <span>:</span>
+                <span>PAT-2026-00345</span>
+            </div>
+
+            <div class="info-row">
+                <b>Contact Number</b>
+                <span>:</span>
+                <span>+91 98765 43210</span>
+            </div>
+        </div>
+
+
+        <div class="info-box">
+            <h3>LAB & TEST INFORMATION</h3>
+
+            <div class="info-row">
+                <b>Lab Name</b>
+                <span>:</span>
+                <span>Lab Corp</span>
+            </div>
+
+            <div class="info-row">
+                <b>Test Name</b>
+                <span>:</span>
+                <span>Blood Test</span>
+            </div>
+
+            <div class="info-row">
+                <b>Collection Date</b>
+                <span>:</span>
+                <span>01 May 2026</span>
+            </div>
+
+            <div class="info-row">
+                <b>Report Date</b>
+                <span>:</span>
+                <span>01 May 2026</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        TEST RESULTS
+    </div>
+
+    <table class="result-table">
+
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Result</th>
+                <th>Reference Range</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Hemoglobin (Hb)</td>
+                <td class="low">11.2 g/dL</td>
+                <td>12.0 - 16.0 g/dL</td>
+                <td class="low">Low</td>
+            </tr>
+
+            <tr>
+                <td>Total WBC Count</td>
+                <td>6,800 /µL</td>
+                <td>4,000 - 11,000 /µL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>RBC Count</td>
+                <td class="low">4.2 million /µL</td>
+                <td>4.5 - 5.5 million /µL</td>
+                <td class="low">Low</td>
+            </tr>
+
+            <tr>
+                <td>Platelet Count</td>
+                <td>2.45 lakh /µL</td>
+                <td>1.50 - 4.50 lakh /µL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>Blood Sugar (Fasting)</td>
+                <td>98 mg/dL</td>
+                <td>70 - 110 mg/dL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>Cholesterol (Total)</td>
+                <td>182 mg/dL</td>
+                <td>&lt; 200 mg/dL</td>
+                <td class="normal">Normal</td>
+            </tr>
+
+            <tr>
+                <td>Triglycerides</td>
+                <td>135 mg/dL</td>
+                <td>&lt; 150 mg/dL</td>
+                <td class="normal">Normal</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+    <div class="bottom-grid">
+
+        <div class="summary-box">
+            <h3>REPORT SUMMARY</h3>
+
+            <div class="info-row">
+                <b>Result</b>
+                <span>:</span>
+                <span class="low">Insufficient</span>
+            </div>
+
+            <div class="info-row">
+                <b>Reference Range</b>
+                <span>:</span>
+                <span>90 - 110</span>
+            </div>
+
+            <div class="info-row">
+                <b>Status</b>
+                <span>:</span>
+                <span class="normal">Normal</span>
+            </div>
+
+            <div class="info-row">
+                <b>Doctor Notes</b>
+                <span>:</span>
+                <span>No additional remarks.</span>
+            </div>
+        </div>
+
+
+        <div class="summary-box">
+            <h3>NOTE</h3>
+
+            <ul>
+                <li>This is a computer generated report.</li>
+                <li>Please consult your physician for interpretation of results.</li>
+                <li>For any queries, please contact the lab.</li>
+            </ul>
+        </div>
+
+    </div>
+
+
+    <div class="signature">
+        <div class="signature-line"></div>
+        <span>Authorized Signature</span>
+    </div>
+
+
+    <div class="pdf-footer">
+
+        <div>
+            <small>Powered By</small>
+            <strong>SkyMaxValue</strong>
+            <span>Technology Solutions</span>
+        </div>
+
+        <div>
+            <small>Generated By</small>
+            <strong>MyMediBook</strong>
+        </div>
+
+        <div class="footer-right">
+            <strong>HEALTH HEAVEN</strong>
+            <span>MEDICAL CENTER</span>
+            <span>+91 98765 43210</span>
+            <span>www.healthheaven.in</span>
+        </div>
+
+    </div>
+
+</div> -->

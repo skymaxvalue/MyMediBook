@@ -1,0 +1,191 @@
+<main class="page-container">
+
+
+
+    <!-- <div class="breadcrumb">
+
+        <span>Dashboard</span>
+
+        <span class="breadcrumb-separator">
+            »
+        </span>
+
+        <span>Patient Check-In</span>
+
+        <span class="breadcrumb-separator">
+            »
+        </span>
+
+        <span class="current">
+            Next in Queue
+        </span>
+
+    </div> -->
+
+
+
+
+    <section class="page-header">
+
+        <h1>
+            Next in Queue
+        </h1>
+
+        <p>
+            Select a doctor to view their appointment queue.
+        </p>
+
+    </section>
+
+
+
+
+    <section class="doctor-selection-card">
+
+
+        <div class="card-header">
+
+            <h2>
+                Select Doctor
+            </h2>
+
+            <p>
+                Choose a doctor to view today's patient queue.
+            </p>
+
+        </div>
+
+
+
+
+        <div class="form-group">
+
+            <label for="doctorSearch">
+                Doctor Name
+            </label>
+
+
+            <div class="doctor-select-wrapper">
+
+                <input type="text" id="doctorSearch" class="doctor-input" placeholder="Search or select doctor"
+                    autocomplete="off" [(ngModel)]="doctorSearch" (input)="searchDoctor()" (focus)="openDropdown()">
+
+
+                <button type="button" class="dropdown-button" (click)="openDropdown()">
+
+                    <span>
+                        ▼
+                    </span>
+
+                </button>
+
+
+
+
+                @if (isDropdownOpen) {
+
+                <div class="doctor-dropdown active">
+
+                    @if (filteredDoctors.length > 0) {
+
+                    @for (
+                    doctor of filteredDoctors;
+                    track doctor.name
+                    ) {
+
+                    <div class="doctor-option" (click)="selectDoctor(doctor)">
+
+                        <strong>
+                            {{ doctor.name }}
+                        </strong>
+
+                        @if (doctor.department) {
+
+                        <span>
+                            {{ doctor.department }}
+                        </span>
+
+                        }
+
+                    </div>
+
+                    }
+
+                    } @else {
+
+                    <div class="no-doctors">
+                        No doctors found
+                    </div>
+
+                    }
+
+                </div>
+
+                }
+
+            </div>
+
+        </div>
+
+
+
+        @if (selectedDoctor) {
+
+        <div class="selected-doctor">
+
+            <div class="selected-doctor-icon">
+                ✓
+            </div>
+
+
+            <div>
+
+                <span class="selected-label">
+                    Selected Doctor
+                </span>
+
+                <strong>
+                    {{ selectedDoctor.name }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        }
+
+
+
+        @if (validationMessage) {
+
+        <div class="validation-message">
+
+            {{ validationMessage }}
+
+        </div>
+
+        }
+
+
+
+
+        <div class="card-actions">
+
+            <button type="button" class="secondary-button" (click)="clearSelection()">
+
+                Clear
+
+            </button>
+
+
+            <button type="button" class="primary-button" (click)="viewQueue()">
+
+                View Queue
+
+            </button>
+
+        </div>
+
+    </section>
+
+</main>

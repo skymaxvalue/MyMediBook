@@ -1,1 +1,110 @@
-<p>association-list works!</p>
+<main class="page-shell">
+    <div class="shape shape-left" aria-hidden="true"></div>
+    <div class="shape shape-right" aria-hidden="true"></div>
+
+    <section class="page-container">
+        <h1 class="page-title">Associate Schedule List</h1>
+
+        <div class="table-card">
+            <table class="associate-table" aria-label="Associate schedule list">
+                <thead>
+                    <tr>
+                        <th data-sort="0">Full Name <span class="sort-icon">▼</span></th>
+                        <th data-sort="1">Department <span class="sort-icon">▼</span></th>
+                        <th data-sort="2">Speciality <span class="sort-icon">▼</span></th>
+                        <th data-sort="3">From Date </th>
+                        <th data-sort="4">To Date </th>
+                        <th data-sort="5">Time <span class="sort-icon">▼</span></th>
+                        <th class="actions-head">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @for(row of schedules(); track row.associateId; let i = $index) {
+
+
+                    <tr>
+
+                        <td>{{row.firstName}} {{row.lastName}}</td>
+                        <td>{{row.roleName}}</td>
+                        <td>{{row.departmentName}}</td>
+
+                        <td>{{row.specialityName}}</td>
+
+
+
+                        <td>{{row.firstName}}</td>
+
+                        <td>{{row.firstName}}</td>
+
+                        <td>
+                            <div class="action-buttons">
+
+                                <!-- <button >
+                                    Edit
+                                </button>
+
+                                <button >
+                                    Delete
+                                </button> -->
+                                <button class="action-btn edit" type="button" (click)="edit(row.associateId,i)">
+                                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                                        <path d="M4 16.5V20h3.5L18 9.5l-3.5-3.5L4 16.5Z" stroke="currentColor"
+                                            stroke-width="1.8" stroke-linejoin="round" />
+                                        <path d="M14.5 5.5 18 9.5" stroke="currentColor" stroke-width="1.8"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="action-btn delete" type="button" (click)="openDelete(row)">
+                                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                                        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </section>
+</main>
+<div class="modal" *ngIf="showDeleteModal">
+
+    <div class="modal-box">
+
+        <p>
+
+            Delete {{deleteRow?.firstName}} {{deleteRow?.lastName}} ?
+
+        </p>
+
+        <!-- <button >
+
+                        Yes
+
+                    </button>
+
+                    <button >
+
+                        Cancel
+
+                    </button> -->
+        <div class="modal-actions">
+            <button id="confirmDelete" class="action-btn delete" (click)="deleteConfirmed()">Yes,
+                Delete</button>
+            <button id="cancelDelete" class="action-btn cancel" (click)="closeModal()">Cancel</button>
+        </div>
+
+    </div>
+
+</div>

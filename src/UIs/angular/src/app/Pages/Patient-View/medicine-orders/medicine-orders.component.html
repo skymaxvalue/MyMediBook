@@ -1,0 +1,993 @@
+<div class="medicine-page">
+
+    <div class="medicine-container">
+
+        <div class="medicine-header">
+
+            <div class="title-section">
+                <div class="medicine-icon">
+                    <img src="assets/images/medicine-icon.png" alt="">
+                </div>
+
+                <h2>Medicine Orders</h2>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="top-controls">
+
+            <div class="summary-section">
+
+                <div class="summary-card total">
+                    <img src="assets/images/orders-icon.png">
+                    <div>
+                        <h6>Total</h6>
+                        <h3 id="totalOrders">{{totalOrders}}</h3>
+                        <p>Orders</p>
+                    </div>
+                </div>
+
+                <div class="summary-card ready">
+                    <img src="assets/images/ready-icon.png">
+                    <div>
+                        <h6>Ready</h6>
+                        <h3 id="readyOrders">{{readyOrders}}</h3>
+                        <p>For pickup</p>
+                    </div>
+                </div>
+
+                <div class="summary-card transit">
+                    <img src="assets/images/transit-icon.png">
+                    <div>
+                        <h6>In Transit</h6>
+                        <h3 id="transitOrders">{{transitOrders}}</h3>
+                        <p>On the way</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="header-actions">
+
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by medicine or order..."
+                        [(ngModel)]="searchText" (input)="onSearchChange()">
+
+                    @if(searchText) {
+                    <span class="clear-icon" (click)="clearSearch()">✖</span>
+                    }
+                </div>
+
+                <select id="sortSelect" class="sort-select" [(ngModel)]="sortValue" (change)="onSortChange()">
+                    <option value="" disabled selected>Sort By</option>
+                    <option value="nameAsc">Name A-Z</option>
+                    <option value="nameDesc">Name Z-A</option>
+                    <option value="ready">Ready Orders</option>
+                    <option value="transit">In Transit Orders</option>
+                    <option value="newest">Newest Order Date</option>
+                    <option value="oldest">Oldest Order Date</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="medicine-table-wrapper">
+
+            <div class="table-header">
+
+                <div>Patient Name</div>
+                <div>Medicine Details</div>
+                <div>Instructions</div>
+                <div>Order Details</div>
+                <div>Request Refill</div>
+                <div>Pharmacy Information</div>
+                <div>Status</div>
+                <div>Action</div>
+
+            </div>
+            <div id="ordersContainer">
+                @if(pagedOrders.length>0){
+
+
+                @for( order of pagedOrders; track order.orderId){
+
+                <div class="order-card">
+
+                    <div class="patient">
+
+                        <img [src]="order.image">
+
+                        <div class="patient-name-wrapper">
+                            <h5 class="patientName" [title]="order.patientName">{{ order.patientName }}</h5>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <b>{{ order.drugName }}</b>
+                        <br>
+                        {{ order.dosage }}
+                    </div>
+
+                    <div>
+                        {{ order.instructions }}
+                    </div>
+
+                    <div>
+
+                        <b>{{ formatDate(order.createdDate) }}</b>
+                        <br>
+
+                        {{ order.doctorName }}
+
+                    </div>
+
+                    <div>
+
+
+                        @if(order.refill){
+                        <button class="refill-btn" (click)="requestRefill(order)">
+
+                            <img src="assets/images/refill-icon.png" alt="">
+                            <span>Request Refill</span>
+
+                        </button>
+
+                        }
+
+                        @if(!order.refill){
+                        <span>
+                            N/A
+                        </span>
+
+                        }
+
+                    </div>
+
+                    <div class="pharmacy-info">
+
+                        <a (click)="openMap(order.pharmacyAddress)">
+
+                            <img src="assets/images/location-icon.png" class="location-icon">
+
+                        </a>
+
+                        <span>
+                            {{ order.pharmacyAddress }}
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <span [ngClass]="{
+              'status-ready': order.orderStatus === 'Ready',
+              'status-transit': order.orderStatus === 'In Transit'
+            }">
+
+                            {{ order.orderStatus }}
+
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <button class="details-btn" (click)="showDetails(order)">
+
+                            View Details
+
+                        </button>
+
+                    </div>
+
+                </div>
+                } }
+                @else{
+                <div class="no-data-container">
+                    <h3>No Data Available</h3>
+                    <p>No prescription results found.</p>
+                </div>
+                }
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="pagination-wrapper">
+
+        <button id="prevBtn" (click)="prevPage()">
+            ←
+        </button>
+
+        <span id="pageNumber">{{currentPage}}</span>
+
+        <button id="nextBtn" (click)="nextPage()">
+            →
+        </button>
+
+    </div>
+
+
+
+</div>
+
+
+
+<!-- @if (isShowDetailMedicin) {
+<div class="modal fade show d-block custom-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+          
+            <div class="modal-header">
+                <h4 class="modal-title">Prescription &amp; Order Summary</h4>
+
+                <button type="button" class="btn-close" (click)="closeMedicineDetails()"></button>
+            </div>
+
+            
+            <div class="modal-body" id="printArea">
+
+                <h2 class="prescription-title">
+                    Medicine Prescription
+                </h2>
+
+                <hr>
+
+                <div class="details-grid">
+
+                    <div class="detail-row">
+                        <span class="label">Patient Name:</span>
+                        <span class="value">{{selectedOrder.patientName}}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Medicine:</span>
+                        <span class="value">{{selectedOrder.drugName}}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Strength:</span>
+                        <span class="value">{{selectedOrder.dosage}}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Instructions:</span>
+                        <span class="value">
+                            {{selectedOrder.instructions}}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Doctor:</span>
+                        <span class="value">{{selectedOrder.doctorName}}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Order Date:</span>
+                        <span class="value">{{selectedOrder.createdDate | date:'d-MMM-yyyy' }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Pharmacy:</span>
+                        <span class="value">{{selectedOrder.pharmacyAddress}}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Status:</span>
+                        <span class="value ready">{{selectedOrder.orderStatus}}</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+           
+            <div class="modal-footer">
+
+                <button class="btn details-btn" (click)="downloadPDF()">
+                    Download PDF
+                </button>
+
+                <button class="btn btn-primary" (click)="printDetails()">
+                    Print
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+} -->
+
+
+@if (isShowDetailMedicin) {
+<div class="medicine-modal">
+    <div class="medicine-modal-content">
+
+        <!-- Header -->
+        <div class="medicine-modal-header">
+            <div class="modal-heading">
+                <div class="document-icon"> <img src="/assets/images/icon-reports.png" alt=""></div>
+
+                <div>
+                    <h2>Prescription &amp; Order Summary</h2>
+                    <p>
+                        Order #ORD-{{ currentYear }}-00{{ selectedOrder.orderId }}
+
+                    </p>
+                </div>
+            </div>
+
+            <button class="close-btn" (click)="closeMedicineDetails()">
+                ×
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="medicine-modal-body" id="printArea">
+
+            <!-- Medicine -->
+            <div class="medicine-card">
+
+                <div class="medicine-icon">
+                    <img src="/assets/images/fillMedi.png" alt="">
+                </div>
+
+                <div class="medicine-info">
+                    <div class="divided">
+                        <h3>{{ selectedOrder.drugName }}</h3>
+                        <div class="order-status">
+                            <img src="/assets/images/transit-icon.png" alt=""> {{ selectedOrder.orderStatus }}
+                        </div>
+
+                    </div>
+                    <span>{{ selectedOrder.dosage }}</span>
+
+                    <p>
+                        <img src="/assets/images/medicine-icon.png" alt="">
+                        {{ selectedOrder.instructions }}
+                    </p>
+                </div>
+
+
+
+            </div>
+
+            <!-- Information -->
+            <div class="info-card">
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="/assets/images/blueUser.png" alt=""></div>
+                    <div>
+                        <label>Patient</label>
+                        <strong>{{ selectedOrder.patientName }}</strong>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="/assets/images/docMod.png" alt=""></div>
+                    <div>
+                        <label>Prescribed By</label>
+                        <strong>{{ selectedOrder.doctorName }}</strong>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="
+                        /assets/images/calendar-icon.png" alt=""></div>
+                    <div>
+                        <label>Order Date</label>
+                        <strong>
+                            {{ selectedOrder.createdDate | date:'dd MMM yyyy' }}
+                        </strong>
+                    </div>
+                    <hr>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"> <img src="
+                        /assets/images/location-icon.png" alt=""></div>
+                    <div>
+                        <label>Pharmacy</label>
+                        <strong>{{ selectedOrder.pharmacyAddress }}</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Instructions -->
+            <div class="instruction-card">
+
+                <div class="instruction-item">
+                    <div class="info-icon"> <img src="/assets/images/icon-reports.png" alt=""></div>
+
+                    <div>
+                        <label>Dosage Instructions</label>
+                        <strong>{{ selectedOrder.instructions }}</strong>
+                    </div>
+                </div>
+
+                <div class="instruction-item status-row">
+                    <div class="info-icon"> <img src="../../../../assets/images/security-icon.png" alt=""></div>
+
+                    <label>Status</label>
+
+                    <div class="order-status">
+                        <img src="/assets/images/transit-icon.png" alt=""> {{ selectedOrder.orderStatus }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="medicine-modal-footer">
+
+            <button class="download-btn" (click)="downloadPrescriptionPdf()">
+                <img src="../../../../assets/images/icons8-installing-updates-100.png" alt=""> Download PDF
+            </button>
+
+            <button class="print-btn" (click)="printDetails()">
+                <img src="../../../../assets/images/print.png" alt=""> Print
+            </button>
+
+        </div>
+
+    </div>
+</div>
+}
+<!-- ========================================================= -->
+<!-- PRESCRIPTION PDF TEMPLATE -->
+<!-- ========================================================= -->
+
+<div #prescriptionPdf class="prescription-pdf">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="prescription-header">
+
+        <div class="hospital-brand">
+
+            <img src="assets/images/hospital.png" alt="Health Heaven" class="hospital-logo" />
+
+            <div class="hospital-name">
+
+                <h1>HEALTH HEAVEN</h1>
+
+                <h2>MEDICAL CENTER</h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="prescription-info">
+
+            <div class="prescription-info-row">
+
+                <span>Prescription ID</span>
+
+                <b>:</b>
+
+                <strong>
+                    ORD-2026-00521
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-info-row">
+
+                <span>Date</span>
+
+                <b>:</b>
+
+                <strong>
+                    01 May 2026
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= TITLE ================= -->
+
+    <div class="prescription-title">
+
+        <h2>
+            Prescription &amp; Order Summary
+        </h2>
+
+        <p>
+            Official Electronic Medical Record
+        </p>
+
+    </div>
+
+
+    <!-- ================= PATIENT + DOCTOR ================= -->
+
+    <div class="prescription-information">
+
+        <!-- PATIENT INFORMATION -->
+
+        <div class="prescription-info-column">
+
+            <h3>
+                PATIENT INFORMATION
+            </h3>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Full Name</span>
+
+                <b>:</b>
+
+                <strong>
+                    Ramesh Kumar
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Date of Birth</span>
+
+                <b>:</b>
+
+                <strong>
+                    15 Feb 1984
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Gender</span>
+
+                <b>:</b>
+
+                <strong>
+                    Male
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Age</span>
+
+                <b>:</b>
+
+                <strong>
+                    42 Years
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Patient ID</span>
+
+                <b>:</b>
+
+                <strong>
+                    PAT-2026-00345
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Contact Number</span>
+
+                <b>:</b>
+
+                <strong>
+                    +91 98765 43210
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRESCRIBING PHYSICIAN -->
+
+        <div class="prescription-info-column doctor-column">
+
+            <h3>
+                PRESCRIBING PHYSICIAN
+            </h3>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Doctor Name</span>
+
+                <b>:</b>
+
+                <strong>
+                    Dr. Amit Verma
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Department</span>
+
+                <b>:</b>
+
+                <strong>
+                    General Medicine
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>License Number</span>
+
+                <b>:</b>
+
+                <strong>
+                    MCI/12345/2010
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Clinic</span>
+
+                <b>:</b>
+
+                <strong>
+                    Health Heaven Medical Center
+                </strong>
+
+            </div>
+
+
+            <div class="prescription-detail-row">
+
+                <span>Visit Date</span>
+
+                <b>:</b>
+
+                <strong>
+                    01 May 2026
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PRESCRIPTION DETAILS ================= -->
+
+    <div class="prescription-section">
+
+        <h3>
+            PRESCRIPTION DETAILS
+        </h3>
+
+
+        <table class="prescription-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Medication
+                    </th>
+
+                    <th>
+                        Strength
+                    </th>
+
+                    <th>
+                        Frequency
+                    </th>
+
+                    <th>
+                        Duration
+                    </th>
+
+                    <th>
+                        Instructions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        Tab. Amoxicillin
+                    </td>
+
+                    <td>
+                        500 mg
+                    </td>
+
+                    <td>
+                        Twice a day
+                    </td>
+
+                    <td>
+                        5 Days
+                    </td>
+
+                    <td>
+                        After food with water
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Tab. Paracetamol
+                    </td>
+
+                    <td>
+                        650 mg
+                    </td>
+
+                    <td>
+                        Thrice a day
+                    </td>
+
+                    <td>
+                        3 Days
+                    </td>
+
+                    <td>
+                        For pain or fever
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Tab. Pantoprazole
+                    </td>
+
+                    <td>
+                        40 mg
+                    </td>
+
+                    <td>
+                        Once a day
+                    </td>
+
+                    <td>
+                        7 Days
+                    </td>
+
+                    <td>
+                        Before breakfast
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        Syp. Cough Relief
+                    </td>
+
+                    <td>
+                        10 ml
+                    </td>
+
+                    <td>
+                        Thrice a day
+                    </td>
+
+                    <td>
+                        5 Days
+                    </td>
+
+                    <td>
+                        Shake well before use
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================= NOTES + ALLERGY ================= -->
+
+    <div class="prescription-bottom-grid">
+
+
+        <!-- ADDITIONAL NOTES -->
+
+        <div class="prescription-box">
+
+            <h3>
+                ADDITIONAL NOTES
+            </h3>
+
+            <div class="box-divider"></div>
+
+            <p>
+                Complete the antibiotic course.
+            </p>
+
+            <p>
+                Drink plenty of water.
+            </p>
+
+        </div>
+
+
+        <!-- ALLERGY INFORMATION -->
+
+        <div class="prescription-box">
+
+            <h3>
+                ALLERGY INFORMATION
+            </h3>
+
+            <div class="box-divider"></div>
+
+            <p>
+                No Known Allergies
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= FOLLOW UP + SIGNATURE ================= -->
+
+    <div class="prescription-follow-grid">
+
+
+        <!-- FOLLOW UP -->
+
+        <div class="prescription-box follow-up-box">
+
+            <h3>
+                FOLLOW-UP / REFERRALS
+            </h3>
+
+            <div class="box-divider"></div>
+
+            <p>
+                Not Required.
+            </p>
+
+        </div>
+
+
+        <!-- SIGNATURE -->
+
+        <div class="signature-box">
+
+            <div class="signature-line"></div>
+
+            <span>
+                Authorized Signature
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <div class="prescription-footer">
+
+
+        <!-- POWERED BY -->
+
+        <div class="footer-column powered-by">
+
+            <small>
+                Powered By
+            </small>
+
+            <strong>
+                SkyMaxValue
+            </strong>
+
+            <span>
+                Technology Solutions
+            </span>
+
+            <p>
+                © 2026 SkyMaxValue Technology Solutions.
+                <br>
+                All Rights Reserved.
+            </p>
+
+        </div>
+
+
+        <!-- GENERATED BY -->
+
+        <div class="footer-column generated-by">
+
+            <small>
+                Generated By
+            </small>
+
+            <strong>
+                MyMediBook
+            </strong>
+
+        </div>
+
+
+        <!-- HOSPITAL -->
+
+        <div class="footer-column footer-hospital">
+
+            <strong>
+                HEALTH HEAVEN
+            </strong>
+
+            <span>
+                MEDICAL CENTER
+            </span>
+
+            <span>
+                +91 98765 43210
+            </span>
+
+            <span>
+                www.healthheaven.in
+            </span>
+
+        </div>
+
+    </div>
+
+</div>

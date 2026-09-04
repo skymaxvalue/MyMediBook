@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Next in Queue | Health Haven Medical Center</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/next-in-queue.css">
+</head>
+
+<body>
+
+    <div id="navbar-container"></div>
+
+   
+    <section class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+
+        <span class="separator">
+            <img src="images/right-arrow-blue.png" alt="Arrow">
+        </span>
+
+        <span class="active">Next in Queue</span>
+    </section>
+
+    <main class="page-container">
+
+        <div class="page-content">
+
+           
+            <section class="page-heading">
+                <div class="page-heading-title">
+                    <h1>Next in Queue</h1>
+                </div>
+
+                <p>Select a doctor to view their appointment queue.</p>
+            </section>
+
+         
+            <section class="queue-card">
+
+                <div class="card-header">
+
+                    <div class="card-header-icon">
+                        <img src="images/doctor.png" alt="">
+                    </div>
+
+                    <div class="card-header-content">
+                        <h2>Select Doctor</h2>
+                        <p>Choose a doctor to view today's patient queue.</p>
+                    </div>
+
+                </div>
+
+                <div class="card-divider"></div>
+
+                <div class="selection-and-preview">
+
+                
+                    <div class="doctor-selection">
+
+                        <div class="form-group">
+
+                            <label for="doctorSearch">
+                                Doctor Name
+                                <span class="required-asterisk">*</span>
+                            </label>
+
+                            <div class="doctor-select-wrapper" id="doctorSelectWrapper">
+
+                                <span class="doctor-input-icon">
+                                    <img src="images/search.png" alt="">
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="doctorSearch"
+                                    class="doctor-input"
+                                    placeholder="Select Doctor"
+                                    autocomplete="off"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+
+                                <button
+                                    type="button"
+                                    id="doctorDropdownButton"
+                                    class="dropdown-button"
+                                    aria-label="Open doctor list">
+                                    <span class="dropdown-arrow"></span>
+                                </button>
+
+                                <div id="doctorDropdown" class="doctor-dropdown" role="listbox">
+
+                                    <div class="doctor-option" data-doctor="Dr. Kumaravel">
+                                        Dr. Kumaravel
+                                    </div>
+
+                                    <div class="doctor-option" data-doctor="Dr. Priya">
+                                        Dr. Priya
+                                    </div>
+
+                                    <div class="doctor-option" data-doctor="Dr. Arjun">
+                                        Dr. Arjun
+                                    </div>
+
+                                    <div id="noDoctorsMessage" class="no-doctors">
+                                        No matching doctors
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <p id="doctorError" class="field-message field-error">
+                                <span class="msg-icon">!</span>
+                                Please select a doctor.
+                            </p>
+
+                            <p class="field-message field-info">
+                                <span class="msg-icon">i</span>
+                                Pick a doctor to see the list of patients waiting for their appointment.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                  
+                    <aside class="doctor-preview" id="doctorPreview">
+
+                        <div class="doctor-preview-avatar">
+                            <img src="images/doctor-placeholder.png" alt="">
+                        </div>
+
+                        <div class="doctor-preview-content">
+                            <h3 id="doctorPreviewTitle">No doctor selected</h3>
+
+                            <p id="doctorPreviewText">
+                                Please select a doctor from the list to view their patient queue.
+                            </p>
+                        </div>
+
+                    </aside>
+
+                </div>
+
+                <div class="card-divider bottom-divider"></div>
+
+                <div class="card-actions">
+
+                    <button
+                        type="button"
+                        id="clearButton"
+                        class="btn btn-clear">
+                        Clear
+                    </button>
+
+                    <button
+                        type="button"
+                        id="viewQueueButton"
+                        class="btn btn-primary"
+                        disabled>
+                        View Queue
+                        <span class="btn-arrow">→</span>
+                    </button>
+
+                </div>
+
+            </section>
+
+           
+            <p class="queue-note">
+                <img src="images/lock.png" alt="" class="queue-note-icon">
+                Only today's appointments are shown in the queue.
+            </p>
+
+        </div>
+
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/next-in-queue.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Check-In | My Medi Book</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/patient-checkin.css">
+
+</head>
+
+<body>
+
+    <div id="navbar-container"></div>
+
+    <main class="dashboard-container">
+
+        <section class="breadcrumb">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <span class="separator">
+                <img src="images/right-arrow-blue.png"
+                     alt="Arrow">
+            </span>
+
+            <span class="active">
+                Patient Check-In
+            </span>
+
+        </section>
+
+          <section class="checkin-container">
+        <section class="checkin-card">
+
+            <div class="checkin-header">
+
+                <div class="checkin-header-left">
+
+                    <div class="checkin-icon">
+
+                        <img src="images/appointment.png"
+                             alt="Check-In">
+
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            Check-In by Appointment
+                        </h1>
+
+                        <p>
+                            Search patient by details or doctor to check-in for their appointment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="checkin-search-area">
+
+                <div class="patient-search-fields">
+
+                    <div class="form-group">
+
+    <label for="patientName">
+        Patient Full Name
+    </label>
+
+    <div class="input-wrapper">
+
+        <span class="input-icon">
+            <img src="images/profile-outline.png" alt="">
+        </span>
+
+        <input
+            type="text"
+            id="patientName"
+            placeholder="Enter full name">
+
+    </div>
+
+</div>
+
+                    <div class="form-group">
+
+                        <label for="dob">
+                            Date of Birth
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <input
+                                type="date"
+                                id="dob">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="or-divider">
+
+                    <span>
+                        OR
+                    </span>
+
+                </div>
+
+                <div class="doctor-search">
+
+                  <div class="form-group">
+    <label for="doctorName">
+        Doctor Name
+    </label>
+
+    <div class="doctor-search">
+        <input
+            type="text"
+            id="doctorName"
+            placeholder="Select Doctor"
+            autocomplete="off">
+
+        <span class="doctor-arrow">⌄</span>
+
+        <div
+            id="doctorDropdown"
+            class="doctor-dropdown">
+        </div>
+    </div>
+</div>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="searchBtn"
+                    class="search-btn">
+
+                    <img src="images/search-white.png"
+                         alt="">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="department-bar">
+
+            <div class="department-title">
+
+                <img src="images/group.png"
+                     alt="">
+
+                <span>
+                    General Physician
+                </span>
+
+            </div>
+
+            <button
+                type="button"
+                class="department-toggle">
+
+                <img src="images/down-arrow.png"
+                     alt="Expand">
+
+            </button>
+
+        </section>
+
+        <section
+            id="resultsSection"
+            class="results-card">
+
+            <div class="results-header">
+
+                <div>
+
+                    <div class="results-title">
+
+                        <h2>
+                            Appointment Results
+                        </h2>
+
+                        <span
+                            id="resultCount"
+                            class="count-badge">
+
+                            0 Appointments Found
+
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Select a patient and click on Check In to continue.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Sl. No
+                            </th>
+
+                            <th>
+                                Patient Name
+                            </th>
+
+                            <th>
+                                DOB
+                            </th>
+
+                            <th>
+                                Address
+                            </th>
+
+                            <th>
+                                Phone Number
+                            </th>
+
+                            <th>
+                                Email ID
+                            </th>
+
+                            <th>
+                                Doctor Name
+                            </th>
+
+                            <th>
+                                Room Number
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="resultsBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <div class="checkin-actions">
+
+            <button
+                type="button"
+                id="checkInBtn"
+                class="primary-btn"
+                disabled>
+
+                <img
+                    src="images/patient-registration.png"
+                    alt="">
+
+                Check In
+
+            </button>
+
+        </div>
+
+</section>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <div
+        id="confirmModal"
+        class="modal">
+
+        <div class="modal-content">
+
+            <button
+                type="button"
+                class="modal-close"
+                data-close="confirmModal">
+
+                &times;
+
+            </button>
+
+            <h2>
+                Confirm Check-In
+            </h2>
+
+            <p class="modal-description">
+
+                Please review the details below before
+                checking in the patient.
+
+            </p>
+
+            <div
+                id="confirmDetails"
+                class="details-box">
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    data-close="confirmModal">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="button"
+                    id="confirmCheckInBtn"
+                    class="primary-btn">
+
+                    Confirm Check-In
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        id="successModal"
+        class="modal">
+
+        <div class="modal-content success-modal">
+
+            <div class="success-icon">
+
+                ✓
+
+            </div>
+
+            <h2>
+                Patient Checked In Successfully!
+            </h2>
+
+            <p class="modal-description">
+
+                The patient has been checked in for the appointment.
+
+            </p>
+
+            <div
+                id="successDetails"
+                class="details-box">
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="viewQueueBtn"
+                    class="secondary-btn">
+
+                    View Queue
+
+                </button>
+
+                <button
+                    type="button"
+                    id="doneBtn"
+                    class="primary-btn">
+
+                    Done
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/navbar.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/patient-checkin.js"></script>
+
+</body>
+
+</html>

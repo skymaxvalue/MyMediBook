@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Medicare.Application.Models.Appointment
+﻿namespace Medicare.Application.Models.Appointment
 {
     public class AppointmentMasterModel
     {
@@ -31,7 +29,7 @@ namespace Medicare.Application.Models.Appointment
     {
         public string? Provider { get; set; }
         public string? Policy { get; set; }
-        public int? GroupId { get; set; }
+        public string? GroupId { get; set; }
         public string? HolderName { get; set; }
         public string? Address { get; set; }
     }
@@ -42,10 +40,5 @@ namespace Medicare.Application.Models.Appointment
         public string? CardHolder { get; set; }
         public string? CardNumber { get; set; }
         public string? Expiry { get; set; }
-        public string? CVV { get; set; }
-        [JsonIgnore]
-        public byte[]? CvvHash { get; set; }
-        [JsonIgnore]
-        public byte[]? CvvSalt { get; set; }
     }
 }

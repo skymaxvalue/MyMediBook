@@ -1,0 +1,1145 @@
+<main class="dashboard-container">
+
+
+
+
+    <div class="availability-container">
+
+        <div class="schedule-box">
+
+
+            <!-- HEADER -->
+
+            <div class="patient-info-header">
+
+                <div class="header-title-row">
+
+                    <span class="icon-badge" aria-hidden="true">
+
+                        <img src="../../../../assets/images/front-office/images/patient-icon-blue.png" alt="">
+
+                    </span>
+
+                    <h2>
+                        Patient Information
+                    </h2>
+
+                </div>
+
+                <p>
+                    Please provide patient details to continue
+                    with the appointment booking.
+                </p>
+
+            </div>
+
+
+
+            <form [formGroup]="bookingForm" (ngSubmit)="submitBooking()">
+
+
+
+
+                <div class="top-fields">
+
+
+                    <!-- PATIENT TYPE -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Patient Selection
+                        </label>
+
+                        <div class="mobile-radio-group patient-type-group">
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="patientType" value="existing">
+
+                                <span>
+                                    Existing Patient
+                                </span>
+
+                            </label>
+
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="patientType" value="new">
+
+                                <span>
+                                    New Patient
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PATIENT PROFILE -->
+
+                    @if (patientType === 'existing') {
+                    <div class="field-pair">
+
+                        <label>
+                            Select Patient Profile
+                        </label>
+
+                        <button type="button" class="patient-dropdown-trigger" (click)="openSelectPatientModal()">
+
+                            <span class="patient-avatar-icon">
+
+                                <img src="../../../../assets/images/front-office/images/patient-icon-blue.png" alt="">
+
+                            </span>
+
+                            <span class="patient-dropdown-label">
+
+                                @if (selectedPatient) {
+
+                                {{ selectedPatient.firstName }}
+                                {{ selectedPatient.lastName }}
+
+                                } @else {
+
+                                Select Patient
+
+                                }
+
+                            </span>
+
+                            <span class="chevron">
+                                &#9662;
+                            </span>
+
+                        </button>
+
+                    </div>
+                    }
+
+                </div>
+
+
+                @if (patientType === 'new') {
+
+                <div class="responsible-party-section">
+
+
+                    <!-- ACCOUNT HOLDER -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Who will manage this patient's
+                            account and billing?
+
+                            <span class="req">*</span>
+                        </label>
+
+                        <div class="mobile-radio-group">
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="accountHolder" value="self">
+
+                                <span>
+                                    The Patient
+                                </span>
+
+                            </label>
+
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="accountHolder" value="other">
+
+                                <span>
+                                    Another Person
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- OTHER PERSON -->
+
+                    @if (accountHolder === 'other') {
+
+                    <div class="field-pair rp-card">
+
+                        <h3 class="rp-card-title">
+                            Search Responsible Party
+                        </h3>
+
+                        <p class="rp-card-subtitle">
+                            Search using the account holder's registered mobile number.
+                        </p>
+
+
+                        <div [formGroup]="responsiblePartySearchForm">
+
+                            <div class="rp-search-row">
+
+                                <!-- MOBILE -->
+
+                                <div class="rp-search-option">
+
+                                    <div class="mobile-search-input">
+
+                                        <span class="mobile-prefix">
+                                            +91
+                                        </span>
+
+                                        <input type="tel" formControlName="mobile" placeholder="Enter mobile number"
+                                            maxlength="10" inputmode="numeric">
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- OR -->
+
+                                <div class="rp-search-divider">
+
+                                    <span>
+                                        OR
+                                    </span>
+
+                                </div>
+
+
+                                <!-- NAME + DOB -->
+
+                                <div class="rp-search-option rp-search-name-dob">
+
+                                    <div class="field-pair">
+
+                                        <label>
+                                            Patient Full Name
+                                        </label>
+
+                                        <input type="text" formControlName="name" placeholder="Enter full name">
+
+                                    </div>
+
+
+                                    <div class="field-pair">
+
+                                        <label>
+                                            Date of Birth
+                                        </label>
+
+                                        <input type="date" formControlName="dob">
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- SEARCH BUTTON -->
+
+                                <button type="button" class="book-btn rp-search-btn" (click)="searchResponsibleParty()">
+
+                                    Search
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ERROR -->
+
+                        @if (responsiblePartySearchError) {
+
+                        <p class="rp-search-error">
+                            {{ responsiblePartySearchError }}
+                        </p>
+
+                        }
+
+                    </div>
+
+
+
+
+                    @if (responsiblePartySearched && responsiblePartyFound) {
+
+                    <div class="field-pair rp-card">
+
+                        <p class="rp-card-title rp-found-title">
+                            &#9989; Responsible Party Found
+                        </p>
+
+                        <div class="saved-info-card">
+
+
+                            <div class="saved-row"><strong>Account Holder Name</strong><span>{{
+                                    responsiblePartyFound.name
+                                    }}
+                                </span></div>
+                            <div class="saved-row"><strong>Account ID</strong><span> {{ responsiblePartyFound.id }}
+                                </span></div>
+                            <div class="saved-row"><strong>Mobile Number</strong><span>+91 {{
+                                    responsiblePartyFound.phone }}
+                                </span></div>
+                            <div class="saved-row"><strong>Email</strong><span> {{ responsiblePartyFound.email }}
+                                </span>
+                            </div>
+                            <div class="saved-row"><strong>Patients Linked</strong><span> {{
+                                    responsiblePartyFound.id }} </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="rp-card-actions">
+
+                            <button type="button" class="book-btn" (click)="continueWithAccount()">
+
+                                Continue
+
+                            </button>
+
+
+                            <button type="button" class="clear-btn" (click)="searchAgainResponsibleParty()">
+
+                                Search Again
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    }
+
+
+
+                    @if (responsiblePartySearched && responsiblePartyNotFound) {
+
+                    <div class="field-pair rp-card">
+
+                        <p class="rp-card-title rp-warning-title">
+                            &#9888; No Responsible Party Found
+                        </p>
+
+                        <p class="rp-card-subtitle">
+                            No account exists for the entered details.
+                        </p>
+
+
+                        <div class="rp-card-actions">
+
+                            <button type="button" class="clear-btn" (click)="searchAgainResponsibleParty()">
+
+                                Search Again
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    }
+
+                    }
+
+                </div>
+
+                }
+
+
+
+                @if (linkedAccountMessage) {
+
+                <div class="success-badge">
+
+                    {{ linkedAccountMessage }}
+
+                </div>
+
+                }
+
+
+
+
+                <div class="section-header">
+                    Patient Details
+                </div>
+
+
+                <div class="detail-grid patient-details-grid">
+
+
+                    <!-- FIRST NAME -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            First Name
+                            <span class="req">*</span>
+                        </label>
+
+                        <input type="text" formControlName="firstName" placeholder="Enter patient first name">
+
+                        @if (isInvalid('firstName')) {
+
+                        <small class="error">
+                            First name is required.
+                        </small>
+
+                        }
+
+                    </div>
+
+
+                    <!-- LAST NAME -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Last Name
+                            <span class="req">*</span>
+                        </label>
+
+                        <input type="text" formControlName="lastName" placeholder="Enter patient last name">
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Gender
+                            <span class="req">*</span>
+                        </label>
+
+                        <select formControlName="gender">
+
+                            <option value="">
+                                Select patient gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DOB -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Date Of Birth
+                            <span class="req">*</span>
+                        </label>
+
+                        <input type="date" formControlName="dateOfBirth">
+
+                    </div>
+
+
+                    <!-- AGE -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Age
+                            <span class="req">*</span>
+                        </label>
+
+                        <input type="number" formControlName="age" placeholder="Enter age">
+
+                    </div>
+
+
+                    <!-- AGE TYPE -->
+
+                    <div class="field-pair age-type-pair">
+
+                        <div class="mobile-radio-group age-type-group">
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="ageType" value="years">
+
+                                <span>
+                                    Year(s)
+                                </span>
+
+                            </label>
+
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="ageType" value="months">
+
+                                <span>
+                                    Month(s)
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-header">
+                    Contact Information
+                </div>
+
+
+                <div class="detail-grid">
+
+                    <div class="field-pair">
+
+                        <label>
+                            Mobile Number
+                            <span class="req">*</span>
+                        </label>
+
+                        <input type="tel" formControlName="phone" placeholder="Enter Mobile Number" maxlength="10">
+
+                    </div>
+
+
+                    <div class="field-pair">
+
+                        <label>
+                            Email Address
+                            <span class="req">*</span>
+                        </label>
+
+                        <input type="email" formControlName="email" placeholder="Enter email address">
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="section-header">
+                    Address Information
+                </div>
+
+
+                <div class="detail-grid">
+
+
+                    <!-- PRESENT ADDRESS -->
+
+                    <div class="field-pair full-width-field">
+
+                        <label>
+                            Present Address
+                            <span class="req">*</span>
+                        </label>
+
+                        <textarea formControlName="address" placeholder="Enter present address"></textarea>
+
+
+                        <div class="address-subfields">
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    City
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input type="text" formControlName="city" placeholder="Enter city">
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    State
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select formControlName="state">
+
+                                    <option value="">
+                                        Select state
+                                    </option>
+
+                                    @for (
+                                    state of states;
+                                    track state
+                                    ) {
+
+                                    <option [value]="state">
+                                        {{ state }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    PIN Code
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input type="text" formControlName="pinCode" maxlength="6" inputmode="numeric"
+                                    placeholder="Enter PIN code">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PERMANENT ADDRESS -->
+
+                    <div class="field-pair full-width-field">
+
+
+                        <label class="checkbox-row">
+
+                            <input type="checkbox" formControlName="sameAsPresentAddress">
+
+                            <span class="checkbox-row-text">
+                                Same as Present Address
+                            </span>
+
+                        </label>
+
+
+                        <label>
+                            Permanent Address
+                            <span class="req">*</span>
+                        </label>
+
+                        <textarea formControlName="permanentAddress" placeholder="Enter permanent address"></textarea>
+
+
+                        <div class="address-subfields">
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    City
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input type="text" formControlName="permanentCity" placeholder="Enter city">
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    State
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select formControlName="permanentState">
+
+                                    <option value="">
+                                        Select state
+                                    </option>
+
+                                    @for (
+                                    state of states;
+                                    track state
+                                    ) {
+
+                                    <option [value]="state">
+                                        {{ state }}
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    PIN Code
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input type="text" formControlName="permanentPinCode" maxlength="6" inputmode="numeric"
+                                    placeholder="Enter PIN code">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="section-header">
+                    Additional Details
+                </div>
+
+
+                <div class="detail-grid">
+
+
+                    <!-- VISIT PURPOSE -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Dr. Visit Purpose
+                            <span class="req">*</span>
+                        </label>
+
+                        <textarea formControlName="visitPurpose"
+                            placeholder="Enter visit purpose / symptoms"></textarea>
+
+                    </div>
+
+
+                    <!-- VISIT TYPE -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Type Of Visit
+                            <span class="req">*</span>
+                        </label>
+
+                        <select formControlName="visitType">
+
+                            <option value="">
+                                Select type of visit
+                            </option>
+
+                            <option value="Consultation">
+                                Consultation
+                            </option>
+
+                            <option value="Follow-up">
+                                Follow-up
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- OTP -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            OTP Verification
+                            <span class="req">*</span>
+                        </label>
+
+                        <div class="mobile-radio-group otp-method-group">
+
+                            @for (
+                            method of [
+                            { value: 'mobile', label: 'Mobile Number' },
+                            { value: 'email', label: 'Email Address' },
+                            { value: 'none', label: 'None' }
+                            ];
+                            track method.value
+                            ) {
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="otp" [value]="method.value">
+
+                                <span>
+                                    {{ method.label }}
+                                </span>
+
+                            </label>
+
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INSURANCE -->
+
+                    <div class="field-pair">
+
+                        <label>
+                            Insurance Coverage
+                            <span class="req">*</span>
+                        </label>
+
+                        <div class="mobile-radio-group insurance-group">
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="insurance" value="yes">
+
+                                <span>
+                                    Yes
+                                </span>
+
+                            </label>
+
+
+                            <label class="radio-item">
+
+                                <input type="radio" formControlName="insurance" value="no">
+
+                                <span>
+                                    No
+                                </span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button type="submit" class="book-btn">
+
+                        <span class="btn-icon">
+                            &#10003;
+                        </span>
+
+                        Confirm
+
+                    </button>
+
+
+                    <button type="button" class="clear-btn" (click)="clearForm()">
+
+                        <span class="btn-icon">
+                            &#8635;
+                        </span>
+
+                        Clear
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+@if (responsiblePartyOtpModal) {
+
+<div class="modal">
+
+    <div class="modal-content saved-info-modal-content">
+
+        <div class="close-icon" (click)="closeResponsiblePartyOtpModal()">
+            X
+        </div>
+
+
+        <div class="patient-modal-header">
+
+            <span class="icon-badge">
+
+                <img src="images/patient-icon-blue.png" alt="">
+
+            </span>
+
+            <h2>
+                Enter Verification Code
+            </h2>
+
+        </div>
+
+
+        <div class="rp-otp-hint-row">
+
+            <p class="patient-modal-hint patient-modal-hint-lg">
+
+                An OTP has been sent to the
+                registered mobile number.
+
+            </p>
+
+
+            <button type="button" class="rp-otp-change-channel" (click)="changeRpOtpChannel()">
+                Change
+            </button>
+
+        </div>
+
+
+        <div class="field-pair">
+
+            <label>
+                Enter OTP
+                <span class="req">*</span>
+            </label>
+
+
+            <input type="text" maxlength="4" inputmode="numeric" placeholder="Enter OTP" [(value)]="otp"
+                (input)="otp = $any($event.target).value">
+
+
+            <div class="rp-otp-meta">
+
+                <span class="rp-otp-timer">
+
+                    Expires in
+
+                    <strong>
+                        {{ otpTimerText }}
+                    </strong>
+
+                </span>
+
+
+                @if (otpTimeRemaining === 0) {
+
+                <button type="button" class="rp-otp-resend" (click)="resendOtp()">
+                    Resend OTP
+                </button>
+
+                }
+
+            </div>
+
+
+            @if (otpError) {
+
+            <p class="otp-error-text">
+                {{ otpError }}
+            </p>
+
+            }
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="button" class="clear-btn" (click)="closeResponsiblePartyOtpModal()">
+                Cancel
+            </button>
+
+
+            <button type="button" class="book-btn" (click)="verifyResponsiblePartyOtp()">
+                Verify OTP
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+
+@if (insuranceModal) {
+
+<div class="modal">
+
+    <div class="modal-content">
+
+
+        <div class="close-icon" (click)="closeInsuranceModal()">
+            X
+        </div>
+
+
+        <h2>
+            Insurance Details
+        </h2>
+
+
+        <form [formGroup]="insuranceForm">
+
+            <div class="form-grid">
+
+
+                <label>
+                    Provider Name
+                </label>
+
+                <input formControlName="provider" placeholder="Enter Value">
+
+
+                <label>
+                    Insurance Policy Id
+                </label>
+
+                <input formControlName="policy" placeholder="Enter Value">
+
+
+                <label>
+                    Insurance Group Id
+                </label>
+
+                <input formControlName="groupId" placeholder="Enter Value">
+
+
+                <label>
+                    Primary Holder Name
+                </label>
+
+                <input formControlName="holderName" placeholder="Enter Value">
+
+
+                <label>
+                    Primary Address
+                </label>
+
+                <input formControlName="address" placeholder="Enter Value">
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button type="button" class="book-btn" (click)="confirmInsurance()">
+                    Confirm
+                </button>
+
+
+                <button type="button" class="cancel-btn" (click)="closeInsuranceModal()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+}
+
+
+@if (paymentModal) {
+
+<div class="modal">
+
+    <div class="modal-content">
+
+
+        <div class="close-icon" (click)="closePaymentModal()">
+            X
+        </div>
+
+
+        <h2 class="modal-title">
+            Payment Details
+        </h2>
+
+
+        <form [formGroup]="paymentForm">
+
+            <div class="form-grid">
+
+
+                <label>
+                    Payment Type
+                </label>
+
+                <input formControlName="paymentType" placeholder="Enter Value">
+
+
+                <label>
+                    Card Holder Name
+                </label>
+
+                <input formControlName="cardHolder" placeholder="Enter Value">
+
+
+                <label>
+                    Card Number
+                </label>
+
+                <input type="text" formControlName="cardNumber" placeholder="Enter Value" maxlength="19">
+
+
+                <label>
+                    Expiry Date
+                </label>
+
+                <div class="inline-row">
+
+                    <input formControlName="expiry" placeholder="MM/YY">
+
+                    <span class="cvv-label">
+                        CVV
+                    </span>
+
+                    <input type="password" formControlName="cvv" placeholder="XXX" maxlength="4">
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button type="button" class="book-btn" (click)="confirmPayment()">
+                    Confirm
+                </button>
+
+
+                <button type="button" class="cancel-btn" (click)="closePaymentModal()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+}

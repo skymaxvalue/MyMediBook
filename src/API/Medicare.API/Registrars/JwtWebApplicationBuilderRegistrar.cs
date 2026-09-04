@@ -4,6 +4,10 @@ using Medicare.DAL.Services;
 using Medicare_API.Registrars;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using System.Net;
+using System.Net.WebSockets;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace Medicare.API.Registrars
@@ -40,6 +44,23 @@ namespace Medicare.API.Registrars
                     };
                     options.Audience = jwtSettings.Audience;
                     options.ClaimsIssuer = jwtSettings.Issuer;
+
+                    // For SignalR — WebSockets cannot send Authorization headers
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
         }
     }

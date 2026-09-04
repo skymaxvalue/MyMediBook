@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { PatientRegister } from "../../Models/Patient-Model";// Login Actions
+import { PatientRegister } from "../../core/Models/Patient-Model";// Login Actions
 
 
 
@@ -61,5 +61,21 @@ export const getProfileDataByProfileIdSuccess = createAction(
 
 export const getProfileDataByProfileIdFailure = createAction(
     '[Patient Profile] Profile Data Failure',
+    props<{ error: string }>()
+);
+
+export const getAllMecineDetailByPatientID = createAction(
+    '[Patient Medicine] Medicine List ',
+    props<{ patientId: any }>()
+
+);
+
+export const getAllMecineDetailByPatientIDSuccess = createAction(
+    '[Patient Medicine] Medicine Data Success',
+    props<{ patientMedicalData: any }>()
+);
+
+export const getAllMecineDetailByPatientIDFailure = createAction(
+    '[Patient Medicine] Medicine Data Failure',
     props<{ error: string }>()
 );

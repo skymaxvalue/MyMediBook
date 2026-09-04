@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Appointment Not Confirmed | MyMediBook</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/booking-failed.css">
+</head>
+
+<body>
+
+<div id="navbar-container"></div>
+
+<main class="failed-page">
+
+    <!-- Failed state: shown when a booking attempt with saved details is found -->
+    <section class="failed-card" id="failedCard">
+
+        <div class="status-icon" aria-hidden="true">
+            <span class="dot dot-red dot-1"></span>
+            <span class="dot dot-orange dot-2"></span>
+            <span class="dot dot-gray dot-3"></span>
+            <span class="dot dot-red dot-4"></span>
+            <span class="dot dot-orange dot-5"></span>
+            <span class="dot dot-gray dot-6"></span>
+            <div class="status-ring">
+                <div class="status-circle">
+                    <svg viewBox="0 0 24 24" width="42" height="42" fill="none">
+                        <path d="M7 7l10 10M17 7L7 17" stroke="#ffffff" stroke-width="3"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h1>Appointment Not Confirmed</h1>
+        <p class="failed-sub">
+            OTP verification wasn't completed, so we couldn't confirm this appointment.
+            Your details are saved below — you can retry verification or try booking again.
+        </p>
+
+        <div class="summary-card" id="summaryCard">
+            <!-- rows injected by booking-failed.js -->
+        </div>
+
+        <div class="failed-actions">
+            <button type="button" class="primary-btn" id="retryBtn">
+                Try Again
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <button type="button" class="secondary-btn" id="dashboardBtn">
+                Back to Dashboard
+            </button>
+        </div>
+
+        <p class="support-note">Need help? <a href="#">Contact Support</a></p>
+
+    </section>
+
+    <!-- Empty state: shown when there's no saved booking attempt to retry -->
+    <section class="empty-card" id="emptyCard" hidden>
+
+        <div class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none">
+                <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.18A1.5 1.5 0 0 0 3.34 20.5h17.32a1.5 1.5 0 0 0 1.23-2.46L13.71 3.86a1.5 1.5 0 0 0-2.6 0Z"
+                      stroke="#c0752f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <h1>No booking attempt found</h1>
+        <p class="failed-sub">
+            We don't have any recent booking details to retry. Start a new appointment
+            whenever you're ready.
+        </p>
+
+        <div class="failed-actions">
+            <button type="button" class="primary-btn" onclick="window.location.href='book-appointment.html'">
+                Book an Appointment
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <button type="button" class="secondary-btn" onclick="window.location.href='dashboard.html'">
+                Back to Dashboard
+            </button>
+        </div>
+
+    </section>
+
+</main>
+
+<div id="footer-container"></div>
+
+<script src="js/footer.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/booking-failed.js"></script>
+
+</body>
+</html>

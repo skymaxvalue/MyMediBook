@@ -1,0 +1,162 @@
+@if(!showAddbookingAppoinmentForm && !showBookingCunfermationOtp && !showBookingSuccess && !showBookingFaild ){
+<div class="availability-container">
+    <!-- <h2>Doctor's Availabilities</h2> -->
+    <div class="availability-header">
+        <div class="availability-heading">
+            <h2>Doctor Availability</h2>
+            <p class="subtitle">View and select an available date to book appointment.</p>
+        </div>
+
+        <div class="date-filter">
+            <label>View Availability From:</label>
+            <div class="date-box">
+                <input type="date" [(ngModel)]="selectedDate" [min]="minDate" [max]="maxDate"
+                    (change)="onDateChange()" />
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="availability-card">
+        <div class="doctor-info">
+            <div class="doctor-top">
+                <img src="assets/images/doc.jpg" class="doc-img" alt="doctor" />
+
+                <h3>{{ doctor?.name }}</h3>
+                <p>{{ doctor?.degree }}</p>
+                <span class="tag">{{ doctor?.department }}</span>
+            </div>
+
+            @if(isFrontOfficePage){<button class="back_btn" (click)="goBack()">
+                <span class="back-arrow">←</span>
+                Back to Doctor List
+
+
+            </button>
+            }@else{
+            <button class="back-btn" (click)="goBack()">
+                <span class="back-arrow">←</span> Back to Doctor List
+            </button>
+            }
+        </div>
+
+        <div class="schedule-box">
+            @for (item of schedule; track $index) {
+            <div class="row">
+
+                <span class="col" [class.reschedule-date]="item.isHighlighted">{{ item.formattedDate }}</span>
+
+                <span class="badge col-5" [ngClass]="item.badgeClass" [class.reschedule-badge]="item.isHighlighted"
+                    (click)="openSlotsPopup(item)">
+                    {{ item.text }}
+                </span>
+            </div>
+            }
+
+            <div class="week-nav">
+                <div class="week-item">
+                    <button type="button" (click)="prevWeek()">❮</button>
+                    <span>Previous Week</span>
+                </div>
+
+                <div class="week-item">
+                    <button type="button" (click)="nextWeek()">❯</button>
+                    <span>Next Week</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <span><i class="dot green"></i> Available</span>
+        <span><i class="dot red"></i> Limited Slots</span>
+        <span><i class="dot beige"></i> Unavailable</span>
+    </div>
+</div>
+
+@if (showSlotsModal) {
+
+<div class="modal" [style.display]="'flex'">
+    <div class="modal-content appointment-card">
+
+        <!-- Fixed Header -->
+        <div class="modal-header">
+            <h2>Available Appointments</h2>
+            <div class="close-icon" (click)="closeSlotsModal()">✖</div>
+        </div>
+
+        <!-- Scrollable Body -->
+        <div class="modal-body">
+            <p class="slot-date">{{ selectedDateGlobal }}</p>
+
+            <div class="appointment-body">
+                <div class="doctor-info-popup">
+                    <img src="assets/images/doc.jpg" class="doctor-img-popup" alt="doctor" />
+
+                    <h4>{{ doctor?.name }}</h4>
+                    <p>{{ doctor?.degree }}</p>
+                    <span class="tag">{{ doctor?.department }}</span>
+                </div>
+
+
+                <div class="slots-section">
+                    <div class="slots-grid">
+
+                        @for (slot of slots; track $index) {
+
+                        <div class="slot" [class.booked]="slot.booked" [class.available]="!slot.booked"
+                            [class.selected]="selectedSlot.time === slot.time"
+                            (click)="!slot.booked && selectSlot(slot)">
+                            {{ slot.time }}
+                        </div>
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Footer -->
+        <div class="modal-footer">
+            <div class="legend-popup">
+                <span><span class="dot available"></span> Available</span>
+                <span><span class="dot booked"></span> Already Booked</span>
+            </div>
+            @if(!updatesheduledpatient){
+
+            <button class="book-btn" (click)="goToBooking()">
+                Book Appointment
+            </button>
+            }
+            @if(updatesheduledpatient){
+            <button class="book-btn" (click)="rescheduleAppointment()">Reschedule Appointment </button>
+            }
+        </div>
+
+    </div>
+</div>
+}
+}
+@if (showAddbookingAppoinmentForm && !isFrontOfficePage) {
+<app-book-appoiment-form [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    (backToAvailability)="backToAvailability($event)"></app-book-appoiment-form>
+}
+@if(showAddbookingAppoinmentForm && isFrontOfficePageBookForm){
+<app-booking-patient-information [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    (backToAvailability)="backToAvailability($event)"></app-booking-patient-information>
+}
+@if(showBookingCunfermationOtp){
+<app-booking-otp-verificatin [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    [bookingPatient]="bookingPatient" [otpDevice]="otpDevice" (backToForm)="backToForm()"
+    (VerifyOTP)="onVerifyOTP($event)"></app-booking-otp-verificatin>
+}
+@if(showBookingSuccess){
+<app-booking-successfull [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    [bookingPatient]="bookingPatient"></app-booking-successfull>
+}
+@if(showBookingFaild){
+<app-booking-failed [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
+    [bookingPatient]="bookingPatient"></app-booking-failed>
+}

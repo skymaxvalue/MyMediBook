@@ -10,10 +10,10 @@ namespace Medicare.DAL.Persistence.Repositories
 {
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
-        private readonly DapperContext _context;
+        private readonly IDapperContext _context;
         private readonly IErrorLogRepository _errorLog;
 
-        public RefreshTokenRepository(DapperContext context, IErrorLogRepository errorLog)
+        public RefreshTokenRepository(IDapperContext context, IErrorLogRepository errorLog)
         {
             _context = context;
             _errorLog = errorLog;

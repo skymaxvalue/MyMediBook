@@ -1,16 +1,20 @@
-﻿using System.Text.Json.Serialization;
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+using System.Text.Json.Serialization;
 
 namespace Medicare.Application.Models.Authentication
 {
-    public class OtpDetailModel
+    public class OtpDetailModel : IErrorHandling
     {
+        public Guid UserId { get; set; }
+        public string UserType { get; set; } 
+        //public string FullName { get; set; } 
         public string Email { get; set; }
         [JsonIgnore]
-        public byte[] OtpHash { get; set; }   // store hash, not raw OTP
-        [JsonIgnore]
-        public byte[] OtpSalt { get; set; }
-        public DateTime Expiry { get; set; }
-        public int OtpAttempts { get; set; }
+        public string OtpHash { get; set; }  
+        public DateTime? OtpExpiry { get; set; }
+        public int OtpAttempts { get; set; } = 0;
+        public string ResponseMessage { get; set; }
+        public int IsSuccess { get; set; }
     }
     public class RequestOtpModel
     {

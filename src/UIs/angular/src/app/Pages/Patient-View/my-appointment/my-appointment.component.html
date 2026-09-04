@@ -1,0 +1,348 @@
+<div class="family-dashboard">
+
+  <div class="appointments-topbar">
+
+    <div class="appointments-heading">
+
+      <div class="appointments-icon">
+        <img src="/assets/images/appointment-icon.png" alt="">
+      </div>
+
+      <div class="appointments-text">
+        <h2>My Appointments</h2>
+        <p>Manage your and family member's appointments</p>
+      </div>
+
+    </div>
+
+    <div class="filter-section">
+
+      <div class="patient-filter">
+
+        <label class="filter-label">Filter by Patient :</label>
+
+
+
+        <div class="custom-select" (click)="$event.stopPropagation()" [class.open]="isPatientDropdownOpen">
+
+          <div class="selected-patient" id="selectedPatient" (click)="togglePatientDropdown()">
+
+            <div class="selected-left">
+              <img src="/assets/images/user.png" alt="">
+              <span>{{ selectedPatientName() }}</span>
+            </div>
+
+            <span class="arrow">&#9662;</span>
+
+          </div>
+          @if(isPatientDropdownOpen){
+
+          <div class="dropdown" id="patientDropdown">
+
+            <div class="search-box">
+
+              <input type="text" id="patientSearch" placeholder="Search patient..." [ngModel]="patientSearch()"
+                (ngModelChange)="patientSearch.set($event)" (click)="$event.stopPropagation()">
+
+            </div>
+            <div class="patient-option active" data-value="all" (click)="showAllPatients()">
+              <div class="option-left">
+                <img src="/assets/images/user.png" alt="">
+                <span>All Patients</span>
+              </div>
+              <i class="fas fa-check check-icon"></i>
+            </div>
+            @for (patient of filteredPatients(); track patient.profileId) {
+            <div class="patient-option" [attr.data-value]="patient.profileId" (click)="selectPatient(patient)">
+              <div class="option-left">
+                <img src="/assets/images/user.png" alt="">
+                <div>
+                  <h4>{{ patient.fullName }}</h4>
+                  <span>{{ patient.relationTypeName }}</span>
+
+                </div>
+              </div>
+              <i class="fas fa-check check-icon"></i>
+            </div>
+            }
+
+            @if(filteredPatients().length === 0){
+
+            <div class="no-data">
+              No patient found
+            </div>
+
+            }
+
+          </div>
+          }
+
+
+
+
+        </div>
+
+      </div>
+
+      <div class="status-filter">
+
+        <label class="filter-label">Filter by Status :</label>
+
+        <div class="custom-select" (click)="$event.stopPropagation()" [class.open]="isStatusDropdownOpen">
+
+          <div class="selected-patient" (click)="toggleStatusDropdown()">
+            <div class="selected-left">
+              <span>{{ selectedStatusName() }}</span>
+            </div>
+
+            <span class="arrow">&#9662;</span>
+          </div>
+
+          @if(isStatusDropdownOpen){
+
+          <div class="dropdown">
+
+            <!-- All Status -->
+            <div class="patient-option" [class.active]="selectedStatus()===''" (click)="showAllStatus()">
+
+              <div class="option-left">
+                <span>🟣 All Status</span>
+              </div>
+
+            </div>
+
+            <!-- Status List -->
+            @for(status of statusList.slice(1); track status.value){
+
+            <div class="patient-option" [class.active]="selectedStatus()===status.value" (click)="selectStatus(status)">
+
+              <div class="option-left">
+
+                @switch(status.value){
+
+                @case('Scheduled'){
+                <span>🟡 Scheduled</span>
+                }
+
+                @case('Upcoming'){
+                <span>🔵 Upcoming</span>
+                }
+
+                @case('Completed'){
+                <span>🟢 Completed</span>
+                }
+
+                @case('Cancelled'){
+                <span>🔴 Cancelled</span>
+                }
+
+                }
+
+              </div>
+
+            </div>
+
+            }
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+  <div class="dashboard-card">
+
+    <div class="table-header">
+
+      <div class="search-box">
+
+        <button class="new-btn" (click)="goToSpecialities()">
+          <img src="/assets/images/calendar.png" alt=""> New Appointment
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="table-responsive">
+      <table class="appointment-table">
+        <thead>
+          <tr>
+            <th (click)="sortTable('visitPurpose')">
+              Visit Purpose
+              <span class="sort-icon">{{getSortIcon('visitPurpose')}}</span>
+            </th>
+
+            <th (click)="sortTable('patientName')">
+              Patient Name
+              <span class="sort-icon">{{getSortIcon('patientName')}}</span>
+            </th>
+
+            <th (click)="sortTable('appointmentDate')">
+              Appointment Date
+              <span class="sort-icon">{{getSortIcon('appointmentDate')}}</span>
+            </th>
+
+            <th (click)="sortTable('slotStartTime')">
+              Appointment Time
+              <span class="sort-icon">{{getSortIcon('slotStartTime')}}</span>
+            </th>
+
+
+            <th (click)="sortTable('doctorName')">
+              Dr. Name
+              <span class="sort-icon">{{getSortIcon('doctorName')}}</span>
+            </th>
+
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @if (paginatedAppointments().length > 0) {
+
+          @for (item of paginatedAppointments(); track $index) {
+          <tr [class.highlight]="item.relationTypeName === 'Self'">
+            <td>
+              {{ item.visitType }}
+            </td>
+
+            <td>
+              {{ item.patientName }}
+            </td>
+
+            <td>
+              {{ item.appointmentDate | date:'d-MMM-yyyy' }}
+            </td>
+
+            <td>
+              {{ item.slotStartTime }}
+            </td>
+
+            <td>
+              {{ item.doctorName }}
+            </td>
+
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(item.appointmentStatus)">
+                {{ item.appointmentStatus }}
+              </span>
+            </td>
+
+            <td class="action-buttons">
+
+              <button class="reschedule-btn" (click)="rescheduleAppointment(item)"
+                [disabled]="item.appointmentStatus === 'Cancelled' || isPastAppointment(item.appointmentDate)">
+                <img src="assets/images/reschedule.png" alt="Reschedule">
+              </button>
+              <button class="cancel-btn" (click)="cancelAppointment(item)"
+                [disabled]="item.appointmentStatus === 'Cancelled' || isPastAppointment(item.appointmentDate)">
+                <img src="assets/images/trash.png" alt="Cancel">
+              </button>
+            </td>
+
+          </tr>
+
+          }
+          }
+          @if(tableData().length > 0 && paginatedAppointments().length === 0){
+          <tr>
+            <td colspan="7" class="no-data-row">
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  📅
+                </div>
+
+                <h3>No appointments found</h3>
+
+                <p>
+                  We couldn't find any appointments matching your selected filters.
+                </p>
+
+                <div class="empty-actions">
+
+                  <button class="clear-filter-btn" (click)="showAllPatients(); showAllStatus()">
+                    Clear Filters
+                  </button>
+
+                  <button class="book-btn" (click)="goToSpecialities()">
+                    Book Appointment
+                  </button>
+
+                </div>
+
+              </div>
+            </td>
+          </tr>
+
+          }
+          @if(tableData().length === 0){
+
+          <tr>
+            <td colspan="7" class="no-data-row">
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  📅
+                </div>
+
+                <h3>No Appointments Yet</h3>
+
+                <p>
+                  You haven't booked any appointments yet.<br>
+                  Schedule your first appointment with one of our doctors.
+                </p>
+
+                <div class="empty-actions">
+
+
+
+                  <button class="book-btn" (click)="goToSpecialities()">
+                    Book Appointment
+                  </button>
+
+                </div>
+
+              </div>
+            </td>
+          </tr>
+          }
+
+        </tbody>
+      </table>
+
+    </div>
+
+    @if(filteredAppointments().length > 0){
+
+    <div class="pagination-wrapper">
+
+      <button id="prevBtn" (click)="previousPage()" [disabled]="currentPage() === 1">
+        ←
+      </button>
+
+      <span id="pageNumber"> {{ currentPage() }}
+      </span>
+
+      <button id="nextBtn" (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+        →
+      </button>
+
+    </div>
+    }
+
+  </div>
+
+
+
+</div>
