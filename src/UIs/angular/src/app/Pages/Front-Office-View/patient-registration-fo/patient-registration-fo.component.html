@@ -185,7 +185,7 @@
 
                     <div class="section-title">
 
-                        <img src="/assets/images/front-office/images/location.png" alt="Location">
+                        <img src="/assets/images/front-office/images/contact.png" alt="Location">
 
                         <h2>
 
@@ -197,12 +197,97 @@
 
 
 
+                    <!-- Mobile -->
+                    <!-- Mobile Number -->
+                    <div class="form-grid_2">
+                        <div class="form-group phone-number-field">
+
+                            <label for="phoneNumber">
+                                Phone Number <span class="required">*</span>
+                            </label>
+
+                            <div class="phone-control">
+
+                                <!-- Country Code -->
+                                <select id="phoneCountryCode" formControlName="phoneCode" class="phone-code-select">
+
+                                    @for (c of countries; track c.countryId) {
+                                    <option [value]="c.phoneCode">
+                                        {{ c.countryCode }} {{ c.phoneCode }}
+                                    </option>
+                                    }
+
+                                </select>
+
+                                <!-- Mobile Number -->
+                                <input id="phoneNumber" type="tel" formControlName="phone" class="phone-number-input"
+                                    placeholder="Enter phone number" maxlength="10"
+                                    (keypress)="allowOnlyNumbers($event)" />
+
+                            </div>
+
+                            @if (
+                            registrationForm.get(
+                            'contactInformation.presentAddress.phone'
+                            )?.touched &&
+                            registrationForm.get(
+                            'contactInformation.presentAddress.phone'
+                            )?.invalid
+                            ) {
+                            <small class="error-text">
+                                Enter a valid 10 digit mobile number.
+                            </small>
+                            }
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input id="email" type="email" class="form-control" formControlName="email"
+                                placeholder="Enter email address" />
+
+                            @if (
+                            registrationForm.get(
+                            'contactInformation.presentAddress.email'
+                            )?.touched &&
+                            registrationForm.get(
+                            'contactInformation.presentAddress.email'
+                            )?.invalid
+                            ) {
+                            <small class="error-text">
+                                Please enter a valid email address.
+                            </small>
+                            }
+
+                        </div>
+                    </div>
+
+
+                </section>
+                <section class="form-section" formGroupName="contactInformation">
+
+                    <div class="section-title">
+
+                        <img src="/assets/images/front-office/images/location.png" alt="Location">
+
+                        <h2>
+
+                            Address Information
+
+                        </h2>
+
+                    </div>
+
+
+
 
                     <div class="address-section" formGroupName="presentAddress">
 
-                        <div class="address-title">
-                            <h4>Present Address</h4>
-                        </div>
+
 
 
                         <div class="form-grid">
@@ -211,7 +296,7 @@
                             <div class="form-group full-width">
 
                                 <label for="presentAddress">
-                                    Address <span class="required">*</span>
+                                    Current Address <span class="required">*</span>
                                 </label>
 
                                 <textarea id="presentAddress" class="form-control" formControlName="address"
@@ -234,6 +319,13 @@
 
 
                             <!-- Country -->
+
+
+
+
+                        </div>
+                        <div class="form-grid_2">
+
                             <div class="form-group">
 
                                 <label for="presentCountry">
@@ -271,7 +363,6 @@
                                 }
 
                             </div>
-
 
                             <!-- State -->
                             <div class="form-group">
@@ -311,7 +402,9 @@
                                 }
 
                             </div>
+                        </div>
 
+                        <div class="form-grid_2">
 
                             <!-- City -->
                             <div class="form-group">
@@ -377,102 +470,8 @@
                                 }
 
                             </div>
-
-
-                            <!-- Mobile -->
-                            <!-- Mobile Number -->
-                            <div class="form-group phone-number-field">
-
-                                <label for="phoneNumber">
-                                    Phone Number <span class="required">*</span>
-                                </label>
-
-                                <div class="phone-control">
-
-                                    <!-- Country Code -->
-                                    <select id="phoneCountryCode" formControlName="phoneCode" class="phone-code-select">
-
-                                        @for (c of countries; track c.countryId) {
-                                        <option [value]="c.phoneCode">
-                                            {{ c.countryCode }} {{ c.phoneCode }}
-                                        </option>
-                                        }
-
-                                    </select>
-
-                                    <!-- Mobile Number -->
-                                    <input id="phoneNumber" type="tel" formControlName="phone"
-                                        class="phone-number-input" placeholder="Enter phone number" maxlength="10"
-                                        (keypress)="allowOnlyNumbers($event)" />
-
-                                </div>
-
-                                @if (
-                                registrationForm.get(
-                                'contactInformation.presentAddress.phone'
-                                )?.touched &&
-                                registrationForm.get(
-                                'contactInformation.presentAddress.phone'
-                                )?.invalid
-                                ) {
-                                <small class="error-text">
-                                    Enter a valid 10 digit mobile number.
-                                </small>
-                                }
-
-                            </div>
-                            <!-- <div class="form-group">
-
-                                <label for="phone">
-                                    Mobile Number <span class="required">*</span>
-                                </label>
-
-                                <input id="phone" type="text" maxlength="10" class="form-control"
-                                    formControlName="phone" placeholder="Enter mobile number"
-                                    (input)="allowOnlyNumbers($event)" />
-
-                                @if (
-                                registrationForm.get(
-                                'contactInformation.presentAddress.phone'
-                                )?.touched &&
-                                registrationForm.get(
-                                'contactInformation.presentAddress.phone'
-                                )?.invalid
-                                ) {
-                                <small class="error-text">
-                                    Enter a valid 10 digit mobile number.
-                                </small>
-                                }
-
-                            </div> -->
-
-
-                            <!-- Email -->
-                            <div class="form-group">
-
-                                <label for="email">
-                                    Email Address
-                                </label>
-
-                                <input id="email" type="email" class="form-control" formControlName="email"
-                                    placeholder="Enter email address" />
-
-                                @if (
-                                registrationForm.get(
-                                'contactInformation.presentAddress.email'
-                                )?.touched &&
-                                registrationForm.get(
-                                'contactInformation.presentAddress.email'
-                                )?.invalid
-                                ) {
-                                <small class="error-text">
-                                    Please enter a valid email address.
-                                </small>
-                                }
-
-                            </div>
-
                         </div>
+
 
                     </div>
 
@@ -483,11 +482,6 @@
 
                         <div class="address-header">
 
-                            <div class="address-title">
-                                <h4>Permanent Address</h4>
-                            </div>
-
-
                             <!-- Same as Present -->
                             <label class="checkbox-label same-address-row">
 
@@ -495,7 +489,7 @@
                                     (change)="onSameAsPresentAddressChange($event)" />
 
                                 <span>
-                                    Same as Present Address
+                                    Same as Current Address
                                 </span>
 
                             </label>
@@ -508,10 +502,10 @@
                         <div class="form-grid">
 
                             <!-- Address -->
-                            <div class="form-group full-half-width">
+                            <div class="form-group full-width">
 
                                 <label for="permanentAddress">
-                                    Address <span class="required">*</span>
+                                    Billing Address <span class="required">*</span>
                                 </label>
 
                                 <textarea id="permanentAddress" class="form-control" formControlName="address"
@@ -533,7 +527,10 @@
                             </div>
 
 
-                            <!-- Country -->
+
+                        </div>
+                        <div class="form-grid_2">
+
                             <div class="form-group">
 
                                 <label for="permanentCountry">
@@ -617,9 +614,11 @@
                                 }
 
                             </div>
+                        </div>
+                        <!-- Country -->
 
+                        <div class="form-grid_2">
 
-                            <!-- City -->
                             <div class="form-group">
 
                                 <label for="permanentCity">
@@ -686,8 +685,8 @@
                                 }
 
                             </div>
-
                         </div>
+                        <!-- City -->
 
                     </div>
 

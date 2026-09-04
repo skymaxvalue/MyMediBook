@@ -1,4 +1,4 @@
-@if(!showAddbookingAppoinmentForm && !showBookingCunfermationOtp && !showBookingSuccess && !showBookingFaild){
+@if(!showAddbookingAppoinmentForm && !showBookingCunfermationOtp && !showBookingSuccess && !showBookingFaild ){
 <div class="availability-container">
     <!-- <h2>Doctor's Availabilities</h2> -->
     <div class="availability-header">
@@ -143,7 +143,7 @@
 <app-book-appoiment-form [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
     (backToAvailability)="backToAvailability($event)"></app-book-appoiment-form>
 }
-@if(showAddbookingAppoinmentForm && isFrontOfficePage){
+@if(showAddbookingAppoinmentForm && isFrontOfficePageBookForm){
 <app-booking-patient-information [doctor]="doctor" [selectedDate]="selectedDateGlobal" [selectedSlot]="selectedSlot"
     (backToAvailability)="backToAvailability($event)"></app-booking-patient-information>
 }

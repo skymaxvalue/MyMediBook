@@ -1,5 +1,12 @@
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
 import {
   FormBuilder,
   FormGroup,
@@ -7,522 +14,300 @@ import {
   Validators
 } from '@angular/forms';
 
+interface Doctor {
+  id?: number | string;
+  name?: string;
+  specialization?: string;
+}
+
 interface Patient {
-  id: string;
+  id: number | string;
   firstName: string;
   lastName: string;
-  relation: string;
-  dob: string;
-  age: string;
-  ageType: 'years' | 'months';
-  gender: string;
+  gender?: string;
+  dateOfBirth?: string;
+  age?: number;
+  ageType?: 'years' | 'months';
+  phone?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pinCode?: string;
+  permanentAddress?: string;
+  permanentCity?: string;
+  permanentState?: string;
+  permanentPinCode?: string;
+}
+
+interface ResponsibleParty {
+  id?: number | string;
+  name: string;
+  phone?: string;
+  email?: string;
+  relation?: string;
+  address?: string;
 }
 
 @Component({
   selector: 'app-booking-patient-information',
   standalone: true,
+
   imports: [
     CommonModule,
     ReactiveFormsModule
   ],
+
   templateUrl: './booking-patient-information.component.html',
   styleUrl: './booking-patient-information.component.css'
 })
-export class BookingPatientInformationComponent implements OnInit {
+export class BookingPatientInformationComponent
+  implements OnInit, OnDestroy {
 
+  @Input() doctor!: Doctor;
 
+  @Input() selectedDate: string = '';
 
-  @Output() backToAvailability = new EventEmitter<any>();
-
-  @Input() doctor: any;
-  @Input() selectedDate: any;
   @Input() selectedSlot: any;
+
+
   bookingForm!: FormGroup;
+
+  patientSearchForm!: FormGroup;
+
+  responsiblePartySearchForm!: FormGroup;
+
+  responsiblePartyForm!: FormGroup;
+  responsiblePartySearchError = '';
+
   insuranceForm!: FormGroup;
+
   paymentForm!: FormGroup;
+
+
   patientType: 'existing' | 'new' = 'existing';
 
-  allPatients: Patient[] = [];
-  filteredPatients: Patient[] = [];
-
-  selectedPatientId: string | null = null;
-
-  showPatientDropdown = false;
-  searchText = '';
-
-  showInsuranceModal = false;
-  showPaymentModal = false;
+  accountHolder: 'self' | 'other' | null = null;
 
   insuranceChoice: 'yes' | 'no' | null = null;
 
-  insuranceData: any = null;
-  paymentData: any = null;
+  otpMethod: 'mobile' | 'email' | 'none' | null = null;
+
+  rpOtpChannel: 'phone' | 'email' | 'none' = 'phone';
+
+  selectPatientModal = false;
+
+  savedInfoModal = false;
+
+  responsiblePartyChannelModal = false;
+
+  responsiblePartyOtpModal = false;
+
+  insuranceModal = false;
+
+  paymentModal = false;
+
+
+  patients: Patient[] = [];
+
+  selectedPatient: Patient | null = null;
+
+  highlightedPatient: Patient | null = null;
+
+
+  responsiblePartyFound: ResponsibleParty | null = null;
+
+  responsiblePartySearched = false;
+
+  responsiblePartyNotFound = false;
+
+  linkedAccountMessage = '';
+
+  savedInfoType: 'phone' | 'email' | null = null;
+
+  savedInfoPatient: Patient | null = null;
+
+  otp = '';
+
+  otpError = '';
+
+  otpTimeRemaining = 60;
+
+  private otpTimer?: ReturnType<typeof setInterval>;
+
+
+  states: string[] = [
+    'Andhra Pradesh',
+    'Arunachal Pradesh',
+    'Assam',
+    'Bihar',
+    'Chhattisgarh',
+    'Goa',
+    'Gujarat',
+    'Haryana',
+    'Himachal Pradesh',
+    'Jharkhand',
+    'Karnataka',
+    'Kerala',
+    'Madhya Pradesh',
+    'Maharashtra',
+    'Manipur',
+    'Meghalaya',
+    'Mizoram',
+    'Nagaland',
+    'Odisha',
+    'Punjab',
+    'Rajasthan',
+    'Sikkim',
+    'Tamil Nadu',
+    'Telangana',
+    'Tripura',
+    'Uttar Pradesh',
+    'Uttarakhand',
+    'West Bengal',
+    'Delhi'
+  ];
+
 
   constructor(
     private fb: FormBuilder
   ) { }
 
+
   ngOnInit(): void {
 
-    this.createForm();
-    this.createInsuranceForm();
-    this.createPaymentForm();
+    this.createForms();
 
-    this.allPatients = this.loadPatients();
-    this.filteredPatients = [...this.allPatients];
+    this.loadPatients();
 
-    this.bookingForm
-      .get('dateOfBirth')
-      ?.valueChanges
-      .subscribe(() => {
-        this.updateAgeFromDob();
-      });
+    this.setupFormSubscriptions();
+
   }
 
-  // --------------------------------------------------
-  // FORM
-  // --------------------------------------------------
 
-  createForm(): void {
+  private createForms(): void {
+
 
     this.bookingForm = this.fb.group({
+
+      patientType: ['existing', Validators.required],
+
+      patientId: [null],
 
       firstName: ['', Validators.required],
 
       lastName: ['', Validators.required],
 
-      relation: ['', Validators.required],
+      gender: ['', Validators.required],
 
       dateOfBirth: ['', Validators.required],
 
-      age: ['', Validators.required],
+      age: [
+        '',
+        [
+          Validators.required,
+          Validators.min(0)
+        ]
+      ],
 
-      ageType: ['', Validators.required],
+      ageType: ['years', Validators.required],
 
-      gender: ['', Validators.required],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{10}$/)
+        ]
+      ],
+
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
 
       address: ['', Validators.required],
 
-      phone: ['', Validators.required],
+      city: ['', Validators.required],
 
-      email: ['', [Validators.required, Validators.email]],
+      state: ['', Validators.required],
+
+      pinCode: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{6}$/)
+        ]
+      ],
+
+      sameAsPresentAddress: [false],
+
+      permanentAddress: ['', Validators.required],
+
+      permanentCity: ['', Validators.required],
+
+      permanentState: ['', Validators.required],
+
+      permanentPinCode: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{6}$/)
+        ]
+      ],
 
       visitPurpose: ['', Validators.required],
 
       visitType: ['', Validators.required],
 
-      otp: ['', Validators.required]
+      otp: ['', Validators.required],
 
-    });
-  }
+      insurance: ['', Validators.required],
 
-  // --------------------------------------------------
-  // PATIENT DATA
-  // --------------------------------------------------
+      accountHolder: [''],
 
-  seedPatients(): Patient[] {
+      accountHolderName: [''],
 
-    return [
-      {
-        id: 'p1',
-        firstName: 'Rajesh',
-        lastName: 'Sharma',
-        relation: 'Self',
-        dob: '1990-05-12',
-        age: '35',
-        ageType: 'years',
-        gender: 'Male'
-      },
-      {
-        id: 'p2',
-        firstName: 'Harshit',
-        lastName: 'Bhardwaj',
-        relation: 'Sibling',
-        dob: '1997-02-10',
-        age: '28',
-        ageType: 'years',
-        gender: 'Male'
-      },
-      {
-        id: 'p3',
-        firstName: 'K',
-        lastName: 'Bhardwaj',
-        relation: 'Sibling',
-        dob: '2000-07-21',
-        age: '25',
-        ageType: 'years',
-        gender: 'Female'
-      },
-      {
-        id: 'p4',
-        firstName: 'Sonia',
-        lastName: 'Verma',
-        relation: 'Mother',
-        dob: '1962-03-03',
-        age: '63',
-        ageType: 'years',
-        gender: 'Female'
-      },
-      {
-        id: 'p5',
-        firstName: 'Amit',
-        lastName: 'Kumar',
-        relation: 'Father',
-        dob: '1958-11-19',
-        age: '67',
-        ageType: 'years',
-        gender: 'Male'
-      },
-      {
-        id: 'p6',
-        firstName: 'Sonia',
-        lastName: 'Kumar',
-        relation: 'Father',
-        dob: '1990-01-15',
-        age: '35',
-        ageType: 'years',
-        gender: 'Female'
-      }
-    ];
-  }
-
-  loadPatients(): Patient[] {
-
-    const raw = localStorage.getItem('savedPatients');
-
-    if (!raw) {
-
-      const seeded = this.seedPatients();
-
-      localStorage.setItem(
-        'savedPatients',
-        JSON.stringify(seeded)
-      );
-
-      return seeded;
-    }
-
-    try {
-
-      const parsed = JSON.parse(raw);
-
-      return Array.isArray(parsed)
-        ? parsed
-        : this.seedPatients();
-
-    } catch {
-
-      return this.seedPatients();
-    }
-  }
-
-  savePatients(list: Patient[]): void {
-
-    localStorage.setItem(
-      'savedPatients',
-      JSON.stringify(list)
-    );
-  }
-
-  // --------------------------------------------------
-  // PATIENT TYPE
-  // --------------------------------------------------
-
-  onPatientTypeChange(type: 'existing' | 'new'): void {
-
-    this.patientType = type;
-
-    if (type === 'new') {
-
-      this.selectedPatientId = null;
-
-      this.closePatientDropdown();
-
-      this.clearPatientDetails();
-
-    } else {
-
-      this.bookingForm.reset();
-
-      this.patientType = 'existing';
-    }
-  }
-
-  clearPatientDetails(): void {
-
-    this.bookingForm.patchValue({
-      firstName: '',
-      lastName: '',
-      relation: '',
-      dateOfBirth: '',
-      age: '',
-      ageType: '',
-      gender: ''
-    });
-
-    this.selectedPatientId = null;
-  }
-
-  // --------------------------------------------------
-  // PATIENT DROPDOWN
-  // --------------------------------------------------
-
-  createPaymentForm(): void {
-
-    this.paymentForm = this.fb.group({
-
-      paymentType: ['', Validators.required],
-
-      cardHolder: ['', Validators.required],
-
-      cardNumber: ['', Validators.required],
-
-      cardExpiry: this.fb.group({
-
-        expiry: ['', Validators.required],
-
-        cvv: ['', Validators.required]
-
-      })
+      relationToPatient: ['']
 
     });
 
-  }
-  togglePatientDropdown(): void {
 
-    this.showPatientDropdown =
-      !this.showPatientDropdown;
+    this.patientSearchForm = this.fb.group({
 
-    if (this.showPatientDropdown) {
+      search: [''],
 
-      this.searchText = '';
-
-      this.filteredPatients =
-        [...this.allPatients];
-    }
-  }
-
-  closePatientDropdown(): void {
-
-    this.showPatientDropdown = false;
-  }
-
-  searchPatients(): void {
-
-    const q =
-      this.searchText
-        .trim()
-        .toLowerCase();
-
-    this.filteredPatients =
-      this.allPatients.filter(patient =>
-
-        `${patient.firstName} ${patient.lastName}`
-          .toLowerCase()
-          .includes(q)
-
-        ||
-
-        patient.relation
-          .toLowerCase()
-          .includes(q)
-      );
-  }
-
-  selectPatient(patient: Patient): void {
-
-    this.selectedPatientId = patient.id;
-
-    this.bookingForm.patchValue({
-
-      firstName: patient.firstName,
-
-      lastName: patient.lastName,
-
-      relation: patient.relation,
-
-      dateOfBirth: patient.dob,
-
-      age: patient.age,
-
-      ageType: patient.ageType,
-
-      gender: patient.gender
+      dob: ['']
 
     });
 
-    this.closePatientDropdown();
-  }
 
-  // --------------------------------------------------
-  // AGE CALCULATION
-  // --------------------------------------------------
+    this.responsiblePartySearchForm = this.fb.group({
 
-  updateAgeFromDob(): void {
+      mobile: [
+        '',
+        Validators.pattern(/^[0-9]{10}$/)
+      ],
 
-    const dobValue =
-      this.bookingForm.get('dateOfBirth')?.value;
+      name: [''],
 
-    if (!dobValue) {
-
-      this.bookingForm.patchValue({
-        age: '',
-        ageType: ''
-      });
-
-      return;
-    }
-
-    const dob =
-      new Date(`${dobValue}T00:00:00`);
-
-    const today = new Date();
-
-    if (dob > today) {
-
-      this.bookingForm.patchValue({
-        age: '',
-        ageType: ''
-      });
-
-      return;
-    }
-
-    let years =
-      today.getFullYear() -
-      dob.getFullYear();
-
-    let months =
-      today.getMonth() -
-      dob.getMonth();
-
-    const days =
-      today.getDate() -
-      dob.getDate();
-
-    if (days < 0) {
-      months--;
-    }
-
-    if (months < 0) {
-
-      years--;
-
-      months += 12;
-    }
-
-    // Less than one year
-    if (years <= 0) {
-
-      let totalMonths = months;
-
-      if (days < 0 && totalMonths > 0) {
-        totalMonths--;
-      }
-
-      this.bookingForm.patchValue({
-
-        age: Math.max(totalMonths, 0),
-
-        ageType: 'months'
-
-      });
-
-      return;
-    }
-
-    // One year or more
-    this.bookingForm.patchValue({
-
-      age: years,
-
-      ageType: 'years'
+      dob: ['']
 
     });
-  }
 
-  // --------------------------------------------------
-  // FORM SUBMIT
-  // --------------------------------------------------
 
-  confirm(): void {
+    this.responsiblePartyForm = this.fb.group({
 
-    if (this.bookingForm.invalid) {
+      accountHolder: ['', Validators.required],
 
-      this.bookingForm.markAllAsTouched();
+      accountHolderName: [''],
 
-      return;
-    }
+      relationToPatient: ['']
 
-    if (this.patientType === 'new') {
+    });
 
-      this.addNewPatient();
-    }
-
-    this.confirmBooking();
-  }
-
-  addNewPatient(): void {
-
-    const formValue =
-      this.bookingForm.getRawValue();
-
-    const newPatient: Patient = {
-
-      id: 'p' + Date.now(),
-
-      firstName: formValue.firstName,
-
-      lastName: formValue.lastName,
-
-      relation: formValue.relation,
-
-      dob: formValue.dateOfBirth,
-
-      age: formValue.age,
-
-      ageType: formValue.ageType,
-
-      gender: formValue.gender
-
-    };
-
-    this.allPatients.push(newPatient);
-
-    this.savePatients(this.allPatients);
-
-    this.selectedPatientId =
-      newPatient.id;
-  }
-
-  // --------------------------------------------------
-  // INSURANCE
-  // --------------------------------------------------
-
-  selectInsurance(choice: 'yes' | 'no'): void {
-
-    this.insuranceChoice = choice;
-
-    if (choice === 'yes') {
-
-      this.showInsuranceModal = true;
-
-    } else {
-
-      this.showPaymentModal = true;
-    }
-  }
-
-  closeInsuranceModal(): void {
-
-    this.showInsuranceModal = false;
-  }
-
-  closePaymentModal(): void {
-
-    this.showPaymentModal = false;
-  }
-  createInsuranceForm(): void {
 
     this.insuranceForm = this.fb.group({
 
@@ -534,141 +319,789 @@ export class BookingPatientInformationComponent implements OnInit {
 
       holderName: ['', Validators.required],
 
-      insuranceAddress: ['', Validators.required]
+      address: ['', Validators.required]
+
+    });
+
+
+    this.paymentForm = this.fb.group({
+
+      paymentType: ['', Validators.required],
+
+      cardHolder: ['', Validators.required],
+
+      cardNumber: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{12,19}$/)
+        ]
+      ],
+
+      expiry: [
+        '',
+        Validators.required
+      ],
+
+      cvv: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{3,4}$/)
+        ]
+      ]
 
     });
 
   }
+
+
+  private setupFormSubscriptions(): void {
+
+    // Patient Type
+
+    this.bookingForm
+      .get('patientType')
+      ?.valueChanges
+      .subscribe(value => {
+
+        this.patientType = value;
+
+        if (value === 'existing') {
+
+          this.openSelectPatientModal();
+
+        } else {
+
+          this.clearPatientDetails();
+
+          this.closeSelectPatientModal();
+
+        }
+
+      });
+
+
+    // Same Address
+
+    this.bookingForm
+      .get('sameAsPresentAddress')
+      ?.valueChanges
+      .subscribe(checked => {
+
+        if (checked) {
+
+          this.copyPresentAddress();
+
+        }
+
+      });
+
+
+    // Insurance
+
+    this.bookingForm
+      .get('insurance')
+      ?.valueChanges
+      .subscribe(value => {
+
+        this.insuranceChoice = value;
+
+        if (value === 'yes') {
+
+          // Yes → Open Insurance Modal
+          this.openInsuranceModal();
+
+        } else if (value === 'no') {
+
+          // No → Open Payment Modal
+          this.openPaymentModal();
+
+        }
+
+      });
+
+
+    // Account holder
+
+    this.bookingForm
+      .get('accountHolder')
+      ?.valueChanges
+      .subscribe(value => {
+
+        this.accountHolder = value;
+
+      });
+
+  }
+
+
+
+  private loadPatients(): void {
+
+    // Replace this with API call
+
+    this.patients = [
+
+      {
+        id: 1,
+        firstName: 'Rahul',
+        lastName: 'Patil',
+        gender: 'Male',
+        dateOfBirth: '1995-05-12',
+        age: 31,
+        ageType: 'years',
+        phone: '9876543210',
+        email: 'rahul@example.com',
+        address: 'Pimpri',
+        city: 'Pune',
+        state: 'Maharashtra',
+        pinCode: '411018'
+      },
+
+      {
+        id: 2,
+        firstName: 'Sneha',
+        lastName: 'Shinde',
+        gender: 'Female',
+        dateOfBirth: '1998-10-20',
+        age: 27,
+        ageType: 'years',
+        phone: '9876501234',
+        email: 'sneha@example.com',
+        address: 'Wakad',
+        city: 'Pune',
+        state: 'Maharashtra',
+        pinCode: '411057'
+      }
+
+    ];
+
+  }
+
+
+
+  get filteredPatients(): Patient[] {
+
+    const search =
+      this.patientSearchForm
+        .get('search')
+        ?.value
+        ?.trim()
+        ?.toLowerCase() || '';
+
+    const dob =
+      this.patientSearchForm
+        .get('dob')
+        ?.value || '';
+
+
+    return this.patients.filter(patient => {
+
+      const fullName =
+        `${patient.firstName} ${patient.lastName}`
+          .toLowerCase();
+
+      const matchesName =
+        !search ||
+        fullName.includes(search);
+
+      const matchesDob =
+        !dob ||
+        patient.dateOfBirth === dob;
+
+      return matchesName && matchesDob;
+
+    });
+
+  }
+
+
+  // ====================================================
+  // EXISTING PATIENT MODAL
+  // ====================================================
+
+  openSelectPatientModal(): void {
+
+    this.selectPatientModal = true;
+
+    this.patientSearchForm.reset({
+      search: '',
+      dob: ''
+    });
+
+    this.highlightedPatient = null;
+
+  }
+
+
+  closeSelectPatientModal(): void {
+
+    this.selectPatientModal = false;
+
+  }
+
+
+  selectPatient(patient: Patient): void {
+
+    this.highlightedPatient = patient;
+
+  }
+
+
+  confirmPatientSelection(): void {
+
+    if (!this.highlightedPatient) {
+      return;
+    }
+
+    this.selectedPatient = this.highlightedPatient;
+
+    this.bookingForm.patchValue({
+
+      patientId: this.selectedPatient.id,
+
+      firstName: this.selectedPatient.firstName,
+
+      lastName: this.selectedPatient.lastName,
+
+      gender: this.selectedPatient.gender,
+
+      dateOfBirth: this.selectedPatient.dateOfBirth,
+
+      age: this.selectedPatient.age,
+
+      ageType: this.selectedPatient.ageType || 'years',
+
+      phone: this.selectedPatient.phone,
+
+      email: this.selectedPatient.email,
+
+      address: this.selectedPatient.address,
+
+      city: this.selectedPatient.city,
+
+      state: this.selectedPatient.state,
+
+      pinCode: this.selectedPatient.pinCode
+
+    });
+
+    this.closeSelectPatientModal();
+
+  }
+
+
+  // ====================================================
+  // RESPONSIBLE PARTY
+  // ====================================================
+
+  searchResponsibleParty(): void {
+
+    const form = this.responsiblePartySearchForm;
+
+    const mobile = (form.get('mobile')?.value || '').trim();
+    const name = (form.get('name')?.value || '').trim();
+    const dob = form.get('dob')?.value || '';
+
+    console.log('SEARCH CLICKED');
+    console.log('Mobile:', mobile);
+    console.log('Name:', name);
+    console.log('DOB:', dob);
+
+    // Reset previous result
+    this.responsiblePartySearchError = '';
+    this.responsiblePartyFound = null;
+    this.responsiblePartyNotFound = false;
+    this.responsiblePartySearched = false;
+
+
+    // ----------------------------------------
+    // VALIDATION
+    // ----------------------------------------
+
+    if (!mobile && !name) {
+
+      this.responsiblePartySearchError =
+        'Please enter mobile number or patient full name.';
+
+      return;
+    }
+
+
+    // Mobile validation
+    if (mobile && !/^[0-9]{10}$/.test(mobile)) {
+
+      this.responsiblePartySearchError =
+        'Please enter a valid 10-digit mobile number.';
+
+      return;
+    }
+
+
+    // ----------------------------------------
+    // SEARCH
+    // ----------------------------------------
+
+    const result = this.patients.find(patient => {
+
+      const patientFullName =
+        `${patient.firstName} ${patient.lastName}`
+          .trim()
+          .toLowerCase();
+
+      const enteredName =
+        name.toLowerCase();
+
+      // Search by mobile
+      if (mobile) {
+        return patient.phone === mobile;
+      }
+
+      // Search by name
+      if (name) {
+
+        const nameMatch =
+          patientFullName === enteredName;
+
+        // If DOB entered, check DOB also
+        if (dob) {
+          return (
+            nameMatch &&
+            patient.dateOfBirth === dob
+          );
+        }
+
+        return nameMatch;
+      }
+
+      return false;
+
+    });
+
+
+    console.log('SEARCH RESULT:', result);
+
+
+    this.responsiblePartySearched = true;
+
+
+    // ----------------------------------------
+    // FOUND
+    // ----------------------------------------
+
+    if (result) {
+
+      this.responsiblePartyFound = {
+
+        id: result.id,
+
+        name:
+          `${result.firstName} ${result.lastName}`,
+
+        phone: result.phone,
+
+        email: result.email
+
+      };
+
+      this.responsiblePartyNotFound = false;
+
+      console.log(
+        'Responsible Party Found:',
+        this.responsiblePartyFound
+      );
+
+    }
+
+    // ----------------------------------------
+    // NOT FOUND
+    // ----------------------------------------
+
+    else {
+
+      this.responsiblePartyFound = null;
+
+      this.responsiblePartyNotFound = true;
+
+      console.log('Responsible Party NOT Found');
+
+    }
+
+  }
+
+  continueWithAccount(): void {
+
+    if (!this.responsiblePartyFound) {
+      return;
+    }
+
+    this.linkedAccountMessage =
+      `Account linked with ${this.responsiblePartyFound.name}`;
+
+    this.responsiblePartyChannelModal = true;
+
+  }
+
+
+  searchAgainResponsibleParty(): void {
+
+    this.responsiblePartyFound = null;
+
+    this.responsiblePartyNotFound = false;
+
+    this.responsiblePartySearched = false;
+
+    this.responsiblePartySearchError = '';
+
+    this.responsiblePartySearchForm.reset();
+
+  }
+
+  // ====================================================
+  // RESPONSIBLE PARTY OTP
+  // ====================================================
+
+  continueResponsiblePartyChannel(): void {
+
+    this.responsiblePartyChannelModal = false;
+
+    this.responsiblePartyOtpModal = true;
+
+    this.startOtpTimer();
+
+  }
+
+
+  closeResponsiblePartyChannelModal(): void {
+
+    this.responsiblePartyChannelModal = false;
+
+  }
+
+
+  closeResponsiblePartyOtpModal(): void {
+
+    this.responsiblePartyOtpModal = false;
+
+    this.stopOtpTimer();
+
+  }
+
+
+  changeRpOtpChannel(): void {
+
+    this.responsiblePartyOtpModal = false;
+
+    this.responsiblePartyChannelModal = true;
+
+  }
+
+
+  verifyResponsiblePartyOtp(): void {
+
+    // Replace with API OTP verification
+
+    if (this.otp === '1234') {
+
+      this.responsiblePartyOtpModal = false;
+
+      this.linkedAccountMessage =
+        'Responsible party verified successfully.';
+
+    } else {
+
+      this.otpError =
+        'Incorrect OTP. Please try again.';
+
+    }
+
+  }
+
+
+  resendOtp(): void {
+
+    this.otp = '';
+
+    this.otpError = '';
+
+    this.startOtpTimer();
+
+  }
+
+
+  startOtpTimer(): void {
+
+    this.stopOtpTimer();
+
+    this.otpTimeRemaining = 60;
+
+    this.otpTimer =
+      setInterval(() => {
+
+        this.otpTimeRemaining--;
+
+        if (this.otpTimeRemaining <= 0) {
+
+          this.stopOtpTimer();
+
+        }
+
+      }, 1000);
+
+  }
+
+
+  stopOtpTimer(): void {
+
+    if (this.otpTimer) {
+
+      clearInterval(this.otpTimer);
+
+      this.otpTimer = undefined;
+
+    }
+
+  }
+
+
+  get otpTimerText(): string {
+
+    const minutes =
+      Math.floor(this.otpTimeRemaining / 60)
+        .toString()
+        .padStart(2, '0');
+
+    const seconds =
+      (this.otpTimeRemaining % 60)
+        .toString()
+        .padStart(2, '0');
+
+    return `${minutes}:${seconds}`;
+
+  }
+
+
+  // ====================================================
+  // INSURANCE
+  // ====================================================
+
+  openInsuranceModal(): void {
+
+    this.insuranceModal = true;
+
+  }
+
+
+  closeInsuranceModal(): void {
+
+    this.insuranceModal = false;
+
+  }
+
 
   confirmInsurance(): void {
 
-    const provider =
-      document.getElementById('provider') as HTMLInputElement;
+    if (this.insuranceForm.invalid) {
 
-    const policy =
-      document.getElementById('policy') as HTMLInputElement;
-
-    if (!provider?.value || !policy?.value) {
+      this.insuranceForm.markAllAsTouched();
 
       return;
+
     }
 
-    this.insuranceData = {
+    this.insuranceModal = false;
 
-      provider: provider.value,
-
-      policy: policy.value
-
-    };
-
-    this.closeInsuranceModal();
   }
+
+
+  // ====================================================
+  // PAYMENT
+  // ====================================================
+
+  openPaymentModal(): void {
+
+    this.paymentModal = true;
+
+  }
+
+
+  closePaymentModal(): void {
+
+    this.paymentModal = false;
+
+  }
+
 
   confirmPayment(): void {
 
-    const card =
-      document.getElementById('cardNumber') as HTMLInputElement;
+    if (this.paymentForm.invalid) {
 
-    const cvv =
-      document.getElementById('cvv') as HTMLInputElement;
-
-    if (!card?.value || !cvv?.value) {
+      this.paymentForm.markAllAsTouched();
 
       return;
+
     }
 
-    this.paymentData = {
+    this.paymentModal = false;
 
-      card: card.value,
-
-      cvv: cvv.value
-
-    };
-
-    this.closePaymentModal();
   }
 
-  // --------------------------------------------------
-  // BOOKING
-  // --------------------------------------------------
 
-  confirmBooking(): void {
+  // ====================================================
+  // ADDRESS
+  // ====================================================
 
-    if (!this.insuranceChoice) {
+  copyPresentAddress(): void {
 
-      return;
-    }
+    this.bookingForm.patchValue({
 
-    if (
-      this.insuranceChoice === 'yes' &&
-      !this.insuranceData
-    ) {
+      permanentAddress:
+        this.bookingForm.get('address')?.value,
 
-      this.showInsuranceModal = true;
+      permanentCity:
+        this.bookingForm.get('city')?.value,
 
-      return;
-    }
+      permanentState:
+        this.bookingForm.get('state')?.value,
 
-    if (
-      this.insuranceChoice === 'no' &&
-      !this.paymentData
-    ) {
-
-      this.showPaymentModal = true;
-
-      return;
-    }
-
-    const formValue =
-      this.bookingForm.getRawValue();
-
-    const appointment = {
-
-      ...formValue,
-
-      patientId: this.selectedPatientId,
-
-      date: this.selectedDate,
-
-      time: this.selectedSlot?.time || '',
-
-      slotId: this.selectedSlot?.slotId || null,
-
-      insurance: this.insuranceData,
-
-      payment: this.paymentData
-
-    };
-
-    localStorage.setItem(
-      'latestAppointment',
-      JSON.stringify(appointment)
-    );
-
-    localStorage.setItem(
-      'tempAppointment',
-      JSON.stringify(appointment)
-    );
-
-    // Send data to parent / OTP component
-    this.backToAvailability.emit({
-
-      bookingPatient: appointment,
-
-      otpDevice: {
-        otpDevice: formValue.otp === 'mobile'
-          ? 'mobile'
-          : 'email',
-
-        value: formValue.otp
-      }
+      permanentPinCode:
+        this.bookingForm.get('pinCode')?.value
 
     });
+
   }
 
-  // --------------------------------------------------
+
+  // ====================================================
+  // SAVED INFO
+  // ====================================================
+
+  closeSavedInfoModal(): void {
+
+    this.savedInfoModal = false;
+
+  }
+
+
+  useSavedInfo(): void {
+
+    if (!this.savedInfoPatient) {
+      return;
+    }
+
+    this.bookingForm.patchValue(
+      this.savedInfoPatient
+    );
+
+    this.savedInfoModal = false;
+
+  }
+
+
+  useNewInfo(): void {
+
+    this.savedInfoModal = false;
+
+  }
+
+
+  // ====================================================
+  // CLEAR
+  // ====================================================
+
+  clearPatientDetails(): void {
+
+    this.selectedPatient = null;
+
+    this.bookingForm.patchValue({
+
+      patientId: null,
+
+      firstName: '',
+
+      lastName: '',
+
+      gender: '',
+
+      dateOfBirth: '',
+
+      age: '',
+
+      ageType: 'years'
+
+    });
+
+  }
+
+
+  clearForm(): void {
+
+    this.bookingForm.reset({
+
+      patientType: 'existing',
+
+      ageType: 'years',
+
+      sameAsPresentAddress: false
+
+    });
+
+    this.selectedPatient = null;
+
+    this.insuranceChoice = null;
+
+    this.accountHolder = null;
+
+  }
+
+
+  // ====================================================
+  // SUBMIT
+  // ====================================================
+
+  submitBooking(): void {
+
+    if (this.bookingForm.invalid) {
+
+      this.bookingForm.markAllAsTouched();
+
+      return;
+
+    }
+
+
+    const payload = {
+
+      doctor: this.doctor,
+
+      appointmentDate: this.selectedDate,
+
+      appointmentSlot: this.selectedSlot,
+
+      patient: this.bookingForm.value,
+
+      insurance: this.insuranceForm.value,
+
+      payment: this.paymentForm.value
+
+    };
+
+
+    console.log(
+      'Booking Payload:',
+      payload
+    );
+
+
+    // Call your booking API here
+
+  }
+
+
+  // ====================================================
   // HELPERS
-  // --------------------------------------------------
+  // ====================================================
 
   isInvalid(controlName: string): boolean {
 
@@ -680,5 +1113,15 @@ export class BookingPatientInformationComponent implements OnInit {
       control.invalid &&
       control.touched
     );
+
   }
+
+
+  ngOnDestroy(): void {
+
+    this.stopOtpTimer();
+
+  }
+
 }
+
