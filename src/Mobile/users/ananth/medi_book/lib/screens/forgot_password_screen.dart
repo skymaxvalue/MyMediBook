@@ -58,6 +58,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    final screenW = mq.size.width;
+    final screenH = mq.size.height;
+    final isSmallPhone = screenW < 360 || screenH < 640;
+    final hPad = isSmallPhone ? 16.0 : 32.0;
+    final vPad = isSmallPhone ? 24.0 : 44.0;
+    final titleSize = isSmallPhone ? 20.0 : 26.0;
+    final bodySize = isSmallPhone ? 12.5 : 14.0;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -68,9 +77,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               constraints: const BoxConstraints(maxWidth: 480),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 44,
+                padding: EdgeInsets.symmetric(
+                  horizontal: hPad,
+                  vertical: vPad,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.white,
@@ -145,27 +154,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       const SizedBox(height: 28),
 
               
-                      const Text(
+                      Text(
                         'FORGOT PASSWORD',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: titleSize,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
                         ),
                       ),
                       const SizedBox(height: 10),
 
-                      const Text(
+                      Text(
                         'Enter your registered email or mobile number\nto receive OTP.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.textGrey,
-                          fontSize: 14,
+                          fontSize: bodySize,
                           height: 1.5,
                         ),
                       ),
-                      const SizedBox(height: 28),
+                      SizedBox(height: isSmallPhone ? 18 : 28),
 
                       TextFormField(
                         controller: _inputController,

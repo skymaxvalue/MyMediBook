@@ -1,6 +1,10 @@
 // lib/screens/lab_results_tab.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../app_colors.dart';
 import '../models/lab_result.dart';
@@ -114,6 +118,11 @@ class _LabResultsTabState extends State<LabResultsTab> {
   int _countByStatus(String s) =>
       _all.where((r) => r.resultStatus.toLowerCase() == s.toLowerCase()).length;
 
+  int _countAvailable() => _all
+      .where((r) => r.resultStatus.toLowerCase() == 'normal' ||
+          r.resultStatus.toLowerCase() == 'available')
+      .length;
+
   // ── pagination ──────────────────────────────────────────────────────────────
 
   List<LabResult> get _paginated {
@@ -196,36 +205,56 @@ class _LabResultsTabState extends State<LabResultsTab> {
 
                 const SizedBox(height: 18),
 
-                // ── summary stats row ────────────────────────────────────────
-                Row(children: [
-                  _StatCard(
-                    icon: Icons.science_outlined,
-                    iconColor: AppColors.primary,
-                    iconBg: const Color(0xFFEEF2FF),
-                    count: _all.length,
-                    label: 'Total Tests',
-                    sub:   'All reports',
-                  ),
-                  const SizedBox(width: 10),
-                  _StatCard(
-                    icon: Icons.warning_amber_rounded,
-                    iconColor: const Color(0xFFDC2626),
-                    iconBg: const Color(0xFFFFEBEB),
-                    count: _countByStatus('Critical') +
-                           _countByStatus('Out of Range'),
-                    label: 'Critical',
-                    sub:   'Needs attention',
-                  ),
-                  const SizedBox(width: 10),
-                  _StatCard(
-                    icon: Icons.hourglass_top_outlined,
-                    iconColor: AppColors.upcomingAmber,
-                    iconBg: AppColors.upcomingBg,
-                    count: _countByStatus('Pending'),
-                    label: 'Pending',
-                    sub:   'Awaiting results',
-                  ),
-                ]),
+                // ── summary stats row (5 cards, no scroll) ─────────────────────
+                Row(
+                  children: [
+                    _StatCard(
+                      assetIcon: 'assets/images/icon-total.png',
+                      iconColor: AppColors.primary,
+                      iconBg: const Color(0xFFEEF2FF),
+                      count: _all.length,
+                      label: 'Total',
+                      sub: 'Tests',
+                    ),
+                    const SizedBox(width: 6),
+                    _StatCard(
+                      assetIcon: 'assets/images/icon-normal.png',
+                      iconColor: const Color(0xFF16A34A),
+                      iconBg: const Color(0xFFDCFCE7),
+                      count: _countByStatus('Normal'),
+                      label: 'Normal',
+                      sub: 'Tests',
+                    ),
+                    const SizedBox(width: 6),
+                    _StatCard(
+                      assetIcon: 'assets/images/icon-critical.png',
+                      iconColor: const Color(0xFFDC2626),
+                      iconBg: const Color(0xFFFFEBEB),
+                      count: _countByStatus('Critical') +
+                          _countByStatus('Out of Range'),
+                      label: 'Critical',
+                      sub: 'Tests',
+                    ),
+                    const SizedBox(width: 6),
+                    _StatCard(
+                      assetIcon: 'assets/images/icon-pending.png',
+                      iconColor: const Color(0xFFD97706),
+                      iconBg: const Color(0xFFFEF3C7),
+                      count: _countByStatus('Pending'),
+                      label: 'Pending',
+                      sub: 'Reports',
+                    ),
+                    const SizedBox(width: 6),
+                    _StatCard(
+                      assetIcon: 'assets/images/icon-reports.png',
+                      iconColor: const Color(0xFF7C3AED),
+                      iconBg: const Color(0xFFF3E8FF),
+                      count: _countAvailable(),
+                      label: 'Available',
+                      sub: 'Reports',
+                    ),
+                  ],
+                ),
 
                 const SizedBox(height: 18),
 
@@ -244,7 +273,7 @@ class _LabResultsTabState extends State<LabResultsTab> {
                         style: const TextStyle(
                             fontSize: 13, color: AppColors.textDark),
                         decoration: const InputDecoration(
-                          hintText: 'Search by test name, patient, etc ...',
+                          hintText: 'Search by medicine name, etc...',
                           hintStyle: TextStyle(
                               fontSize: 12.5, color: AppColors.textLight),
                           prefixIcon: Icon(Icons.search,
@@ -433,60 +462,69 @@ class _SortButton extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final Color    iconColor;
-  final Color    iconBg;
-  final int      count;
-  final String   label;
-  final String   sub;
+  final String assetIcon;
+  final Color  iconColor;
+  final Color  iconBg;
+  final int    count;
+  final String label;
+  final String sub;
 
   const _StatCard({
-    required this.icon,      required this.iconColor,
-    required this.iconBg,    required this.count,
-    required this.label,     required this.sub,
+    required this.assetIcon,  required this.iconColor,
+    required this.iconBg,     required this.count,
+    required this.label,      required this.sub,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 8,
+                blurRadius: 6,
                 offset: const Offset(0, 2)),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 32, height: 32,
+              width: 28, height: 28,
               decoration:
                   BoxDecoration(color: iconBg, shape: BoxShape.circle),
-              child: Icon(icon, size: 17, color: iconColor),
+              child: Center(
+                child: Image.asset(
+                  assetIcon,
+                  width: 15, height: 15,
+                  fit: BoxFit.contain,
+                  color: iconColor,
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Text('$count',
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color: iconColor)),
             Text(label,
                 style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 9.5,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textDark),
-                overflow: TextOverflow.ellipsis),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1),
             Text(sub,
                 style: const TextStyle(
-                    fontSize: 10, color: AppColors.textGrey),
-                overflow: TextOverflow.ellipsis),
+                    fontSize: 9, color: AppColors.textGrey),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1),
           ],
         ),
       ),
@@ -498,9 +536,17 @@ class _StatCard extends StatelessWidget {
 //  Lab Result Card
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _LabResultCard extends StatelessWidget {
+class _LabResultCard extends StatefulWidget {
   final LabResult result;
   const _LabResultCard({required this.result});
+
+  @override
+  State<_LabResultCard> createState() => _LabResultCardState();
+}
+
+class _LabResultCardState extends State<_LabResultCard> {
+
+  bool _generatingPdf = false;
 
   // ── status helpers ──────────────────────────────────────────────────────────
 
@@ -534,17 +580,264 @@ class _LabResultCard extends StatelessWidget {
     }
   }
 
-  bool get _showStatusBadge {
-    final s = result.resultStatus.toLowerCase();
-    return s == 'critical' || s == 'out of range' || s == 'pending';
+  bool get _showStatusBadge => true; // always show badge for all statuses
+
+  // ── PDF generation ────────────────────────────────────────────────────────
+
+  Future<Uint8List> _buildPdf(LabResult r) async {
+    final doc = pw.Document();
+
+    // load Unicode-capable fonts
+    final fontRegular = await PdfGoogleFonts.notoSansRegular();
+    final fontBold    = await PdfGoogleFonts.notoSansBold();
+
+    // embed app logo
+    pw.ImageProvider? logoImage;
+    try {
+      final logoBytes = await rootBundle.load('assets/images/hospital.png');
+      logoImage = pw.MemoryImage(logoBytes.buffer.asUint8List());
+    } catch (_) { /* logo not critical */ }
+
+    // pull patient info from session
+    final cp           = ApiService.currentPatient;
+    final gender       = cp?['gender']      as String? ?? '';
+    final dob          = cp?['dateOfBirth'] as String? ?? '';
+    final phone        = cp?['phoneNumber'] as String? ?? '';
+    final email        = cp?['email']       as String? ?? '';
+    String formattedDob = dob;
+    try {
+      if (dob.isNotEmpty && (dob.contains('T') || dob[4] == '-')) {
+        final dt = DateTime.parse(dob);
+        formattedDob = '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+      }
+    } catch (_) {}
+
+    // colour palette
+    const primaryColor = PdfColor.fromInt(0xFF4F46E5);
+    const greyColor    = PdfColor.fromInt(0xFF6B7280);
+    const darkColor    = PdfColor.fromInt(0xFF111827);
+    const lightBg      = PdfColor.fromInt(0xFFF9FAFB);
+    const divColor     = PdfColor.fromInt(0xFFE5E7EB);
+
+    // status accent
+    PdfColor statusAccent;
+    switch (r.resultStatus.toLowerCase()) {
+      case 'critical':     statusAccent = const PdfColor.fromInt(0xFFDC2626); break;
+      case 'out of range': statusAccent = const PdfColor.fromInt(0xFFEA580C); break;
+      case 'pending':      statusAccent = const PdfColor.fromInt(0xFFD97706); break;
+      case 'normal':       statusAccent = const PdfColor.fromInt(0xFF16A34A); break;
+      default:             statusAccent = greyColor;
+    }
+
+    pw.TextStyle lbl()  => pw.TextStyle(font: fontRegular, fontSize: 10, color: greyColor);
+    pw.TextStyle val()  => pw.TextStyle(font: fontBold,    fontSize: 10, color: darkColor);
+    pw.TextStyle head() => pw.TextStyle(font: fontBold,    fontSize: 13, color: primaryColor);
+    pw.TextStyle body() => pw.TextStyle(font: fontRegular, fontSize: 10, color: darkColor);
+
+    pw.TableRow mkRow(String label, String value, {bool hi = false}) => pw.TableRow(
+      decoration: hi ? const pw.BoxDecoration(color: lightBg) : null,
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          child: pw.Text(label, style: lbl()),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          child: pw.Text(value.isNotEmpty ? value : '-', style: val()),
+        ),
+      ],
+    );
+
+    const colWidths = {0: pw.FlexColumnWidth(2), 1: pw.FlexColumnWidth(3)};
+
+    doc.addPage(pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(32),
+      build: (ctx) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+
+          // ── header: logo + title + report meta ─────────────────────────────
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: const pw.BoxDecoration(
+              color: primaryColor,
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(12)),
+            ),
+            child: pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              children: [
+                if (logoImage != null) ...[
+                  pw.Container(
+                    width: 46, height: 46,
+                    decoration: const pw.BoxDecoration(
+                      color: PdfColors.white, shape: pw.BoxShape.circle,
+                    ),
+                    padding: const pw.EdgeInsets.all(5),
+                    child: pw.Image(logoImage, fit: pw.BoxFit.contain),
+                  ),
+                  pw.SizedBox(width: 12),
+                ],
+                pw.Expanded(
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text('MyMediBook',
+                          style: pw.TextStyle(font: fontBold, fontSize: 20, color: PdfColors.white)),
+                      pw.SizedBox(height: 3),
+                      pw.Text('Lab Test Report',
+                          style: pw.TextStyle(font: fontRegular, fontSize: 11, color: PdfColors.white)),
+                    ],
+                  ),
+                ),
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
+                  children: [
+                    pw.Text('Report #${r.resultId}',
+                        style: pw.TextStyle(font: fontBold, fontSize: 10, color: PdfColors.white)),
+                    pw.SizedBox(height: 4),
+                    pw.Text(r.reportDate,
+                        style: pw.TextStyle(font: fontRegular, fontSize: 10, color: PdfColors.white)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          pw.SizedBox(height: 18),
+
+          // ── status badge ────────────────────────────────────────────────────
+          pw.Center(
+            child: pw.Container(
+              padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 7),
+              decoration: pw.BoxDecoration(
+                color: statusAccent,
+                borderRadius: const pw.BorderRadius.all(pw.Radius.circular(20)),
+              ),
+              child: pw.Text(
+                r.resultStatus.toUpperCase(),
+                style: pw.TextStyle(font: fontBold, fontSize: 12, color: PdfColors.white),
+              ),
+            ),
+          ),
+
+          pw.SizedBox(height: 18),
+
+          // ── patient information ─────────────────────────────────────────────
+          pw.Text('Patient Information', style: head()),
+          pw.SizedBox(height: 6),
+          pw.Divider(color: primaryColor, thickness: 1.5),
+          pw.SizedBox(height: 6),
+          pw.Table(
+            border: pw.TableBorder.all(color: divColor, width: 0.5),
+            columnWidths: colWidths,
+            children: [
+              mkRow('Patient Name', r.patientName, hi: true),
+              if (gender.isNotEmpty)       mkRow('Gender',        gender),
+              if (formattedDob.isNotEmpty) mkRow('Date of Birth', formattedDob, hi: true),
+              if (phone.isNotEmpty)        mkRow('Contact',       phone),
+              if (email.isNotEmpty)        mkRow('Email',         email, hi: true),
+            ],
+          ),
+
+          pw.SizedBox(height: 14),
+
+          // ── test information ────────────────────────────────────────────────
+          pw.Text('Test Information', style: head()),
+          pw.SizedBox(height: 6),
+          pw.Divider(color: primaryColor, thickness: 1.5),
+          pw.SizedBox(height: 6),
+          pw.Table(
+            border: pw.TableBorder.all(color: divColor, width: 0.5),
+            columnWidths: colWidths,
+            children: [
+              mkRow('Test Name',       r.testName,       hi: true),
+              if (r.testCode.isNotEmpty) mkRow('Test Code', r.testCode),
+              mkRow('Lab Name',        r.labName,        hi: true),
+              mkRow('Report Date',     r.reportDate),
+              mkRow('Result Value',    r.resultValue,    hi: true),
+              mkRow('Reference Range', r.referenceRange),
+              mkRow('Result Status',   r.resultStatus,   hi: true),
+            ],
+          ),
+
+          if (r.notes.isNotEmpty) ...[
+            pw.SizedBox(height: 14),
+            pw.Text('Clinical Notes', style: head()),
+            pw.SizedBox(height: 6),
+            pw.Divider(color: primaryColor, thickness: 1.5),
+            pw.SizedBox(height: 6),
+            pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.all(12),
+              decoration: pw.BoxDecoration(
+                color: lightBg,
+                borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+                border: pw.Border.all(color: divColor),
+              ),
+              child: pw.Text(r.notes, style: body()),
+            ),
+          ],
+
+          pw.Spacer(),
+
+          // ── footer ──────────────────────────────────────────────────────────
+          pw.Divider(color: divColor),
+          pw.SizedBox(height: 5),
+          pw.Center(
+            child: pw.Text(
+              'Generated by MyMediBook  |  ${r.reportDate}  |  Confidential',
+              style: pw.TextStyle(font: fontRegular, fontSize: 8, color: greyColor),
+            ),
+          ),
+        ],
+      ),
+    ));
+
+    return doc.save();
+  }
+  // ── open in-app PDF viewer ─────────────────────────────────────────────────
+
+  Future<void> _openPdfViewer(BuildContext sheetCtx, LabResult r) async {
+    setState(() => _generatingPdf = true);
+    try {
+      final bytes = await _buildPdf(r);
+      if (!mounted) return;
+      // ignore: use_build_context_synchronously
+      Navigator.pop(sheetCtx); // close bottom sheet
+      // ignore: use_build_context_synchronously
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => _PdfViewerPage(
+            title: r.testName,
+            pdfBytes: bytes,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to generate PDF: $e'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          margin: const EdgeInsets.all(12),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _generatingPdf = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final r       = result;
-    final sColor  = _statusColor(r.resultStatus);
-    final sBg     = _statusBg(r.resultStatus);
-    final sIcon   = _statusIcon(r.resultStatus);
+    final r       = widget.result;
+    final sColor    = _statusColor(r.resultStatus);
+    final sBg       = _statusBg(r.resultStatus);
+    final sIcon     = _statusIcon(r.resultStatus);
     final showBadge = _showStatusBadge;
 
     return Container(
@@ -758,6 +1051,18 @@ class _LabResultCard extends StatelessWidget {
                 ],
               ),
             ),
+            // keep _generatingPdf in scope to show overlay if needed
+            if (_generatingPdf)
+              const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Center(
+                  child: SizedBox(
+                    width: 18, height: 18,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: AppColors.primary),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -767,7 +1072,7 @@ class _LabResultCard extends StatelessWidget {
   // ── View Details bottom sheet ───────────────────────────────────────────────
 
   void _showDetails(BuildContext context) {
-    final r      = result;
+    final r      = widget.result;
     final sColor = _statusColor(r.resultStatus);
 
     showModalBottomSheet(
@@ -900,45 +1205,37 @@ class _LabResultCard extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // ── Download PDF button ───────────────────────────────────
+                // ── View Report PDF button ────────────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        SnackBar(
-                          content: const Row(children: [
-                            Icon(Icons.download_done_rounded,
-                                color: Colors.white, size: 18),
-                            SizedBox(width: 10),
-                            Text('PDF download will be available soon.',
-                                style: TextStyle(fontSize: 13)),
-                          ]),
-                          backgroundColor: AppColors.primary,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          margin: const EdgeInsets.all(12),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.download_outlined,
-                        size: 18, color: AppColors.primary),
-                    label: const Text(
-                      'Download PDF',
-                      style: TextStyle(
+                  child: ElevatedButton.icon(
+                    onPressed: _generatingPdf
+                        ? null
+                        : () => _openPdfViewer(ctx, r),
+                    icon: _generatingPdf
+                        ? const SizedBox(
+                            width: 18, height: 18,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white),
+                          )
+                        : const Icon(Icons.picture_as_pdf_outlined,
+                            size: 18, color: Colors.white),
+                    label: Text(
+                      _generatingPdf ? 'Generating PDF…' : 'View Report PDF',
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
+                        color: Colors.white,
                       ),
                     ),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                          color: AppColors.primary, width: 1.5),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      disabledBackgroundColor:
+                          AppColors.primary.withValues(alpha: 0.6),
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
+                      elevation: 0,
                     ),
                   ),
                 ),
@@ -1095,6 +1392,148 @@ class _Pagination extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  PDF Viewer Page  (raster renderer + download / share button)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _PdfViewerPage extends StatefulWidget {
+  final String    title;
+  final Uint8List pdfBytes;
+
+  const _PdfViewerPage({
+    required this.title,
+    required this.pdfBytes,
+  });
+
+  @override
+  State<_PdfViewerPage> createState() => _PdfViewerPageState();
+}
+
+class _PdfViewerPageState extends State<_PdfViewerPage> {
+  final List<MemoryImage> _pages = [];
+  bool _rasterising = true;
+  bool _downloading = false;
+  String? _rasterError;
+
+  @override
+  void initState() {
+    super.initState();
+    _rasterise();
+  }
+
+  // ── convert PDF bytes -> PNG images (pure-Dart, no native channel) ────────
+  Future<void> _rasterise() async {
+    try {
+      await for (final page in Printing.raster(widget.pdfBytes, dpi: 160)) {
+        final png = await page.toPng();
+        if (!mounted) return;
+        setState(() => _pages.add(MemoryImage(png)));
+      }
+      if (mounted) setState(() => _rasterising = false);
+    } catch (e) {
+      if (mounted) setState(() { _rasterError = e.toString(); _rasterising = false; });
+    }
+  }
+
+  // ── share / download ──────────────────────────────────────────────────
+  Future<void> _download() async {
+    setState(() => _downloading = true);
+    try {
+      await Printing.sharePdf(
+        bytes: widget.pdfBytes,
+        filename: '${widget.title.replaceAll(RegExp(r'[^\w]'), '_')}_report.pdf',
+      );
+    } finally {
+      if (mounted) setState(() => _downloading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFEEEEEE),
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          // ── download / share button ────────────────────────────────
+          _downloading
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18),
+                  child: SizedBox(
+                    width: 20, height: 20,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white),
+                  ),
+                )
+              : IconButton(
+                  tooltip: 'Download / Share PDF',
+                  icon: const Icon(Icons.download_rounded, color: Colors.white),
+                  onPressed: _pages.isEmpty ? null : _download,
+                ),
+        ],
+      ),
+      body: _rasterising && _pages.isEmpty
+          ? const Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(color: AppColors.primary),
+                  SizedBox(height: 14),
+                  Text('Preparing report...',
+                      style: TextStyle(color: AppColors.textGrey, fontSize: 13)),
+                ],
+              ),
+            )
+          : _rasterError != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      'Could not render PDF:\n$_rasterError',
+                      style: const TextStyle(color: Colors.redAccent),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  itemCount: _pages.length,
+                  itemBuilder: (_, i) => Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x22000000),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image(image: _pages[i], fit: BoxFit.fitWidth),
+                  ),
+                ),
     );
   }
 }
