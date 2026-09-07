@@ -122,7 +122,7 @@ export const getDashboardDataFailure = createAction(
 );
 export const getDashboardDataByReceptionist = createAction(
     '[Dashboard Receptionist Data] get ',
-    props<{ associateId: number, fromDate: "string", toDate: "string" }>()
+    props<{ associateId: number, fromDate: string, toDate: string }>()
 
 );
 
@@ -137,7 +137,7 @@ export const getDashboardDataByReceptionistFailure = createAction(
 );
 export const getDashboardDataByDoctor = createAction(
     '[Dashboard Doctor Data] get ',
-    props<{ associateId: number, fromDate: "string", toDate: "string" }>()
+    props<{ associateId: number, fromDate: string, toDate: string }>()
 
 );
 
