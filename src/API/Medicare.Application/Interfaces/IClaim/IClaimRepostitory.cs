@@ -23,5 +23,6 @@ namespace Medicare.Application.Interfaces.IClaim
         Task<GenerateStatementResponse> GenerateStatementAsync(int claimId);
         Task<PostPatientPaymentResponse> PostPatientPaymentAsync(PostPatientPaymentRequest model);
         Task<ForwardToSecondaryResponse> ForwardToSecondaryAsync(ForwardToSecondaryRequest model);
+        Task<ClaimAuditResponse> GetClaimAuditById(int claimId);
     }
 }

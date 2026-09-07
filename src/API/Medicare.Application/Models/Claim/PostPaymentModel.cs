@@ -1,4 +1,6 @@
-﻿namespace Medicare.Application.Models.Claim
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Claim
 {
     public class PostPatientPaymentRequest
     {
@@ -8,14 +10,14 @@
         public string? ReferenceNo { get; set; }
     }
 
-    public class PostPatientPaymentResponse
+    public class PostPatientPaymentResponse : IErrorHandling
     {
         public int TransactionId { get; set; }
         public decimal RemainingBalance { get; set; }
 
         /// <summary>Pending | PartiallyPaid | Closed</summary>
         public string ClaimStatus { get; set; } = string.Empty;
-        public bool IsSuccess { get; set; }
-        public string ResponseMessage { get; set; } = string.Empty;
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; } 
     }
 }

@@ -8,6 +8,7 @@ using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.Email;
 using Medicare.Application.Models.CommonModels.ErrorLog;
+using Medicare.Application.Models.CommonModels.Request;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Notification;
 using Medicare.Application.Models.Patient;
@@ -391,14 +392,16 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<List<PatientProfileModel>> GetMyAppointmentListByAssociateIdAsync(int associateId)
+        public async Task<List<PatientProfileModel>> GetMyAppointmentListByAssociateIdAsync(DataRequestModel model)
         {
             string procName = "USP_GetMyAppointmentListByAssociateId";
             List<PatientProfileModel> returnData = new List<PatientProfileModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("AssociateId", associateId);
+                param.Add("AssociateId", model.AssociateId);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
 
                 returnData = await _context.QueryStoredProcListAsync<PatientProfileModel>(procName, param);
             }
@@ -513,6 +516,34 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ReferenceNo", model.ReferenceNo);
 
                 return await _context.QuerySingleStoredProcAsync<CollectCopayResponse>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<List<AppointmentDetailModel>> GetFrontOfficeAppointmentsList(DataRequestFilterModel model)
+        {
+            string procName = "USP_GetFrontOfficeAppointmentsList";
+            List<AppointmentDetailModel> returnData = new List<AppointmentDetailModel>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("TenantId", model.TenantId);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
+                param.Add("PageNumber", model.PageNumber);
+                param.Add("PageSize", model.PageSize);
+
+                returnData = await _context.QueryStoredProcListAsync<AppointmentDetailModel>(procName, param);
             }
             catch (Exception ex)
             {

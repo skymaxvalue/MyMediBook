@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Patient;
+using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
@@ -8,12 +9,12 @@ namespace Medicare.Application.Handlers.CommandHandlers
 {
     public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand, ResponseModel>
     {
-        private readonly IPatientRepository _patientRepository;
+        private readonly IAuthRepository _authRepository;
         private readonly PasswordHelper _passwordHelper;
 
-        public CreatePatientCommandHandler(IPatientRepository patientRepository, PasswordHelper passwordHelper)
+        public CreatePatientCommandHandler(IAuthRepository authRepository, PasswordHelper passwordHelper)
         {
-            _patientRepository = patientRepository;
+            _authRepository = authRepository;
             _passwordHelper = passwordHelper;
         }
 
@@ -47,7 +48,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
                 CreatedBy = request.model.CreatedBy,
             };
 
-            return await _patientRepository.CreatePatientDetails(patientModel);
+            return await _authRepository.CreatePatientDetails(patientModel);
         }
     }
 }
