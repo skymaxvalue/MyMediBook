@@ -124,36 +124,54 @@ export class LabResultComponent {
   );
 
 
+  getStatusIcon(item: LabResultModel): string {
+
+    const status = this.getResultStatus(item);
+
+    switch (status) {
+
+      case 'Normal':
+        return '/assets/images/icon-normal.png';
+
+      case 'Critical':
+        return '/assets/images/icon-critical.png';
+
+      case 'Pending':
+        return '/assets/images/icon-pending.png';
+
+      default:
+        return '/assets/images/icon-pending.png';
+    }
+  }
+
+  // normalTests = computed(() =>
+  //   this.results().filter(
+  //     x => this.getStatusText(x) === 'Normal'
+  //   ).length
+  // );
 
 
-  normalTests = computed(() =>
-    this.results().filter(
-      x => this.getStatusText(x) === 'Normal'
-    ).length
-  );
+  // criticalTests = computed(() =>
+  //   this.results().filter(
+  //     x => this.getStatusText(x) === 'Critical'
+  //   ).length
+  // );
 
 
-  criticalTests = computed(() =>
-    this.results().filter(
-      x => this.getStatusText(x) === 'Critical'
-    ).length
-  );
+  // pendingTests = computed(() =>
+  //   this.results().filter(
+  //     x =>
+  //       x.resultStatus?.toLowerCase() === 'pending'
+  //   ).length
+  // );
 
 
-  pendingTests = computed(() =>
-    this.results().filter(
-      x =>
-        x.resultStatus?.toLowerCase() === 'pending'
-    ).length
-  );
-
-
-  reportsReady = computed(() =>
-    this.results().filter(
-      x =>
-        x.resultStatus?.toLowerCase() !== 'pending'
-    ).length
-  );
+  // reportsReady = computed(() =>
+  //   this.results().filter(
+  //     x =>
+  //       x.resultStatus?.toLowerCase() !== 'pending'
+  //   ).length
+  // );
 
 
 
@@ -490,6 +508,29 @@ export class LabResultComponent {
   }
 
 
+  normalTests = computed(() =>
+    this.results().filter(
+      x => this.getResultStatus(x) === 'Normal'
+    ).length
+  );
+
+  criticalTests = computed(() =>
+    this.results().filter(
+      x => this.getResultStatus(x) === 'Critical'
+    ).length
+  );
+
+  pendingTests = computed(() =>
+    this.results().filter(
+      x => this.getResultStatus(x) === 'Pending'
+    ).length
+  );
+
+  reportsReady = computed(() =>
+    this.results().filter(
+      x => this.getResultStatus(x) !== 'Pending'
+    ).length
+  );
   closeModal(): void {
 
     this.showModal.set(false);
@@ -541,13 +582,103 @@ export class LabResultComponent {
     return 'status-entered';
 
   }
+  getResultStatusClass(item: LabResultModel): string {
+
+    const status = this.getResultStatus(item);
+
+    switch (status) {
+
+      case 'Normal':
+        return 'status-normal';
+
+      case 'Critical':
+        return 'status-critical';
+
+      case 'Pending':
+        return 'status-pending';
+
+      default:
+        return 'status-pending';
+    }
+  }
+
+  // getResultStatus(
+  //   item: LabResultModel
+  // ): 'Normal' | 'Critical' | 'Pending' | 'Validated' {
+
+
+  //   if (!item.resultValue || !item.referenceRange) {
+  //     return 'Pending';
+  //   }
+
+  //   const value = parseFloat(item.resultValue);
+
+  //   if (isNaN(value)) {
+  //     return 'Pending';
+  //   }
+
+  //   const range = item.referenceRange
+  //     .replace(/,/g, '')
+  //     .toLowerCase()
+  //     .trim();
+
+
+  //   const rangeMatch = range.match(
+  //     /(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/
+  //   );
+
+  //   if (rangeMatch) {
+
+  //     const min = parseFloat(rangeMatch[1]);
+  //     const max = parseFloat(rangeMatch[2]);
+
+  //     return value >= min && value <= max
+  //       ? 'Normal'
+  //       : 'Critical';
+  //   }
+
+
+  //   const lessMatch = range.match(
+  //     /<\s*(\d+(?:\.\d+)?)/
+  //   );
+
+  //   if (lessMatch) {
+
+  //     const max = parseFloat(lessMatch[1]);
+
+  //     return value < max
+  //       ? 'Normal'
+  //       : 'Critical';
+  //   }
+
+  //   // Example: > 40 mg/dL
+  //   const greaterMatch = range.match(
+  //     />\s*(\d+(?:\.\d+)?)/
+  //   );
+
+  //   if (greaterMatch) {
+
+  //     const min = parseFloat(greaterMatch[1]);
+
+  //     return value > min
+  //       ? 'Normal'
+  //       : 'Critical';
+  //   }
+
+  //   return 'Validated';
+  // }
 
   getResultStatus(
     item: LabResultModel
   ): 'Normal' | 'Critical' | 'Pending' {
 
-
-    if (!item.resultValue || !item.referenceRange) {
+    // No result or reference range
+    if (
+      !item.resultValue ||
+      !item.referenceRange ||
+      item.resultValue.trim() === '' ||
+      item.referenceRange.trim() === ''
+    ) {
       return 'Pending';
     }
 
@@ -563,6 +694,7 @@ export class LabResultComponent {
       .trim();
 
 
+    // Example: 90 - 110
     const rangeMatch = range.match(
       /(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/
     );
@@ -578,6 +710,7 @@ export class LabResultComponent {
     }
 
 
+    // Example: < 40
     const lessMatch = range.match(
       /<\s*(\d+(?:\.\d+)?)/
     );
@@ -591,7 +724,8 @@ export class LabResultComponent {
         : 'Critical';
     }
 
-    // Example: > 40 mg/dL
+
+    // Example: > 40
     const greaterMatch = range.match(
       />\s*(\d+(?:\.\d+)?)/
     );
@@ -604,6 +738,7 @@ export class LabResultComponent {
         ? 'Normal'
         : 'Critical';
     }
+
 
     return 'Pending';
   }

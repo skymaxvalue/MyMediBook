@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.IPatient;
+using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
@@ -16,48 +17,6 @@ namespace Medicare.DAL.Persistence.Repositories
             _context = context;
             _errorLog = errorLog;
         }
-        public async Task<ResponseModel> CreatePatientDetails(PatientMasterModel model)
-        {
-            string procName = "USP_RegisterPatientAccount";
-            ResponseModel returnData = new ResponseModel();
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("FirstName", model.FirstName);
-                param.Add("MiddleName", model.MiddleName);
-                param.Add("LastName", model.LastName);
-                param.Add("DateOfBirth", model.DateOfBirth);
-                param.Add("PhoneCountryCode", model.PhoneCountryCode);
-                param.Add("PhoneNumber", model.PhoneNumber);
-                param.Add("Email", model.Email);
-                param.Add("Gender", model.Gender);
-                param.Add("AddressLine1", model.AddressLine1);
-                param.Add("AddressLine2", model.AddressLine2);
-                param.Add("CityId", model.CityId);
-                param.Add("ZipCode", model.ZipCode);
-                param.Add("StateId", model.StateId);
-                param.Add("CountryId", model.CountryId);
-                param.Add("Username", model.Username);
-                param.Add("Password", model.PasswordHash);
-                param.Add("SecurityQuestionId", model.SecurityQuestionId);
-                param.Add("SecurityAnswerHash", model.SecurityAnswerHash);
-                param.Add("CreatedBy", model.CreatedBy);
-                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
-            }
-            catch (Exception ex)
-            {
-                await _errorLog.InsertErrorLog(new ErrorLogModel()
-                {
-                    IsDBError = false,
-                    Error_Message = ex.Message,
-                    Error_Procedure = procName,
-                    Error_Trace = ex.StackTrace
-                });
-            }
-
-            return returnData;
-        }
-
         public async Task<ResponseModel> UpdatePatientDetails(UpdatePatientRequestModel model)
         {
             string procName = "USP_UpdatePatientAccount";
@@ -97,7 +56,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-
         public async Task<PatientMasterModel> GetPatientByContact(string contactNo)
         {
             string procName = "USP_GetPatientByContactNo";
@@ -122,7 +80,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-
         public async Task<PatientDetailModel> GetPatientById(int Id)
         {
             string procName = "USP_GetPatientAccountById";
@@ -147,7 +104,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-     
         public async Task<PatientDetailModel> GetPatientInfoByUsername(string Username)
         {
             string procName = "USP_GetPatientAccountByUsername";
@@ -172,7 +128,6 @@ namespace Medicare.DAL.Persistence.Repositories
 
             return returnData;
         }
-
         public async Task<List<PatientProfileModel>> GetPatientProfileListByIdAsync(int patientId)
         {
             string procName = "USP_GetPatientProfileListById";
@@ -206,6 +161,32 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ProfileId", profileId);
 
                 returnData = await _context.QuerySingleStoredProcAsync<PatientProfileModelDto>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+        public async Task<List<PatientProfileModel>> SearchPatientAsync(SearchPatientRequest model)
+        {
+            string procName = "USP_SearchPatientInAppointments";
+            List<PatientProfileModel> returnData = new List<PatientProfileModel>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("Name", model.Name);
+                param.Add("DOB", model.DOB);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
+
+                returnData = await _context.QueryStoredProcListAsync<PatientProfileModel>(procName, param);
             }
             catch (Exception ex)
             {

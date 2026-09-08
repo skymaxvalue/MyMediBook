@@ -7,7 +7,9 @@ import 'appointments_tab.dart';
 import 'specialities_tab.dart';
 import 'medicine_orders_tab.dart';
 import 'lab_results_tab.dart';
+import 'billing_tab.dart';
 import 'login_screen.dart';
+import 'messages_tab.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Nav-tab definition (bottom bar)
@@ -93,8 +95,13 @@ class _HomeScreenState extends State<HomeScreen>
       case 1: return const SpecialitiesTab();
       case 2: return const MedicineOrdersTab();
       case 3: return const LabResultsTab();
+      case 4: return const BillingTab();
+      case 5: return const MessagesTab();
       default:
-        return _PlaceholderContent(tab: _navTabs[_selectedIndex]);
+        if (_selectedIndex < _navTabs.length) {
+          return _PlaceholderContent(tab: _navTabs[_selectedIndex]);
+        }
+        return const SizedBox.shrink();
     }
   }
 
@@ -120,14 +127,9 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // ── Notification bottom sheet ────────────────────────────────────────────
-  void _showNotificationsSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const _NotificationsSheet(),
-    );
+  // ── Navigate to Messages tab on notification icon tap ────────────────────
+  void _goToMessages() {
+    setState(() => _selectedIndex = 5);
   }
 
   // ── Settings bottom sheet ────────────────────────────────────────────────
@@ -187,29 +189,22 @@ class _HomeScreenState extends State<HomeScreen>
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF1E3A8A), Color(0xFF2B4ECC), Color(0xFF3B82F6)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Color(0xFF2B59D2),
       ),
       padding: EdgeInsets.fromLTRB(14, vPad, 12, vPad),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Row 1: brand  |  icons ──────────────────────────────────
+          // ── Row 1: brand (logo image)  |  icons ──────────────────────
           Row(
             children: [
-              Container(
-                width: 26, height: 26,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
-                ),
-                child: const Icon(Icons.medical_services_rounded,
-                    color: Colors.white, size: 14),
+              // SkyMaxValue logo image
+              Image.asset(
+                'assets/images/skylogo2.png',
+                width: 26,
+                height: 26,
+                fit: BoxFit.contain,
               ),
               const SizedBox(width: 7),
               Expanded(
@@ -233,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen>
               _TopBarIcon(
                 icon: Icons.notifications_outlined,
                 badge: true,
-                onTap: _showNotificationsSheet,
+                onTap: _goToMessages,
               ),
               const SizedBox(width: 4),
               GestureDetector(
@@ -257,26 +252,46 @@ class _HomeScreenState extends State<HomeScreen>
 
           SizedBox(height: (h * 0.06).clamp(4.0, 10.0)),
 
-          // ── Row 2: Hospital name ────────────────────────────────────
-          Text(
-            'HEALTH HEAVEN',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: hFont,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.3,
-              height: 1.1,
-            ),
-          ),
-          Text(
-            'MEDICAL CENTER',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: hFont,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.3,
-              height: 1.1,
-            ),
+          // ── Row 2: Hospital name  |  hospital logo ──────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'HEALTH HEAVEN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: hFont,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.3,
+                        height: 1.1,
+                      ),
+                    ),
+                    Text(
+                      'MEDICAL CENTER',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: hFont,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.3,
+                        height: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Hospital logo image
+              Image.asset(
+                'assets/images/hospital2.png',
+                width: (h * 0.38).clamp(28.0, 46.0),
+                height: (h * 0.38).clamp(28.0, 46.0),
+                fit: BoxFit.contain,
+              ),
+            ],
           ),
         ],
       ),
@@ -285,31 +300,38 @@ class _HomeScreenState extends State<HomeScreen>
 
   // ── Sub-strip: Patient Activity Center + date (below blue, blue text) ─────
   Widget _buildSubStrip() {
+    final screenW = MediaQuery.of(context).size.width;
+    final isNarrow = screenW < 360;
     return Container(
       color: AppColors.background,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: isNarrow ? 10 : 14, vertical: 5),
       child: Row(
         children: [
           Icon(Icons.directions_walk,
               color: AppColors.primary, size: 11),
           const SizedBox(width: 4),
-          Text(
-            'Patient Activity Center',
-            style: TextStyle(
-              fontSize: 10.5,
-              color: AppColors.primary,
-              fontWeight: FontWeight.w500,
+          Flexible(
+            child: Text(
+              'Patient Activity Center',
+              style: TextStyle(
+                fontSize: isNarrow ? 9.5 : 10.5,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          const Spacer(),
-          Text(
-            _formattedDate(),
-            style: TextStyle(
-              fontSize: 10,
-              color: AppColors.primary,
-              fontWeight: FontWeight.w500,
+          if (!isNarrow) ...[
+            const Spacer(),
+            Text(
+              _formattedDate(),
+              style: TextStyle(
+                fontSize: 10,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -317,11 +339,18 @@ class _HomeScreenState extends State<HomeScreen>
 
   // ── floating curved bottom nav ────────────────────────────────────────────
   Widget _buildBottomNav() {
+    final screenW = MediaQuery.of(context).size.width;
+    final isNarrow = screenW < 360;
+    final navHeight = isNarrow ? 56.0 : 64.0;
+    final iconSize = isNarrow ? 18.0 : 21.0;
+    final labelSize = isNarrow ? 8.0 : 9.0;
+    final hPad = isNarrow ? 6.0 : 12.0;
+    final vPad = isNarrow ? 6.0 : 10.0;
+
     return Padding(
-      // Side margins so the card never touches screen edges
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      padding: EdgeInsets.fromLTRB(hPad, 0, hPad, vPad),
       child: Container(
-        height: 64,
+        height: navHeight,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
@@ -351,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen>
                   behavior: HitTestBehavior.opaque,
                   child: Container(
                     color: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -360,20 +389,20 @@ class _HomeScreenState extends State<HomeScreen>
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
                           curve: Curves.easeOutCubic,
-                          width:  selected ? 20 : 0,
+                          width:  selected ? 18 : 0,
                           height: selected ? 3  : 0,
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
-                        SizedBox(height: selected ? 4 : 7),
+                        SizedBox(height: selected ? 3 : 6),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           child: Icon(
                             selected ? tab.activeIcon : tab.icon,
                             key: ValueKey('${i}_$selected'),
-                            size: 21,
+                            size: iconSize,
                             color: selected
                                 ? AppColors.primary
                                 : const Color(0xFFB0B8C8),
@@ -383,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen>
                         Text(
                           tab.label,
                           style: TextStyle(
-                            fontSize: 9,
+                            fontSize: labelSize,
                             fontWeight: selected
                                 ? FontWeight.w700
                                 : FontWeight.w500,
@@ -630,125 +659,6 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Notifications bottom sheet  (Coming Soon)
-// ─────────────────────────────────────────────────────────────────────────────
-class _NotificationsSheet extends StatelessWidget {
-  const _NotificationsSheet();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle
-          Center(
-            child: Container(
-              width: 40, height: 4,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE5E7EB),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Title row
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.notifications_active_outlined,
-                    color: AppColors.primary, size: 22),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Notifications',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.textDark)),
-                    Text('Stay updated with your health',
-                        style: TextStyle(
-                            fontSize: 11, color: AppColors.textGrey)),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text('Soon',
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFFD97706))),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          // Illustration
-          Container(
-            width: 80, height: 80,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.06),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.notifications_none_rounded,
-                size: 40, color: AppColors.primary.withOpacity(0.4)),
-          ),
-          const SizedBox(height: 16),
-          const Text('No notifications yet',
-              style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textDark)),
-          const SizedBox(height: 6),
-          const Text(
-            'Appointment reminders, prescription\nalerts & health tips — coming soon!',
-            textAlign: TextAlign.center,
-            style:
-                TextStyle(fontSize: 12.5, color: AppColors.textGrey, height: 1.5),
-          ),
-          const SizedBox(height: 28),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: const Color(0xFFF4F6FB),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close',
-                  style: TextStyle(
-                      color: AppColors.textGrey,
-                      fontWeight: FontWeight.w600)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Settings bottom sheet  (menu + logout)
@@ -774,7 +684,7 @@ const _settingsItems = <_SettingsItem>[
   _SettingsItem(Icons.receipt_long_outlined, 'Billing',
       subtitle: 'Payment history & invoices', tabIndex: 4),
   _SettingsItem(Icons.chat_bubble_outline, 'Messages',
-      subtitle: 'Chat with care team'),
+      subtitle: 'Track your Messages & Updates', tabIndex: 5),
   _SettingsItem(Icons.help_outline, 'Help & Support',
       subtitle: 'FAQs and contact us'),
   _SettingsItem(Icons.info_outline, 'About',

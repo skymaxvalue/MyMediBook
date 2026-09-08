@@ -7,6 +7,7 @@ class Doctor {
   final String department;
   final String visitingHours;
   final String specialty;
+  final String associateRole;   // e.g. 'Doctor', 'Nurse', etc.
 
   Doctor({
     required this.associateId,
@@ -15,6 +16,7 @@ class Doctor {
     required this.department,
     required this.visitingHours,
     required this.specialty,
+    this.associateRole = '',
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Doctor {
       department:    json['department']    as String,
       visitingHours: json['visitingHours'] as String,
       specialty:     json['specialty']     as String,
+      associateRole: json['associateRole'] as String? ?? json['roleName'] as String? ?? '',
     );
   }
 }

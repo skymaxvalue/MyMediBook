@@ -14,13 +14,13 @@ namespace Medicare.Application.Models.Claim
         public string PayerSequence { get; set; } = "Primary";
     }
 
-    public class PostInsurancePaymentResponse
+    public class PostInsurancePaymentResponse : IErrorHandling
     {
         public int PaymentId { get; set; }
         public decimal TotalPaidAmount { get; set; }
         public decimal RemainingBalance { get; set; }
-        public bool IsSuccess { get; set; }
-        public string ResponseMessage { get; set; } = string.Empty;
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; } 
     }
 
     // Post Insurance Adjustment (CO/PR/OA)
@@ -35,13 +35,13 @@ namespace Medicare.Application.Models.Claim
         public decimal AdjustmentAmount { get; set; }
     }
 
-    public class PostAdjustmentResponse
+    public class PostAdjustmentResponse : IErrorHandling
     {
         public int AdjustmentId { get; set; }
         public decimal TotalAdjustmentAmount { get; set; }
         public decimal RemainingBalance { get; set; }
-        public bool IsSuccess { get; set; }
-        public string ResponseMessage { get; set; } = string.Empty;
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; } 
     }
 
     //  Calculate Patient Responsibility
@@ -53,12 +53,12 @@ namespace Medicare.Application.Models.Claim
         public decimal Copay { get; set; }
     }
 
-    public class CalculateResponsibilityResponse
+    public class CalculateResponsibilityResponse : IErrorHandling
     {
         public decimal TotalPatientResponsibility { get; set; }
         public decimal RemainingBalance { get; set; }
-        public bool IsSuccess { get; set; }
-        public string ResponseMessage { get; set; } = string.Empty;
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; } 
     }
 
     //  Collect Copay

@@ -57,41 +57,48 @@ class BookingSuccessView extends StatelessWidget {
                   border: Border.all(color: AppColors.divider),
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
                 ),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  // Left: doctor avatar + constrained info
-                  SizedBox(
-                    width: 78,
-                    child: Column(children: [
-                      Container(
-                        width: 58, height: 58,
-                        decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
-                        child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isNarrow = constraints.maxWidth < 300;
+                    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      // Left: doctor avatar + constrained info
+                      SizedBox(
+                        width: isNarrow ? 64 : 78,
+                        child: Column(children: [
+                          Container(
+                            width: isNarrow ? 48 : 58, height: isNarrow ? 48 : 58,
+                            decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
+                            child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(doctor.name,
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textDark),
+                            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 2),
+                          Text(doctor.qualification.toUpperCase(),
+                            style: const TextStyle(fontSize: 9, color: AppColors.textGrey),
+                            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                          Text(doctor.department,
+                            style: const TextStyle(fontSize: 9, color: AppColors.primary, fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                        ]),
                       ),
-                      const SizedBox(height: 6),
-                      Text(doctor.name,
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textDark),
-                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 2),
-                      Text(doctor.qualification.toUpperCase(),
-                        style: const TextStyle(fontSize: 9, color: AppColors.textGrey),
-                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
-                      Text(doctor.department,
-                        style: const TextStyle(fontSize: 9, color: AppColors.primary, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
-                    ]),
-                  ),
-                  const SizedBox(width: 12),
-                  // Middle: summary rows
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    SummaryRow(icon: Icons.person_outline, label: 'Patient Name', value: patientName),
-                    const SizedBox(height: 10),
-                    SummaryRow(icon: Icons.calendar_today, label: 'Date', value: '${slot.date} (${slot.dayName})'),
-                    const SizedBox(height: 10),
-                    SummaryRow(icon: Icons.access_time, label: 'Time', value: selectedTime),
-                  ])),
-                  const SizedBox(width: 8),
-                  // Right: decorative icon
-                  Icon(Icons.handshake_outlined, size: 46, color: AppColors.primary.withOpacity(0.6)),
-                ]),
+                      const SizedBox(width: 12),
+                      // Middle: summary rows
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        SummaryRow(icon: Icons.person_outline, label: 'Patient Name', value: patientName),
+                        const SizedBox(height: 10),
+                        SummaryRow(icon: Icons.calendar_today, label: 'Date', value: '${slot.date} (${slot.dayName})'),
+                        const SizedBox(height: 10),
+                        SummaryRow(icon: Icons.access_time, label: 'Time', value: selectedTime),
+                      ])),
+                      // Right: decorative icon — hidden on very narrow screens
+                      if (!isNarrow) ...[
+                        const SizedBox(width: 8),
+                        Icon(Icons.handshake_outlined, size: 40, color: AppColors.primary.withOpacity(0.6)),
+                      ],
+                    ]);
+                  },
+                ),
               ),
               const SizedBox(height: 20),
               _TipCard(
@@ -138,7 +145,7 @@ class BookingSuccessView extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: onDone,
                   icon: const Icon(Icons.arrow_back, size: 18),
-                  label: const Text('Back to My Appointments', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  label: const Text('Back to Appointments', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary, foregroundColor: Colors.white, elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -208,44 +215,51 @@ class BookingFailureView extends StatelessWidget {
                   border: Border.all(color: AppColors.divider),
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
                 ),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  // Left: doctor avatar + constrained info
-                  SizedBox(
-                    width: 78,
-                    child: Column(children: [
-                      Container(
-                        width: 58, height: 58,
-                        decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
-                        child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isNarrow = constraints.maxWidth < 300;
+                    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      // Left: doctor avatar + constrained info
+                      SizedBox(
+                        width: isNarrow ? 64 : 78,
+                        child: Column(children: [
+                          Container(
+                            width: isNarrow ? 48 : 58, height: isNarrow ? 48 : 58,
+                            decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
+                            child: const Icon(Icons.person, color: AppColors.textGrey, size: 28),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(doctor.name,
+                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textDark),
+                            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 2),
+                          Text(doctor.qualification.toUpperCase(),
+                            style: const TextStyle(fontSize: 9, color: AppColors.textGrey),
+                            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                          Text(doctor.department,
+                            style: const TextStyle(fontSize: 9, color: AppColors.primary, fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
+                        ]),
                       ),
-                      const SizedBox(height: 6),
-                      Text(doctor.name,
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textDark),
-                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 2),
-                      Text(doctor.qualification.toUpperCase(),
-                        style: const TextStyle(fontSize: 9, color: AppColors.textGrey),
-                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
-                      Text(doctor.department,
-                        style: const TextStyle(fontSize: 9, color: AppColors.primary, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1),
-                    ]),
-                  ),
-                  const SizedBox(width: 12),
-                  // Middle: summary rows
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    SummaryRow(icon: Icons.person_outline, label: 'Patient Name', value: patientName),
-                    const SizedBox(height: 10),
-                    SummaryRow(icon: Icons.calendar_today, label: 'Date', value: '${slot.date} (${slot.dayName})'),
-                    const SizedBox(height: 10),
-                    SummaryRow(icon: Icons.access_time, label: 'Time', value: selectedTime),
-                  ])),
-                  const SizedBox(width: 8),
-                  // Right: decorative error icon
-                  Stack(alignment: Alignment.bottomRight, children: [
-                    Icon(Icons.lock_outline, size: 46, color: Colors.grey.withOpacity(0.5)),
-                    const Icon(Icons.error, size: 20, color: Color(0xFFF44336)),
-                  ]),
-                ]),
+                      const SizedBox(width: 12),
+                      // Middle: summary rows
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        SummaryRow(icon: Icons.person_outline, label: 'Patient Name', value: patientName),
+                        const SizedBox(height: 10),
+                        SummaryRow(icon: Icons.calendar_today, label: 'Date', value: '${slot.date} (${slot.dayName})'),
+                        const SizedBox(height: 10),
+                        SummaryRow(icon: Icons.access_time, label: 'Time', value: selectedTime),
+                      ])),
+                      // Right: decorative error icon — hidden on very narrow screens
+                      if (!isNarrow) ...[
+                        const SizedBox(width: 8),
+                        Stack(alignment: Alignment.bottomRight, children: [
+                          Icon(Icons.lock_outline, size: 40, color: Colors.grey.withOpacity(0.5)),
+                          const Icon(Icons.error, size: 18, color: Color(0xFFF44336)),
+                        ]),
+                      ],
+                    ]);
+                  },
+                ),
               ),
               const SizedBox(height: 16),
               Container(

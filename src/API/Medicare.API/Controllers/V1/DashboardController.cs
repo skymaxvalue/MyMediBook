@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Queries.Dashboard;
+using Medicare.Application.Models.CommonModels.Request;
 using Medicare.Application.Models.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpPost]
         [Route("Receptionist/GetDashboardSummary")]
-        public async Task<IActionResult> GetDashboardSummary(DashboardDataRequestModel model)
+        public async Task<IActionResult> GetDashboardSummary(DataRequestModel model)
         {
             DashboardSummaryModel response = new DashboardSummaryModel();
             response = await _mediator.Send(new GetDashboardSummaryQuery(model));
@@ -29,7 +30,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpPost]
         [Route("Receptionist/GetRecentPatientList")]
-        public async Task<IActionResult> GetDashbGetRecentPatientListoardSummary(DashboardDataRequestModel model)
+        public async Task<IActionResult> GetDashbGetRecentPatientListoardSummary(DataRequestModel model)
         {
             List<RecentPatientDataModel> response = new List<RecentPatientDataModel>();
             response = await _mediator.Send(new GetRecentPatientListQuery(model));
@@ -38,7 +39,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpPost]
         [Route("Receptionist/GetPatientQueueList")]
-        public async Task<IActionResult> GetPatientQueueList(DashboardDataRequestModel model)
+        public async Task<IActionResult> GetPatientQueueList(DataRequestModel model)
         {
             List<PatientQueueDataModel> response = new List<PatientQueueDataModel>();
             response = await _mediator.Send(new GetTodaysPatientQueueQuery(model));

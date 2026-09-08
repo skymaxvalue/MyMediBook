@@ -48,7 +48,7 @@ namespace Medicare.DAL.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GeneratePasswordResetToken(string userId, string employeeId)
+        public string GeneratePasswordResetToken(string userId, string refId)
         {
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
@@ -56,7 +56,7 @@ namespace Medicare.DAL.Services
             var claims = new[]
             {
                 new Claim("userId",     userId),
-                new Claim("employeeId", employeeId),
+                new Claim("refId",      refId),
                 new Claim("purpose",    "password-reset"), // prevents reuse of auth tokens
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

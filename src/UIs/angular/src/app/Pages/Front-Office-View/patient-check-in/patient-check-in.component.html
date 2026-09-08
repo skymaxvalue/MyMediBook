@@ -281,7 +281,7 @@
                         </td>
 
                         <td>
-                            {{ appointment.dateOfBirth }}
+                            {{ appointment.dateOfBirth | date:'dd MMM yyyy' }}
                         </td>
 
                         <td>
@@ -302,7 +302,7 @@
                         </td>
 
                         <td>
-                            {{ appointment.room }}
+                            {{ appointment.room ? appointment.room:"N/A" }}
                         </td>
 
                         <td>

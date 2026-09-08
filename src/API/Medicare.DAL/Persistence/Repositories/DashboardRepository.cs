@@ -2,6 +2,7 @@
 using Medicare.Application.Interfaces.IDashboard;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Models.CommonModels.ErrorLog;
+using Medicare.Application.Models.CommonModels.Request;
 using Medicare.Application.Models.Dashboard;
 using Medicare.DAL.Persistence.Dapper;
 
@@ -16,7 +17,7 @@ namespace Medicare.DAL.Persistence.Repositories
             _context = context;
             _errorLog = errorLog;
         }
-        public async Task<DashboardSummaryModel> GetDashboardSummaryAsync(DashboardDataRequestModel model)
+        public async Task<DashboardSummaryModel> GetDashboardSummaryAsync(DataRequestModel model)
         {
             string procName = "USP_GetDashboardSummaryCount";
             DashboardSummaryModel returnData = new DashboardSummaryModel();
@@ -24,8 +25,8 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("AssociateId", model.AssociateId);
-                param.Add("FromDate", model.FromDate);
-                param.Add("ToDate", model.ToDate);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
 
                 returnData = await _context.QuerySingleStoredProcAsync<DashboardSummaryModel>(procName, param);
             }
@@ -41,7 +42,7 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<List<RecentPatientDataModel>> GetRecentPatientDetailAsync(DashboardDataRequestModel model)
+        public async Task<List<RecentPatientDataModel>> GetRecentPatientDetailAsync(DataRequestModel model)
         {
             string procName = "USP_GetRecentPatientDetail";
             List<RecentPatientDataModel> returnData = new List<RecentPatientDataModel>();
@@ -49,8 +50,8 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("AssociateId", model.AssociateId);
-                param.Add("FromDate", model.FromDate);
-                param.Add("ToDate", model.ToDate);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
 
                 returnData = await _context.QueryStoredProcListAsync<RecentPatientDataModel>(procName, param);
             }
@@ -66,7 +67,7 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<List<PatientQueueDataModel>> GetTodaysPatientQueueAsync(DashboardDataRequestModel model)
+        public async Task<List<PatientQueueDataModel>> GetTodaysPatientQueueAsync(DataRequestModel model)
         {
             string procName = "USP_GetTodaysPatientQueueDetail";
             List<PatientQueueDataModel> returnData = new List<PatientQueueDataModel>();
@@ -74,8 +75,8 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("AssociateId", model.AssociateId);
-                param.Add("FromDate", model.FromDate);
-                param.Add("ToDate", model.ToDate);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
 
                 returnData = await _context.QueryStoredProcListAsync<PatientQueueDataModel>(procName, param);
             }

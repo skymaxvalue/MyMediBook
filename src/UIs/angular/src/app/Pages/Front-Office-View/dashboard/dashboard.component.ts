@@ -166,14 +166,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       associateId: this.user?.refId, fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString()
     }));
-    this.store.dispatch(getDashboardDataByDoctor({
-      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
-      toDate: toDate.toISOString()
-    }));
     this.store.dispatch(getDashboardDataByReceptionist({
       associateId: this.user?.refId, fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString()
     }));
+    this.store.dispatch(getDashboardDataByDoctor({
+      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
+      toDate: toDate.toISOString()
+    }));
+
 
     this.http
       .get<DashboardData>(

@@ -6,7 +6,10 @@ import '../services/api_service.dart';
 import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  /// The token returned by VerifyForgotPasswordOtp; required by the real API.
+  final String resetToken;
+
+  const ResetPasswordScreen({super.key, required this.resetToken});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -34,6 +37,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     setState(() => _isLoading = true);
 
     final result = await ApiService.resetPassword(
+      token: widget.resetToken,
       newPassword: _newPasswordController.text,
     );
 
@@ -140,6 +144,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    final screenW = mq.size.width;
+    final screenH = mq.size.height;
+    final isSmallPhone = screenW < 360 || screenH < 640;
+    final hPad = isSmallPhone ? 16.0 : 32.0;
+    final vPad = isSmallPhone ? 24.0 : 44.0;
+    final titleSize = isSmallPhone ? 20.0 : 26.0;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -150,9 +162,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               constraints: const BoxConstraints(maxWidth: 480),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 44,
+                padding: EdgeInsets.symmetric(
+                  horizontal: hPad,
+                  vertical: vPad,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.white,
@@ -225,27 +237,27 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       const SizedBox(height: 28),
 
-                      const Text(
+                      Text(
                         'RESET PASSWORD',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: titleSize,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
                         ),
                       ),
                       const SizedBox(height: 10),
 
-                      const Text(
+                      Text(
                         'Enter your new password and confirm it\nto reset your account.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.textGrey,
-                          fontSize: 14,
+                          fontSize: isSmallPhone ? 12.5 : 14,
                           height: 1.5,
                         ),
                       ),
-                      const SizedBox(height: 28),
+                      SizedBox(height: isSmallPhone ? 18 : 28),
 
                       _buildLabel('New Password'),
                       const SizedBox(height: 6),

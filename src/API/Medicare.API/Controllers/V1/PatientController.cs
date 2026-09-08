@@ -64,5 +64,15 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new GetPatientProfileByProfileIdQuery(profileId));
             return HandleResponse(response);
         }
+
+        [HttpPost]
+        [Route("SearchPatient")]
+        public async Task<IActionResult> SearchPatient(SearchPatientRequest model)
+        {
+            List<PatientProfileModel> response = new List<PatientProfileModel>();
+            response = await _mediator.Send(new SearchPatientCommand(model));
+            return HandleListResponse(response);
+        }
+
     }
 }

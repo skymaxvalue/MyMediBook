@@ -1,12 +1,16 @@
-﻿namespace Medicare.Application.Models.Claim
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+
+namespace Medicare.Application.Models.Claim
 {
-    public class ClaimAuditResponse
+    public class ClaimAuditResponse : IErrorHandling
     {
         public ClaimAuditSummary Claim { get; set; } = new();
         public IEnumerable<AuditLineItem> LineItems { get; set; } = [];
         public IEnumerable<AuditPayment> InsurancePayments { get; set; } = [];
         public IEnumerable<AuditAdjustment> Adjustments { get; set; } = [];
         public IEnumerable<AuditResponsibility> PatientResponsibility { get; set; } = [];
+        public int IsSuccess { get; set; }
+        public string ResponseMessage { get; set; }
     }
 
     public class ClaimAuditSummary

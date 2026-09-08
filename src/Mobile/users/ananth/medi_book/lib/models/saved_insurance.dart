@@ -29,6 +29,19 @@ class SavedInsurance {
         primaryHolderAddress: json['primaryHolderAddress'] as String,
       );
 
+  /// Build from the `insuranceData` block inside GetPatientProfileByProfileId.
+  /// [profileId] is used as the stable unique id for deduplication.
+  factory SavedInsurance.fromProfileApiJson(
+      int profileId, Map<String, dynamic> ins) =>
+      SavedInsurance(
+        id:                   'PROFILE-INS-$profileId',
+        providerName:         ins['provider']   as String? ?? '',
+        policyId:             ins['policy']     as String? ?? '',
+        groupId:              ins['groupId']    as String? ?? '',
+        primaryHolderName:    ins['holderName'] as String? ?? '',
+        primaryHolderAddress: ins['address']    as String? ?? '',
+      );
+
   Map<String, dynamic> toJson() => {
         'id':                   id,
         'providerName':         providerName,

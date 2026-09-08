@@ -4,6 +4,7 @@ using Medicare.Application.Features.Commands.Claim;
 using Medicare.Application.Features.Queries.Appointments;
 using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.Claim;
+using Medicare.Application.Models.CommonModels.Request;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
 using Medicare.DAL.Services.Appointment;
@@ -58,6 +59,7 @@ namespace Medicare.API.Controllers.V1
         [Route("GetAvailableAppointments/{associateId}")]
         public async Task<IActionResult> GetAvailableAppointments([FromQuery] int associateId)
         {
+            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
             List<AvailableAppointmentModel> response = new List<AvailableAppointmentModel>();
             response = await _mediator.Send(new GetAvailableAppointmentsQuery(associateId));
             return HandleListResponse(response);
@@ -81,12 +83,12 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
-        [HttpGet]
-        [Route("Doctor/GetMyAppointmentList/{associateId}")]
-        public async Task<IActionResult> GetMyAppointmentListByAssociateId(int associateId)
+        [HttpPost]
+        [Route("Doctor/GetMyAppointmentList")]
+        public async Task<IActionResult> GetMyAppointmentListByAssociateId(DataRequestModel model)
         {
             List<PatientProfileModel> response = new List<PatientProfileModel>();
-            response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(associateId));
+            response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(model));
             return HandleListResponse(response);
         }
 
@@ -117,5 +119,17 @@ namespace Medicare.API.Controllers.V1
             response = await _mediator.Send(new CollectCopayCommand(request));
             return HandleResponse(response);
         }
+
+        [HttpGet]
+        [Route("Receptionist/GetAppointmentList")]
+        public async Task<IActionResult> GetAppointmentList(DataRequestFilterModel model)
+        {
+            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
+            model.TenantId = tenantId;
+            List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
+            response = await _mediator.Send(new GetAppointmentListQuery(model));
+            return HandleListResponse(response);
+        }
+
     }
 }

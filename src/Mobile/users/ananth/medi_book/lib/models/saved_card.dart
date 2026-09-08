@@ -26,6 +26,28 @@ class SavedCard {
         cardType:   json['cardType']   as String,
       );
 
+  /// Build from the `paymentData` block inside GetPatientProfileByProfileId.
+  /// [profileId] is used as the stable unique id for deduplication.
+  factory SavedCard.fromProfileApiJson(int profileId, Map<String, dynamic> pd) {
+    final holder = pd['cardHolder'] as String? ?? '';
+    final number = pd['cardNumber'] as String? ?? '';
+    final expiry = pd['expiry']     as String? ?? '';
+    // Infer card type from first digit of number
+    String cardType = 'Card';
+    if (number.startsWith('4'))      cardType = 'Visa';
+    else if (number.startsWith('5')) cardType = 'Mastercard';
+    else if (number.startsWith('3')) cardType = 'Amex';
+    else if (number.startsWith('6')) cardType = 'RuPay';
+    return SavedCard(
+      id:         'PROFILE-CARD-$profileId',
+      holderName: holder,
+      cardNumber: number,
+      expiry:     expiry,
+      cvv:        '',
+      cardType:   cardType,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'id':         id,
         'holderName': holderName,

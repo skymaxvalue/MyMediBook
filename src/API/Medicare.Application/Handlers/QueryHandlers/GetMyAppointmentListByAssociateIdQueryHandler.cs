@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<List<PatientProfileModel>> Handle(GetMyAppointmentListByAssociateIdQuery request, CancellationToken cancellationToken)
         {
-            return await _appointmentRepository.GetMyAppointmentListByAssociateIdAsync(request.associateId);
+            return await _appointmentRepository.GetMyAppointmentListByAssociateIdAsync(request.model);
         }
     }
 }

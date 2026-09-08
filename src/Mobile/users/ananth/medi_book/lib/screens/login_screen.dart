@@ -147,9 +147,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLeftPanelCompact() {
+    final screenH = MediaQuery.of(context).size.height;
+    final isSmallPhone = screenH < 640;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+      padding: EdgeInsets.symmetric(
+        horizontal: 30,
+        vertical: isSmallPhone ? 24 : 40,
+      ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [AppColors.primary, AppColors.primaryDark],
@@ -157,25 +162,25 @@ class _LoginScreenState extends State<LoginScreen> {
           end: Alignment.bottomRight,
         ),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Text(
             'Doctors Just a Click Away.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 26,
+              fontSize: isSmallPhone ? 20 : 26,
               fontWeight: FontWeight.w300,
             ),
           ),
-          SizedBox(height: 12),
-          Text('🩺', style: TextStyle(fontSize: 60)),
-          SizedBox(height: 12),
+          SizedBox(height: isSmallPhone ? 8 : 12),
+          Text('🩺', style: TextStyle(fontSize: isSmallPhone ? 44 : 60)),
+          SizedBox(height: isSmallPhone ? 8 : 12),
           Text(
             'Welcome to My Medi Book',
             style: TextStyle(
               color: Colors.white70,
-              fontSize: 15,
+              fontSize: isSmallPhone ? 13 : 15,
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -185,11 +190,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildFormPanel() {
+    final mq = MediaQuery.of(context);
+    final screenW = mq.size.width;
+    final screenH = mq.size.height;
+    final isSmallPhone = screenW < 360 || screenH < 640;
+    final hPad = isSmallPhone ? 20.0 : 40.0;
+    final vPad = isSmallPhone ? 20.0 : 40.0;
+
     return Container(
       color: AppColors.background,
       child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(40),
+          padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 400),
             child: Form(
@@ -249,16 +261,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 28),
 
                   // Title
-                  const Text(
+                  Text(
                     'WELCOME BACK',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      fontSize: isSmallPhone ? 22 : 28,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     'Please login to your account',
-                    style: TextStyle(color: AppColors.textGrey, fontSize: 15),
+                    style: TextStyle(
+                      color: AppColors.textGrey,
+                      fontSize: isSmallPhone ? 13 : 15,
+                    ),
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: isSmallPhone ? 18 : 28),
 
                   // Username
                   _buildLabel('Username'),

@@ -100,8 +100,12 @@ Future<void> _loadSlots() async {
             const SizedBox(width: 4),
             const Icon(Icons.calendar_month_outlined, color: AppColors.primary, size: 20),
             const SizedBox(width: 8),
-            const Text("Doctor's Availabilities",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textDark)),
+            const Expanded(
+              child: Text("Doctor's Availabilities",
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textDark),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1),
+            ),
           ]),
         ),
         Padding(
@@ -247,58 +251,114 @@ class _AvailabilityRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUnavailable = slot.status == 'unavailable';
+    final screenW = MediaQuery.of(context).size.width;
+    final isNarrow = screenW < 380;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(color: AppColors.cardBg, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.divider)),
-      child: Row(children: [
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Text(slot.date, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textDark)),
-              const SizedBox(width: 8),
-              Text(slot.dayName, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textGrey, letterSpacing: 0.6)),
-            ]),
-            const SizedBox(height: 4),
-            Row(children: [
-              const Icon(Icons.access_time, size: 11, color: AppColors.textGrey),
-              const SizedBox(width: 3),
-              Text(slot.timeSlot, style: const TextStyle(fontSize: 11, color: AppColors.textGrey)),
-            ]),
-          ]),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-          decoration: BoxDecoration(color: _statusBg, borderRadius: BorderRadius.circular(20)),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Container(width: 7, height: 7, decoration: BoxDecoration(color: _statusColor, shape: BoxShape.circle)),
-            const SizedBox(width: 5),
-            Text(_statusLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _statusColor)),
-          ]),
-        ),
-        const SizedBox(width: 8),
-        isUnavailable
-            ? Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(color: const Color(0xFFF5F5F5), borderRadius: BorderRadius.circular(8), border: Border.all(color: AppColors.divider)),
-                child: Row(mainAxisSize: MainAxisSize.min, children: const [
-                  Icon(Icons.edit_calendar_outlined, size: 13, color: AppColors.textGrey),
-                  SizedBox(width: 4),
-                  Text('Unavailable', style: TextStyle(fontSize: 11, color: AppColors.textGrey)),
+      child: isNarrow
+          // Narrow layout: stack date/time on top, badge + button on bottom row
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Text(slot.date, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textDark)),
+                  const SizedBox(width: 8),
+                  Text(slot.dayName, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textGrey, letterSpacing: 0.6)),
                 ]),
-              )
-            : OutlinedButton.icon(
-                onPressed: () => onBook(slot),
-                icon: const Icon(Icons.edit_calendar_outlined, size: 13),
-                label: const Text('Book', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
+                const SizedBox(height: 2),
+                Row(children: [
+                  const Icon(Icons.access_time, size: 11, color: AppColors.textGrey),
+                  const SizedBox(width: 3),
+                  Text(slot.timeSlot, style: const TextStyle(fontSize: 11, color: AppColors.textGrey)),
+                ]),
+                const SizedBox(height: 8),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(color: _statusBg, borderRadius: BorderRadius.circular(20)),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Container(width: 7, height: 7, decoration: BoxDecoration(color: _statusColor, shape: BoxShape.circle)),
+                      const SizedBox(width: 5),
+                      Text(_statusLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _statusColor)),
+                    ]),
+                  ),
+                  isUnavailable
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(color: const Color(0xFFF5F5F5), borderRadius: BorderRadius.circular(8), border: Border.all(color: AppColors.divider)),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: const [
+                            Icon(Icons.edit_calendar_outlined, size: 13, color: AppColors.textGrey),
+                            SizedBox(width: 4),
+                            Text('Unavailable', style: TextStyle(fontSize: 11, color: AppColors.textGrey)),
+                          ]),
+                        )
+                      : OutlinedButton.icon(
+                          onPressed: () => onBook(slot),
+                          icon: const Icon(Icons.edit_calendar_outlined, size: 13),
+                          label: const Text('Book', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: const BorderSide(color: AppColors.primary),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                ]),
+              ],
+            )
+          // Wide layout: original single-row
+          : Row(children: [
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Text(slot.date, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textDark)),
+                    const SizedBox(width: 8),
+                    Text(slot.dayName, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textGrey, letterSpacing: 0.6)),
+                  ]),
+                  const SizedBox(height: 4),
+                  Row(children: [
+                    const Icon(Icons.access_time, size: 11, color: AppColors.textGrey),
+                    const SizedBox(width: 3),
+                    Text(slot.timeSlot, style: const TextStyle(fontSize: 11, color: AppColors.textGrey)),
+                  ]),
+                ]),
               ),
-      ]),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                decoration: BoxDecoration(color: _statusBg, borderRadius: BorderRadius.circular(20)),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Container(width: 7, height: 7, decoration: BoxDecoration(color: _statusColor, shape: BoxShape.circle)),
+                  const SizedBox(width: 5),
+                  Text(_statusLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _statusColor)),
+                ]),
+              ),
+              const SizedBox(width: 8),
+              isUnavailable
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(color: const Color(0xFFF5F5F5), borderRadius: BorderRadius.circular(8), border: Border.all(color: AppColors.divider)),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: const [
+                        Icon(Icons.edit_calendar_outlined, size: 13, color: AppColors.textGrey),
+                        SizedBox(width: 4),
+                        Text('Unavailable', style: TextStyle(fontSize: 11, color: AppColors.textGrey)),
+                      ]),
+                    )
+                  : OutlinedButton.icon(
+                      onPressed: () => onBook(slot),
+                      icon: const Icon(Icons.edit_calendar_outlined, size: 13),
+                      label: const Text('Book', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        side: const BorderSide(color: AppColors.primary),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
+            ]),
     );
   }
 }
@@ -337,12 +397,29 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
           dateStr: widget.slot.date,
         );
       } else {
-        // No associateId — fall back is handled inside the service
         data = await ApiService.fetchTimeSlotsForDate(
           associateId: 0,
           dateStr: widget.slot.date,
         );
       }
+
+      // ── Filter past slots when the selected date is today ──────────────────
+      final now   = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+
+      // slot.date is "Jul 31, 2026" — parse using the same month-name map
+      final slotDate = _parseDisplayDate(widget.slot.date);
+
+      if (slotDate != null &&
+          slotDate.year  == today.year  &&
+          slotDate.month == today.month &&
+          slotDate.day   == today.day) {
+        // It's today — keep only slots whose start time is after now
+        data = data.where((ts) => _slotIsAfterNow(ts.time, now)).toList();
+        debugPrint('[TimeslotFilter] today detected, kept ${data.length} future slots');
+      }
+      // ──────────────────────────────────────────────────────────────────────
+
       if (!mounted) return;
       setState(() { _timeSlots = data; _loading = false; });
     } catch (e) {
@@ -350,6 +427,52 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
       setState(() { _error = e.toString(); _loading = false; });
     }
   }
+
+  /// Parses "Jul 31, 2026" → DateTime, returns null on failure.
+  DateTime? _parseDisplayDate(String s) {
+    try {
+      const months = {
+        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4,  'May': 5,  'Jun': 6,
+        'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12,
+      };
+      final clean = s.replaceAll(',', '').trim(); // "Jul 31 2026"
+      final parts = clean.split(RegExp(r'\s+'));   // ["Jul", "31", "2026"]
+      if (parts.length == 3) {
+        final m = months[parts[0]];
+        final d = int.tryParse(parts[1]);
+        final y = int.tryParse(parts[2]);
+        if (m != null && d != null && y != null) {
+          return DateTime(y, m, d);
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  /// Returns true when the slot's start time ("10:00 AM") is strictly after [now].
+  bool _slotIsAfterNow(String timeStr, DateTime now) {
+    try {
+      final upper    = timeStr.trim().toUpperCase();  // "10:00 AM"
+      final isPm     = upper.contains('PM');
+      final isAm     = upper.contains('AM');
+      final timePart = upper
+          .replaceAll('AM', '')
+          .replaceAll('PM', '')
+          .trim();           // "10:00"
+      final hm   = timePart.split(':');
+      int   hour = int.parse(hm[0]);
+      final min  = int.parse(hm[1]);
+
+      if (isPm && hour != 12) hour += 12;
+      if (isAm && hour == 12) hour  = 0;  // 12:xx AM → 0:xx
+
+      final slotTime = DateTime(now.year, now.month, now.day, hour, min);
+      return slotTime.isAfter(now);
+    } catch (_) {
+      return true; // on any parse failure, keep the slot
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -379,8 +502,12 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
             const SizedBox(width: 4),
             const Icon(Icons.schedule, color: AppColors.primary, size: 20),
             const SizedBox(width: 8),
-            const Text('Available Appointments',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textDark)),
+            const Expanded(
+              child: Text('Available Appointments',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.textDark),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1),
+            ),
           ]),
         ),
         // ── doctor card ─────────────────────────────────────────────────────
@@ -448,19 +575,23 @@ class _TimeSlotViewState extends State<_TimeSlotView> {
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final cols = constraints.maxWidth < 300
-                              ? 3
-                              : constraints.maxWidth < 400
-                                  ? 4
-                                  : constraints.maxWidth < 600
-                                      ? 5
-                                      : 6;
+                          final w = constraints.maxWidth;
+                          // Adaptive columns based on available width
+                          final cols = w < 280 ? 2
+                              : w < 340 ? 3
+                              : w < 400 ? 4
+                              : w < 600 ? 5
+                              : 6;
+                          // Aspect ratio: shorter on very narrow screens
+                          final aspectRatio = w < 280 ? 2.0
+                              : w < 340 ? 2.2
+                              : 2.4;
                           return GridView.builder(
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: cols,
                               mainAxisSpacing: 10,
                               crossAxisSpacing: 8,
-                              childAspectRatio: 2.4,
+                              childAspectRatio: aspectRatio,
                             ),
                             itemCount: _timeSlots!.length,
                             itemBuilder: (_, i) {

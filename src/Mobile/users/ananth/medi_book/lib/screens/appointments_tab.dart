@@ -18,13 +18,23 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
   List<Appointment> _filtered = [];
   bool _loading = true;
   String? _error;
-  String _sortKey = 'Select';
+  String _sortKey      = 'Select';
+  String _filterPatient = 'All Patients';
+  String _filterStatus  = 'All Status';
 
   static const List<String> _sortOptions = [
     'Select',
     'Status',
     'Date: Newest',
     'Date: Oldest',
+  ];
+
+  static const List<String> _statusOptions = [
+    'All Status',
+    'Upcoming',
+    'Completed',
+    'Rescheduled',
+    'Cancelled',
   ];
 
   @override
@@ -39,7 +49,7 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
       if (!mounted) return;
       setState(() {
         _all      = data;
-        _filtered = List.from(data);
+        _applyFiltersAndSort();
         _loading  = false;
       });
     } catch (e) {
@@ -73,28 +83,50 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
     if (_all == null) return;
     setState(() {
       _sortKey  = key;
-      _filtered = List.from(_all!);
-      switch (key) {
-        case 'Status':
-          // Upcoming first, then Completed, then Cancelled
-          const order = {
-            AppointmentStatus.upcoming:   0,
-            AppointmentStatus.completed:  1,
-            AppointmentStatus.cancelled:  2,
-          };
-          _filtered.sort((a, b) =>
-              (order[a.status] ?? 3).compareTo(order[b.status] ?? 3));
-        case 'Date: Newest':
-          _filtered.sort((a, b) =>
-              _parseAptDate(b.date).compareTo(_parseAptDate(a.date)));
-        case 'Date: Oldest':
-          _filtered.sort((a, b) =>
-              _parseAptDate(a.date).compareTo(_parseAptDate(b.date)));
-        default:
-          // 'Select' → restore original API order
-          break;
-      }
+      _applyFiltersAndSort();
     });
+  }
+
+  void _applyFiltersAndSort() {
+    if (_all == null) return;
+    var list = List<Appointment>.from(_all!);
+
+    // patient filter
+    if (_filterPatient != 'All Patients') {
+      list = list.where((a) => a.patientName == _filterPatient).toList();
+    }
+
+    // status filter
+    if (_filterStatus != 'All Status') {
+      list = list.where((a) {
+        final s = a.appointmentStatus.toLowerCase();
+        final label = _filterStatus.toLowerCase();
+        if (label == 'upcoming')    return s == 'scheduled' || s == 'upcoming';
+        if (label == 'rescheduled') return s == 'rescheduled';
+        if (label == 'completed')   return s == 'completed';
+        if (label == 'cancelled')   return s == 'cancelled';
+        return true;
+      }).toList();
+    }
+
+    // sort
+    switch (_sortKey) {
+      case 'Status':
+        const order = {
+          AppointmentStatus.upcoming:  0,
+          AppointmentStatus.completed: 1,
+          AppointmentStatus.cancelled: 2,
+        };
+        list.sort((a, b) =>
+            (order[a.status] ?? 3).compareTo(order[b.status] ?? 3));
+      case 'Date: Newest':
+        list.sort((a, b) =>
+            _parseAptDate(b.date).compareTo(_parseAptDate(a.date)));
+      case 'Date: Oldest':
+        list.sort((a, b) =>
+            _parseAptDate(a.date).compareTo(_parseAptDate(b.date)));
+    }
+    _filtered = list;
   }
 
 
@@ -292,6 +324,14 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
     return false;
   }
 
+  // ── unique patient names for patient filter dropdown ────────────────────────
+  List<String> get _patientNames {
+    if (_all == null) return ['All Patients'];
+    final names = _all!.map((a) => a.patientName).where((n) => n.isNotEmpty).toSet().toList();
+    names.sort();
+    return ['All Patients', ...names];
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -324,31 +364,139 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── Header: My Appointments ──────────────────────────────────────────
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
           child: Row(
             children: [
-              const Icon(Icons.menu, color: AppColors.textDark, size: 20),
-              const SizedBox(width: 8),
-              const Text(
-                'Upcoming & Past',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textDark,
+              Container(
+                width: 40, height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.calendar_month_rounded,
+                    color: AppColors.primary, size: 22),
+              ),
+              const SizedBox(width: 12),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('My Appointments',
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textDark)),
+                  Text('Track your appointments and dates',
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.textGrey)),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // ── Filter row: Patient + Status ─────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
+          child: Row(
+            children: [
+              // Filter by Patient
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Filter by Patient :',
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textGrey)),
+                    const SizedBox(height: 4),
+                    _FilterDropdown<String>(
+                      value: _filterPatient,
+                      prefixIcon: Icons.person_outline,
+                      items: _patientNames,
+                      onChanged: (v) {
+                        if (v == null) return;
+                        setState(() {
+                          _filterPatient = v;
+                          _applyFiltersAndSort();
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
+              const SizedBox(width: 10),
+              // Filter by Status
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Filter by Status :',
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textGrey)),
+                    const SizedBox(height: 4),
+                    _FilterDropdown<String>(
+                      value: _filterStatus,
+                      items: _statusOptions,
+                      onChanged: (v) {
+                        if (v == null) return;
+                        setState(() {
+                          _filterStatus = v;
+                          _applyFiltersAndSort();
+                        });
+                      },
+                    ),
+                  ],
                 ),
-                child: Text(
-                  '${_filtered.length} appointment${_filtered.length == 1 ? '' : 's'}',
-                  style: const TextStyle(
-                    fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w600,
+              ),
+            ],
+          ),
+        ),
+
+        // ── Section title + Sort dropdown ────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+          child: Row(
+            children: [
+              const Icon(Icons.menu_rounded, color: AppColors.textDark, size: 20),
+              const SizedBox(width: 6),
+              const Text('Upcoming & Past',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textDark)),
+              const Spacer(),
+              // Sort dropdown
+              Container(
+                height: 34,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.cardBg,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.divider),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _sortKey,
+                    isDense: true,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textDark,
+                        fontWeight: FontWeight.w500),
+                    icon: const Icon(Icons.keyboard_arrow_down,
+                        color: AppColors.textGrey, size: 16),
+                    items: _sortOptions
+                        .map((s) => DropdownMenuItem<String>(
+                              value: s,
+                              child: Text('Sort by: $s'),
+                            ))
+                        .toList(),
+                    onChanged: (v) { if (v != null) _applySort(v); },
                   ),
                 ),
               ),
@@ -356,34 +504,7 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
           ),
         ),
 
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: AppColors.cardBg,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.divider),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _sortKey,
-                  style: const TextStyle(
-                    fontSize: 13, color: AppColors.textDark, fontWeight: FontWeight.w500,
-                  ),
-                  icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textGrey, size: 18),
-                  items: _sortOptions.map((s) => DropdownMenuItem<String>(
-                    value: s, child: Text('Sort by: $s'),
-                  )).toList(),
-                  onChanged: (v) { if (v != null) _applySort(v); },
-                ),
-              ),
-            ),
-          ),
-        ),
-
+        // ── List ─────────────────────────────────────────────────────────────
         Expanded(
           child: RefreshIndicator(
             color: AppColors.primary,
@@ -391,16 +512,14 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
             child: _filtered.isEmpty
                 ? const _EmptyAppointments()
                 : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 100),
                     itemCount: _filtered.length,
                     itemBuilder: (_, i) {
-                      final apt      = _filtered[i];
-                      // Only show Edit/Cancel if the appointment is upcoming
-                      // AND still more than 24 hours away.
+                      final apt       = _filtered[i];
                       final canModify = _isEditable(apt);
                       return _AppointmentCard(
-                        apt: apt,
-                        onTap: () => _onCardTap(apt),
+                        apt:      apt,
+                        onTap:    () => _onCardTap(apt),
                         onEdit:   canModify ? () => _onEdit(apt)   : null,
                         onCancel: canModify ? () => _onCancel(apt) : null,
                       );
@@ -413,8 +532,65 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
   }
 }
 
-// ── Appointment Card (tappable) ───────────────────────────────────────────────
+// ── Filter Dropdown helper ────────────────────────────────────────────────────
+class _FilterDropdown<T> extends StatelessWidget {
+  final T value;
+  final List<T> items;
+  final ValueChanged<T?> onChanged;
+  final IconData? prefixIcon;
 
+  const _FilterDropdown({
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    this.prefixIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 38,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.divider),
+      ),
+      child: Row(
+        children: [
+          if (prefixIcon != null) ...[
+            Icon(prefixIcon, size: 16, color: AppColors.textGrey),
+            const SizedBox(width: 6),
+          ],
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<T>(
+                value: value,
+                isDense: true,
+                isExpanded: true,
+                style: const TextStyle(
+                    fontSize: 12.5,
+                    color: AppColors.textDark,
+                    fontWeight: FontWeight.w500),
+                icon: const Icon(Icons.keyboard_arrow_down,
+                    color: AppColors.textGrey, size: 16),
+                items: items
+                    .map((item) => DropdownMenuItem<T>(
+                          value: item,
+                          child: Text(item.toString()),
+                        ))
+                    .toList(),
+                onChanged: onChanged,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Appointment Card ──────────────────────────────────────────────────────────
 class _AppointmentCard extends StatelessWidget {
   final Appointment apt;
   final VoidCallback onTap;
@@ -427,158 +603,266 @@ class _AppointmentCard extends StatelessWidget {
     this.onCancel,
   });
 
+  // ── Status badge config ───────────────────────────────────────────────────
+  Color get _statusColor {
+    final s = apt.appointmentStatus.toLowerCase();
+    if (s == 'completed')   return const Color(0xFF16A34A);
+    if (s == 'rescheduled') return const Color(0xFFD97706);
+    if (s == 'cancelled')   return Colors.redAccent;
+    return AppColors.primary; // Scheduled / Upcoming
+  }
+
+  Color get _statusBg {
+    final s = apt.appointmentStatus.toLowerCase();
+    if (s == 'completed')   return const Color(0xFFDCFCE7);
+    if (s == 'rescheduled') return const Color(0xFFFEF3C7);
+    if (s == 'cancelled')   return const Color(0xFFFFEBEE);
+    return const Color(0xFFEEF2FF); // Scheduled / Upcoming
+  }
+
+  IconData get _statusIcon {
+    final s = apt.appointmentStatus.toLowerCase();
+    if (s == 'completed')   return Icons.check_circle_rounded;
+    if (s == 'rescheduled') return Icons.schedule_rounded;
+    if (s == 'cancelled')   return Icons.cancel_rounded;
+    return Icons.hourglass_top_rounded; // Upcoming / Scheduled
+  }
+
+  String get _statusLabel {
+    final raw = apt.appointmentStatus;
+    if (raw.isNotEmpty) return raw;
+    switch (apt.status) {
+      case AppointmentStatus.completed: return 'Completed';
+      case AppointmentStatus.cancelled: return 'Cancelled';
+      default: return 'Upcoming';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isCompleted  = apt.status == AppointmentStatus.completed;
-    final isCancelled  = apt.status == AppointmentStatus.cancelled;
-    final isUpcoming   = apt.status == AppointmentStatus.upcoming;
-    final statusLabel  = apt.appointmentStatus.isNotEmpty ? apt.appointmentStatus
-        : (isCompleted ? 'Completed' : isCancelled ? 'Cancelled' : 'Upcoming');
-    final statusColor  = isCompleted
-        ? AppColors.completedGreen
-        : isCancelled ? Colors.redAccent : AppColors.upcomingAmber;
-    final statusBg     = isCompleted
-        ? AppColors.completedBg
-        : isCancelled ? const Color(0xFFFFEBEE) : AppColors.upcomingBg;
-    final statusIcon   = isCompleted
-        ? Icons.check_circle_outline
-        : isCancelled ? Icons.cancel_outlined : Icons.hourglass_top;
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.cardBg,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.divider.withOpacity(0.7)),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3)),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
           ],
         ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.favorite_border, size: 15, color: AppColors.primary),
-                const SizedBox(width: 8),
-                const Text('Visit Purpose  ', style: TextStyle(fontSize: 12, color: AppColors.textLight)),
-                Expanded(
-                  child: Text(apt.visitPurpose,
-                      style: const TextStyle(fontSize: 12, color: AppColors.textDark, fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: statusBg, borderRadius: BorderRadius.circular(20)),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(statusIcon, size: 13, color: statusColor),
-                      const SizedBox(width: 4),
-                      Text(statusLabel, style: TextStyle(fontSize: 12, color: statusColor, fontWeight: FontWeight.w600)),
-                    ],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Row 1: Visit Purpose + Status badge ──────────────────────
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(Icons.favorite_rounded,
+                      size: 15, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  const SizedBox(
+                    width: 90,
+                    child: Text('Visit Purpose',
+                        style: TextStyle(
+                            fontSize: 11.5, color: AppColors.textGrey)),
                   ),
-                ),
-              ],
-            ),
+                  Expanded(
+                    child: Text(apt.visitPurpose,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textDark),
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                  const SizedBox(width: 6),
+                  // Status badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _statusBg,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(_statusIcon, size: 12, color: _statusColor),
+                        const SizedBox(width: 4),
+                        Text(_statusLabel,
+                            style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: _statusColor)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
 
-            const SizedBox(height: 8),
-            const Divider(height: 1, color: AppColors.divider),
-            const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-            _InfoRow(Icons.person_outline,           'Patient',    apt.patientName),
-            _InfoRow(Icons.calendar_today_outlined,  'Date',       apt.date),
-            _InfoRow(Icons.access_time_outlined,     'Time',       apt.time),
-            _InfoRow(Icons.medical_services_outlined,'Doctor',     apt.doctorName),
-            if (apt.speciality.isNotEmpty)
-              _InfoRow(Icons.local_hospital_outlined,'Speciality', apt.speciality),
-            if (apt.visitType.isNotEmpty)
-              _InfoRow(Icons.assignment_outlined,    'Visit Type', apt.visitType),
-            if (apt.relationTypeName.isNotEmpty)
-              _InfoRow(Icons.people_outline,         'For',        apt.relationTypeName),
+              // ── Row 2: Patient Name ──────────────────────────────────────
+              _CardRow(
+                icon: Icons.person_rounded,
+                label: 'Patient Name',
+                value: apt.patientName,
+              ),
+              const SizedBox(height: 5),
 
-            // ── Inline action buttons for upcoming appointments ────────────────
-            if (isUpcoming && (onEdit != null || onCancel != null)) ...[
-              const SizedBox(height: 10),
-              const Divider(height: 1, color: AppColors.divider),
-              const SizedBox(height: 10),
+              // ── Row 3: Date ──────────────────────────────────────────────
+              _CardRow(
+                icon: Icons.calendar_today_rounded,
+                label: 'Date',
+                value: apt.date,
+              ),
+              const SizedBox(height: 5),
+
+              // ── Row 4: Time ──────────────────────────────────────────────
+              _CardRow(
+                icon: Icons.access_time_rounded,
+                label: 'Time',
+                value: apt.time,
+              ),
+              const SizedBox(height: 5),
+
+              // ── Row 5: Doctor Name ───────────────────────────────────────
+              _CardRow(
+                icon: Icons.medical_services_outlined,
+                label: 'Dr. Name',
+                value: apt.doctorName,
+              ),
+
+              const SizedBox(height: 12),
+
+              // ── Action buttons ───────────────────────────────────────────
               Row(
                 children: [
-                  if (onEdit != null)
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () { onEdit!(); },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 9),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.edit_outlined, size: 15, color: AppColors.primary),
-                              const SizedBox(width: 6),
-                              Text('Edit',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primary,
-                                  )),
-                            ],
-                          ),
+                  // Reschedule
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: onEdit,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.calendar_month_rounded,
+                              size: 15,
+                              color: onEdit != null
+                                  ? AppColors.primary
+                                  : AppColors.textLight,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Reschedule',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: onEdit != null
+                                    ? AppColors.primary
+                                    : AppColors.textLight,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  if (onEdit != null && onCancel != null)
-                    const SizedBox(width: 10),
-                  if (onCancel != null)
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () { onCancel!(); },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 9),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFEBEE),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.redAccent.withOpacity(0.25)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.cancel_outlined, size: 15, color: Colors.redAccent),
-                              const SizedBox(width: 6),
-                              const Text('Cancel',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.redAccent,
-                                  )),
-                            ],
-                          ),
+                  ),
+                  const SizedBox(width: 10),
+                  // Cancel
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: onCancel,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: onCancel != null
+                              ? const Color(0xFFFFF0F0)
+                              : const Color(0xFFF9FAFB),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.delete_rounded,
+                              size: 15,
+                              color: onCancel != null
+                                  ? Colors.redAccent
+                                  : AppColors.textLight,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: onCancel != null
+                                    ? Colors.redAccent
+                                    : AppColors.textLight,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                  ),
                 ],
               ),
-            ] else ...[
-              const SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text('Tap to view details',
-                      style: TextStyle(fontSize: 11, color: AppColors.primary.withOpacity(0.7))),
-                  const SizedBox(width: 4),
-                  Icon(Icons.chevron_right, size: 15, color: AppColors.primary.withOpacity(0.7)),
-                ],
-              ),
+              const SizedBox(height: 12),
             ],
-          ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+// ── Card info row ─────────────────────────────────────────────────────────────
+class _CardRow extends StatelessWidget {
+  final IconData icon;
+  final String   label;
+  final String   value;
+  const _CardRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: AppColors.primary),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 90,
+          child: Text(label,
+              style: const TextStyle(
+                  fontSize: 11.5, color: AppColors.textGrey)),
+        ),
+        Expanded(
+          child: Text(value,
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textDark),
+              overflow: TextOverflow.ellipsis),
+        ),
+      ],
     );
   }
 }
