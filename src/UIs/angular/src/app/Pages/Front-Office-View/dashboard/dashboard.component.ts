@@ -121,17 +121,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.store.select(selectDashboardDataSummery).subscribe((res: any) => {
       if (res) {
 
-        this.dashboardDataCount = res
+        this.dashboardDataCount = res.data
         console.log('Dashboard Data from Store:', this.dashboardData, res);
       }
     })
 
   }
 
+  getStatCount(title: string): number {
 
-  // ==============================
-  // LOAD JSON
-  // ==============================
+    switch (title) {
+
+      case "Today's Appointments":
+        return this.dashboardDataCount?.totalAppointmentsCount ?? 0;
+
+      case "Waiting Walk-ins":
+        return this.dashboardDataCount?.totalWalkinsWaitingCount ?? 0;
+
+      case "Checked In":
+        return this.dashboardDataCount?.totalCheckInCount ?? 0;
+
+      case "Pending Payments":
+        return this.dashboardDataCount?.totalPendingPaymentsCount ?? 0;
+
+      case "Lab Results":
+        return this.dashboardDataCount?.totalLabResultsCount ?? 0;
+
+      default:
+        return 0;
+    }
+  }
+
 
   loadDashboardData(): void {
     const today = new Date();
