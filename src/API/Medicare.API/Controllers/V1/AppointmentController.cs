@@ -131,5 +131,15 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [HttpPost]
+        [Route("Receptionist/UpdateCheckedInStatus")]
+        public async Task<IActionResult> UpdateCheckedInStatus(DataRequestFilterModel model)
+        {
+            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
+            model.TenantId = tenantId;
+            List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
+            response = await _mediator.Send(new GetAppointmentListQuery(model));
+            return HandleListResponse(response);
+        }
     }
 }

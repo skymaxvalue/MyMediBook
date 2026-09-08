@@ -14,47 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<PatientProfileModel> Handle(GetPatientProfileByProfileIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _patientRepository.GetPatientProfileByProfileIdAsync(request.profileId);
-            return new PatientProfileModel
-            {
-                PatientId = result.PatientId,
-                ProfileId = result.ProfileId,
-                FirstName = result.FirstName,
-                LastName = result.LastName,
-                FullName = result.FullName,
-                DateOfBirth = result.DateOfBirth,
-                PhoneNumber = result.PhoneNumber,
-                Email = result.Email,
-                Gender = result.Gender,
-                Age = result.Age,
-                AgeTypeId = result.AgeTypeId,
-                AgeTypeName = result.AgeTypeName,
-                RelationTypeId = result.RelationTypeId,
-                RelationTypeName = result.RelationTypeName,
-                Insurance = result.Insurance,
-                InsuranceData = new InsuranceData
-                {
-                    HolderName = result.HolderName,
-                    Policy = result.Policy,
-                    Provider = result.Provider,
-                    GroupId = result.GroupId,
-                    Address = result.Address
-                },
-                PaymentData = new PaymentData
-                {
-                     CardHolder = result.PaymentType,
-                     CardNumber = result.CardNumber,
-                     PaymentType = result.PaymentType,
-                     Expiry = result.Expiry
-                },
-                IsActive = result.IsActive,
-                CreatedDate = result.CreatedDate,
-                UpdatedDate = result.UpdatedDate,
-
-                IsSuccess = result.IsSuccess,
-                Status = result.Status,
-                ResponseMessage = result.ResponseMessage
-            };
+            return await _patientRepository.GetPatientProfileByProfileIdAsync(request.profileId);
         }
     }
 }

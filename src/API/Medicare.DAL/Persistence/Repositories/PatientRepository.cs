@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Medicare.Application.Interfaces.IErrorLog;
 using Medicare.Application.Interfaces.IPatient;
-using Medicare.Application.Interfaces.JwtToken;
+using Medicare.Application.Models.Appointment;
 using Medicare.Application.Models.CommonModels.ErrorLog;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
@@ -151,16 +151,23 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<PatientProfileModelDto> GetPatientProfileByProfileIdAsync(int profileId)
+        public async Task<PatientProfileModel> GetPatientProfileByProfileIdAsync(int profileId)
         {
             string procName = "USP_GetPatientProfileByProfileId";
-            PatientProfileModelDto returnData = new PatientProfileModelDto();
+            PatientProfileModel returnData = new PatientProfileModel();
             try
             {
                 var param = new DynamicParameters();
                 param.Add("ProfileId", profileId);
 
-                returnData = await _context.QuerySingleStoredProcAsync<PatientProfileModelDto>(procName, param);
+                returnData = await _context.QueryMultipleAsync(procName, param, async multi =>
+                {
+                    var profile = (await multi.ReadFirstOrDefaultAsync<PatientProfileModel>());
+                    profile.InsuranceData= (await multi.ReadAsync<InsuranceData>()).ToList();
+                    profile.PaymentData= (await multi.ReadAsync<PaymentData>()).ToList();
+
+                    return profile;
+                });
             }
             catch (Exception ex)
             {
@@ -181,6 +188,7 @@ namespace Medicare.DAL.Persistence.Repositories
             try
             {
                 var param = new DynamicParameters();
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("Name", model.Name);
                 param.Add("DOB", model.DOB);
                 param.Add("FromDate", model.FromDate?.Date);

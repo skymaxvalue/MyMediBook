@@ -20,5 +20,6 @@ namespace Medicare.Application.Interfaces.IAppointment
         Task<ClaimAuditResponse> GetClaimAuditAsync(int claimId);
         Task<ResponseModel> UpdateConsultationStatusAsync(UpdateConsultationStatusRequestModel model);
         Task<CollectCopayResponse> CollectCopayAsync(CollectCopayRequest model);
+        Task<ResponseModel> UpdateAppointmentCheckedInStatusAsync(UpdateCheckedInStatusRequestModel model);
     }
 }

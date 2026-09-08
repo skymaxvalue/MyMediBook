@@ -14,6 +14,7 @@ using Medicare.Application.Interfaces.ILocations;
 using Medicare.Application.Interfaces.IMessage;
 using Medicare.Application.Interfaces.INotificationRepository;
 using Medicare.Application.Interfaces.IOrders;
+using Medicare.Application.Interfaces.IOrganization;
 using Medicare.Application.Interfaces.IPatient;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
 using Medicare.Application.Interfaces.JwtToken;
@@ -77,6 +78,7 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<ILabRepository, LabRepository>();
             builder.Services.AddScoped<IClaimRepostitory, ClaimRepository>();
             builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 
             // ✅ Services
             builder.Services.AddSignalR();
@@ -85,7 +87,7 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IJwtTokenRepository, JwtService>();
             builder.Services.AddScoped<IAppointmentReminderRepository, AppointmentReminderRepository>();
 
-            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();  
             builder.Services.AddScoped<AppointmentReminderJobService>();
             builder.Services.AddScoped<AppointmentSlotReleaseJobService>();
 
