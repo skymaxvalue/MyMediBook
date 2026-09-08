@@ -300,6 +300,15 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("Password", model.Password);
                 param.Add("Gender", model.Gender);
                 param.Add("Insurance", model.Insurance);
+                param.Add("HolderName", model.InsuranceData?.HolderName);
+                param.Add("Policy", model.InsuranceData?.Policy);
+                param.Add("Address", model.InsuranceData?.Address);
+                param.Add("GroupId", model.InsuranceData?.GroupId);
+                param.Add("Provider", model.InsuranceData?.Provider);
+                param.Add("PaymentType", model.PaymentData?.PaymentType);
+                param.Add("CardHolder", model.PaymentData?.CardHolder);
+                param.Add("Expiry", model.PaymentData?.Expiry);
+                param.Add("PaymentType", model.PaymentData?.PaymentType);
                 param.Add("Address", model.Address);
                 param.Add("CityId", model.CityId);
                 param.Add("ZipCode", model.ZipCode);

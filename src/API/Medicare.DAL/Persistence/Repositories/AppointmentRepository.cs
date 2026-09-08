@@ -530,6 +530,31 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
+        public async Task<ResponseModel> UpdateAppointmentCheckedInStatusAsync(UpdateCheckedInStatusRequestModel model)
+        {
+            string procName = "USP_UpdateAppointmentCheckInStatus";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AppointmentId", model.AppointmentId);
+                param.Add("CheckInStatus", model.IsCheckedIn);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
         public async Task<List<AppointmentDetailModel>> GetFrontOfficeAppointmentsList(DataRequestFilterModel model)
         {
             string procName = "USP_GetFrontOfficeAppointmentsList";

@@ -9,6 +9,8 @@ namespace Medicare.Application.Models.Orders
         public int ProfileId { get; set; }
         public int AssociateId { get; set; }
         public string PatientName { get; set; }
+        public string PhoneCountryCode { get; set; }
+        public int PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string DoctorName { get; set; }

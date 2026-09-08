@@ -20,8 +20,8 @@ namespace Medicare.Application.Models.Patient
         public int RelationTypeId { get; set; }
         public string? RelationTypeName { get; set; }   // "Self" | "Spouse" | "Child" etc.
         public int Insurance { get; set; }
-        public InsuranceData InsuranceData { get; set; }
-        public PaymentData PaymentData { get; set; }
+        public List<InsuranceData> InsuranceData { get; set; } = new();
+        public List<PaymentData> PaymentData { get; set; } = new();
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
