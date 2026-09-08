@@ -1,4 +1,5 @@
 ﻿using Medicare.Application.Interfaces.IErrorHandling;
+using Medicare.Application.Models.Appointment;
 using System.Text.Json.Serialization;
 
 namespace Medicare.Application.Models.Patient
@@ -106,6 +107,8 @@ namespace Medicare.Application.Models.Patient
         public int? BillingStateId { get; set; }
         public int BillingCountryId { get; set; }
         public int Insurance { get; set; }
+        public InsuranceData? InsuranceData { get; set; }
+        public PaymentData? PaymentData { get; set; }
         [JsonIgnore]
         public string? Password { get; set; }
         public bool IsActive { get; set; }
