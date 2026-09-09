@@ -331,6 +331,9 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
       this.showAddbookingAppoinmentForm = true;
       this.isFrontOfficePageBookForm = true;
 
+    } else {
+      this.showAddbookingAppoinmentForm = true;
+      this.isFrontOfficePageBookForm = false;
     }
 
 

@@ -1249,3 +1249,689 @@ margin-left: 10px;
     }
 
 }
+
+/* =====================================================
+   BILLING PDF
+===================================================== */
+
+.billing-pdf {
+    position: fixed;
+    left: -10000px;
+    top: 0;
+
+    width: 794px;
+    min-height: 1123px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-family: Arial, sans-serif;
+
+    box-sizing: border-box;
+
+    padding: 28px 28px 0;
+
+    overflow: hidden;
+}
+
+
+/* HEADER */
+
+.pdf-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.pdf-company {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.pdf-company img {
+
+    width: 58px;
+    height: 58px;
+
+    object-fit: contain;
+
+}
+
+
+.pdf-company h1 {
+
+    margin: 0;
+
+    font-size: 22px;
+
+    line-height: 1.1;
+
+    color: #12346B;
+
+    font-weight: 800;
+
+}
+
+
+.pdf-company h2 {
+
+    margin: 3px 0 0;
+
+    font-size: 17px;
+
+    color: #6B7280;
+
+    font-weight: 600;
+
+}
+
+
+.pdf-invoice-meta {
+
+    width: 225px;
+
+    font-size: 11px;
+
+}
+
+
+.pdf-invoice-meta div {
+
+    display: grid;
+
+    grid-template-columns: 90px 15px 1fr;
+
+    margin-bottom: 7px;
+
+}
+
+
+.pdf-invoice-meta span {
+
+    font-weight: 700;
+
+}
+
+
+.pdf-invoice-meta strong {
+
+    font-weight: 400;
+
+}
+
+
+.pdf-invoice-meta b {
+
+    font-weight: 500;
+
+}
+
+
+/* DIVIDER */
+
+.pdf-divider {
+
+    height: 2px;
+
+    background: #183A78;
+
+    margin-top: 18px;
+
+}
+
+
+/* TITLE */
+
+.pdf-title {
+
+    padding: 14px 4px 10px;
+
+    border-bottom: 1px solid #D9E0EB;
+
+}
+
+
+.pdf-title h2 {
+
+    margin: 0;
+
+    color: #173C86;
+
+    font-size: 19px;
+
+    font-weight: 800;
+
+}
+
+
+.pdf-title p {
+
+    margin: 5px 0 0;
+
+    color: #8792A5;
+
+    font-size: 11px;
+
+}
+
+
+/* INFO */
+
+.pdf-info-section {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    margin-top: 18px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.pdf-info-box {
+
+    padding: 0 18px;
+
+}
+
+
+.pdf-info-box:first-child {
+
+    border-right: 1px solid #D5DDE9;
+
+}
+
+
+.pdf-info-box h3 {
+
+    margin: 0 0 14px;
+
+    font-size: 12px;
+
+    color: #173C86;
+
+    font-weight: 800;
+
+}
+
+
+.pdf-info-row {
+
+    display: grid;
+
+    grid-template-columns: 125px 12px 1fr;
+
+    align-items: center;
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+
+}
+
+
+.pdf-info-row span {
+
+    font-weight: 600;
+
+}
+
+
+.pdf-info-row b {
+
+    font-weight: 500;
+
+}
+
+
+.pdf-info-row strong {
+
+    font-weight: 500;
+
+}
+
+
+/* BREAKDOWN */
+
+.pdf-breakdown {
+
+    margin-top: 8px;
+
+}
+
+
+.pdf-breakdown > h3 {
+
+    margin: 0 0 10px;
+
+    font-size: 13px;
+
+    color: #173C86;
+
+    font-weight: 800;
+
+}
+
+
+.pdf-table {
+
+    border: 1px solid #DCE3EF;
+
+    border-radius: 7px;
+
+    overflow: hidden;
+
+}
+
+
+.pdf-table-header {
+
+    height: 32px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 175px;
+
+    align-items: center;
+
+    background: #0D3C91;
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+}
+
+
+.pdf-table-header span {
+
+    padding: 0 18px;
+
+}
+
+
+.pdf-table-header span:last-child {
+
+    text-align: right;
+
+}
+
+
+.pdf-table-row {
+
+    height: 32px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 175px;
+
+    align-items: center;
+
+    border-bottom: 1px solid #DCE3EF;
+
+    font-size: 10px;
+
+}
+
+
+.pdf-table-row > span {
+
+    padding-left: 18px;
+
+}
+
+
+.pdf-table-row > strong {
+
+    padding-right: 18px;
+
+    text-align: right;
+
+}
+
+
+.pdf-table-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.pdf-balance {
+
+    background: #EFF4FC;
+
+    color: #173C86;
+
+    font-weight: 800;
+
+}
+
+
+.pdf-green {
+
+    color: #16A34A !important;
+
+}
+
+
+.pdf-orange {
+
+    color: #F97316 !important;
+
+}
+
+
+.pdf-paid {
+
+    color: #16A34A !important;
+
+}
+
+
+/* BOTTOM */
+
+.pdf-bottom-section {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 18px;
+
+    margin-top: 18px;
+
+}
+
+
+.pdf-notes,
+.pdf-payment {
+
+    border: 1px solid #DCE3EF;
+
+    border-radius: 7px;
+
+    min-height: 125px;
+
+    padding: 14px;
+
+}
+
+
+.pdf-notes h3,
+.pdf-payment h3 {
+
+    margin: 0 0 12px;
+
+    color: #173C86;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+}
+
+
+.pdf-notes ul {
+
+    margin: 0;
+
+    padding-left: 16px;
+
+}
+
+
+.pdf-notes li {
+
+    font-size: 9px;
+
+    margin-bottom: 8px;
+
+    line-height: 1.35;
+
+}
+
+
+.pdf-payment-row {
+
+    display: grid;
+
+    grid-template-columns: 90px 12px 1fr;
+
+    font-size: 9px;
+
+    margin-bottom: 9px;
+
+}
+
+
+.pdf-payment-row strong {
+
+    font-weight: 500;
+
+}
+
+
+/* SIGNATURE */
+
+.pdf-signature-wrapper {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 38px;
+
+}
+
+
+.pdf-signature {
+
+    width: 200px;
+
+    height: 90px;
+
+    border: 1px solid #DCE3EF;
+
+    border-radius: 6px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    padding: 10px;
+
+}
+
+
+.signature-line {
+
+    width: 150px;
+
+    border-top: 1px solid #6B7280;
+
+    margin-bottom: 7px;
+
+}
+
+
+.pdf-signature span {
+
+    font-size: 9px;
+
+    color: #4B5563;
+
+}
+
+
+/* FOOTER */
+
+.pdf-footer {
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    height: 75px;
+
+    background: #07377D;
+
+    color: white;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr 1fr;
+
+    padding: 12px 28px;
+
+    box-sizing: border-box;
+
+}
+
+
+.pdf-footer > div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+}
+
+
+.pdf-footer > div + div {
+
+    border-left: 1px solid rgba(255,255,255,.35);
+
+    padding-left: 28px;
+    padding-block: 10px;
+
+}
+
+
+.pdf-footer small {
+
+    font-size: 7px;
+
+    margin-bottom: 3px;
+
+}
+
+
+.pdf-footer strong {
+
+    font-size: 13px;
+
+    margin-bottom: 2px;
+
+}
+
+
+.pdf-footer span {
+
+    font-size: 8px;
+
+}
+
+
+.pdf-footer > div:nth-child(2) {
+
+    align-items: center;
+
+}
+
+
+.pdf-footer > div:nth-child(3) {
+
+    align-items: flex-end;
+
+    text-align: right;
+
+}
+.prescription-header {
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  padding-bottom: 7mm;
+
+  /* border-bottom: 1px solid #173f85; */
+
+  box-sizing: border-box;
+}
+
+
+/* Hospital Logo + Name */
+
+.hospital-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.hospital-logo {
+  width: 48px;
+  height: 48px;
+
+  object-fit: contain;
+}
+
+
+.hospital-name {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+}
+
+
+.hospital-name h1 {
+  margin: 0;
+
+  font-size: 21px;
+  line-height: 1.1;
+
+  color: #082e68;
+
+  font-weight: 700;
+}
+
+
+.hospital-name h2 {
+  margin: 2px 0 0;
+
+  font-size: 17px;
+  line-height: 1.1;
+
+  color: #737985;
+
+  font-weight: 600;
+}

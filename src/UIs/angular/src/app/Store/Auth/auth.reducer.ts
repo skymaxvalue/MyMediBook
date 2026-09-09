@@ -179,4 +179,20 @@ export const authReducer = createReducer(
         error: action.error
     })),
 
+    on(AuthActions.register_by_reseptionist, (state) => ({
+        ...state,
+        isLoading: true,
+    })),
+
+    on(AuthActions.register_by_reseptionistSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        registeredPatient: action.patient,
+    })),
+
+    on(AuthActions.register_by_reseptionistFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    })),
 )

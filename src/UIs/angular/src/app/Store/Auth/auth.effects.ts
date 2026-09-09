@@ -216,5 +216,25 @@ export class AuthEffects {
 
     )
 
+    //  Register Effect
+
+    registerPatientByReceptionist$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AuthActions.register_by_reseptionist),
+            mergeMap((action) =>
+                this.authService.registerPatientByReceptionist(action.patient).pipe(
+                    map((response: any) =>
+                        AuthActions.register_by_reseptionistSuccess({ patient: response })
+                    ),
+                    catchError((error) =>
+                        of(AuthActions.register_by_reseptionistFailure({ error: error.message || 'Registration Failed' }))
+                    )
+                )
+            )
+
+        )
+
+    )
+
 
 }

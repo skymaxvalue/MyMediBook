@@ -13,8 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AppState } from 'src/app/Store/app.state';
 import { Store } from '@ngrx/store';
-import { verifyOTP } from 'src/app/Store/Auth/auth.actions';
-import { selectVerifyOTP } from 'src/app/Store/Auth/auth.selectors';
+import { register_by_reseptionist, verifyOTP } from 'src/app/Store/Auth/auth.actions';
+import { selectRegisteredPatientByReceptionist, selectVerifyOTP } from 'src/app/Store/Auth/auth.selectors';
 
 @Component({
   selector: "app-otp-verification",
@@ -58,6 +58,11 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    console.log('history.state:', history.state);
+
+    console.log('isLoginFlow:', this.isLoginFlow);
+    console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
+    console.log('registrationData:', this.registrationData);
     this.emailId = history.state.emailId;
     this.isLoginFlow = history.state.isLoginFollow;
     if (this.isLoginFlow) {
@@ -66,7 +71,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.isBookAppointmentFlow = history.state.isBookAppointment;
     console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
     if (this.isBookAppointmentFlow) {
-      this.emailId = history.state.registrationData.contactInformation.presentAddress.email;
+      this.emailId = history.state.registrationData.contactInformation.email;
       this.registrationData = history.state.registrationData,
         console.log('Form Data:', this.registrationData);
       console.log('Email ID:', this.emailId);
@@ -295,29 +300,154 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
     await this.store.dispatch(verifyOTP({ email: this.emailId, otpCode: enteredOtp }))
 
-    await this.store.select(selectVerifyOTP).subscribe((res: any) => {
+    await this.store.select(selectVerifyOTP).subscribe(async (res: any) => {
       if (res) {
         this.resetPasswordToken = res.token
         if (this.isLoginFlow) {
+          this.router.navigate([])
           this.router.navigate([
             '/front-office/dashboard'
           ]
-          );
-        } else if (this.isBookAppointmentFlow) {
+          ).then(() => {
+            window.history.replaceState(null, '', window.location.pathname);
 
-          this.router.navigate([
-            '/front-office/appointment-success'
-          ], {
-            state: {
-              successData: {
-                h1: 'Patient Registered Successfully!',
-                span: 'The patient has been registered successfully.',
-                p: 'You can now view their details and manage their appointments.',
-                buttonText: 'Go to Dashboard',
-                route: '/front-office/dashboard'
-              }
+          });
+        } else if (this.isBookAppointmentFlow && this.registrationData) {
+          const formData = { ...this.registrationData }
+          const payload: any = {
+            firstName: formData.personalDetails.firstName,
+            middleName: "", // Your form doesn't currently have middleName
+            lastName: formData.personalDetails.lastName,
+
+            dateOfBirth: formData.personalDetails.dateOfBirth,
+
+            phoneCountryCode:
+              formData.contactInformation.phoneCode,
+
+            phoneNumber:
+              formData.contactInformation.phone,
+
+            emailId:
+              formData.contactInformation.email,
+
+            gender:
+              formData.personalDetails.gender,
+
+            // =========================
+            // CURRENT / PRESENT ADDRESS
+            // =========================
+
+            address:
+              formData.contactInformation.presentAddress.address,
+
+            cityId:
+              Number(formData.contactInformation.presentAddress.cityId),
+
+            zipCode:
+              formData.contactInformation.presentAddress.pinCode,
+
+            stateId:
+              Number(formData.contactInformation.presentAddress.stateId),
+
+            countryId:
+              Number(formData.contactInformation.presentAddress.countryId),
+
+            // =========================
+            // BILLING ADDRESS
+            // =========================
+
+            billingAddress:
+              formData.contactInformation.permanentAddress.address,
+
+            billingCityId:
+              Number(formData.contactInformation.permanentAddress.cityId),
+
+            billingZipCode:
+              formData.contactInformation.permanentAddress.pinCode,
+
+            billingStateId:
+              Number(formData.contactInformation.permanentAddress.stateId),
+
+            billingCountryId:
+              Number(formData.contactInformation.permanentAddress.countryId),
+
+            // =========================
+            // INSURANCE
+            // =========================
+
+            insurance:
+              formData.personalDetails.insuranceChoice === 'yes'
+                ? 1
+                : 0,
+
+            insuranceData:
+              formData.personalDetails.insuranceChoice === 'yes'
+                ? {
+                  provider:
+                    formData.insuranceDetails.provider,
+
+                  policy:
+                    formData.insuranceDetails.policy,
+
+                  groupId:
+                    formData.insuranceDetails.groupId,
+
+                  holderName:
+                    formData.insuranceDetails.holderName,
+
+                  address:
+                    formData.insuranceDetails.insuranceAddress
+                }
+                : null,
+
+            // =========================
+            // PAYMENT
+            // =========================
+
+            paymentData: {
+              paymentType:
+                formData?.paymentData?.paymentType ? formData?.paymentData?.paymentType : null,
+
+              cardHolder:
+                formData?.paymentData?.cardHolder ? formData?.paymentData?.cardHolder : null,
+
+              cardNumber:
+                formData?.paymentData?.cardNumber ? formData?.paymentData?.cardNumber : null,
+
+              expiry:
+                formData?.paymentData?.expiry ? formData?.paymentData?.expiry : null
+            }
+            ,
+            isActive: true,
+
+            createdBy: "Front Office",
+
+            createdDate: new Date().toISOString(),
+
+            updatedBy: "Front Office",
+
+            updatedDate: new Date().toISOString()
+          };
+
+          await this.store.dispatch(register_by_reseptionist({ patient: { ...payload } }))
+          await this.store.select(selectRegisteredPatientByReceptionist).subscribe((res: any) => {
+            if (res) {
+              this.router.navigate([
+                '/front-office/appointment-success'
+              ], {
+                state: {
+                  successData: {
+                    h1: 'Patient Registered Successfully!',
+                    span: 'The patient has been registered successfully.',
+                    p: 'You can now view their details and manage their appointments.',
+                    buttonText: 'Go to Dashboard',
+                    route: '/front-office/dashboard'
+                  }
+                }
+              })
             }
           })
+
         } else {
           this.router.navigate([
             '/front-office/reset-password'

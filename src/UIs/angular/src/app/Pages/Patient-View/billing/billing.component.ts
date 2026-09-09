@@ -4,15 +4,17 @@ import {
   signal,
   ViewChild,
   ElementRef,
+  OnInit,
+  Signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppState } from 'src/app/Store/app.state';
 import { Store } from '@ngrx/store';
 import { getMyAllBills } from 'src/app/Store/Billing/billing.actions';
-
-declare var bootstrap: any;
-declare var html2pdf: any;
+import { selectMyAllLabResultList } from 'src/app/Store/Lab-Results/lab-result.selcetors';
+import { selectMyBills } from 'src/app/Store/Billing/billing.selcetors';
+import { PdfService } from "src/app/core/Services/pdf.service";
 
 interface Bill {
   id: number;
@@ -34,13 +36,13 @@ interface Bill {
   templateUrl: "./billing.component.html",
   styleUrl: "./billing.component.css",
 })
-export class BillingComponent {
+export class BillingComponent implements OnInit {
   @ViewChild('detailsModal')
   detailsModal!: ElementRef;
   loginUser = JSON.parse(
     localStorage.getItem("user") || "null"
   );
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private pdfService: PdfService) {
     if (this.loginUser?.refId) {
 
       this.store.dispatch(getMyAllBills({ patientId: this.loginUser?.refId }))
@@ -49,39 +51,22 @@ export class BillingComponent {
     }
 
   }
+  ngOnInit(): void {
+    this.store.select(selectMyBills).subscribe((res: any) => {
+      if (res) {
+
+        console.log('Billing API Response:', res);
+
+        const data = Array.isArray(res) ? res : [];
+
+        this.mapBillingData(data);
+      }
+    })
+  }
   @ViewChild('printArea')
   printArea!: ElementRef;
 
-  bills = signal<Bill[]>([
-    {
-      id: 1,
-      patient: 'Ramesh',
-      visitDate: '2026-05-01',
-      doctor: 'Dr. Arun',
-      clinicAddress: 'ABC Medical Center',
-      totalCharge: 500,
-      insuranceCovered: 300,
-      adjustments: 50,
-      patientResponsibility: 150,
-      paymentDate: '2026-05-05',
-      remainingBalance: 0,
-      image: '/assets/images/user.png'
-    },
-    {
-      id: 2,
-      patient: 'Self',
-      visitDate: '2026-05-08',
-      doctor: 'Dr. Tarun',
-      clinicAddress: 'City Health Clinic',
-      totalCharge: 1200,
-      insuranceCovered: 800,
-      adjustments: 100,
-      patientResponsibility: 300,
-      paymentDate: '2026-05-10',
-      remainingBalance: 100,
-      image: '/assets/images/user.png'
-    }
-  ]);
+  bills = signal<any[]>([]);
 
 
   searchText = signal('');
@@ -200,7 +185,73 @@ export class BillingComponent {
     )
   );
 
+  mapBillingData(data: any[] = []): void {
 
+    if (!Array.isArray(data)) {
+      console.warn('Billing data is not an array:', data);
+      this.bills.set([]);
+      return;
+    }
+
+    const mappedBills: Bill[] = data
+      .filter(item => item?.claims?.length > 0)
+      .map((item: any) => {
+
+        const claim = item.claims[0];
+
+        return {
+          id: claim.claimId,
+          patient: 'Self',
+          doctor: 'N/A',
+          clinicAddress: 'N/A',
+
+          visitDate: claim.dateOfService,
+
+          totalCharge: claim.totalChargeAmount || 0,
+          insuranceCovered: claim.totalPaidAmount || 0,
+          adjustments: claim.totalAdjustmentAmount || 0,
+          patientResponsibility:
+            claim.totalPatientResponsibility || 0,
+
+          paymentDate:
+            item.insurancePayments?.[0]?.paymentDate || '',
+
+          remainingBalance:
+            claim.remainingBalance || 0,
+
+          image: '/assets/images/user.png',
+
+          claimId: claim.claimId,
+          appointmentId: claim.appointmentId,
+          claimStatus: claim.claimStatus,
+
+          totalAllowedAmount:
+            claim.totalAllowedAmount || 0,
+
+          totalPaidAmount:
+            claim.totalPaidAmount || 0,
+
+          currencyCode:
+            claim.currencyCode || 'INR',
+
+          lineItems:
+            item.lineItems || [],
+
+          insurancePayments:
+            item.insurancePayments || [],
+
+          adjustmentDetails:
+            item.adjustments || [],
+
+          responsibilityDetails:
+            item.patientResponsibility || []
+        };
+      });
+
+    this.bills.set(mappedBills);
+
+    console.log('Final Bills:', this.bills());
+  }
   searchBills() {
 
     this.currentPage.set(1);
@@ -291,37 +342,63 @@ export class BillingComponent {
 
     this.selectedBill.set(bill);
 
-    const modal = new bootstrap.Modal(
-      this.detailsModal.nativeElement
-    );
+    // const modal = new bootstrap.Modal(
+    //   this.detailsModal.nativeElement
+    // );
 
-    modal.show();
+    // modal.show();
 
   }
 
 
-  downloadPDF() {
+  // downloadPDF() {
 
-    html2pdf()
-      .from(this.printArea.nativeElement)
-      .set({
-        margin: 10,
-        filename: 'billing-invoice.pdf',
-        image: {
-          type: 'jpeg',
-          quality: 1
-        },
-        html2canvas: {
-          scale: 2
-        },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait'
-        }
-      })
-      .save();
+  //   html2pdf()
+  //     .from(this.printArea.nativeElement)
+  //     .set({
+  //       margin: 10,
+  //       filename: 'billing-invoice.pdf',
+  //       image: {
+  //         type: 'jpeg',
+  //         quality: 1
+  //       },
+  //       html2canvas: {
+  //         scale: 2
+  //       },
+  //       jsPDF: {
+  //         unit: 'mm',
+  //         format: 'a4',
+  //         orientation: 'portrait'
+  //       }
+  //     })
+  //     .save();
 
+  // }
+
+  async downloadPDF(): Promise<void> {
+
+    if (!this.printArea) {
+      console.error('Billing PDF element not found');
+      return;
+    }
+
+    try {
+
+      const billId = this.selectedBill()?.id || 'Invoice';
+
+      await this.pdfService.downloadPdf(
+        this.printArea.nativeElement,
+        `Billing-Invoice-${billId}.pdf`
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Error while generating billing PDF:',
+        error
+      );
+
+    }
   }
 
 

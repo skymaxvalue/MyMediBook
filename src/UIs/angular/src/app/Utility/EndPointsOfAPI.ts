@@ -48,7 +48,7 @@ export const LabResult = {
 }
 export const BillingAPiEndPoints = {
     GET_ALL_BILSS_BY_BILL_ID: "Billing/GetBillsById{id}",
-    GET_ALL_BILL_BY_PATIENT_ID: "Billing/GetBillsByPatientId/"
+    GET_ALL_BILL_BY_PATIENT_ID: "Billing/GetBillingListByPatientId/"
 
 }
 
@@ -80,6 +80,7 @@ export const AuthEndPoints = {
     FORGET_PASSWORD_RESETL: "Auth/ResetForgotPassword",
     RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
     doLOGIN: "Auth/doLogin",
+    CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount"
 }
 
 export const cancelRules = [

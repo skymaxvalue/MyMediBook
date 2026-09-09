@@ -8,7 +8,7 @@ export const selectLabResultState =
 
 
 
-export const selectMyAllLabResultList = createSelector(
+export const selectMyBills = createSelector(
     selectLabResultState,
     state => state.myBillList
 );
