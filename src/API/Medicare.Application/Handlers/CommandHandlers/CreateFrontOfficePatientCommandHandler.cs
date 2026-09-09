@@ -20,7 +20,7 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             var passwordHash = _passwordHelper.HashPassword(plainText);
 
-            request.model.Password = passwordHash;
+            request.model.PasswordHash = passwordHash;
             
             return await _authRepository.CreateFrontOfficePatientDetails(request.model);
         }
