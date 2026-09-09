@@ -35,7 +35,7 @@
     width:65px;
     height:65px;
     border-radius:18px;
-    background:#E9EEFD;
+    background:#EAF2FF;
     border:1px solid #CBDDFF;
     display:flex;
     align-items:center;
@@ -44,6 +44,23 @@
 }
 
 .medicine-icon img{
+    width:48px;
+    height:48px;
+    object-fit:contain;
+}
+.medicine-icon_modal{
+    width:65px;
+    height:65px;
+    border-radius: 34px;
+    background:#E9EEFD;
+    border:1px solid #CBDDFF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.medicine-icon_modal img{
     width:48px;
     height:48px;
     object-fit:contain;
@@ -721,14 +738,14 @@
 
 .modal-heading h2 {
   margin: 0;
-  color: #14213d;
+  color: #0F172A;
   font-size: 20px;
   font-weight: 700;
 }
 
 .modal-heading p {
   margin: 6px 0 0;
-  color: #506080;
+  color: #64748B;
   font-size: 15px;
 }
 
@@ -736,7 +753,7 @@
   border: 0;
   background: none;
   font-size: 42px;
-  color: #52627f;
+  color: #6B7280;
   cursor: pointer;
 }
 
@@ -818,7 +835,7 @@
 .medicine-info h3 {
   margin: 0;
   font-size: 28px;
-  color: #14213d;
+  color: #0F172A;
   font-weight: 600;
 }
 
@@ -827,8 +844,8 @@
   margin-top: 8px;
   padding: 8px 20px;
   border-radius: 12px;
-  background: #e4edff;
-  color: #155bea;
+  background: #DCEBFF;
+  color: #165DFF;
   font-size: 18px;
   font-weight: 600;
 }
@@ -836,20 +853,20 @@
 .medicine-info p {
   margin: 20px 0 0;
   font-size: 21px;
-  color: #18243d;
+  color: #111827;
 }
 
 .order-status {
-     padding: 1px 39px;
+     padding: 10px 39px;
   border: 1px solid #ffd88b;
-  border-radius: 15px;
+  border-radius: 10px;
   color: #d78300;
   background: #fffaf0;
   font-size: 18px;
   font-weight: 600;
 }
 .order-status img{
-    width: 40px;
+    width: 30px;
 }
 .divided{
     display: flex;
@@ -920,14 +937,21 @@
 .info-item label,
 .instruction-item label {
   display: block;
-  color: #526585;
+  color: #64748B;
   font-size: 18px;
   margin-bottom: 5px;
+}
+.instruction-item label{
+  color: #165DFF !important;
+}
+.instruction-item strong{
+  color: #111827 !important;
+  font-weight: 400 !important;
 }
 
 .info-item strong,
 .instruction-item strong {
-  color: #14213d;
+  color: #0F172A;
   font-size:  18px;
 }
 
@@ -954,6 +978,7 @@
   color: #d78300;
   font-weight: 600;
 }
+
 
 /* Footer */
 

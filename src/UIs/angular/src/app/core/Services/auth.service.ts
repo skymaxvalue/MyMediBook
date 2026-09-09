@@ -14,6 +14,9 @@ import { AuthEndPoints, MasterAPIEndPoints, LocationAPIEndPoint } from '../../Ut
   providedIn: "root",
 })
 export class AuthService {
+  register_by_reseptionist(patient: PatientRegister) {
+    throw new Error('Method not implemented.');
+  }
 
 
   // API Base URL
@@ -195,6 +198,15 @@ export class AuthService {
     );
   }
 
+  // Self Registration API
+  registerPatientByReceptionist(
+    patient: PatientRegister
+  ): Observable<any> {
 
+    return this.http.post<any>(
+      `${this.apiUrl}${AuthEndPoints.CREATE_PATIENT_PROFILE_BY_RECEPTIONIST}`,
+      patient
+    );
+  }
 
 }

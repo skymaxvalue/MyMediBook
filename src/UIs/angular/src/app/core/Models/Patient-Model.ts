@@ -61,6 +61,8 @@ export interface MedicineOrder {
     pharmacistName: string;
     pharmacyMobile: string;
     pharmacyAddress: string;
+    phone?: string,
+    departmentName?: string,
 
     drugName: string;
     dosage: string;

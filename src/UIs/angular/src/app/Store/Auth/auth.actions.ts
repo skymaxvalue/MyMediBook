@@ -162,5 +162,21 @@ export const ForrgetResetPasswordFailure = createAction(
     props<{ error: string }>()
 );
 
+// Register Actions
+export const register_by_reseptionist = createAction(
+    '[Auth] Register  Patient reseptionist',
+    props<{ patient: PatientRegister }>()
+);
+
+export const register_by_reseptionistSuccess = createAction(
+    '[Auth] Register Patient by reseptionist Success',
+    props<{ patient: any }>()
+);
+
+export const register_by_reseptionistFailure = createAction(
+    '[Auth] Register Patient reseptionist Failure',
+    props<{ error: string }>()
+);
+
 
 

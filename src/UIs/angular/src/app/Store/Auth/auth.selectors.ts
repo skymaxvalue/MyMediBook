@@ -78,5 +78,11 @@ export const selectForgotPassReset =
         state => state.resetPassRes
     );
 
+export const selectRegisteredPatientByReceptionist =
+    createSelector(
+        selectAuthState,
+        state => state.registeredPatient
+    );
+
 
 

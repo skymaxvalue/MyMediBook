@@ -245,7 +245,7 @@ grid-template-columns:
 .status-normal {
   background: #DDF4E5;
   color: #087A2D;
-
+  padding: 10px !important;
   border: 1px solid #DDF4E5;
 }
 .status-critical {

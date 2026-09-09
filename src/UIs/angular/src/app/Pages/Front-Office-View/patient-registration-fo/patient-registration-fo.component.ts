@@ -423,6 +423,28 @@ export class PatientRegistrationFOComponent implements OnInit {
       contactInformation: this.fb.group({
 
         // =========================
+        // CONTACT DETAILS
+        // =========================
+
+        phoneCode: [
+          '',
+          Validators.required
+        ],
+
+        phone: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(/^[0-9]{10}$/)
+          ]
+        ],
+
+        email: [
+          '',
+          Validators.email
+        ],
+
+        // =========================
         // PRESENT ADDRESS
         // =========================
 
@@ -454,27 +476,9 @@ export class PatientRegistrationFOComponent implements OnInit {
               Validators.required,
               Validators.pattern(/^[0-9]{6}$/)
             ]
-          ],
-          phoneCode: [
-            '',
-            Validators.required
-          ],
-
-          phone: [
-            '',
-            [
-              Validators.required,
-              Validators.pattern(/^[0-9]{10}$/)
-            ]
-          ],
-
-          email: [
-            '',
-            Validators.email
           ]
 
         }),
-
 
         // =========================
         // PERMANENT ADDRESS
@@ -1005,13 +1009,14 @@ export class PatientRegistrationFOComponent implements OnInit {
     const formData = this.registrationForm.getRawValue();
 
     console.log('Registration Data:', formData);
-    await this.store.dispatch(AuthActions.requestOTP({ email: formData.contactInformation.presentAddress.email }));
+    await this.store.dispatch(AuthActions.requestOTP({ email: formData.contactInformation.email }));
     await this.store.select(selectRequestedOTP).subscribe((res: any) => {
       if (res?.data) {
         this.router.navigate(['/front-office/otp-verification-for-appointment'], {
           state: {
             registrationData: formData,
-            isBookAppointment: true
+            isBookAppointment: true,
+
           }
         })
         // API call here

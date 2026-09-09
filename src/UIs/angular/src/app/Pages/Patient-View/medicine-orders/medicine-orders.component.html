@@ -315,7 +315,7 @@
         <!-- Header -->
         <div class="medicine-modal-header">
             <div class="modal-heading">
-                <div class="document-icon"> <img src="/assets/images/icon-reports.png" alt=""></div>
+                <div class="document-icon"> <img src="/assets/images/billing2.png" alt=""></div>
 
                 <div>
                     <h2>Prescription &amp; Order Summary</h2>
@@ -337,15 +337,15 @@
             <!-- Medicine -->
             <div class="medicine-card">
 
-                <div class="medicine-icon">
-                    <img src="/assets/images/fillMedi.png" alt="">
+                <div class="medicine-icon_modal">
+                    <img src="/assets/images/medicine-icon copy.png" alt="">
                 </div>
 
                 <div class="medicine-info">
                     <div class="divided">
                         <h3>{{ selectedOrder.drugName }}</h3>
                         <div class="order-status">
-                            <img src="/assets/images/transit-icon.png" alt=""> {{ selectedOrder.orderStatus }}
+                            <img src="/assets/images/transit.png" alt=""> {{ selectedOrder.orderStatus }}
                         </div>
 
                     </div>
@@ -365,7 +365,8 @@
             <div class="info-card">
 
                 <div class="info-item">
-                    <div class="info-icon"> <img src="/assets/images/blueUser.png" alt=""></div>
+                    <div class="info-icon"> <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+                    </div>
                     <div>
                         <label>Patient</label>
                         <strong>{{ selectedOrder.patientName }}</strong>
@@ -374,7 +375,7 @@
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon"> <img src="/assets/images/docMod.png" alt=""></div>
+                    <div class="info-icon"> <img src="/assets/images/dr-icon.png" alt=""></div>
                     <div>
                         <label>Prescribed By</label>
                         <strong>{{ selectedOrder.doctorName }}</strong>
@@ -383,8 +384,7 @@
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon"> <img src="
-                        /assets/images/calendar-icon.png" alt=""></div>
+                    <div class="info-icon"> <img src="/assets/images/date new.png" alt=""></div>
                     <div>
                         <label>Order Date</label>
                         <strong>
@@ -395,8 +395,7 @@
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon"> <img src="
-                        /assets/images/location-icon.png" alt=""></div>
+                    <div class="info-icon"> <img src="/assets/images/front-office/images/location.png" alt=""></div>
                     <div>
                         <label>Pharmacy</label>
                         <strong>{{ selectedOrder.pharmacyAddress }}</strong>
@@ -409,7 +408,7 @@
             <div class="instruction-card">
 
                 <div class="instruction-item">
-                    <div class="info-icon"> <img src="/assets/images/icon-reports.png" alt=""></div>
+                    <div class="info-icon"> <img src="/assets/images/front-office/images/appointment.png" alt=""></div>
 
                     <div>
                         <label>Dosage Instructions</label>
@@ -418,12 +417,12 @@
                 </div>
 
                 <div class="instruction-item status-row">
-                    <div class="info-icon"> <img src="../../../../assets/images/security-icon.png" alt=""></div>
+                    <div class="info-icon"> <img src="/assets/images/security-icon.png" alt=""></div>
 
                     <label>Status</label>
 
                     <div class="order-status">
-                        <img src="/assets/images/transit-icon.png" alt=""> {{ selectedOrder.orderStatus }}
+                        <img src="/assets/images/transit.png" alt=""> {{ selectedOrder.orderStatus }}
                     </div>
                 </div>
 
@@ -435,11 +434,11 @@
         <div class="medicine-modal-footer">
 
             <button class="download-btn" (click)="downloadPrescriptionPdf()">
-                <img src="../../../../assets/images/icons8-installing-updates-100.png" alt=""> Download PDF
+                <img src="/assets/images/icons8-installing-updates-100.png" alt=""> Download PDF
             </button>
 
             <button class="print-btn" (click)="printDetails()">
-                <img src="../../../../assets/images/print.png" alt=""> Print
+                <img src="/assets/images/print.png" alt=""> Print
             </button>
 
         </div>
@@ -481,21 +480,21 @@
                 <b>:</b>
 
                 <strong>
-                    ORD-2026-00521
+                    ORD-{{ currentYear }}-00{{ selectedOrder?.orderId }}
                 </strong>
 
             </div>
 
 
             <div class="prescription-info-row">
-
                 <span>Date</span>
 
                 <b>:</b>
 
                 <strong>
-                    01 May 2026
+                    {{ selectedOrder?.createdDate | date:'dd MMM yyyy' }}
                 </strong>
+
 
             </div>
 
@@ -539,7 +538,7 @@
                 <b>:</b>
 
                 <strong>
-                    Ramesh Kumar
+                    {{ selectedOrder?.patientName }}
                 </strong>
 
             </div>
@@ -591,7 +590,7 @@
                 <b>:</b>
 
                 <strong>
-                    PAT-2026-00345
+                    {{ selectedOrder?.patientId || 'N/A' }}
                 </strong>
 
             </div>
@@ -604,7 +603,7 @@
                 <b>:</b>
 
                 <strong>
-                    +91 98765 43210
+                    {{ selectedOrder?.phone || 'N/A' }}
                 </strong>
 
             </div>
@@ -628,7 +627,7 @@
                 <b>:</b>
 
                 <strong>
-                    Dr. Amit Verma
+                    {{ selectedOrder?.doctorName }}
                 </strong>
 
             </div>
@@ -641,7 +640,7 @@
                 <b>:</b>
 
                 <strong>
-                    General Medicine
+                    {{ selectedOrder?.departmentName || 'N/A' }}
                 </strong>
 
             </div>
@@ -680,7 +679,7 @@
                 <b>:</b>
 
                 <strong>
-                    01 May 2026
+                    {{ selectedOrder?.createdDate | date:'dd MMM yyyy' }}
                 </strong>
 
             </div>

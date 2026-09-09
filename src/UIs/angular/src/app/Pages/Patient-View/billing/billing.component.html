@@ -282,7 +282,7 @@
 
 
         <!-- BODY -->
-        <div class="billing-modal-body" #printArea>
+        <div class="billing-modal-body">
 
             <!-- BILLING INVOICE -->
             <section class="invoice-section">
@@ -502,6 +502,400 @@
                 Print
 
             </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+@if (selectedBill(); as bill) {
+
+
+
+<!-- =========================================
+             PDF INVOICE
+        ========================================== -->
+
+<div #printArea id="printArea" class="billing-pdf">
+
+    <!-- PDF HEADER -->
+
+    <div class="pdf-header">
+
+        <div class="prescription-header">
+
+            <div class="hospital-brand">
+
+                <img src="assets/images/hospital.png" alt="Health Heaven" class="hospital-logo" />
+
+                <div class="hospital-name">
+
+                    <h1>HEALTH HEAVEN</h1>
+
+                    <h2>MEDICAL CENTER</h2>
+
+                </div>
+
+            </div>
+
+
+            <!--  -->
+
+        </div>
+
+        <div class="pdf-invoice-meta">
+
+            <div>
+                <span>Invoice ID</span>
+                <strong>:</strong>
+                <b>INV-{{ bill.id }}</b>
+            </div>
+
+            <div>
+                <span>Invoice Date</span>
+                <strong>:</strong>
+                <b>{{ formatDate(bill.visitDate) }}</b>
+            </div>
+
+            <div>
+                <span>Bill No.</span>
+                <strong>:</strong>
+                <b>HHMC{{ bill.id }}</b>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="pdf-divider"></div>
+
+
+    <!-- TITLE -->
+
+    <div class="pdf-title">
+
+        <h2>
+            BILLING INVOICE &amp; PAYMENT SUMMARY
+        </h2>
+
+        <p>
+            Official Electronic Billing Record
+        </p>
+
+    </div>
+
+
+    <!-- PATIENT + BILLING INFORMATION -->
+
+    <div class="pdf-info-section">
+
+        <div class="pdf-info-box">
+
+            <h3>PATIENT INFORMATION</h3>
+
+            <div class="pdf-info-row">
+                <span>Patient Name</span>
+                <b>:</b>
+                <strong>{{ bill.patient }}</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>UHID</span>
+                <b>:</b>
+                <strong>PAT-{{ bill.id }}</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Gender</span>
+                <b>:</b>
+                <strong>—</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Age</span>
+                <b>:</b>
+                <strong>—</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Contact Number</span>
+                <b>:</b>
+                <strong>—</strong>
+            </div>
+
+        </div>
+
+
+        <div class="pdf-info-box">
+
+            <h3>BILLING INFORMATION</h3>
+
+            <div class="pdf-info-row">
+                <span>Doctor</span>
+                <b>:</b>
+                <strong>{{ bill.doctor }}</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Department</span>
+                <b>:</b>
+                <strong>General Medicine</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Clinic</span>
+                <b>:</b>
+                <strong>{{ bill.clinicAddress }}</strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Visit Date</span>
+                <b>:</b>
+                <strong>
+                    {{ formatDate(bill.visitDate) }}
+                </strong>
+            </div>
+
+            <div class="pdf-info-row">
+                <span>Invoice Status</span>
+                <b>:</b>
+                <strong class="pdf-paid">
+                    Paid
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BILLING BREAKDOWN -->
+
+    <div class="pdf-breakdown">
+
+        <h3>BILLING BREAKDOWN</h3>
+
+
+        <div class="pdf-table">
+
+            <div class="pdf-table-header">
+
+                <span>DESCRIPTION</span>
+
+                <span>AMOUNT (₹)</span>
+
+            </div>
+
+
+            <div class="pdf-table-row">
+
+                <span>Total Charge</span>
+
+                <strong>
+                    ₹{{ bill.totalCharge | number:'1.2-2' }}
+                </strong>
+
+            </div>
+
+
+            <div class="pdf-table-row">
+
+                <span>Insurance Covered</span>
+
+                <strong class="pdf-green">
+                    -₹{{ bill.insuranceCovered | number:'1.2-2' }}
+                </strong>
+
+            </div>
+
+
+            <div class="pdf-table-row">
+
+                <span>Adjustments</span>
+
+                <strong class="pdf-orange">
+                    -₹{{ bill.adjustments | number:'1.2-2' }}
+                </strong>
+
+            </div>
+
+
+            <div class="pdf-table-row">
+
+                <span>Patient Responsibility</span>
+
+                <strong>
+                    ₹{{ bill.patientResponsibility | number:'1.2-2' }}
+                </strong>
+
+            </div>
+
+
+            <div class="pdf-table-row pdf-balance">
+
+                <span>REMAINING BALANCE</span>
+
+                <strong class="pdf-green">
+                    ₹{{ bill.remainingBalance | number:'1.2-2' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTES + PAYMENT -->
+
+    <div class="pdf-bottom-section">
+
+
+        <!-- NOTES -->
+
+        <div class="pdf-notes">
+
+            <h3>IMPORTANT NOTES</h3>
+
+            <ul>
+
+                <li>
+                    This is an official invoice for services provided.
+                </li>
+
+                <li>
+                    Please retain this invoice for your records.
+                </li>
+
+                <li>
+                    For any billing queries, please contact our
+                    billing department.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- PAYMENT -->
+
+        <div class="pdf-payment">
+
+            <h3>PAYMENT DETAILS</h3>
+
+            <div class="pdf-payment-row">
+                <span>Mode</span>
+                <b>:</b>
+                <strong>Online Payment</strong>
+            </div>
+
+            <div class="pdf-payment-row">
+                <span>Transaction ID</span>
+                <b>:</b>
+                <strong>
+                    TXN-{{ bill.id }}
+                </strong>
+            </div>
+
+            <div class="pdf-payment-row">
+                <span>Payment Status</span>
+                <b>:</b>
+                <strong class="pdf-paid">
+                    Paid
+                </strong>
+            </div>
+
+            <div class="pdf-payment-row">
+                <span>Payment Date</span>
+                <b>:</b>
+                <strong>
+                    {{ formatDate(bill.paymentDate) }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SIGNATURE -->
+
+    <div class="pdf-signature-wrapper">
+
+        <div class="pdf-signature">
+
+            <div class="signature-line"></div>
+
+            <span>
+                Authorized Signature
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="pdf-footer">
+
+        <div>
+
+            <small>
+                Powered By
+            </small>
+
+            <strong>
+                SkyMaxValue
+            </strong>
+
+            <span>
+                Technology Solutions
+            </span>
+
+            <small>
+                © 2026 SkyMaxValue Technology Solutions.
+                <br>
+                All Rights Reserved.
+            </small>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Generated By
+            </small>
+
+            <strong>
+                MyMediBook
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                HEALTH HEAVEN
+            </strong>
+
+            <span>
+                MEDICAL CENTER
+            </span>
+
+            <span>
+                +91 98765 43210
+            </span>
+
+            <span>
+                www.healthheaven.in
+            </span>
 
         </div>
 
