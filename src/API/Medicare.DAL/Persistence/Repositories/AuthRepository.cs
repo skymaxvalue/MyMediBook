@@ -214,9 +214,9 @@ namespace Medicare.DAL.Persistence.Repositories
                         Body = body,
                         IsHtml = true
                     };
-                    bool resetPasswrodMail = await _emailService.SendEmailAsync(emailmodel);
+                    bool resetPasswordMail = await _emailService.SendEmailAsync(emailmodel);
 
-                    if (!resetPasswrodMail)
+                    if (!resetPasswordMail)
                     {
                         returnData = new AssociateResponseModel
                         {
@@ -296,20 +296,21 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("DateOfBirth", model.DateOfBirth);
                 param.Add("PhoneCountryCode", model.PhoneCountryCode);
                 param.Add("PhoneNumber", model.PhoneNumber);
-                param.Add("EmailId", model.EmailId);
-                param.Add("Password", model.Password);
+                param.Add("Email", model.Email);
+                param.Add("PasswordHash", model.PasswordHash);
                 param.Add("Gender", model.Gender);
                 param.Add("Insurance", model.Insurance);
                 param.Add("HolderName", model.InsuranceData?.HolderName);
                 param.Add("Policy", model.InsuranceData?.Policy);
-                param.Add("Address", model.InsuranceData?.Address);
+                param.Add("InsuranceAddress", model.InsuranceData?.Address);
                 param.Add("GroupId", model.InsuranceData?.GroupId);
                 param.Add("Provider", model.InsuranceData?.Provider);
-                param.Add("PaymentType", model.PaymentData?.PaymentType);
                 param.Add("CardHolder", model.PaymentData?.CardHolder);
+                param.Add("CardNumber", model.PaymentData?.CardNumber);
                 param.Add("Expiry", model.PaymentData?.Expiry);
                 param.Add("PaymentType", model.PaymentData?.PaymentType);
-                param.Add("Address", model.Address);
+                param.Add("AddressLine1", model.AddressLine1); 
+                param.Add("AddressLine2", model.AddressLine2);
                 param.Add("CityId", model.CityId);
                 param.Add("ZipCode", model.ZipCode);
                 param.Add("StateId", model.StateId);
@@ -416,7 +417,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
                     var emailmodel = new EmailModel
                     {
-                        ToEmail = model.EmailId,
+                        ToEmail = model.Email,
                         ToName = $"{model.FirstName} {model.LastName}",
                         Subject = "Associate Login - Rest Password Link",
                         Body = body,
