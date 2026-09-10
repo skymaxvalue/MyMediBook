@@ -14,7 +14,7 @@
         public string Email { get; set; }
         public string Gender { get; set; }
         public string Phone { get; set; }
-        public int RelatonTypeId { get; set; }
+        public int RelationTypeId { get; set; }
         public string VisitPurpose { get; set; }
         public string VisitType { get; set; }
         public string OtpMethod { get; set; }

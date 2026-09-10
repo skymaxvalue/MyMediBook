@@ -127,7 +127,7 @@ namespace Medicare.DAL.Persistence.Repositories
 
             try
             {
-                if (model.RelatonTypeId != null && model.RelatonTypeId != 1)
+                if (model.RelationTypeId != null && model.RelationTypeId != 1)
                 {
                     var profileParam = new DynamicParameters();
                     profileParam.Add("PatientId", model.PatientId);
@@ -139,7 +139,7 @@ namespace Medicare.DAL.Persistence.Repositories
                     profileParam.Add("Gender", model.Gender);
                     profileParam.Add("Email", model.Email);
                     profileParam.Add("PhoneNumber", model.Phone);
-                    profileParam.Add("RelationTypeId", model.RelatonTypeId);
+                    profileParam.Add("RelationTypeId", model.RelationTypeId);
 
                     var profileResult = await _context.QuerySingleStoredProcAsync<ResponseModel>(profileProc, profileParam);
 
