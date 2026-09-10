@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Service | MyMediBook Front Office</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/room-service.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="navbar-container" data-active-tab="room"></div>
+
+<main class="dashboard-container">
+
+    <section class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span class="separator">
+            <img src="images/right-arrow-blue.png" alt="">
+        </span>
+        <span class="active">Room Service Request</span>
+    </section>
+
+    <section class="rs-page-card">
+
+        <div class="rs-page-header">
+
+            <div class="rs-title-group">
+                <div class="rs-icon-circle">
+                    <img src="images/bed-blue.png" alt="">
+                </div>
+
+                <div>
+                    <h2>Room Service Request</h2>
+                    <p>Clinical & hospitality services · Complete all steps to submit</p>
+                </div>
+            </div>
+
+            <span class="rs-request-id">RSQ-GU07BT</span>
+
+        </div>
+
+        <div class="rs-stepper">
+
+            <div class="rs-step active">
+                <span>01</span>
+                <strong>Patient</strong>
+            </div>
+
+            <div class="rs-step">
+                <span>02</span>
+                <strong>Room</strong>
+            </div>
+
+            <div class="rs-step">
+                <span>03</span>
+                <strong>Meals</strong>
+            </div>
+
+            <div class="rs-step">
+                <span>04</span>
+                <strong>Services</strong>
+            </div>
+
+            <div class="rs-step">
+                <span>05</span>
+                <strong>Review</strong>
+            </div>
+
+        </div>
+
+        <form id="room-service-form">
+
+            <section class="rs-section">
+
+                <div class="rs-section-header">
+                    <img src="images/search-blue.png" alt="">
+                    <h3>Select Patient Profile</h3>
+                </div>
+
+                <div class="rs-search-layout">
+
+                    <div class="rs-search-column">
+
+                        <div class="rs-field">
+                            <label>Patient Last Name</label>
+
+                            <div class="rs-input-icon">
+                                <img src="images/profile-outline.png" alt="">
+                                <input id="patientLastNameSearch" type="text" placeholder="Enter last name">
+                            </div>
+                        </div>
+
+                        <div class="rs-field">
+                            <label>Date of Birth</label>
+                            <input id="patientDobSearch" type="date">
+                        </div>
+
+                    </div>
+
+                    <div class="rs-search-divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="rs-search-column">
+
+                        <div class="rs-field">
+                            <label>Mobile Number</label>
+
+                            <div class="rs-input-icon">
+                                <img src="images/phone-blue.png" alt="">
+                                <input id="patientMobileSearch" type="tel" placeholder="Enter mobile number">
+                            </div>
+                        </div>
+
+                        <div class="rs-search-actions">
+                            <button type="button" id="patientClearBtn" class="btn-outline-danger">
+                                Clear
+                            </button>
+
+                            <button type="button" id="patientSearchBtn" class="btn-primary">
+                                <img src="images/search-white.png" alt="">
+                                Search
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div id="patientSearchResults" class="rs-search-results"></div>
+
+                <input type="hidden" id="selectedPatientId">
+
+            </section>
+
+            <section class="rs-section">
+
+                <div class="rs-section-header">
+                    <img src="images/profile-blue.png" alt="">
+                    <h3>Patient Information</h3>
+                </div>
+
+                <div class="rs-grid-2">
+
+                    <div class="rs-field">
+                        <label>First Name *</label>
+                        <input id="firstName" type="text" readonly>
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Last Name *</label>
+                        <input id="lastName" type="text" readonly>
+                    </div>
+
+                </div>
+
+                <div class="rs-grid-3">
+
+                    <div class="rs-field">
+                        <label>Date of Birth *</label>
+                        <input id="dob" type="date" readonly>
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Gender *</label>
+                        <select id="gender" disabled>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Medical Record #</label>
+                        <input id="mrn" type="text" readonly>
+                    </div>
+
+                </div>
+
+                <div class="rs-grid-2">
+
+                    <div class="rs-field">
+                        <label>Insurance Provider</label>
+                        <input id="insurance" type="text" readonly>
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Member ID</label>
+                        <input id="memberId" type="text" readonly>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="rs-section">
+
+                <div class="rs-section-header">
+                    <img src="images/hospital-blue.png" alt="">
+                    <h3>Admission & Contact</h3>
+                </div>
+
+                <div class="rs-grid-3">
+
+                    <div class="rs-field">
+                        <label>Admission Date *</label>
+                        <input id="admissionDate" type="date" required>
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Expected Discharge</label>
+                        <input id="dischargeDate" type="date">
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Patient Contact #</label>
+                        <input id="patientPhone" type="tel" placeholder="(000) 000-0000">
+                    </div>
+
+                </div>
+
+                <div class="rs-grid-2">
+
+                    <div class="rs-field">
+                        <label>Emergency Contact Name</label>
+                        <input id="emergencyName" type="text" placeholder="Full name">
+                    </div>
+
+                    <div class="rs-field">
+                        <label>Emergency Contact Phone</label>
+                        <input id="emergencyPhone" type="tel" placeholder="(000) 000-0000">
+                    </div>
+
+                </div>
+
+                <div class="rs-field">
+                    <label>Attending Physician</label>
+                    <input id="physician" type="text" placeholder="Dr. Last, First — department">
+                </div>
+
+            </section>
+
+            <div class="rs-form-footer">
+
+                <div class="rs-step-count">
+                    Step 1 of 5
+                </div>
+
+                <div class="rs-footer-actions">
+
+                    <button type="button" id="saveDraftBtn" class="btn-outline">
+                        <img src="images/save-blue.png" alt="">
+                        Save draft
+                    </button>
+
+                    <button type="submit" class="btn-primary">
+                        Continue
+                        <img src="images/arrow-right-white.png" alt="">
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+<footer class="dashboard-footer">
+
+    <span>© 2026 Health Haven Medical Center. All rights reserved.</span>
+
+    <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Help & Support</a>
+    </div>
+
+</footer>
+
+<script src="js/navbar.js"></script>
+<script src="js/room-service.js"></script>
+
+</body>
+</html>

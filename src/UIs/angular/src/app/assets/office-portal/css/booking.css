@@ -39,46 +39,51 @@ input[type="date"] {
 }
 
 
+
+
+
 .patient-info-header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .header-title-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 10px;
 }
 
 .icon-badge {
-    width: 46px;
-    height: 46px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: #e3ebff;
-    color: #3b5bdb;
+    background: #E3EBFF;
+    color: #3B5BDB;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .icon-badge img {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     object-fit: contain;
 }
 
 .patient-info-header h2 {
     margin: 0;
-    color: #3b5bdb;
-    font-size: 32px;
+    color: #3B5BDB;
+    font-size: 28px;
     font-weight: 700;
+    line-height: 1.2;
 }
 
 .patient-info-header p {
-    margin: 8px 0 0;
+    margin: 6px 0 0;
     color: #667085;
-    font-size: 15px;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .req {
@@ -1487,3 +1492,4 @@ select:-webkit-autofill {
         margin-top: 0;
     }
 }
+

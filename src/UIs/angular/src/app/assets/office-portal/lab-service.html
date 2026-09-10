@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Service | MyMediBook Front Office</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/lab-service.css">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="navbar-container" data-active-tab="lab"></div>
+
+<main class="dashboard-container">
+
+
+
+    <section class="breadcrumb">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <span class="separator">
+
+                <img src="images/right-arrow-blue.png"
+                     alt="Arrow">
+
+            </span>
+
+            <span class="active">
+
+                Lab Service
+
+            </span>
+
+        </section>
+
+
+  
+  <section class="ls-page-card">
+
+    <div class="ls-page-header">
+      <div class="ls-icon-circle">
+        <svg viewBox="0 0 20 20" width="24" height="24" fill="none">
+          <path d="M8 2h4M8.5 2v5.6L4.4 15.2A1.7 1.7 0 0 0 5.9 17.8h8.2a1.7 1.7 0 0 0 1.5-2.6L11.5 7.6V2" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Lab Service Request</h2>
+      <p>Complete all required fields.</p>
+      
+    </div>
+
+    <form id="lab-service-form" novalidate>
+
+      <section class="ls-section">
+
+  <div class="ls-section__header">
+    <svg viewBox="0 0 20 20" fill="none">
+      <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M16 16l-3.2-3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <h3>Select Patient Profile</h3>
+  </div>
+
+  <div class="ls-search-layout">
+
+    
+    <div class="ls-search-left">
+
+      <div class="ls-field">
+        <label for="patientLastNameSearch">Patient Last Name</label>
+
+        <div class="ls-search-input">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M20 21a8 8 0 0 0-16 0" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+
+          <input
+            id="patientLastNameSearch"
+            type="text"
+            placeholder="Enter last name"
+            autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+            aria-controls="patientSearchResults"
+            aria-expanded="false">
+        </div>
+      </div>
+
+      <div class="ls-field">
+        <label for="patientDobSearch">Date of Birth</label>
+
+        <input
+          id="patientDobSearch"
+          class="ls-input"
+          type="date">
+      </div>
+
+    </div>
+
+    
+    <div class="ls-search-divider">
+      <span>OR</span>
+    </div>
+
+    
+    <div class="ls-search-right">
+
+      <div class="ls-field">
+        <label for="patientMobileSearch">Mobile Number</label>
+
+        <div class="ls-search-input">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="7" y="2" width="10" height="20" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="12" cy="18" r="1" fill="currentColor"/>
+          </svg>
+
+          
+
+          <input
+            id="patientMobileSearch"
+            type="tel"
+            placeholder="Enter mobile number"
+            autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+            aria-controls="patientSearchResults"
+            aria-expanded="false">
+
+
+            
+        </div>
+        <div class="ls-search-actions">
+    <button type="button"
+            id="patientClearBtn"
+            class="ls-btn ls-btn--danger-outline">
+        Clear
+    </button>
+
+    <button type="button"
+            id="patientSearchBtn"
+            class="ls-btn ls-btn--primary ls-search-btn">
+        <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M13.5 13.5L17 17"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"/>
+        </svg>
+        Search
+    </button>
+</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  
+  <div id="patientSearchResults"
+       class="ls-search-results"
+       role="listbox"
+       aria-label="Matching patients"></div>
+
+  <input type="hidden" id="lab-patient-id">
+
+</section>
+
+      
+      <section class="ls-section">
+        <div class="ls-section__header">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6.5" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 17a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3>Patient Information</h3>
+        </div>
+
+        <div class="ls-grid" style="margin-bottom: 22px;">
+          <div class="ls-field">
+            <label for="lab-first-name">First Name<span class="ls-req">*</span></label>
+            <input class="ls-input" type="text" id="lab-first-name" placeholder="First Name" required readonly>
+          </div>
+          <div class="ls-field">
+            <label for="lab-last-name">Last Name<span class="ls-req">*</span></label>
+            <input class="ls-input" type="text" id="lab-last-name" placeholder="Last Name" required readonly>
+          </div>
+        </div>
+
+        <div class="ls-grid ls-grid--3" style="margin-bottom: 22px;">
+          <div class="ls-field">
+            <label for="lab-dob">Date of Birth<span class="ls-req">*</span></label>
+            <input class="ls-input" type="date" id="lab-dob" required readonly>
+          </div>
+          <div class="ls-field">
+            <label for="lab-sex">Gender<span class="ls-req">*</span></label>
+            <select class="ls-select ls-select--locked" id="lab-sex" required tabindex="-1">
+              <option value="" disabled selected>Select</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Other</option>
+              
+            </select>
+          </div>
+          <div class="ls-field">
+            <label for="lab-mrn">Medical Record #</label>
+            <input class="ls-input" type="text" id="lab-mrn" placeholder="MRN-000000" readonly>
+          </div>
+        </div>
+
+        <div class="ls-grid">
+          <div class="ls-field">
+            <label for="lab-payer">Insurance Provider</label>
+            <input class="ls-input" type="text" id="lab-payer" placeholder="Insurance Provider name" readonly>
+          </div>
+          <div class="ls-field">
+            <label for="lab-member-id">Member ID</label>
+            <input class="ls-input" type="text" id="lab-member-id" placeholder="Policy number" readonly>
+          </div>
+        </div>
+      </section>
+
+      
+      <section class="ls-section">
+        <div class="ls-section__header">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M7.3 2.5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8.3 2.5V11a2.7 2.7 0 0 0 5.4 0V2.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.3 8.2h5.4" stroke="currentColor" stroke-width="1.5"/></svg>
+          <h3>Specimen Details</h3>
+        </div>
+
+        <div class="ls-field" style="margin-bottom: 22px;">
+          <label>Specimen Type<span class="ls-req">*</span></label>
+          <div class="ls-chip-row" id="lab-specimen-type">
+            <span class="ls-chip" data-value="whole-blood">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Whole blood
+            </span>
+            <span class="ls-chip" data-value="serum">Serum</span>
+            <span class="ls-chip" data-value="plasma">Plasma</span>
+            <span class="ls-chip" data-value="urine">Urine</span>
+            <span class="ls-chip" data-value="sputum">Sputum</span>
+            <span class="ls-chip" data-value="csf">CSF</span>
+            <span class="ls-chip" data-value="other">Other</span>
+          </div>
+        </div>
+
+        <div class="ls-grid">
+          <div class="ls-field">
+            <label for="lab-collection-datetime">Collection Date &amp; Time<span class="ls-req">*</span></label>
+            <input class="ls-input" type="datetime-local" id="lab-collection-datetime" required>
+          </div>
+          <div class="ls-field">
+            <label for="lab-collected-by">Collected By<span class="ls-req">*</span></label>
+            <input class="ls-input" type="text" id="lab-collected-by" placeholder="Phlebotomist name / ID" required>
+          </div>
+        </div>
+      </section>
+
+      
+      <section class="ls-section">
+        <div class="ls-section__header">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="2.5" width="11" height="15" rx="1.6" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 2v-.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V2" stroke="currentColor" stroke-width="1.5"/></svg>
+          <h3>Tests Requested</h3>
+        </div>
+
+        <div class="ls-grid ls-grid--4" id="lab-tests-grid" style="margin-bottom: 22px;">
+          <div class="ls-check-tile" data-value="cbc">
+            <div class="ls-check-tile__text"><strong>CBC w/ diff</strong><span>85025</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="cmp">
+            <div class="ls-check-tile__text"><strong>CMP</strong><span>80053</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="lipid">
+            <div class="ls-check-tile__text"><strong>Lipid panel</strong><span>80061</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="hba1c">
+            <div class="ls-check-tile__text"><strong>HbA1c</strong><span>83036</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="tsh">
+            <div class="ls-check-tile__text"><strong>TSH</strong><span>84443</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="urinalysis">
+            <div class="ls-check-tile__text"><strong>Urinalysis</strong><span>81003</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="pt-inr">
+            <div class="ls-check-tile__text"><strong>PT / INR</strong><span>85610</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-check-tile" data-value="culture">
+            <div class="ls-check-tile__text"><strong>Culture &amp; sens.</strong><span>87077</span></div>
+            <div class="ls-check-tile__box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+
+        <div class="ls-field">
+          <label for="lab-custom-tests">Additional / custom tests</label>
+          <input class="ls-input" type="text" id="lab-custom-tests" placeholder="Enter test name or CPT code">
+        </div>
+      </section>
+
+      
+      <section class="ls-section">
+        <div class="ls-section__header">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2.6 2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Priority</h3>
+        </div>
+
+        <div class="ls-radio-group" id="lab-priority">
+          <div class="ls-radio-card" data-value="routine">
+            <div class="ls-radio-card__text">
+              <div class="ls-radio-card__title">
+                <img class="ls-radio-card__icon" src="images/priority-routine-blue.png" alt="">
+                <strong>Routine</strong>
+              </div>
+              <span>24–48 hrs</span>
+            </div>
+            <div class="ls-radio-card__dot"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-radio-card" data-value="urgent">
+            <div class="ls-radio-card__text">
+              <div class="ls-radio-card__title">
+                <img class="ls-radio-card__icon" src="images/priority-urgent-red.png" alt="">
+                <strong>Urgent</strong>
+              </div>
+              <span>4–8 hrs</span>
+            </div>
+            <div class="ls-radio-card__dot"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ls-radio-card" data-value="stat">
+            <div class="ls-radio-card__text">
+              <div class="ls-radio-card__title">
+                <img class="ls-radio-card__icon" src="images/priority-stat-amber.png" alt="">
+                <strong>STAT</strong>
+              </div>
+              <span>&lt; 1 hr</span>
+            </div>
+            <div class="ls-radio-card__dot"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </section>
+
+      
+      <section class="ls-section">
+        <div class="ls-section__header">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6.2" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 17a6 6 0 0 1 12 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 12.5v3.2M8.4 14.1h3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <h3>Ordered By</h3>
+        </div>
+
+        <div class="ls-grid" style="margin-bottom: 22px;">
+          <div class="ls-field">
+            <label for="lab-provider-name">Physician Name<span class="ls-req">*</span></label>
+            <input class="ls-input" type="text" id="lab-provider-name" placeholder="Dr. Name" required>
+          </div>
+          <div class="ls-field">
+            <label for="lab-npi">Physician Facility Location<span class="ls-req">*</span></label>
+            <input class="ls-input" type="text" id="lab-npi" placeholder="Enter Address" required>
+          </div>
+        </div>
+
+        <div class="ls-grid ls-grid--3" style="margin-bottom: 22px;">
+          <div class="ls-field">
+            <label for="lab-department">Department</label>
+            <select class="ls-select" id="lab-department">
+              <option value="">Select</option>
+              <option>Internal Medicine</option>
+              <option>Cardiology</option>
+              <option>Endocrinology</option>
+              <option>Pediatrics</option>
+              <option>OB/GYN</option>
+              <option>Orthopedics</option>
+              <option>Emergency Medicine</option>
+            </select>
+          </div>
+          <div class="ls-field">
+            <label for="lab-contact-phone">Contact Number</label>
+            <input class="ls-input" type="tel" id="lab-contact-phone" placeholder="(000) 000-0000">
+          </div>
+          <div class="ls-field">
+            <label for="lab-result-delivery">Result Delivery Mode</label>
+            <select class="ls-select" id="lab-result-delivery">
+               <option>Print / Pickup</option>
+              <option>Fax</option>
+             
+              <option>Secure email</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ls-field">
+          <label for="lab-clinical-notes">Clinical Notes / ICD-10 Diagnosis</label>
+          <textarea class="ls-textarea" id="lab-clinical-notes" placeholder="Relevant clinical context, symptoms, or diagnosis codes (e.g. E11.9, Z00.00)…"></textarea>
+        </div>
+      </section>
+
+      <div class="ls-actions">
+        <button type="button" class="ls-btn ls-btn--secondary" id="lab-save-draft-btn">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3.5 3.5h10L16.5 6.5v10h-13v-13Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 3.5v4h6v-4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Save draft
+        </button>
+        <button type="submit" class="ls-btn ls-btn--primary" id="lab-submit-btn">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.2l2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Submit request
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+
+</main>
+
+
+<div id="selectPatientModal" class="modal">
+<div class="modal-content patient-modal-content" role="dialog" aria-modal="true" aria-labelledby="selectPatientModalTitle">
+<button type="button" class="close-icon" data-close-modal="selectPatientModal" aria-label="Close dialog">×</button>
+
+<div class="patient-modal-header">
+    <span class="icon-badge" aria-hidden="true">
+        <img src="images/patient-icon-blue.png" alt="">
+    </span>
+    <h2 id="selectPatientModalTitle">Select Existing Patient</h2>
+</div>
+
+<div class="patient-search-row">
+    <div class="patient-search-box">
+        <input type="text" id="patientSearchInput" placeholder="Search by full name">
+        <button type="button" class="patient-search-btn" id="modalPatientSearchBtn" aria-label="Search">
+            <span class="search-icon"><img src="images/search-white.png" alt="" class="btn-icon-img"></span>
+        </button>
+    </div>
+    <input type="date" id="patientDobFilter" class="patient-dob-input">
+</div>
+
+<p class="patient-modal-hint patient-modal-hint-lg">Search by name, date of birth, or both to avoid selecting the wrong record.</p>
+
+<div class="patient-list" id="patientList"></div>
+
+<div class="form-actions">
+<button type="button" class="clear-btn" data-close-modal="selectPatientModal">Cancel</button>
+<button type="button" class="book-btn" id="selectPatientConfirmBtn" disabled>Select patient</button>
+</div>
+
+</div>
+</div>
+
+
+<div id="labDraftModal" class="modal">
+  <div class="modal-content ls-modal-sm" role="dialog" aria-modal="true" aria-labelledby="labDraftModalTitle">
+    <button type="button" class="close-icon" data-close-modal="labDraftModal" aria-label="Close dialog">×</button>
+    <div class="ls-modal-icon ls-modal-icon--success" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2 class="ls-modal-title" id="labDraftModalTitle">Draft Saved Successfully</h2>
+    <div class="ls-summary-list">
+      <div class="ls-summary-row"><span>Draft ID</span><strong id="lab-draft-id-value">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>Status</span><span class="ls-status-pill ls-status-pill--draft">Draft</span></div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="book-btn" id="lab-draft-ok-btn">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="labReviewModal" class="modal">
+  <div class="modal-content ls-modal-sm" role="dialog" aria-modal="true" aria-labelledby="labReviewModalTitle">
+    <button type="button" class="close-icon" data-close-modal="labReviewModal" aria-label="Close dialog">×</button>
+    <div class="patient-modal-header">
+      <span class="icon-badge" aria-hidden="true">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill="none"><rect x="4.5" y="2.5" width="11" height="15" rx="1.6" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 2v-.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V2" stroke="currentColor" stroke-width="1.5"/></svg>
+      </span>
+      <h2 id="labReviewModalTitle">Review Lab Request</h2>
+    </div>
+    <div class="ls-summary-list">
+      <div class="ls-summary-row"><span>Patient Name</span><strong id="lab-review-patient">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>MRN</span><strong id="lab-review-mrn">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>Specimen</span><strong id="lab-review-specimen">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>Selected Tests</span><strong id="lab-review-tests">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>Priority</span><strong id="lab-review-priority">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>Ordered By</span><strong id="lab-review-provider">&mdash;</strong></div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="clear-btn" id="lab-review-cancel-btn">Cancel</button>
+      <button type="button" class="book-btn" id="lab-review-confirm-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="labSuccessModal" class="modal">
+  <div class="modal-content ls-modal-sm" role="dialog" aria-modal="true" aria-labelledby="labSuccessModalTitle">
+    <button type="button" class="close-icon" data-close-modal="labSuccessModal" aria-label="Close dialog">×</button>
+    <div class="ls-modal-icon ls-modal-icon--success" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2 class="ls-modal-title" id="labSuccessModalTitle">Laboratory Request Sent</h2>
+    <div class="ls-summary-list">
+      <div class="ls-summary-row"><span>Request ID</span><strong id="lab-success-request-id">&mdash;</strong></div>
+      <div class="ls-summary-row"><span>Status</span><span class="ls-status-pill ls-status-pill--pending">Pending Collection</span></div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="book-btn" id="lab-success-done-btn">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+
+<script src="js/footer.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/lab-service.js"></script>
+</body>
+</html>
