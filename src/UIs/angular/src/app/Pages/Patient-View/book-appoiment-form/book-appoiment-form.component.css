@@ -822,3 +822,404 @@ textarea {
   font-size: 13px;
   color: #666;
 }
+/* =========================================
+   EXISTING INSURANCE
+========================================= */
+
+.existing-insurance-section {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.existing-insurance-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #20242a;
+  margin-bottom: 10px;
+}
+
+/* Cards side by side */
+
+.insurance-cards {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 3px 2px 8px;
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.insurance-card {
+  position: relative;
+  flex: 0 0 250px;
+  width: 250px;
+  min-height: 165px;
+  padding: 13px 14px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border: 1px solid #dfe4ec;
+  border-radius: 9px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* Hover */
+
+.insurance-card:hover {
+  border-color: #9bb0ff;
+  box-shadow: 0 4px 12px rgba(50, 80, 180, 0.08);
+}
+
+/* =========================================
+   ACTIVE / LAST ADDED CARD
+========================================= */
+
+.insurance-card.active {
+  border: 2px solid #315cff;
+  box-shadow: 0 4px 12px rgba(49, 92, 255, 0.12);
+}
+
+/* =========================================
+   TOP
+========================================= */
+
+.insurance-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.insurance-icon {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #eef3ff;
+
+  font-size: 14px;
+}
+
+.insurance-provider {
+  flex: 1;
+
+  font-size: 12px;
+  font-weight: 700;
+  color: #273b72;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================
+   ACTIVE BADGE
+========================================= */
+
+.active-badge {
+  padding: 3px 7px;
+
+  border-radius: 12px;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  color: #218653;
+  background: #e6f8ee;
+}
+
+/* =========================================
+   SELECTED CHECK
+========================================= */
+
+.selected-check {
+  position: absolute;
+
+  top: -17px;
+  right: -17px;
+
+  width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #315cff;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  border: 2px solid #ffffff;
+}
+
+/* =========================================
+   PROVIDER NAME
+========================================= */
+
+.insurance-name {
+  margin: 4px 0 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #242932;
+}
+
+/* =========================================
+   DETAILS
+========================================= */
+
+.insurance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  min-height: 20px;
+}
+
+.insurance-row span {
+  font-size: 9px;
+  color: #7b8491;
+  white-space: nowrap;
+}
+
+.insurance-row strong {
+  max-width: 155px;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  color: #30343b;
+
+  text-align: right;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+.insurance-cards::-webkit-scrollbar {
+  height: 4px;
+}
+
+.insurance-cards::-webkit-scrollbar-thumb {
+  background: #d5d9e2;
+  border-radius: 10px;
+}
+
+/* =========================================
+   EXISTING PAYMENT
+========================================= */
+
+.existing-payment-section {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.existing-payment-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #20242a;
+  margin-bottom: 10px;
+}
+
+/* Cards side by side */
+
+.payment-cards {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 3px 2px 8px;
+}
+
+/* =========================================
+   PAYMENT CARD
+========================================= */
+
+.payment-card {
+  position: relative;
+
+  flex: 0 0 250px;
+  width: 250px;
+  min-height: 145px;
+
+  padding: 13px 14px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border: 1px solid #dfe4ec;
+  border-radius: 9px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.payment-card:hover {
+  border-color: #9bb0ff;
+  box-shadow: 0 4px 12px rgba(50, 80, 180, 0.08);
+}
+
+/* Active / Last Added */
+
+.payment-card.active {
+  border: 2px solid #315cff;
+  box-shadow: 0 4px 12px rgba(49, 92, 255, 0.12);
+}
+
+/* =========================================
+   TOP
+========================================= */
+
+.payment-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  position: relative;
+
+  margin-bottom: 9px;
+}
+
+.payment-icon {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef3ff;
+
+  font-size: 14px;
+}
+
+.payment-type {
+  flex: 1;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #273b72;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================
+   ACTIVE BADGE
+========================================= */
+
+.payment-card .active-badge {
+  padding: 3px 7px;
+
+  border-radius: 12px;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  color: #218653;
+  background: #e6f8ee;
+}
+
+/* =========================================
+   CHECK
+========================================= */
+
+.payment-card .selected-check {
+  position: absolute;
+
+  top: -17px;
+  right: -17px;
+
+  width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #315cff;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  border: 2px solid #ffffff;
+}
+
+/* =========================================
+   CARD HOLDER
+========================================= */
+
+.payment-name {
+  margin: 4px 0 9px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #242932;
+}
+
+/* =========================================
+   DETAILS
+========================================= */
+
+.payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  min-height: 22px;
+}
+
+.payment-row span {
+  font-size: 9px;
+  color: #7b8491;
+}
+
+.payment-row strong {
+  max-width: 160px;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  color: #30343b;
+
+  text-align: right;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

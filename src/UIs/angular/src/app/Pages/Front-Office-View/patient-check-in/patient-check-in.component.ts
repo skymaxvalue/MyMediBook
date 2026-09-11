@@ -8,6 +8,8 @@ import { getAppointmentListByAssociateId } from 'src/app/Store/Appointments/appo
 import { selectAppointmentListByAssociateID } from 'src/app/Store/Appointments/appointment.selcetors';
 import { loadDoctorSpecialities } from 'src/app/Store/Doctor/doctor.action';
 import { selectDoctorSpecialities } from 'src/app/Store/Doctor/doctor.selectors';
+import { getSearchPatientDetails } from 'src/app/Store/Patient/patient.action';
+import { selectSearchLisOfPatient } from 'src/app/Store/Patient/patient.selectors';
 
 
 
@@ -290,47 +292,62 @@ export class PatientCheckInComponent implements OnInit {
     this.showDoctorDropdown = true;
   }
 
+  formatDate(date: Date | string): string {
+    const d = new Date(date);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
 
   handleSearch(): void {
+    const today = new Date().toISOString().split('T')[0];
+    this.dob;
+    this.patientName
+    if (this.dob || this.patientName || this.selectedDoctor) {
+      const payload: any = {
+        name: this.patientName,
+        dob: this.dob ? this.dob : null,
+        associateId: this.selectedDoctor?.associateId,
+        fromDate: today,
+        toDate: today
+      }
 
+      this.store.dispatch(getSearchPatientDetails({ payload: payload }))
+      this.searchByDoctor(this.selectedDoctor);
+    }
     this.selectedAppointment = null;
     this.hasSearched = true;
     this.searched = true;
 
 
-    if (this.selectedDoctor) {
-      this.store.dispatch(getAppointmentListByAssociateId({ associateId: this.selectedDoctor.associateId }))
-      this.searchByDoctor(this.selectedDoctor);
+    // if (this.selectedDoctor) {
+    //   this.store.dispatch(getAppointmentListByAssociateId({ associateId: this.selectedDoctor.associateId }))
+    //   this.searchByDoctor(this.selectedDoctor);
 
-      return;
-    }
+    //   return;
+    // }
 
     // If user typed doctor name manually
-    const matchingDoctor = this.doctors.find(
-      doctor =>
-        doctor.name.toLowerCase() ===
-        this.doctorSearch.trim().toLowerCase()
-    );
+    // const matchingDoctor = this.doctors.find(
+    //   doctor =>
+    //     doctor.name.toLowerCase() ===
+    //     this.doctorSearch.trim().toLowerCase()
+    // );
 
-    if (matchingDoctor) {
+    // if (matchingDoctor) {
 
-      this.selectedDoctor = matchingDoctor;
+    //   this.selectedDoctor = matchingDoctor;
 
-      this.searchByDoctor(matchingDoctor);
+    //   this.searchByDoctor(matchingDoctor);
 
-      return;
-    }
+    //   return;
+    // }
 
 
-    if (this.patientName && this.dob) {
 
-      this.searchByPatient(
-        this.patientName,
-        this.dob
-      );
-
-      return;
-    }
 
     // No valid search criteria
     this.searchResults = [];
@@ -364,7 +381,7 @@ export class PatientCheckInComponent implements OnInit {
   }
 
   searchByDoctor(doctorName: any): void {
-    this.store.select(selectAppointmentListByAssociateID).subscribe((res: any) => {
+    this.store.select(selectSearchLisOfPatient).subscribe((res: any) => {
       if (res) {
         this.searchResults = res.data
         console.log(this.searchResults)

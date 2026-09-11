@@ -24,4 +24,8 @@ export const selectGetProfileDataByProfileId = createSelector(
 export const selectGetAllMedicineDetailsOfPatient = createSelector(
     selectPatientState,
     state => state.patientMedicalData
+);
+export const selectSearchLisOfPatient = createSelector(
+    selectPatientState,
+    state => state.searchPatientToCheck
 )

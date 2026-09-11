@@ -856,12 +856,22 @@
   color: #111827;
 }
 
+.activeColor{
+  background-color: #cef2cb;
+  border:1px solid #c0f7bb; ;
+  color:green
+}
+.transist{
+color: #d78300;
+border: 1px solid #ffd88b;
+color: #d78300;
+}
+
 .order-status {
      padding: 10px 39px;
-  border: 1px solid #ffd88b;
+  
   border-radius: 10px;
-  color: #d78300;
-  background: #fffaf0;
+  
   font-size: 18px;
   font-weight: 600;
 }

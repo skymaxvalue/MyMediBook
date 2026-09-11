@@ -4,8 +4,12 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
+import {
+  Router,
+  NavigationEnd
+} from '@angular/router';
 
-import { Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: "app-front-office-header",
@@ -47,6 +51,99 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
     this.startClock();
 
+    // Set active menu on initial page load
+    this.setActivePage(this.router.url);
+
+    // Update active menu whenever route changes
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd =>
+            event instanceof NavigationEnd
+        )
+      )
+      .subscribe((event: NavigationEnd) => {
+
+        this.setActivePage(
+          event.urlAfterRedirects
+        );
+
+      });
+
+  }
+
+  setActivePage(url: string): void {
+
+    if (url.includes('/front-office/dashboard')) {
+
+      this.activePage = 'dashboard';
+
+    }
+    else if (
+      url.includes('/front-office/patient-registration')
+    ) {
+
+      this.activePage = 'patient-registration';
+
+    }
+    else if (
+      url.includes('/front-office/book-appointment')
+    ) {
+
+      this.activePage = 'book-appointment';
+
+    }
+    else if (
+      url.includes('/front-office/patient-checkin')
+    ) {
+
+      this.activePage = 'patient-checkin';
+
+    }
+    else if (
+      url.includes('/front-office/lab-service')
+    ) {
+
+      this.activePage = 'lab-service';
+
+    }
+    else if (
+      url.includes('/front-office/insurance')
+    ) {
+
+      this.activePage = 'insurance';
+
+    }
+    else if (
+      url.includes('/front-office/queue')
+    ) {
+
+      this.activePage = 'queue';
+
+    }
+    else if (
+      url.includes('/front-office/doctor-schedule')
+    ) {
+
+      this.activePage = 'doctor-schedule';
+
+    }
+    else if (
+      url.includes('/front-office/reports')
+    ) {
+
+      this.activePage = 'reports';
+
+    }
+    else if (
+      url.includes('/front-office/settings')
+    ) {
+
+      this.activePage = 'settings';
+
+    } else {
+      this.activePage = ''
+    }
   }
 
 

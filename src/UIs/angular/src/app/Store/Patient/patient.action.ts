@@ -79,3 +79,18 @@ export const getAllMecineDetailByPatientIDFailure = createAction(
     '[Patient Medicine] Medicine Data Failure',
     props<{ error: string }>()
 );
+export const getSearchPatientDetails = createAction(
+    '[Patient search] Data List ',
+    props<{ payload: any }>()
+
+);
+
+export const getSearchPatientDetailsSuccess = createAction(
+    '[Patient search] Data Success',
+    props<{ searchList: any }>()
+);
+
+export const getSearchPatientDetailsFailure = createAction(
+    '[Patient search] Data Failure',
+    props<{ error: string }>()
+);

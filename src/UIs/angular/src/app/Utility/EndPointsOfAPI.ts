@@ -31,6 +31,7 @@ export const PatientApiEndPoint = {
     GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
     GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
     GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
+    SEARCH_PATIENT_REQUEST: "Patient/SearchPatient"
 }
 
 export const AssociateApiEndPoint = {

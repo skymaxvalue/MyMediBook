@@ -3,7 +3,7 @@ import { AppointmentBooking } from '../../core/Models/Appointment-Model';
 
 export const createAppointment = createAction(
     '[Appointment] Create Appointment',
-    props<{ appointment: AppointmentBooking }>()
+    props<{ appointment: any }>()
 );
 
 export const createAppointmentSuccess = createAction(

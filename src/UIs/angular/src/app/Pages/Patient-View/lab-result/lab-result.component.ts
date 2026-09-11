@@ -143,6 +143,25 @@ export class LabResultComponent {
         return '/assets/images/icon-pending.png';
     }
   }
+  getStatusIconForReport(item: LabResultModel): string {
+
+    const status = this.getResultStatus(item);
+
+    switch (status) {
+
+      case 'Normal':
+        return '/assets/images/status-normal.png';
+
+      case 'Critical':
+        return '/assets/images/icon-critical.png';
+
+      case 'Pending':
+        return '/assets/images/icon-pending.png';
+
+      default:
+        return '/assets/images/icon-pending.png';
+    }
+  }
 
   // normalTests = computed(() =>
   //   this.results().filter(

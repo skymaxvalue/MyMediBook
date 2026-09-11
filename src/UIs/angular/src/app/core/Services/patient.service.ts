@@ -57,5 +57,11 @@ export class PatientService {
     );
   }
 
+  getSearchList(payload: any): Observable<any> {
+
+    return this.http.post<any>(
+      `${this.apiUrl}${PatientApiEndPoint.SEARCH_PATIENT_REQUEST}`, payload
+    );
+  }
 
 }

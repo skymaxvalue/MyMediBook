@@ -71,5 +71,21 @@ export const patientReducer = createReducer(
         isLoading: false,
         error: action.error,
     })),
+    on(PatientActions.getSearchPatientDetails, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(PatientActions.getSearchPatientDetailsSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        searchPatientToCheck: action.searchList
+    })),
+
+    on(PatientActions.getSearchPatientDetailsFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
 
 )
