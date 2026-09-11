@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/core/Services/auth.service';
 import { AppState } from 'src/app/Store/app.state';
 import { login, requestOTP } from 'src/app/Store/Auth/auth.actions';
@@ -53,55 +54,72 @@ export class FrontofficeLoginComponent {
       return;
     }
 
-    this.store.dispatch(login({ username: this.username, password: this.password, role: 'associate' }))
-    // Remember username
+    this.store.dispatch(
+      login({
+        username: this.username,
+        password: this.password,
+        role: 'associate'
+      })
+    );
 
-    this.store.select(selectLoginUser).subscribe((res: any) => {
-      if (res) {
-        this.emailId = res.data.email
-        localStorage.setItem('loginTime', Date.now().toString());
-        localStorage.setItem('token', res.tokenKey);
-        localStorage.setItem('refreshToken', res.refreshToken);
-        localStorage.setItem('user', JSON.stringify(res.data));
+    this.store
+      .select(selectLoginUser)
+      .subscribe((res: any) => {
 
-        this.store.dispatch(requestOTP({ email: this.emailId }))
-      }
+        if (!res) {
+          return;
+        }
 
-    })
-    this.store.select(selectRequestedOTP).subscribe((res: any) => {
-      if (res) {
-        this.router.navigate(['/front-office/otp-verification'], {
-          state: {
-            emailId: this.emailId,
-            isLoginFollow: true
-          }
-        });
-      }
-    })
+        this.emailId = res.data.email;
 
+        localStorage.setItem(
+          'loginTime',
+          Date.now().toString()
+        );
 
+        localStorage.setItem(
+          'token',
+          res.tokenKey
+        );
 
+        localStorage.setItem(
+          'refreshToken',
+          res.refreshToken
+        );
 
-    // if (this.remember) {
-    //   localStorage.setItem('rememberedUsername', user);
-    // } else {
-    //   localStorage.removeItem('rememberedUsername');
-    // }
+        localStorage.setItem(
+          'user',
+          JSON.stringify(res.data)
+        );
 
+        // Request OTP
+        this.store.dispatch(
+          requestOTP({
+            email: this.emailId
+          })
+        );
 
-    // Temporary login
-    // if (user === '1024' && pass === '1234') {
+        this.store
+          .select(selectRequestedOTP)
+          .subscribe((otpRes: any) => {
 
-    //   localStorage.setItem('pendingUser', user);
+            if (!otpRes) {
+              return;
+            }
 
-    //   this.router.navigate(['/front-office/otp-verification']);
+            this.router.navigate(
+              ['/front-office/otp-verification'],
+              {
+                state: {
+                  emailId: this.emailId,
+                  flow: 'login'
+                }
+              }
+            );
 
-    // } else {
+          });
 
-    //   this.shakeForm();
-
-    //   alert('Invalid Employee ID or Password.');
-    // }
+      });
   }
 
   private shakeForm(): void {

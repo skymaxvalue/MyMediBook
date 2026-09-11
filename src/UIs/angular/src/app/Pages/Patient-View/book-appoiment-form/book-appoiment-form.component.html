@@ -229,6 +229,133 @@
                 </div>
                 } -->
 
+
+                @if (selectedProfileData?.insuranceData?.length > 0) {
+                <label for="">Existing Insurance Details</label>
+
+                <div class="existing-insurance-section">
+
+
+
+                    <div class="insurance-cards">
+
+                        @for (insurance of selectedProfileData.insuranceData; track $index) {
+
+                        <div class="insurance-card"
+                            [class.active]="selectedProfileData.insuranceData.length - 1 === $index"
+                            (click)="selectInsurance(insurance)">
+
+                            <div class="insurance-card-top">
+
+                                <div class="insurance-icon">
+                                    🛡
+                                </div>
+
+                                <div class="insurance-provider">
+                                    {{ insurance.provider }}
+                                </div>
+
+                                <span class="active-badge">
+                                    Active
+                                </span>
+
+                                @if (selectedProfileData.insuranceData.length - 1 === $index) {
+                                <span class="selected-check">✓</span>
+                                }
+
+                            </div>
+
+                            <div class="insurance-name">
+                                {{ insurance.provider }}
+                            </div>
+
+                            <div class="insurance-row">
+                                <span>Policy No.</span>
+                                <strong>{{ insurance.policy || '-' }}</strong>
+                            </div>
+
+                            <div class="insurance-row">
+                                <span>Group ID</span>
+                                <strong>{{ insurance.groupId || '-' }}</strong>
+                            </div>
+
+                            <div class="insurance-row">
+                                <span>Holder Name</span>
+                                <strong>{{ insurance.holderName || '-' }}</strong>
+                            </div>
+
+                            <div class="insurance-row">
+                                <span>Address</span>
+                                <strong>{{ insurance.address || '-' }}</strong>
+                            </div>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                </div>
+
+                }
+                @if (selectedProfileData?.paymentData?.length > 0) {
+                <label for=""> Existing Payment Details</label>
+                <div class="existing-payment-section">
+
+                    <div class="payment-cards">
+
+                        @for (payment of selectedProfileData.paymentData; track $index) {
+
+                        <div class="payment-card" [class.active]="selectedProfileData.paymentData.length - 1 === $index"
+                            (click)="selectPayment(payment)">
+
+                            <div class="payment-card-top">
+
+                                <div class="payment-icon">
+                                    💳
+                                </div>
+
+                                <div class="payment-type">
+                                    {{ payment.paymentType || 'Card' }}
+                                </div>
+
+                                <span class="active-badge">
+                                    Active
+                                </span>
+
+                                @if (selectedProfileData.paymentData.length - 1 === $index) {
+                                <span class="selected-check">✓</span>
+                                }
+
+                            </div>
+
+                            <div class="payment-name">
+                                {{ payment.cardHolder || '-' }}
+                            </div>
+
+                            <div class="payment-row">
+                                <span>Card Number</span>
+                                <strong>
+                                    {{ maskCardNumber(payment.cardNumber) }}
+                                </strong>
+                            </div>
+
+                            <div class="payment-row">
+                                <span>Expiry</span>
+                                <strong>
+                                    {{ payment.expiry || '-' }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                </div>
+
+                }
                 <label>
                     {{ selectedProfileData?.insuranceData
                     ? 'Do you want to change insurance?'
@@ -476,36 +603,52 @@
                 </div>
 
                 <label>Card Number</label>
+
                 <div class="field-container">
-                    <input formControlName="cardNumber" placeholder="Enter Card Number" />
-                    @if (getNestedError('paymentData', 'cardNumber', 'Card Number')) {
+
+                    <input formControlName="cardNumber" placeholder="Enter Card Number" maxlength="19"
+                        inputmode="numeric" (input)="formatCardNumber($event)" />
+
+                    @if (getPaymentError('cardNumber')) {
                     <small class="error-message">
-                        {{ getNestedError('paymentData', 'cardNumber', 'Card Number') }}
+                        {{ getPaymentError('cardNumber') }}
                     </small>
                     }
+
                 </div>
 
                 <label>Expiry Date</label>
+
                 <div class="inline-row">
+
                     <div class="field-container expiry-container">
-                        <input formControlName="expiry" placeholder="MM/YY" />
-                        @if (getNestedError('paymentData', 'expiry', 'Expiry Date')) {
+
+                        <input formControlName="expiry" placeholder="MM/YY" maxlength="5" inputmode="numeric"
+                            (input)="formatExpiry($event)" />
+
+                        @if (getPaymentError('expiry')) {
                         <small class="error-message">
-                            {{ getNestedError('paymentData', 'expiry', 'Expiry Date') }}
+                            {{ getPaymentError('expiry') }}
                         </small>
                         }
+
                     </div>
 
                     <span class="cvv-label">CVV</span>
 
                     <div class="field-container cvv-container">
-                        <input formControlName="cvv" placeholder="XXX" />
-                        @if (getNestedError('paymentData', 'cvv', 'CVV')) {
+
+                        <input type="password" formControlName="cvv" placeholder="XXX" maxlength="4" inputmode="numeric"
+                            (keypress)="allowOnlyNumbers($event)" />
+
+                        @if (getPaymentError('cvv')) {
                         <small class="error-message">
-                            {{ getNestedError('paymentData', 'cvv', 'CVV') }}
+                            {{ getPaymentError('cvv') }}
                         </small>
                         }
+
                     </div>
+
                 </div>
             </div>
         </div>

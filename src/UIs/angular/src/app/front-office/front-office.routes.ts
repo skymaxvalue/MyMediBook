@@ -108,6 +108,13 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                         .then(m => m.OtpVerificationComponent)
             },
             {
+                path: "otp-verification-for-registration",
+                loadComponent: () =>
+                    import('../auth/frontoffice-login/otp-verification/otp-verification.component')
+                        .then(m => m.OtpVerificationComponent)
+
+            },
+            {
                 path: 'appointment-success',
                 loadComponent: () =>
                     import('../Pages/Front-Office-View/succses/succses.component')

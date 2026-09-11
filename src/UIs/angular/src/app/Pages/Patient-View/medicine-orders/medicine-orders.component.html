@@ -344,8 +344,9 @@
                 <div class="medicine-info">
                     <div class="divided">
                         <h3>{{ selectedOrder.drugName }}</h3>
-                        <div class="order-status">
-                            <img src="/assets/images/transit.png" alt=""> {{ selectedOrder.orderStatus }}
+                        <div class="order-status {{selectedOrder.orderStatus=='Active'? 'activeColor':'transist'}}">
+                            <img src="{{selectedOrder.orderStatus=='Active'? '/assets/images/status-normal.png':'/assets/images/transit.png'}}"
+                                alt=""> {{ selectedOrder.orderStatus }}
                         </div>
 
                     </div>

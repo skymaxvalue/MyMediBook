@@ -870,6 +870,158 @@
 </main>
 
 
+@if (selectPatientModal) {
+
+<div class="modal">
+
+    <div class="modal-content patient-modal-content">
+
+        <!-- CLOSE -->
+        <div class="close-icon" (click)="closeSelectPatientModal()">
+            X
+        </div>
+
+
+        <!-- HEADER -->
+        <div class="patient-modal-header">
+
+            <span class="icon-badge" aria-hidden="true">
+                <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="">
+            </span>
+
+            <h2>
+                Select Existing Patient
+            </h2>
+
+        </div>
+
+
+        <!-- SEARCH -->
+        <div [formGroup]="patientSearchForm">
+
+            <div class="patient-search-row">
+
+                <div class="patient-search-box">
+
+                    <input type="text" formControlName="search" placeholder="Search by full name"
+                        (input)="highlightedPatient = null">
+
+                    <button type="button" class="patient-search-btn" aria-label="Search">
+
+                        <span class="search-icon">
+                            <img src="/assets/images/front-office/images/search-white.png" alt="" class="btn-icon-img">
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <input type="date" class="patient-dob-input" [formControl]="patientSearchForm.get('dob')">
+
+            </div>
+        </div>
+
+
+        <p class="patient-modal-hint patient-modal-hint-lg">
+            Search by name, date of birth, or both to avoid selecting the wrong record.
+        </p>
+
+
+        <!-- PATIENT LIST -->
+        <div class="patient-list">
+
+            @for (patient of filteredPatients; track patient.id) {
+
+            <div class="patient-item" [class.best-match]="highlightedPatient?.id === patient.id"
+                (click)="selectPatient(patient)">
+                <span class="patient-item-avatar">👤</span>
+                <div class="patient-item-details" [class.selected]>
+                    <p class="patient-item-name">{{patient.firstName}} {{ patient.lastName }}</p>
+                    <p class="patient-item-relation">DOB: {{ patient.dateOfBirth }} Self</p>
+                </div>
+                @if (highlightedPatient?.id === patient.id) {
+
+                <div class="patient-selected-icon">
+                    <span class="match-badge">Best match</span>
+                </div>
+
+                }
+
+                <!-- <div class="patient-list-avatar">
+
+                    <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="">
+
+                </div> -->
+
+
+                <!-- <div class="patient-list-info">
+
+                    <div class="patient-name">
+                        {{ patient.firstName }}
+                        {{ patient.lastName }}
+                    </div>
+
+                    <div class="patient-details">
+
+                        <span>
+                            {{ patient.gender }}
+                        </span>
+
+                        <span>
+                            DOB: {{ patient.dateOfBirth }}
+                        </span>
+
+                        <span>
+                            +91 {{ patient.phone }}
+                        </span>
+
+                    </div>
+
+                </div> -->
+
+
+
+
+            </div>
+
+            }
+
+            @if (filteredPatients.length === 0) {
+
+            <div class="no-patients">
+                No patient found.
+            </div>
+
+            }
+
+        </div>
+
+
+        <!-- ACTIONS -->
+        <div class="form-actions">
+
+            <button type="button" class="clear-btn" (click)="closeSelectPatientModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button" class="book-btn" [disabled]="!highlightedPatient" (click)="confirmPatientSelection()">
+
+                Select patient
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
 @if (responsiblePartyOtpModal) {
 
 <div class="modal">

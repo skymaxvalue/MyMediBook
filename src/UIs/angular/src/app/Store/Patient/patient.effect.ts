@@ -102,6 +102,25 @@ export class PatientEffects {
         )
     )
 
+    getSearchPatient$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getSearchPatientDetails),
+            mergeMap((action) =>
+                this.patientService.getSearchList(action.payload).pipe(
+                    map((response: any) =>
+                        PatientAction.getSearchPatientDetailsSuccess({ searchList: response })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getSearchPatientDetailsFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
+    )
+
+
 
 
 }

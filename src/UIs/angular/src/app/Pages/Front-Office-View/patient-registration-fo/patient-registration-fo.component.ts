@@ -1012,10 +1012,10 @@ export class PatientRegistrationFOComponent implements OnInit {
     await this.store.dispatch(AuthActions.requestOTP({ email: formData.contactInformation.email }));
     await this.store.select(selectRequestedOTP).subscribe((res: any) => {
       if (res?.data) {
-        this.router.navigate(['/front-office/otp-verification-for-appointment'], {
+        this.router.navigate(['/front-office/otp-verification-for-registration'], {
           state: {
             registrationData: formData,
-            isBookAppointment: true,
+            isRegisterPatient: true,
 
           }
         })

@@ -13,6 +13,13 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/Store/app.state';
+import * as AuthActions from 'src/app/Store/Auth/auth.actions';
+import { selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
+import { Router } from '@angular/router';
+import { createAppointment } from 'src/app/Store/Appointments/appointment.actions';
+import { requestOTP } from 'src/app/Store/Auth/auth.actions';
 
 interface Doctor {
   id?: number | string;
@@ -64,14 +71,33 @@ interface ResponsibleParty {
 export class BookingPatientInformationComponent
   implements OnInit, OnDestroy {
 
-  @Input() doctor!: Doctor;
+  @Input() doctor!: any;
 
   @Input() selectedDate: string = '';
 
   @Input() selectedSlot: any;
 
 
+  appointmentOtpModal = false;
+
+  appointmentOtp = '';
+
+  appointmentOtpError = '';
+
+  appointmentOtpTimeRemaining = 60;
+
+  private appointmentOtpTimer?: ReturnType<typeof setInterval>;
+
+  bookingSuccess = false;
+
+  bookingFailed = false;
+
+  bookingErrorMessage = '';
+
+
   bookingForm!: FormGroup;
+
+  responsiblePartyOtpModal = false;
 
   patientSearchForm!: FormGroup;
 
@@ -101,7 +127,7 @@ export class BookingPatientInformationComponent
 
   responsiblePartyChannelModal = false;
 
-  responsiblePartyOtpModal = false;
+
 
   insuranceModal = false;
 
@@ -170,8 +196,12 @@ export class BookingPatientInformationComponent
 
 
   constructor(
-    private fb: FormBuilder
-  ) { }
+    private fb: FormBuilder,
+    private store: Store<AppState>,
+    private router: Router
+  ) {
+
+  }
 
 
   ngOnInit(): void {
@@ -181,6 +211,7 @@ export class BookingPatientInformationComponent
     this.loadPatients();
 
     this.setupFormSubscriptions();
+    console.log(this.doctor)
 
   }
 
@@ -352,6 +383,185 @@ export class BookingPatientInformationComponent
       ]
 
     });
+
+  }
+
+
+  // submitBooking(): void {
+
+  //   if (this.bookingForm.invalid) {
+
+  //     this.bookingForm.markAllAsTouched();
+
+  //     return;
+  //   }
+
+  //   const otpMethod = this.bookingForm.get('otp')?.value;
+
+  //   console.log('Selected OTP Method:', otpMethod);
+
+  //   // -----------------------------
+  //   // MOBILE OTP
+  //   // -----------------------------
+
+  //   if (otpMethod === 'mobile') {
+
+  //     this.sendAppointmentOtp('mobile');
+
+  //     return;
+  //   }
+
+
+  //   // -----------------------------
+  //   // EMAIL OTP
+  //   // -----------------------------
+
+  //   if (otpMethod === 'email') {
+
+  //     this.sendAppointmentOtp('email');
+
+  //     return;
+  //   }
+
+
+  //   // -----------------------------
+  //   // NO OTP
+  //   // -----------------------------
+
+  //   if (otpMethod === 'none') {
+
+  //     this.bookAppointment();
+
+  //     return;
+  //   }
+
+  // }
+
+  async submitBooking(): Promise<void> {
+
+    if (this.bookingForm.invalid) {
+
+      this.bookingForm.markAllAsTouched();
+
+      return;
+    }
+
+    const formData = this.bookingForm.getRawValue();
+
+    console.log('Appointment Form Data:', formData);
+
+    const otpMethod = formData.otp;
+
+    if (otpMethod === 'none') {
+
+      this.bookAppointment();
+
+      return;
+    } else {
+      await this.store.dispatch(requestOTP({ email: formData.email }))
+
+      await this.store
+        .select(selectRequestedOTP)
+        .subscribe((res: any) => {
+
+          if (res?.data) {
+
+            this.router.navigate(
+              ['/front-office/otp-verification-for-appointment'],
+              {
+                state: {
+
+                  appointmentData: formData,
+
+                  doctor: this.doctor,
+
+                  selectedDate: this.selectedDate,
+
+                  selectedSlot: this.selectedSlot,
+
+                  isBookAppointment: true,
+
+                  otpMethod: 'email'
+
+                }
+              }
+            );
+
+          }
+
+        });
+
+      return;
+    }
+
+
+
+
+
+
+
+  }
+  bookAppointment(): void {
+
+    const formData = this.bookingForm.getRawValue();
+
+    const payload = {
+      patientId: formData.patientId ?? 0,
+      profileId: formData.profileId ?? 0,
+      associateId: this.doctor?.associateId,
+      slotId: this.selectedSlot?.slotId ?? 0,
+
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+
+      age: Number(formData.age),
+      ageTypeId: Number(formData.ageTypeId ?? 0),
+
+      dateOfBirth: formData.dateOfBirth,
+
+      email: formData.email,
+      gender: formData.gender,
+      phone: formData.phone,
+
+      relationTypeId: Number(formData.relationTypeId ?? 0),
+
+      visitPurpose: formData.visitPurpose,
+      visitType: formData.visitType,
+
+      otpMethod: formData.otp,
+
+      insuranceData: {
+        provider: this.insuranceForm.value.provider ?? '',
+        policy: this.insuranceForm.value.policy ?? '',
+        groupId: this.insuranceForm.value.groupId ?? '',
+        holderName: this.insuranceForm.value.holderName ?? '',
+        address: this.insuranceForm.value.address ?? ''
+      },
+
+      paymentData: {
+        paymentType: this.paymentForm.value.paymentType ?? '',
+        cardHolder: this.paymentForm.value.cardHolder ?? '',
+        cardNumber: this.paymentForm.value.cardNumber ?? '',
+        expiry: this.paymentForm.value.expiry ?? ''
+      },
+
+      insurance: this.insuranceChoice === 'yes',
+
+      createdBy: 'current-user',
+      associateRole: 'Doctor'
+    };
+
+
+
+    console.log(
+      'BOOK APPOINTMENT PAYLOAD:',
+      payload
+    );
+
+    this.store.dispatch(createAppointment({ appointment: payload }))
+
+
+    this.bookingSuccess = true;
 
   }
 
@@ -1060,43 +1270,43 @@ export class BookingPatientInformationComponent
   // SUBMIT
   // ====================================================
 
-  submitBooking(): void {
+  // submitBooking(): void {
 
-    if (this.bookingForm.invalid) {
+  //   if (this.bookingForm.invalid) {
 
-      this.bookingForm.markAllAsTouched();
+  //     this.bookingForm.markAllAsTouched();
 
-      return;
+  //     return;
 
-    }
-
-
-    const payload = {
-
-      doctor: this.doctor,
-
-      appointmentDate: this.selectedDate,
-
-      appointmentSlot: this.selectedSlot,
-
-      patient: this.bookingForm.value,
-
-      insurance: this.insuranceForm.value,
-
-      payment: this.paymentForm.value
-
-    };
+  //   }
 
 
-    console.log(
-      'Booking Payload:',
-      payload
-    );
+  //   const payload = {
+
+  //     doctor: this.doctor,
+
+  //     appointmentDate: this.selectedDate,
+
+  //     appointmentSlot: this.selectedSlot,
+
+  //     patient: this.bookingForm.value,
+
+  //     insurance: this.insuranceForm.value,
+
+  //     payment: this.paymentForm.value
+
+  //   };
 
 
-    // Call your booking API here
+  //   console.log(
+  //     'Booking Payload:',
+  //     payload
+  //   );
 
-  }
+
+  //   // Call your booking API here
+
+  // }
 
 
   // ====================================================

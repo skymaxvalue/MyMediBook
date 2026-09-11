@@ -4,7 +4,8 @@ import {
   OnInit,
   ViewChildren,
   QueryList,
-  ElementRef
+  ElementRef,
+  ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,9 +14,9 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AppState } from 'src/app/Store/app.state';
 import { Store } from '@ngrx/store';
-import { register_by_reseptionist, verifyOTP } from 'src/app/Store/Auth/auth.actions';
+import { register_by_reseptionist, requestOTP, verifyOTP } from 'src/app/Store/Auth/auth.actions';
 import { selectRegisteredPatientByReceptionist, selectVerifyOTP } from 'src/app/Store/Auth/auth.selectors';
-
+import { interval, Subscription } from 'rxjs';
 @Component({
   selector: "app-otp-verification",
   imports: [CommonModule,
@@ -24,33 +25,40 @@ import { selectRegisteredPatientByReceptionist, selectVerifyOTP } from 'src/app/
   styleUrl: "./otp-verification.component.css",
 })
 export class OtpVerificationComponent implements OnInit, OnDestroy {
+  flow: 'login' | 'registration' | 'appointment' | 'reset-password' = 'login';
+
+  registrationData: any = null;
+  appointmentData: any = null;
+
+  emailId: string = '';
+
+  isLoading = false;
+  errorMessage = '';
+
+  time = 300;
+  timerText = '05:00';
+  isExpired = false;
+
+  private timerSubscription?: Subscription;
+
+  private countdown: any;
   currentUrl = '';
   @ViewChildren('otpInput')
   otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
   otp: string[] = ['', '', '', ''];
   otpArray = [1, 2, 3, 4];
-  time = 60;
 
-  timerText = '01:00';
 
-  isExpired = false;
-
-  isLoading = false;
-
-  errorMessage = '';
 
   pendingUser: any = null;
 
-  private countdown: any;
   resetPasswordToken: any;
-  emailId: any;
   isLoginFlow: boolean = false;
   isBookAppointmentFlow: boolean = false;
-  registrationData: any;
 
 
   constructor(
-    private router: Router, private store: Store<AppState>, private route: ActivatedRoute
+    private router: Router, private store: Store<AppState>, private route: ActivatedRoute, private cdr: ChangeDetectorRef
   ) {
     this.currentUrl = this.router.url;
     console.log('Current URL:', this.currentUrl);
@@ -58,29 +66,73 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+
     console.log('history.state:', history.state);
 
-    console.log('isLoginFlow:', this.isLoginFlow);
-    console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
-    console.log('registrationData:', this.registrationData);
-    this.emailId = history.state.emailId;
-    this.isLoginFlow = history.state.isLoginFollow;
-    if (this.isLoginFlow) {
-      this.emailId = history.state.emailId;
-    }
-    this.isBookAppointmentFlow = history.state.isBookAppointment;
-    console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
-    if (this.isBookAppointmentFlow) {
-      this.emailId = history.state.registrationData.contactInformation.email;
-      this.registrationData = history.state.registrationData,
-        console.log('Form Data:', this.registrationData);
-      console.log('Email ID:', this.emailId);
+    const state = history.state;
+
+    this.flow = state.flow || 'login';
+
+    // LOGIN
+    if (this.flow === 'login') {
+
+      this.emailId = state.emailId;
+
+      console.log('Login OTP flow');
+      console.log('Email:', this.emailId);
     }
 
+    // REGISTRATION
+    else if (this.flow === 'registration') {
+
+      this.registrationData = state.registrationData;
+
+      this.emailId =
+        this.registrationData?.contactInformation?.email || '';
+
+      console.log('Registration OTP flow');
+      console.log('Registration Data:', this.registrationData);
+    }
+
+    // APPOINTMENT
+    else if (this.flow === 'appointment') {
+
+      this.appointmentData = state.appointmentData;
+
+      this.emailId =
+        this.appointmentData?.email || '';
+
+      console.log('Appointment OTP flow');
+      console.log('Appointment Data:', this.appointmentData);
+    }
 
     this.startTimer();
-
   }
+  // ngOnInit(): void {
+
+  //   console.log('history.state:', history.state);
+
+  //   console.log('isLoginFlow:', this.isLoginFlow);
+  //   console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
+  //   console.log('registrationData:', this.registrationData);
+  //   this.emailId = history.state.emailId;
+  //   this.isLoginFlow = history.state.isLoginFollow;
+  //   if (this.isLoginFlow) {
+  //     this.emailId = history.state.emailId;
+  //   }
+  //   this.isBookAppointmentFlow = history.state.isBookAppointment;
+  //   console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
+  //   if (this.isBookAppointmentFlow) {
+  //     this.emailId = history.state.registrationData.contactInformation.email;
+  //     this.registrationData = history.state.registrationData,
+  //       console.log('Form Data:', this.registrationData);
+  //     console.log('Email ID:', this.emailId);
+  //   }
+
+
+  //   this.startTimer();
+
+  // }
   moveNext(event: Event, index: number): void {
 
     const input = event.target as HTMLInputElement;
@@ -207,74 +259,77 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
     this.clearTimer();
 
-    this.time = 60;
-
+    this.time = 300;
     this.isExpired = false;
 
     this.updateTimerText();
 
+    this.countdown = setInterval(() => {
 
-    this.countdown =
-      setInterval(() => {
+      this.time--;
 
-        this.time--;
+      console.log('Timer:', this.time);
 
-        this.updateTimerText();
+      this.updateTimerText();
 
+      // Force Angular UI update
+      this.cdr.detectChanges();
 
-        if (this.time <= 0) {
+      if (this.time <= 0) {
 
-          this.clearTimer();
+        this.clearTimer();
 
-          this.isExpired = true;
+        this.isExpired = true;
+        this.timerText = 'Expired';
 
-          this.timerText = 'Expired';
+        this.cdr.detectChanges();
+      }
 
-        }
-
-      }, 1000);
-
+    }, 1000);
   }
-
 
   updateTimerText(): void {
 
-    const minutes =
-      Math.floor(this.time / 60);
-
-    const seconds =
-      this.time % 60;
-
+    const minutes = Math.floor(this.time / 60);
+    const seconds = this.time % 60;
 
     this.timerText =
       `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
   }
 
 
-  resendOtp(): void {
+
+  async resendOtp(): Promise<void> {
 
     if (!this.isExpired) {
       return;
     }
 
-
-
-    // Here you can call your resend OTP API
-
-    console.log('Resend OTP');
-
-
-    this.otp =
-      ['', '', '', ''];
-
     this.errorMessage = '';
 
-    this.startTimer();
+    this.otp = ['', '', '', ''];
 
+    try {
 
+      // Same OTP API for all flows
+      await this.store.dispatch(
+        requestOTP({
+          email: this.emailId
+        })
+      );
 
+      // Restart 5 minute timer
+      this.startTimer();
 
+      console.log('OTP resent successfully');
+
+    } catch (error) {
+
+      console.error('Resend OTP Error:', error);
+
+      this.errorMessage =
+        'Unable to resend OTP. Please try again.';
+    }
   }
 
   async verifyOtp() {
@@ -472,17 +527,51 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
   cancel(): void {
 
+    // Stop OTP timer
     this.clearTimer();
 
-    this.router.navigate([
-      '/front-office/login'
-    ]);
-    if (this.isBookAppointmentFlow) {
+    // =========================
+    // LOGIN FLOW
+    // =========================
+    if (this.flow === 'login') {
+
+      this.router.navigate([
+        '/front-office/login'
+      ]);
+
+      return;
+    }
+
+    // =========================
+    // REGISTRATION FLOW
+    // =========================
+    if (this.flow === 'registration') {
+
       this.router.navigate([
         '/front-office/patient-registration'
       ]);
+
+      return;
     }
 
+    // =========================
+    // APPOINTMENT FLOW
+    // =========================
+    if (this.flow === 'appointment') {
+
+      this.router.navigate([
+        '/front-office/booking-patient-information'
+      ]);
+
+      return;
+    }
+
+    // =========================
+    // FALLBACK
+    // =========================
+    this.router.navigate([
+      '/front-office/login'
+    ]);
   }
 
 
@@ -492,27 +581,16 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
   clearTimer(): void {
 
-    if (this.countdown) {
-
-      clearInterval(
-        this.countdown
-      );
-
-      this.countdown = null;
-
-    }
-
+    this.timerSubscription?.unsubscribe();
+    this.timerSubscription = undefined;
   }
-
 
   // ==========================================
   // DESTROY
   // ==========================================
 
   ngOnDestroy(): void {
-
     this.clearTimer();
-
   }
 
 }

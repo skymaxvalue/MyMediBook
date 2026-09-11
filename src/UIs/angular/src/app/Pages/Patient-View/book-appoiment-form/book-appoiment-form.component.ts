@@ -5,7 +5,9 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators
+  Validators,
+  AbstractControl,
+  ValidationErrors
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { getAgeType, getRelationType } from 'src/app/Store/Appointments/appointment.actions';
@@ -24,6 +26,7 @@ import { selectGetProfileDataByProfileId, selectGetProfileListByPatientId } from
 })
 export class BookAppoimentFormComponent implements OnInit {
   isPatientDropdownOpen = false;
+  selectedInsurance: any = null;
   selectedPatientName = signal<any | null>('Select Patient')
   @Output() backToAvailability = new EventEmitter<void>();
   patientSearch = signal('');
@@ -33,6 +36,7 @@ export class BookAppoimentFormComponent implements OnInit {
   relativeList = signal<any[]>([]);
   selectedMember = signal<any | null>(null);
   InsurenceValue: string = '';
+
   familyMembers = [
     {
       id: 1,
@@ -61,6 +65,7 @@ export class BookAppoimentFormComponent implements OnInit {
     }
   ];
 
+  selectedPayment: any = null;
   ageType: any[] = [];
   relations: any;
   selectedProfileData: any;
@@ -174,11 +179,42 @@ export class BookAppoimentFormComponent implements OnInit {
       }),
 
       paymentData: this.fb.group({
-        paymentType: [''],
-        cardHolder: [''],
-        cardNumber: [''],
-        expiry: [''],
-        cvv: ['']
+        paymentType: ['', Validators.required],
+
+        cardHolder: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.pattern(/^[a-zA-Z ]+$/)
+          ]
+        ],
+
+        cardNumber: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(/^[0-9]{13,19}$/),
+            this.luhnValidator.bind(this)
+          ]
+        ],
+
+        expiry: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(/^(0[1-9]|1[0-2])\/([0-9]{2})$/),
+            this.expiryValidator.bind(this)
+          ]
+        ],
+
+        cvv: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(/^[0-9]{3,4}$/)
+          ]
+        ]
       }),
       patientType: [this.patientType],
 
@@ -191,6 +227,152 @@ export class BookAppoimentFormComponent implements OnInit {
       createdBy: [this.loginUser.roleName],
       associateRole: [this.doctor.department]
     });
+  }
+
+  formatCardNumber(event: Event): void {
+
+    const input = event.target as HTMLInputElement;
+
+    let value = input.value.replace(/\D/g, '');
+
+    value = value.substring(0, 19);
+
+    const formatted = value.match(/.{1,4}/g)?.join(' ') || '';
+
+    input.value = formatted;
+
+    this.paymentForm
+      .get('cardNumber')
+      ?.setValue(formatted, { emitEvent: false });
+
+    this.paymentForm
+      .get('cardNumber')
+      ?.updateValueAndValidity();
+  }
+
+  formatExpiry(event: Event): void {
+
+    const input = event.target as HTMLInputElement;
+
+    let value = input.value.replace(/\D/g, '');
+
+    value = value.substring(0, 4);
+
+    if (value.length >= 3) {
+      value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+
+    input.value = value;
+
+    this.paymentForm
+      .get('expiry')
+      ?.setValue(value, { emitEvent: false });
+
+    this.paymentForm
+      .get('expiry')
+      ?.updateValueAndValidity();
+  }
+  getPaymentError(controlName: string): string {
+
+    const control = this.paymentForm.get(controlName);
+
+    if (!control || !(control.touched || control.dirty)) {
+      return '';
+    }
+
+    if (control.hasError('required')) {
+      return `${this.getPaymentLabel(controlName)} is required.`;
+    }
+
+    if (controlName === 'cardHolder') {
+
+      if (control.hasError('minlength')) {
+        return 'Card holder name must be at least 2 characters.';
+      }
+
+      if (control.hasError('pattern')) {
+        return 'Card holder name can contain only letters.';
+      }
+    }
+
+    if (controlName === 'cardNumber') {
+
+      if (control.hasError('pattern')) {
+        return 'Card number must contain 13 to 19 digits.';
+      }
+
+      if (control.hasError('invalidCardNumber')) {
+        return 'Please enter a valid card number.';
+      }
+    }
+
+    if (controlName === 'expiry') {
+
+      if (control.hasError('pattern')) {
+        return 'Expiry must be in MM/YY format.';
+      }
+
+      if (control.hasError('expiredCard')) {
+        return 'Card has expired.';
+      }
+
+      if (control.hasError('invalidExpiry')) {
+        return 'Please enter a valid expiry date.';
+      }
+    }
+
+    if (controlName === 'cvv') {
+
+      if (control.hasError('pattern')) {
+        return 'CVV must contain 3 or 4 digits.';
+      }
+    }
+
+    return '';
+  }
+
+  getPaymentLabel(controlName: string): string {
+
+    const labels: any = {
+      paymentType: 'Payment Type',
+      cardHolder: 'Card Holder Name',
+      cardNumber: 'Card Number',
+      expiry: 'Expiry Date',
+      cvv: 'CVV'
+    };
+
+    return labels[controlName] || controlName;
+  }
+  expiryValidator(control: AbstractControl): ValidationErrors | null {
+
+    if (!control.value) {
+      return null;
+    }
+
+    const value = String(control.value).trim();
+
+    if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(value)) {
+      return { invalidExpiry: true };
+    }
+
+    const [monthString, yearString] = value.split('/');
+
+    const month = Number(monthString);
+    const year = 2000 + Number(yearString);
+
+    const today = new Date();
+
+    const currentMonth = today.getMonth() + 1;
+    const currentYear = today.getFullYear();
+
+    if (
+      year < currentYear ||
+      (year === currentYear && month < currentMonth)
+    ) {
+      return { expiredCard: true };
+    }
+
+    return null;
   }
 
   togglePatientDropdown() {
@@ -220,6 +402,41 @@ export class BookAppoimentFormComponent implements OnInit {
 
       }
     })
+  }
+  luhnValidator(control: AbstractControl): ValidationErrors | null {
+
+    if (!control.value) {
+      return null;
+    }
+
+    const cardNumber = String(control.value).replace(/\s/g, '');
+
+    if (!/^\d{13,19}$/.test(cardNumber)) {
+      return null;
+    }
+
+    let sum = 0;
+    let shouldDouble = false;
+
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+
+      let digit = parseInt(cardNumber.charAt(i), 10);
+
+      if (shouldDouble) {
+        digit *= 2;
+
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      shouldDouble = !shouldDouble;
+    }
+
+    return sum % 10 === 0
+      ? null
+      : { invalidCardNumber: true };
   }
 
   // async onProfileChange(event: any) {
@@ -343,6 +560,18 @@ export class BookAppoimentFormComponent implements OnInit {
     return this.bookingForm.get('paymentData') as FormGroup;
   }
 
+  selectInsurance(insurance: any): void {
+    this.selectedInsurance = insurance;
+
+    this.insuranceForm.patchValue({
+      provider: insurance.provider || '',
+      policy: insurance.policy || '',
+      groupId: insurance.groupId || '',
+      holderName: insurance.holderName || '',
+      address: insurance.address || ''
+    });
+  }
+
 
   getErrorMessage(controlName: string): string {
     const control = this.bookingForm.get(controlName);
@@ -394,85 +623,75 @@ export class BookAppoimentFormComponent implements OnInit {
 
     return '';
   }
+  selectPayment(payment: any): void {
 
-  // handleInsuranceChange(): void {
-  //   this.bookingForm.get('insurance')?.valueChanges.subscribe(value => {
-  //     this.InsurenceValue = value;
-  //     if (value === 'yes') {
-  //       if (this.selectedProfileData?.insuranceData) {
+    this.selectedPayment = payment;
 
-  //       }
-  //       this.showInsuranceModal = true;
-  //       this.showPaymentModal = false;
+    this.paymentForm.patchValue({
+      paymentType: payment.paymentType || '',
+      cardHolder: payment.cardHolder || '',
+      cardNumber: payment.cardNumber || '',
+      expiry: payment.expiry || '',
+      cvv: ''
+    });
 
-  //       this.setRequiredValidators(this.insuranceForm);
-  //       this.clearValidators(this.paymentForm);
-  //     } else if (value === 'no') {
-  //       this.showPaymentModal = true;
-  //       this.showInsuranceModal = false;
+  }
 
-  //       this.setRequiredValidators(this.paymentForm);
-  //       this.clearValidators(this.insuranceForm);
-  //     }
-  //   });
-  // }
+
+  maskCardNumber(cardNumber: string): string {
+
+    if (!cardNumber) {
+      return '-';
+    }
+
+    const value = String(cardNumber).replace(/\s/g, '');
+
+    if (value.length <= 4) {
+      return value;
+    }
+
+    return `**** **** **** ${value.slice(-4)}`;
+  }
   handleInsuranceChange(): void {
 
     this.bookingForm.get('insurance')?.valueChanges.subscribe(value => {
 
       this.InsurenceValue = value;
 
-      const hasExistingInsurance =
-        !!this.selectedProfileData?.insuranceData;
+      if (value === 'yes') {
 
-      if (hasExistingInsurance) {
+        // User wants to CHANGE insurance
+        this.showInsuranceModal = true;
+        this.showPaymentModal = false;
 
-        // Existing insurance already available
-        if (value === 'yes') {
+        // Clear existing insurance details from form
+        this.insuranceForm.reset({
+          provider: '',
+          policy: '',
+          groupId: '',
+          holderName: '',
+          address: ''
+        });
 
-          // User wants to change insurance
-          this.showInsuranceModal = true;
-          this.showPaymentModal = false;
+        // Insurance form required
+        this.setRequiredValidators(this.insuranceForm);
 
-          this.setRequiredValidators(this.insuranceForm);
-          this.clearValidators(this.paymentForm);
+        // Payment not required
+        this.clearValidators(this.paymentForm);
 
-        } else if (value === 'no') {
+      } else if (value === 'no') {
 
-          // Keep existing insurance
-          this.showInsuranceModal = false;
-          this.showPaymentModal = false;
+        // User does not want insurance change
+        // → Payment modal
+        this.showInsuranceModal = false;
+        this.showPaymentModal = true;
 
-          this.clearValidators(this.insuranceForm);
-          this.clearValidators(this.paymentForm);
-        }
-
-      } else {
-
-        // No existing insurance
-        if (value === 'yes') {
-
-          // User wants to add insurance
-          this.showInsuranceModal = true;
-          this.showPaymentModal = false;
-
-          this.setRequiredValidators(this.insuranceForm);
-          this.clearValidators(this.paymentForm);
-
-        } else if (value === 'no') {
-
-          // No insurance -> payment
-          this.showInsuranceModal = false;
-          this.showPaymentModal = true;
-
-          this.clearValidators(this.insuranceForm);
-          this.setRequiredValidators(this.paymentForm);
-
-        }
-
+        this.clearValidators(this.insuranceForm);
+        this.setRequiredValidators(this.paymentForm);
       }
 
     });
+
   }
 
   setRequiredValidators(group: FormGroup): void {
