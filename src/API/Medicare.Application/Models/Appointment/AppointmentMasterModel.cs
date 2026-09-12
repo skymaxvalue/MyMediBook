@@ -15,8 +15,8 @@
         public string Gender { get; set; }
         public string Phone { get; set; }
         public int RelationTypeId { get; set; }
-        public string VisitPurpose { get; set; }
-        public string VisitType { get; set; }
+        public int? VisitPurposeId { get; set; }
+        public int? VisitTypeId { get; set; }
         public string OtpMethod { get; set; }
         public InsuranceData InsuranceData { get; set; }
         public PaymentData PaymentData { get; set; }

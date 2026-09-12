@@ -10,7 +10,8 @@ namespace Medicare.Application.Interfaces.IPatient
         Task<PatientDetailModel> GetPatientById(int Id);
         Task<PatientDetailModel> GetPatientInfoByUsername(string Username);
         Task<List<PatientProfileModel>> GetPatientProfileListByIdAsync(int patientId);
+        Task<List<PatientListResponseModel>> GetPatientListByReceptionsistIdAsync(int receptionistId);
         Task<PatientProfileModel> GetPatientProfileByProfileIdAsync(int profileId);
-        Task<List<PatientProfileModel>> SearchPatientAsync(SearchPatientRequest model);
+        Task<List<SearchPatientResponseModel>> SearchPatientAsync(SearchPatientRequestModel model);
     }
 }

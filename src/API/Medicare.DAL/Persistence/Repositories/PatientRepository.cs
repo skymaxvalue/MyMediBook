@@ -181,10 +181,10 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<List<PatientProfileModel>> SearchPatientAsync(SearchPatientRequest model)
+        public async Task<List<SearchPatientResponseModel>> SearchPatientAsync(SearchPatientRequestModel model)
         {
             string procName = "USP_SearchPatientInAppointments";
-            List<PatientProfileModel> returnData = new List<PatientProfileModel>();
+            List<SearchPatientResponseModel> returnData = new List<SearchPatientResponseModel>();
             try
             {
                 var param = new DynamicParameters();
@@ -194,7 +194,31 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("FromDate", model.FromDate?.Date);
                 param.Add("ToDate", model.ToDate?.Date);
 
-                returnData = await _context.QueryStoredProcListAsync<PatientProfileModel>(procName, param);
+                returnData = await _context.QueryStoredProcListAsync<SearchPatientResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<List<PatientListResponseModel>> GetPatientListByReceptionsistIdAsync(int receptionistId)
+        {
+            string procName = "USP_SearchPatientInAppointments";
+            List<PatientListResponseModel> returnData = new List<PatientListResponseModel>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("ReceptionistId", receptionistId);
+
+                returnData = await _context.QueryStoredProcListAsync<PatientListResponseModel>(procName, param);
             }
             catch (Exception ex)
             {

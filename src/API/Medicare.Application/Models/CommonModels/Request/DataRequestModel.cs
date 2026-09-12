@@ -10,8 +10,7 @@ namespace Medicare.Application.Models.CommonModels.Request
     }
     public class DataRequestFilterModel
     {
-        [JsonIgnore]
-        public Guid TenantId { get; set; }
+        public int AssociateId { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public int PageNumber { get; set; }

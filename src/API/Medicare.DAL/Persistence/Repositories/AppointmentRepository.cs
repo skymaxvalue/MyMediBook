@@ -153,8 +153,8 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ProfileId", model.ProfileId);   
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("SlotId", model.SlotId);
-                param.Add("VisitPurpose", model.VisitPurpose);
-                param.Add("VisitType", model.VisitType);
+                param.Add("VisitPurposeId", model.VisitPurposeId);
+                param.Add("VisitTypeId", model.VisitTypeId);
                 param.Add("OtpMethod", model.OtpMethod);
                 param.Add("CreatedBy", model.CreatedBy);
                 param.Add("AssociateRole", model.AssociateRole);
@@ -562,7 +562,7 @@ namespace Medicare.DAL.Persistence.Repositories
             try
             {
                 var param = new DynamicParameters();
-                param.Add("TenantId", model.TenantId);
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("FromDate", model.FromDate?.Date);
                 param.Add("ToDate", model.ToDate?.Date);
                 param.Add("PageNumber", model.PageNumber);
