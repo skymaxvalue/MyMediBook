@@ -45,7 +45,7 @@ body { background: var(--ls-grey-bg); }
 
 .ls-page-card {
   max-width: 1080px;
-  margin: 0 auto;
+  margin: 32px auto;
   background: var(--ls-white);
   border-radius: var(--ls-radius-lg);
   box-shadow: var(--ls-shadow-card);
