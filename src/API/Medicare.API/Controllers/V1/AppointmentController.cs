@@ -124,8 +124,6 @@ namespace Medicare.API.Controllers.V1
         [Route("Receptionist/GetAppointmentList")]
         public async Task<IActionResult> GetAppointmentList(DataRequestFilterModel model)
         {
-            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
-            model.TenantId = tenantId;
             List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
             response = await _mediator.Send(new GetAppointmentListQuery(model));
             return HandleListResponse(response);
@@ -133,13 +131,11 @@ namespace Medicare.API.Controllers.V1
 
         [HttpPost]
         [Route("Receptionist/UpdateCheckedInStatus")]
-        public async Task<IActionResult> UpdateCheckedInStatus(DataRequestFilterModel model)
+        public async Task<IActionResult> UpdateCheckedInStatus(UpdateCheckedInStatusRequestModel model)
         {
-            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
-            model.TenantId = tenantId;
-            List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
-            response = await _mediator.Send(new GetAppointmentListQuery(model));
-            return HandleListResponse(response);
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new UpdateCheckedInStatusCommand(model));
+            return HandleResponse(response);
         }
     }
 }

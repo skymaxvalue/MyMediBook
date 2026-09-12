@@ -43,7 +43,7 @@ namespace Medicare.API.Controllers.V1
         {
             if (data == null || !data.Any())
             {
-                return NotFound(new ApiResponse<List<T>>
+                return Ok(new ApiResponse<List<T>>
                 {
                     Data = new List<T>(),
                     StatusMessage = "No records found.",
