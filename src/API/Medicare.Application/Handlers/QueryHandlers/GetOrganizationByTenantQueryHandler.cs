@@ -5,14 +5,14 @@ using Medicare.Application.Models.Organization;
 
 namespace Medicare.Application.Handlers.QueryHandlers
 {
-    public class GetOrganizationByTenantQueryHandler : IRequestHandler<GetOrganizationByTenantQuery, OrganizationDataModel>
+    public class GetOrganizationByTenantQueryHandler : IRequestHandler<GetOrganisationByTenantQuery, OrganisationDataModel>
     {
         private readonly IOrganizationRepository _organizationRepository;
         public GetOrganizationByTenantQueryHandler(IOrganizationRepository organizationRepository)
         {
             _organizationRepository = organizationRepository;
         }
-        public async Task<OrganizationDataModel> Handle(GetOrganizationByTenantQuery request, CancellationToken cancellationToken)
+        public async Task<OrganisationDataModel> Handle(GetOrganisationByTenantQuery request, CancellationToken cancellationToken)
         {
             return await _organizationRepository.GetOrganizationByTenant(request.tenantId);
         }
