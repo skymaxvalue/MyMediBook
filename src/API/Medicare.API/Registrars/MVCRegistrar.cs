@@ -78,7 +78,7 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<ILabRepository, LabRepository>();
             builder.Services.AddScoped<IClaimRepostitory, ClaimRepository>();
             builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
-            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganisationRepository>();
 
             // ✅ Services
             builder.Services.AddSignalR();

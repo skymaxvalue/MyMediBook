@@ -2,7 +2,7 @@
 
 namespace Medicare.Application.Models.Organization
 {
-    public class OrganizationDataModel : IErrorHandling
+    public class OrganisationDataModel : IErrorHandling
     {
         public int HospitalId { get; set; }
         public Guid TenantId { get; set; }
@@ -16,10 +16,12 @@ namespace Medicare.Application.Models.Organization
         public string Website { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
-        public int? CityId { get; set; }
-        public int? StateId { get; set; }
-        public int? CountryId { get; set; }
+        public string? CityName { get; set; }
+        public string? StateName { get; set; }
+        public string? CountryName { get; set; }
         public string ZipCode { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
         public string LogoPath { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }

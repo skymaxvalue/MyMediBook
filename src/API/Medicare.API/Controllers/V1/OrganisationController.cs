@@ -10,20 +10,29 @@ namespace Medicare.API.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize]
-    public class OrganizationController : BaseApiController
+    public class OrganisationController : BaseApiController
     {
         private readonly IMediator _mediator;
-        public OrganizationController(IMediator mediator)
+        public OrganisationController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        [Route("GetOrganisationList")]
+        public async Task<IActionResult> GetOrganisationList()
+        {
+            List<OrganisationDataModel> response = new List<OrganisationDataModel>();
+            response = await _mediator.Send(new GetOrganisationListQuery());
+            return HandleListResponse(response);
         }
 
         [HttpGet]
         [Route("GetOrganisationByTenant/{tenantId}")]
         public async Task<IActionResult> GetOrganisationByTenant(Guid tenantId)
         {
-            OrganizationDataModel response = new OrganizationDataModel();
-            response = await _mediator.Send(new GetOrganizationByTenantQuery(tenantId));
+            OrganisationDataModel response = new OrganisationDataModel();
+            response = await _mediator.Send(new GetOrganisationByTenantQuery(tenantId));
             return HandleResponse(response);
         }
     }

@@ -3,5 +3,5 @@ using Medicare.Application.Models.Organization;
 
 namespace Medicare.Application.Features.Queries.Organization
 {
-    public record GetOrganizationByTenantQuery(Guid tenantId) : IRequest<OrganizationDataModel>;
+    public record GetOrganisationByTenantQuery(Guid tenantId) : IRequest<OrganisationDataModel>;
 }

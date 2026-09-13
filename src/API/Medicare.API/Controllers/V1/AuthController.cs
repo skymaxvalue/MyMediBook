@@ -2,7 +2,6 @@
 using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Features.Commands.Authentication;
 using Medicare.Application.Features.Commands.Patient;
-using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.Authentication;
@@ -24,13 +23,11 @@ namespace Medicare.API.Controllers.V1
         private readonly IMediator _mediator;
         private readonly IJwtTokenRepository _jwtTokenRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IAuthRepository _authRepository;
         private readonly IConfiguration _config;
-        public AuthController(IMediator mediator, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository, IAuthRepository authRepository, IConfiguration config)
+        public AuthController(IMediator mediator, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository, IConfiguration config)
         {
             _mediator = mediator;
             _jwtTokenRepository = jwtTokenRepository;
-            _authRepository = authRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _config = config;
         }

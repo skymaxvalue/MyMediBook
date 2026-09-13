@@ -22,7 +22,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpGet]
         [Route("Receptionist/GetPatientListById/{receptionistId}")]
-        public async Task<IActionResult> GetRegisteredPatientList([FromBody] int receptionistId)
+        public async Task<IActionResult> GetRegisteredPatientList(int receptionistId)
         {
             List<PatientListResponseModel> response = new List<PatientListResponseModel>();
             response = await _mediator.Send(new GetPatientListByReceptionistIdQuery(receptionistId));
@@ -47,7 +47,7 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("GetPatientByContact/{contactNo}")]
         public async Task<IActionResult> GetPatientByContact([FromRoute] string contactNo)
         {
