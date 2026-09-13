@@ -20,6 +20,8 @@ namespace Medicare.Application.Models.Organization
         public string? StateName { get; set; }
         public string? CountryName { get; set; }
         public string ZipCode { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
         public string LogoPath { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
