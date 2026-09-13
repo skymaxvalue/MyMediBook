@@ -120,7 +120,7 @@ namespace Medicare.API.Controllers.V1
             return HandleResponse(response);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Receptionist/GetAppointmentList")]
         public async Task<IActionResult> GetAppointmentList(DataRequestFilterModel model)
         {
