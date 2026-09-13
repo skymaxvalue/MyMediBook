@@ -7,7 +7,6 @@ using Medicare.Application.Models.Claim;
 using Medicare.Application.Models.CommonModels.Request;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.Patient;
-using Medicare.DAL.Services.Appointment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,12 +19,9 @@ namespace Medicare.API.Controllers.V1
     public class AppointmentController : BaseApiController
     {
         private readonly IMediator _mediator;
-        private readonly AppointmentReminderJobService _reminder;
-
-        public AppointmentController(IMediator mediator, AppointmentReminderJobService reminder)
+        public AppointmentController(IMediator mediator)
         {
             _mediator = mediator;
-            _reminder = reminder;
         }
 
         [HttpPost]
@@ -103,7 +99,7 @@ namespace Medicare.API.Controllers.V1
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("Patient/ConfirmAppointmentStatus")]
+        [Route("Patient/ConfirmAppointmentStatus/{token}")]
         public async Task<IActionResult> ConfirmAppointmentStatus([FromQuery] string token)
         {
             ResponseModel response = new ResponseModel();
