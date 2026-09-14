@@ -27,20 +27,20 @@
 
         <div class="rs-page-header">
 
-            <div class="rs-title-group">
-                <div class="rs-icon-circle">
-                    <img src="images/bed-blue.png" alt="">
-                </div>
-
-                <div>
-                    <h2>Room Service Request</h2>
-                    <p>Clinical & hospitality services · Complete all steps to submit</p>
-                </div>
-            </div>
-
-            <span class="rs-request-id">RSQ-GU07BT</span>
-
+    <div class="rs-title-group">
+        <div class="rs-icon-circle">
+            <img src="images/room-service.png" alt="">
         </div>
+
+        <div>
+            <h2>Room Service Request</h2>
+            <p>Clinical & hospitality services · Complete all steps to submit</p>
+        </div>
+    </div>
+
+    <span class="rs-request-id">RSQ-GU07BT</span>
+
+</div>
 
         <div class="rs-stepper">
 
@@ -71,8 +71,8 @@
 
         </div>
 
-        <form id="room-service-form">
-
+        <form id="roomServiceForm">
+  <section class="rs-step-panel active" data-step="1">
             <section class="rs-section">
 
                 <div class="rs-section-header">
@@ -132,14 +132,14 @@
 
                 <div id="patientSearchResults" class="rs-search-results"></div>
 
-                <input type="hidden" id="selectedPatientId">
+                <input type="hidden" id="rsPatientId">
 
             </section>
 
             <section class="rs-section">
 
                 <div class="rs-section-header">
-                    <img src="images/profile-blue.png" alt="">
+                    <img src="images/patient-icon-blue.png" alt="">
                     <h3>Patient Information</h3>
                 </div>
 
@@ -161,12 +161,12 @@
 
                     <div class="rs-field">
                         <label>Date of Birth *</label>
-                        <input id="dob" type="date" readonly>
+                        <input id="patientDob" type="date" readonly>
                     </div>
 
                     <div class="rs-field">
                         <label>Gender *</label>
-                        <select id="gender" disabled>
+                        <select id="patientGender" disabled>
                             <option>Male</option>
                             <option>Female</option>
                         </select>
@@ -174,7 +174,7 @@
 
                     <div class="rs-field">
                         <label>Medical Record #</label>
-                        <input id="mrn" type="text" readonly>
+                        <input id="patientMRN" type="text" readonly>
                     </div>
 
                 </div>
@@ -183,7 +183,7 @@
 
                     <div class="rs-field">
                         <label>Insurance Provider</label>
-                        <input id="insurance" type="text" readonly>
+                        <input id="insuranceProvider" type="text" readonly>
                     </div>
 
                     <div class="rs-field">
@@ -198,7 +198,7 @@
             <section class="rs-section">
 
                 <div class="rs-section-header">
-                    <img src="images/hospital-blue.png" alt="">
+                    <img src="images/phone-blue.png" alt="">
                     <h3>Admission & Contact</h3>
                 </div>
 
@@ -211,12 +211,12 @@
 
                     <div class="rs-field">
                         <label>Expected Discharge</label>
-                        <input id="dischargeDate" type="date">
+                        <input id="expectedDischarge" type="date">
                     </div>
 
                     <div class="rs-field">
                         <label>Patient Contact #</label>
-                        <input id="patientPhone" type="tel" placeholder="(000) 000-0000">
+                        <input id="patientContact" type="tel" placeholder="(000) 000-0000">
                     </div>
 
                 </div>
@@ -237,32 +237,145 @@
 
                 <div class="rs-field">
                     <label>Attending Physician</label>
-                    <input id="physician" type="text" placeholder="Dr. Last, First — department">
+                    <input id="attendingPhysician" type="text" placeholder="Dr. Last, First — department">
                 </div>
 
             </section>
+            </section>
+
+           <!-- STEP 2 -->
+<section class="rs-step-panel" data-step="2">
+
+    <section class="rs-section">
+
+        <div class="rs-section-header">
+            <img src="images/room-service.png" alt="">
+            <h3>Room Type Preference</h3>
+        </div>
+
+        <div class="room-grid">
+
+            <label class="room-card">
+                <input type="radio" name="roomType" value="Standard" checked>
+                <img src="images/bed-icon.png" alt="">
+                <h4>Standard</h4>
+                <p>Shared · 2 beds</p>
+            </label>
+
+            <label class="room-card">
+                <input type="radio" name="roomType" value="Semi-private">
+                <img src="images/bed-icon.png" alt="">
+                <h4>Semi-private</h4>
+                <p>Shared · 1 partition</p>
+            </label>
+
+            <label class="room-card">
+                <input type="radio" name="roomType" value="Private">
+                <img src="images/bed-icon.png" alt="">
+                <h4>Private</h4>
+                <p>Single occupancy</p>
+            </label>
+
+            <label class="room-card">
+                <input type="radio" name="roomType" value="Suite">
+                <img src="images/sofa-icon.png" alt="">
+                <h4>Suite</h4>
+                <p>VIP · lounge area</p>
+            </label>
+
+        </div>
+
+    </section>
+
+    <section class="rs-section">
+
+        <div class="rs-section-header">
+            <img src="images/settings-icon.png" alt="">
+            <h3>Room Amenities Requested</h3>
+        </div>
+
+        <div class="amenity-grid">
+
+            <label><input type="checkbox" value="Wi-Fi"> Wi-Fi access</label>
+            <label><input type="checkbox" value="TV"> Television</label>
+            <label><input type="checkbox" value="Recliner"> Recliner / chair</label>
+            <label><input type="checkbox" value="Fridge"> Mini-fridge</label>
+            <label><input type="checkbox" value="Phone"> Bedside phone</label>
+            <label><input type="checkbox" value="Blinds"> Blackout blinds</label>
+            <label><input type="checkbox" value="Lamp"> Reading lamp</label>
+            <label><input type="checkbox" value="Outlets"> Extra outlets</label>
+
+        </div>
+
+    </section>
+
+    <section class="rs-section">
+
+        <div class="rs-section-header">
+            <img src="images/cleaning-icon.png" alt="">
+            <h3>Housekeeping Schedule</h3>
+        </div>
+
+        <div class="rs-grid-2">
+
+            <div class="rs-field">
+                <label>Preferred Cleaning Time</label>
+                <select id="cleaningTime">
+                    <option>Early morning (6–8 AM)</option>
+                    <option>Morning (8–11 AM)</option>
+                    <option>Afternoon (1–4 PM)</option>
+                    <option>Evening (5–7 PM)</option>
+                </select>
+            </div>
+
+            <div class="rs-field">
+                <label>Frequency</label>
+                <select id="cleaningFrequency">
+                    <option>Once daily</option>
+                    <option>Twice daily</option>
+                    <option>On request</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="rs-field">
+            <label>Special Housekeeping Notes</label>
+            <textarea id="housekeepingNotes" maxlength="500"
+                placeholder="Allergies to cleaning products, preferred scents, do-not-disturb windows..."></textarea>
+        </div>
+
+    </section>
+
+</section>
+<!-- SECTION -->
 
             <div class="rs-form-footer">
 
-                <div class="rs-step-count">
-                    Step 1 of 5
-                </div>
+    <div class="rs-step-count" id="stepCounter">
+        Step 1 of 5
+    </div>
 
-                <div class="rs-footer-actions">
+    <div class="rs-footer-actions">
 
-                    <button type="button" id="saveDraftBtn" class="btn-outline">
-                        <img src="images/save-blue.png" alt="">
-                        Save draft
-                    </button>
+        <button type="button" id="saveDraftBtn" class="btn-outline">
+            <img src="images/save.png" alt="">
+            Save draft
+        </button>
 
-                    <button type="submit" class="btn-primary">
-                        Continue
-                        <img src="images/arrow-right-white.png" alt="">
-                    </button>
+        <button type="button" id="backBtn" class="btn-outline" style="display:none;">
+            <img src="images/arrow-left.png" alt="">
+            Back
+        </button>
 
-                </div>
+        <button type="button" id="continueBtn" class="btn-primary">
+            Continue
+            <img src="images/arrow-right.png" alt="">
+        </button>
 
-            </div>
+    </div>
+
+</div>
 
         </form>
 
@@ -270,19 +383,35 @@
 
 </main>
 
-<footer class="dashboard-footer">
 
-    <span>© 2026 Health Haven Medical Center. All rights reserved.</span>
+<div id="draftSavedModal" class="modal-overlay">
+  <div class="modal-card">
 
-    <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Help & Support</a>
+    <div class="modal-success-icon">
+      <img src="images/icon-normal.png" alt="Success">
     </div>
 
-</footer>
+    <h3>Draft Saved</h3>
+
+    <p>
+      Your Room Service Request has been saved successfully.
+      You can continue later from your drafts.
+    </p>
+
+    <button class="btn-primary modal-btn"
+            onclick="closeModal('draftSavedModal')">
+      OK
+    </button>
+
+  </div>
+</div>
+
+    <div id="footer-container"></div>
+
+   
 
 <script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
 <script src="js/room-service.js"></script>
 
 </body>
