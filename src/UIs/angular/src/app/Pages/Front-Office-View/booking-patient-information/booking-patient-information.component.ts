@@ -16,10 +16,15 @@ import {
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/Store/app.state';
 import * as AuthActions from 'src/app/Store/Auth/auth.actions';
-import { selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
+import { selectCity, selectCountry, selectRequestedOTP, selectState } from 'src/app/Store/Auth/auth.selectors';
 import { Router } from '@angular/router';
-import { createAppointment } from 'src/app/Store/Appointments/appointment.actions';
-import { requestOTP } from 'src/app/Store/Auth/auth.actions';
+import { createAppointment, getAppointmentStatusList } from 'src/app/Store/Appointments/appointment.actions';
+import { getCities, getCountries, getStates, requestOTP } from 'src/app/Store/Auth/auth.actions';
+import { getPatientListForReceptionist } from 'src/app/Store/Patient/patient.action';
+import { HttpClient } from '@angular/common/http';
+import { selectAppointmentStatusList } from 'src/app/Store/Appointments/appointment.selcetors';
+import { selectPatientListForReceptionist } from 'src/app/Store/Patient/patient.selectors';
+import { filter, take } from 'rxjs/operators';
 
 interface Doctor {
   id?: number | string;
@@ -77,6 +82,8 @@ export class BookingPatientInformationComponent
 
   @Input() selectedSlot: any;
 
+  user: any = JSON.parse(localStorage.getItem('user') || 'null')
+
 
   appointmentOtpModal = false;
 
@@ -126,8 +133,9 @@ export class BookingPatientInformationComponent
   savedInfoModal = false;
 
   responsiblePartyChannelModal = false;
-
-
+  citiesLoading = false;
+  cities: any[] = [];
+  permanentCities: any[] = [];
 
   insuranceModal = false;
 
@@ -162,43 +170,17 @@ export class BookingPatientInformationComponent
   private otpTimer?: ReturnType<typeof setInterval>;
 
 
-  states: string[] = [
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chhattisgarh',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-    'Delhi'
-  ];
+  states: any[] = [];
+  countries: any[] = [];
+
+  selectedCountryId: number | null = null;
 
 
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {
 
   }
@@ -207,7 +189,7 @@ export class BookingPatientInformationComponent
   ngOnInit(): void {
 
     this.createForms();
-
+    this.InitialApiCall()
     this.loadPatients();
 
     this.setupFormSubscriptions();
@@ -224,11 +206,10 @@ export class BookingPatientInformationComponent
       patientType: ['existing', Validators.required],
 
       patientId: [null],
+      profileId: [null],
 
       firstName: ['', Validators.required],
-
       lastName: ['', Validators.required],
-
       gender: ['', Validators.required],
 
       dateOfBirth: ['', Validators.required],
@@ -242,6 +223,7 @@ export class BookingPatientInformationComponent
       ],
 
       ageType: ['years', Validators.required],
+      ageTypeId: [null],
 
       phone: [
         '',
@@ -260,9 +242,7 @@ export class BookingPatientInformationComponent
       ],
 
       address: ['', Validators.required],
-
       city: ['', Validators.required],
-
       state: ['', Validators.required],
 
       pinCode: [
@@ -276,11 +256,9 @@ export class BookingPatientInformationComponent
       sameAsPresentAddress: [false],
 
       permanentAddress: ['', Validators.required],
-
       permanentCity: ['', Validators.required],
-
       permanentState: ['', Validators.required],
-
+      permanentCountry: [''],
       permanentPinCode: [
         '',
         [
@@ -290,7 +268,6 @@ export class BookingPatientInformationComponent
       ],
 
       visitPurpose: ['', Validators.required],
-
       visitType: ['', Validators.required],
 
       otp: ['', Validators.required],
@@ -298,10 +275,9 @@ export class BookingPatientInformationComponent
       insurance: ['', Validators.required],
 
       accountHolder: [''],
-
       accountHolderName: [''],
-
-      relationToPatient: ['']
+      relationToPatient: [''],
+      relationTypeId: [null]
 
     });
 
@@ -437,6 +413,15 @@ export class BookingPatientInformationComponent
 
   // }
 
+  private getCitiesByState(stateId: number): void {
+    console.log('Loading cities for state:', stateId);
+
+    this.store.dispatch(
+      getCities({
+        stateId: stateId
+      })
+    );
+  }
   async submitBooking(): Promise<void> {
 
     if (this.bookingForm.invalid) {
@@ -565,6 +550,286 @@ export class BookingPatientInformationComponent
 
   }
 
+  onCountryChange(event: any) {
+    this.store.dispatch(
+      getStates({
+        countryId: event.target.value
+      })
+    );
+  }
+
+  private InitialApiCall(): void {
+
+    // ==============================
+    // COUNTRIES
+    // ==============================
+
+    this.store.dispatch(getCountries());
+
+
+    // ==============================
+    // APPOINTMENT STATUS
+    // ==============================
+
+    this.store.dispatch(getAppointmentStatusList());
+
+
+    // ==============================
+    // PATIENTS
+    // ==============================
+
+    this.store.dispatch(
+      getPatientListForReceptionist({
+        receptionistId: this.user.refId
+      })
+    );
+
+
+    this.store.select(selectCountry)
+      .pipe(
+        filter((res: any) => {
+          const countries = Array.isArray(res)
+            ? res
+            : Array.isArray(res?.data)
+              ? res.data
+              : [];
+
+          return countries.length > 0;
+        }),
+        take(1)
+      )
+      .subscribe((res: any) => {
+
+        console.log('COUNTRY RESPONSE:', res);
+
+        this.countries = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : [];
+
+        console.log('COUNTRIES:', this.countries);
+
+        // Country list मिळाल्यानंतर location फक्त एकदाच
+        this.getCurrentLocation();
+
+      });
+
+
+    // ==============================
+    // STATES
+    // ==============================
+
+    this.store.select(selectState)
+      .subscribe((res: any) => {
+
+        console.log('STATE RESPONSE:', res);
+
+        this.states = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : [];
+
+        console.log('STATES:', this.states);
+
+      });
+
+
+    // ==============================
+    // CITIES
+    // ==============================
+
+    this.store.select(selectCity)
+      .subscribe((res: any) => {
+
+        console.log('CITY RESPONSE:', res);
+
+        this.cities = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+            ? res.data
+            : [];
+
+        console.log('CITIES:', this.cities);
+
+        // City API response आल्यानंतर enable
+        this.citiesLoading = false;
+
+      });
+
+
+    // ==============================
+    // APPOINTMENT STATUS
+    // ==============================
+
+    this.store.select(selectAppointmentStatusList)
+      .subscribe((res: any) => {
+
+        console.log('Appointment Status:', res);
+
+      });
+
+
+    // ==============================
+    // PATIENTS
+    // ==============================
+
+    this.store.select(selectPatientListForReceptionist)
+      .subscribe((res: any) => {
+
+        console.log('Patients:', res);
+
+      });
+
+  }
+
+
+  onStateChange(event: Event): void {
+    const stateId = Number((event.target as HTMLSelectElement).value);
+
+    if (!stateId) {
+      this.cities = [];
+      this.bookingForm.patchValue({
+        city: ''
+      });
+      return;
+    }
+
+    this.getCitiesByState(stateId);
+  }
+  private getCurrentLocation(): void {
+
+    if (!navigator.geolocation) {
+
+      console.log('Geolocation is not supported by this browser.');
+
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+      (position) => {
+
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        console.log('Latitude:', latitude);
+        console.log('Longitude:', longitude);
+
+        this.getCountryFromLocation(
+          latitude,
+          longitude
+        );
+
+      },
+
+      (error) => {
+
+        console.log(
+          'Unable to get current location:',
+          error
+        );
+
+      }
+
+    );
+
+  }
+
+  private getCountryFromLocation(
+    latitude: number,
+    longitude: number
+  ): void {
+
+    const url =
+      `https://nominatim.openstreetmap.org/reverse` +
+      `?format=jsonv2` +
+      `&lat=${latitude}` +
+      `&lon=${longitude}`;
+
+    this.http.get<any>(url).subscribe({
+
+      next: (response: any) => {
+
+        const countryCode =
+          response?.address?.country_code?.toUpperCase();
+
+        console.log(
+          'Detected Country Code:',
+          countryCode
+        );
+
+        if (countryCode) {
+          this.findCountryAndLoadStates(countryCode);
+        }
+
+      },
+
+      error: (error: any) => {
+        console.error(
+          'Reverse geocoding failed:',
+          error
+        );
+      }
+
+    });
+  }
+
+  private findCountryAndLoadStates(
+    countryCode: string
+  ): void {
+
+    const country = this.countries.find(
+      (item: any) =>
+        item.countryCode?.toUpperCase() ===
+        countryCode.toUpperCase()
+    );
+
+
+
+    if (!country) {
+
+      console.log(
+        'Country not found in API list:',
+        countryCode
+      );
+
+      return;
+    }
+
+    console.log(
+      'Matched Country:',
+      country
+    );
+
+    this.selectedCountryId = country.countryId;
+
+    console.log(
+      'Detected Country ID:',
+      this.selectedCountryId
+    );
+
+    this.getStatesByCountry(
+      this.selectedCountryId
+    );
+  }
+
+  private getStatesByCountry(
+    countryId: any
+  ): void {
+
+    console.log(
+      'Loading states for countryId:',
+      countryId
+    );
+
+    this.store.dispatch(
+      getStates({
+        countryId: countryId
+      })
+    );
+  }
 
   private setupFormSubscriptions(): void {
 
@@ -1165,6 +1430,7 @@ export class BookingPatientInformationComponent
   copyPresentAddress(): void {
 
     this.bookingForm.patchValue({
+      permanentCountry: this.selectedCountryId,
 
       permanentAddress:
         this.bookingForm.get('address')?.value,

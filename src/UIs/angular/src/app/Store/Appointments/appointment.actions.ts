@@ -150,3 +150,35 @@ export const getDashboardDataByDoctorFailure = createAction(
     '[Dashboard Doctor Data] get  Failure',
     props<{ error: string }>()
 );
+
+export const getAppointmentListByRiceptionist = createAction(
+    '[Dashboard Appointment Data] get ',
+    props<{ associateId: number, fromDate: string, toDate: string }>()
+
+);
+
+export const getAppointmentListByRiceptionistSuccess = createAction(
+    '[Dashboard Appointment Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getAppointmentListByRiceptionistFailure = createAction(
+    '[Dashboard Appointment Data] get  Failure',
+    props<{ error: string }>()
+);
+
+export const getAppointmentStatusList = createAction(
+    '[Dashboard Appointment-status Data] get ',
+
+
+);
+
+export const getAppointmentStatusListSuccess = createAction(
+    '[Dashboard Appointment-status Data] get  Success',
+    props<{ statusList: any }>()
+);
+
+export const getAppointmentStatusListFailure = createAction(
+    '[Dashboard Appointment-status Data] get  Failure',
+    props<{ error: string }>()
+);

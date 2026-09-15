@@ -24,14 +24,17 @@ export const AppointmentApiEndPoint = {
     CREATE_APPOINTMENT: "Appointment/CreateAppointment",
     GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
     GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/Patient/GetMyAppointmentList/",
-    GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST: "Appointment/Doctor/GetMyAppointmentList/"
+    GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST: "Appointment/Doctor/GetMyAppointmentList/",
+    GET_APOINTMENT_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentList",
+    GET_APPOINTMENT_STATUS: "Master/GetStatusKeyList"
 }
 export const PatientApiEndPoint = {
     UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
     GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
     GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
     GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
-    SEARCH_PATIENT_REQUEST: "Patient/SearchPatient"
+    SEARCH_PATIENT_REQUEST: "Patient/SearchPatient",
+    GET_PATIENT_LIST_FOR_RECEPTIONIST: "Patient/Receptionist/GetPatientListById/"
 }
 
 export const AssociateApiEndPoint = {
@@ -82,6 +85,10 @@ export const AuthEndPoints = {
     RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
     doLOGIN: "Auth/doLogin",
     CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount"
+}
+
+export const Organization = {
+    ORGANIZATION_LIST: "Organisation/GetOrganisationList"
 }
 
 export const cancelRules = [

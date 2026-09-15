@@ -552,28 +552,19 @@
 
                     <div class="field-pair full-width-field">
 
+
+
                         <label>
                             Present Address
                             <span class="req">*</span>
                         </label>
-
                         <textarea formControlName="address" placeholder="Enter present address"></textarea>
 
 
+
+
+
                         <div class="address-subfields">
-
-
-                            <div class="field-pair">
-
-                                <label>
-                                    City
-                                    <span class="req">*</span>
-                                </label>
-
-                                <input type="text" formControlName="city" placeholder="Enter city">
-
-                            </div>
-
 
                             <div class="field-pair">
 
@@ -582,19 +573,16 @@
                                     <span class="req">*</span>
                                 </label>
 
-                                <select formControlName="state">
+                                <select formControlName="state" (change)="onStateChange($event)">
 
                                     <option value="">
                                         Select state
                                     </option>
 
-                                    @for (
-                                    state of states;
-                                    track state
-                                    ) {
+                                    @for (state of states; track state.stateId) {
 
-                                    <option [value]="state">
-                                        {{ state }}
+                                    <option [value]="state.stateId">
+                                        {{ state.stateName }}
                                     </option>
 
                                     }
@@ -602,7 +590,29 @@
                                 </select>
 
                             </div>
+                            <div class="field-pair">
 
+                                <label>
+                                    City
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select formControlName="city">
+
+                                    <option value="">
+                                        Select City
+                                    </option>
+
+                                    @for (city of cities; track city.cityId) {
+
+                                    <option [value]="city.cityId">
+                                        {{ city.cityName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+                            </div>
 
                             <div class="field-pair">
 
@@ -637,27 +647,54 @@
                         </label>
 
 
-                        <label>
-                            Permanent Address
-                            <span class="req">*</span>
-                        </label>
-
-                        <textarea formControlName="permanentAddress" placeholder="Enter permanent address"></textarea>
 
 
-                        <div class="address-subfields">
+                        <div class="address-subfieldsText">
+
+
+                            <div class="field-pair">
+                                <label>
+                                    Permanent Address
+                                    <span class="req">*</span>
+                                </label>
+                                <textarea formControlName="permanentAddress"
+                                    placeholder="Enter permanent address"></textarea>
+                            </div>
 
 
                             <div class="field-pair">
 
                                 <label>
-                                    City
+                                    Country
                                     <span class="req">*</span>
                                 </label>
 
-                                <input type="text" formControlName="permanentCity" placeholder="Enter city">
+                                <select formControlName="permanentCountry" (change)="onCountryChange($event)">
+
+                                    <option value="">
+                                        Select Country
+                                    </option>
+
+                                    @for (
+                                    contry of countries;
+                                    track contry.countryId
+                                    ) {
+
+                                    <option [value]="contry.countryId">
+                                        {{ contry.countryName }}
+                                    </option>
+
+                                    }
+
+                                </select>
 
                             </div>
+                        </div>
+
+
+
+
+                        <div class="address-subfields">
 
 
                             <div class="field-pair">
@@ -667,19 +704,44 @@
                                     <span class="req">*</span>
                                 </label>
 
-                                <select formControlName="permanentState">
+                                <select formControlName="permanentState" (change)="onStateChange($event)">
 
                                     <option value="">
-                                        Select state
+                                        Select State
+                                    </option>
+
+                                    @for (state of states; track state.stateId) {
+
+                                    <option [value]="state.stateId">
+                                        {{ state.stateName }}
+                                    </option>
+
+                                    }
+
+                                </select>
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    City
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select formControlName="permanentCity">
+
+                                    <option value="">
+                                        Select city
                                     </option>
 
                                     @for (
-                                    state of states;
-                                    track state
+                                    city of cities;
+                                    track city.cityId
                                     ) {
 
-                                    <option [value]="state">
-                                        {{ state }}
+                                    <option [value]="city.cityId">
+                                        {{ city.cityName }}
                                     </option>
 
                                     }

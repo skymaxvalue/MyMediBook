@@ -49,3 +49,13 @@ export const selectDashboardDataSummeryForDoctor = createSelector(
     state => state.Appointments
 );
 
+
+export const selectAppointmentListForReceptionist = createSelector(
+    selectAppointmentState,
+    state => state.Appointments
+);
+export const selectAppointmentStatusList = createSelector(
+    selectAppointmentState,
+    state => state.statusList
+);
+

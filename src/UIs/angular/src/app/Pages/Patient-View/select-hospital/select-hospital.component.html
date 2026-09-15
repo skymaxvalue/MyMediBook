@@ -1,0 +1,400 @@
+<div class="hospital-page">
+
+    <!-- HEADER -->
+    <header class="portal-header">
+
+        <div class="brand-section">
+            <div class="brand-logo">
+                <span>✚</span>
+            </div>
+
+            <div class="brand-text">
+                <div class="brand-name">SkyMaxValue</div>
+                <div class="brand-subtitle">Technology Solutions</div>
+            </div>
+        </div>
+
+        <div class="portal-title">
+            <span>Patient Portal</span>
+            <small>Hospital Selection</small>
+        </div>
+
+        <div class="user-section">
+            <div class="user-avatar">👤</div>
+
+            <div class="user-info">
+                <span>Welcome</span>
+                <strong>Patient</strong>
+            </div>
+
+            <span class="dropdown-arrow">⌄</span>
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="hospital-content">
+
+        <div class="hospital-wrapper">
+
+            <!-- PAGE TITLE -->
+            <section class="page-heading">
+
+                <div class="heading-icon">
+                    🏥
+                </div>
+
+                <div>
+                    <h1>Select Hospital</h1>
+
+                    <p>
+                        Choose a hospital or healthcare facility
+                        to continue to your patient portal.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <!-- SEARCH -->
+            <section class="search-section">
+
+                <div class="search-container">
+
+                    <span class="search-icon">⌕</span>
+
+                    <input type="text" [(ngModel)]="searchTerm" (input)="searchHospitals()"
+                        placeholder="Search hospital, city or area..." />
+
+                    @if (searchTerm) {
+
+                    <button type="button" class="clear-search" (click)="clearSearch()">
+                        ×
+                    </button>
+
+                    }
+
+                </div>
+
+
+                <button type="button" class="location-button" [class.loading]="isGettingLocation"
+                    (click)="getCurrentLocation()" [disabled]="isGettingLocation">
+
+                    @if (isGettingLocation) {
+
+                    <span class="spinner"></span>
+                    Getting location...
+
+                    } @else {
+
+                    <span>⌖</span>
+                    Use My Current Location
+
+                    }
+
+                </button>
+
+            </section>
+
+
+            <!-- LOCATION SUCCESS -->
+            @if (
+            userLatitude !== null &&
+            userLongitude !== null
+            ) {
+
+            <div class="location-success">
+
+                <div class="success-circle">
+                    ✓
+                </div>
+
+                <div>
+                    <strong>Location detected</strong>
+
+                    <span>
+                        Showing hospitals nearest to your location
+                    </span>
+                </div>
+
+            </div>
+
+            }
+
+
+            <!-- LOCATION ERROR -->
+            @if (locationError) {
+
+            <div class="location-error">
+
+                <span class="error-icon">!</span>
+
+                <div>
+                    <strong>Unable to use location</strong>
+
+                    <span>{{ locationError }}</span>
+                </div>
+
+            </div>
+
+            }
+
+
+            <!-- SECTION HEADER -->
+            <div class="section-header">
+
+                <div>
+                    <h2>
+                        @if (userLatitude !== null) {
+                        Nearby Hospitals
+                        } @else {
+                        Available Hospitals
+                        }
+                    </h2>
+
+                    <p>
+                        {{ filteredHospitals.length }}
+                        hospitals available
+                    </p>
+                </div>
+
+                @if (userLatitude !== null) {
+
+                <div class="nearby-label">
+                    <span>⌖</span>
+                    Nearest to you
+                </div>
+
+                }
+
+            </div>
+
+
+            <!-- HOSPITAL LIST -->
+            <div class="hospital-list">
+
+                @for (
+                hospital of filteredHospitals;
+                track hospital.hospitalId
+                ) {
+
+                <article class="hospital-card" [class.selected]="
+              selectedHospital?.hospitalId ===
+              hospital.hospitalId
+            " (click)="selectHospital(hospital)">
+
+                    <!-- LOGO -->
+                    <div class="hospital-logo">
+
+                        @if (hospital.logoPath) {
+
+                        <img [src]="hospital.logoPath" [alt]="hospital.hospitalName" />
+
+                        } @else {
+
+                        <span>🏥</span>
+
+                        }
+
+                    </div>
+
+
+                    <!-- DETAILS -->
+                    <div class="hospital-details">
+
+                        <div class="hospital-name-row">
+
+                            <div>
+                                <h3>
+                                    {{ hospital.hospitalName }}
+                                </h3>
+
+                                <span class="hospital-type">
+                                    {{ hospital.hospitalType }}
+                                </span>
+                            </div>
+
+                            @if (
+                            selectedHospital?.hospitalId ===
+                            hospital.hospitalId
+                            ) {
+
+                            <span class="selected-label">
+                                ✓ Selected
+                            </span>
+
+                            }
+
+                        </div>
+
+
+                        <!-- ADDRESS -->
+                        <div class="detail-item">
+
+                            <span class="detail-icon">⌖</span>
+
+                            <span>
+
+                                {{ hospital.addressLine1 }}
+
+                                @if (hospital.addressLine2) {
+                                , {{ hospital.addressLine2 }}
+                                }
+
+                                , {{ hospital.cityName }},
+                                {{ hospital.stateName }}
+                                - {{ hospital.zipCode }}
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- PHONE -->
+                        <div class="detail-item">
+
+                            <span class="detail-icon">☎</span>
+
+                            <span>
+                                {{ hospital.phoneCountryCode }}
+                                {{ hospital.phoneNumber }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <div class="hospital-status">
+
+                            <span class="status-dot" [class.inactive]="!hospital.isActive"></span>
+
+                            @if (hospital.isActive) {
+                            Available for appointments
+                            } @else {
+                            Currently unavailable
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DISTANCE -->
+                    <div class="hospital-distance">
+
+                        @if (hospital.distance !== undefined) {
+
+                        <strong>
+                            {{ getDistanceText(hospital) }}
+                        </strong>
+
+                        <span>
+                            from you
+                        </span>
+
+                        } @else {
+
+                        <span class="distance-icon">
+                            ⌖
+                        </span>
+
+                        }
+
+                    </div>
+
+
+                    <!-- ACTION -->
+                    <div class="hospital-action">
+
+                        @if (
+                        selectedHospital?.hospitalId ===
+                        hospital.hospitalId
+                        ) {
+
+                        <div class="selected-check">
+                            ✓
+                        </div>
+
+                        } @else {
+
+                        <button type="button" class="select-button" (click)="
+                    selectHospital(hospital);
+                    $event.stopPropagation()
+                  ">
+                            Select
+                        </button>
+
+                        }
+
+                    </div>
+
+                </article>
+
+                }
+
+            </div>
+
+
+            <!-- EMPTY -->
+            @if (filteredHospitals.length === 0) {
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🏥
+                </div>
+
+                <h3>No hospitals found</h3>
+
+                <p>
+                    Try searching with another hospital
+                    name, city or area.
+                </p>
+
+                <button type="button" (click)="clearSearch()">
+                    View All Hospitals
+                </button>
+
+            </div>
+
+            }
+
+
+        </div>
+
+    </main>
+
+
+    <!-- SELECTED FOOTER -->
+    @if (selectedHospital) {
+
+    <div class="selected-hospital-footer">
+
+        <div class="selected-hospital-info">
+
+            <div class="mini-hospital-icon">
+                🏥
+            </div>
+
+            <div>
+                <span>Selected Hospital</span>
+
+                <strong>
+                    {{ selectedHospital.hospitalName }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <button type="button" class="continue-button" (click)="continueToDashboard()">
+            Continue to Dashboard
+            <span>→</span>
+        </button>
+
+    </div>
+
+    }
+
+</div>

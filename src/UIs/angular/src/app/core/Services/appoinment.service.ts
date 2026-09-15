@@ -51,4 +51,21 @@ export class AppoinmentService {
   getDashboardSummeryForDoctor(associateId: number, fromDate: string, toDate: string) {
     return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DASHBOARD_DATA_FOR_DOCTOR}`, { associateId, fromDate, toDate })
   }
+  getAppointmentListForReceptionist(associateId: number, fromDate: string, toDate: string) {
+    return this.http.post(`${this.apiUrl}${AppointmentApiEndPoint.GET_APOINTMENT_LIST_FOR_RECEPTIONIST}`,
+
+      {
+        associateId: associateId.toString(),
+        fromDate,
+        toDate,
+        pageSize: 0,
+        pageNumber: 0
+      }
+    )
+  }
+
+  getAppointmentStatusList() {
+    return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_APPOINTMENT_STATUS}`,
+    )
+  }
 }

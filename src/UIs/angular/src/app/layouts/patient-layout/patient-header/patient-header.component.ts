@@ -11,7 +11,7 @@ import { TabServiceService } from "src/app/core/Services/tab-service.service";
   styleUrl: "./patient-header.component.css",
 })
 export class PatientHeaderComponent implements OnInit {
-
+  selectedHospitalName = '';
   showProfile = false;
   mobileMenuOpen = false;
 
@@ -62,6 +62,7 @@ export class PatientHeaderComponent implements OnInit {
   constructor(private tabService: TabServiceService, private authService: AuthService) { }
 
   ngOnInit() {
+
     const today = new Date();
 
     const day = today.getDate();
@@ -71,10 +72,22 @@ export class PatientHeaderComponent implements OnInit {
       month: "long",
     });
 
-
     this.formattedDate = `${month} ${day}${this.getOrdinal(day)} ${year}`;
+
     this.username =
       JSON.parse(localStorage.getItem('user') || '{}')?.data?.firstName ?? 'User';
+
+    // Selected Hospital
+    const selectedHospital = localStorage.getItem('selectedHospital');
+
+    if (selectedHospital) {
+
+      const hospital = JSON.parse(selectedHospital);
+
+      this.selectedHospitalName =
+        hospital?.hospitalName ?? 'Hospital';
+
+    }
 
     this.setDate();
 

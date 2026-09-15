@@ -120,6 +120,24 @@ export class PatientEffects {
         )
     )
 
+    getPatientListForReceptionist$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getPatientListForReceptionist),
+            mergeMap((action) =>
+                this.patientService.getPatientList(action.receptionistId).pipe(
+                    map((response: any) =>
+                        PatientAction.getPatientListForReceptionistSuccess({ patientList: response })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getPatientListForReceptionistFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
+    )
+
 
 
 

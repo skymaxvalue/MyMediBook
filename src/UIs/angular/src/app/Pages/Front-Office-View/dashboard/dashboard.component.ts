@@ -11,13 +11,14 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/Store/app.state';
-import { getDashboardData, getDashboardDataByDoctor, getDashboardDataByReceptionist } from 'src/app/Store/Appointments/appointment.actions';
+import { getAppointmentListByRiceptionist, getDashboardData, getDashboardDataByDoctor, getDashboardDataByReceptionist } from 'src/app/Store/Appointments/appointment.actions';
 import { selectDashboardDataSummery } from 'src/app/Store/Appointments/appointment.selcetors';
+import { JsonPipe } from '@angular/common';
 
 
 interface DashboardStat {
   title: string;
-  value: string;
+  value: number;
   icon: string;
   color: string;
 }
@@ -81,7 +82,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   activePage = 'dashboard';
 
   private timer: any;
-  user: any = JSON.parse(localStorage.getItem('user') || '{}');
+  user: any = {};
 
 
   // ==============================
@@ -96,7 +97,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     recentPatients: [],
     todaysQueue: []
   };
-  dashboardDataCount: any;
+  dashboardDataCount = {
+    totalAppointmentsCount: 0,
+    totalWalkinsWaitingCount: 0,
+    totalCheckInCount: 0,
+    totalPendingPaymentsCount: 0,
+    totalLabResultsCount: 0
+  };
 
 
   constructor(
@@ -109,43 +116,121 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.loadDashboardData();
-
-    this.updateDate();
-
-    this.updateTime();
-
     this.loadUser();
 
+    this.updateDate();
+    this.updateTime();
     this.startClock();
+
     this.store.select(selectDashboardDataSummery).subscribe((res: any) => {
-      if (res) {
 
-        this.dashboardDataCount = res.data
-        console.log('Dashboard Data from Store:', this.dashboardData, res);
+      console.log('Dashboard API Response:', res);
+
+      const data = res?.data;
+
+      // Ignore empty / invalid response
+      if (
+        !data ||
+        Array.isArray(data) ||
+        typeof data !== 'object'
+      ) {
+        console.warn('Dashboard response ignored:', data);
+        return;
       }
-    })
 
+      // Run update in next JavaScript task
+      setTimeout(() => {
+
+        this.dashboardDataCount = {
+          totalAppointmentsCount: data.totalAppointmentsCount ?? 0,
+          totalWalkinsWaitingCount: data.totalWalkinsWaitingCount ?? 0,
+          totalCheckInCount: data.totalCheckInCount ?? 0,
+          totalPendingPaymentsCount: data.totalPendingPaymentsCount ?? 0,
+          totalLabResultsCount: data.totalLabResultsCount ?? 0
+        };
+
+        console.log(
+          'Dashboard Counts Updated:',
+          this.dashboardDataCount
+        );
+
+        this.updateStatValues();
+
+        // Tell Angular to update the UI
+        this.cdr.detectChanges();
+
+      }, 0);
+
+    });
+
+    this.loadDashboardData();
   }
 
+  updateStatValues(): void {
+
+    this.dashboardData.stats =
+      this.dashboardData.stats.map(stat => {
+
+        switch (stat.title) {
+
+          case "Today's Appointments":
+            return {
+              ...stat,
+              value: this.dashboardDataCount.totalAppointmentsCount
+            };
+
+          case "Walk-ins Waiting":
+            return {
+              ...stat,
+              value: this.dashboardDataCount.totalWalkinsWaitingCount
+            };
+
+          case "Checked In":
+            return {
+              ...stat,
+              value: this.dashboardDataCount.totalCheckInCount
+            };
+
+          case "Pending Payments":
+            return {
+              ...stat,
+              value: this.dashboardDataCount.totalPendingPaymentsCount
+            };
+
+          case "Lab Results":
+            return {
+              ...stat,
+              value: this.dashboardDataCount.totalLabResultsCount
+            };
+
+          default:
+            return {
+              ...stat,
+              value: 0
+            };
+        }
+
+      });
+
+  }
   getStatCount(title: string): number {
 
     switch (title) {
 
       case "Today's Appointments":
-        return this.dashboardDataCount?.totalAppointmentsCount ?? 0;
+        return this.dashboardDataCount.totalAppointmentsCount;
 
-      case "Waiting Walk-ins":
-        return this.dashboardDataCount?.totalWalkinsWaitingCount ?? 0;
+      case "Walk-ins Waiting":
+        return this.dashboardDataCount.totalWalkinsWaitingCount;
 
       case "Checked In":
-        return this.dashboardDataCount?.totalCheckInCount ?? 0;
+        return this.dashboardDataCount.totalCheckInCount;
 
       case "Pending Payments":
-        return this.dashboardDataCount?.totalPendingPaymentsCount ?? 0;
+        return this.dashboardDataCount.totalPendingPaymentsCount;
 
       case "Lab Results":
-        return this.dashboardDataCount?.totalLabResultsCount ?? 0;
+        return this.dashboardDataCount.totalLabResultsCount;
 
       default:
         return 0;
@@ -154,6 +239,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   loadDashboardData(): void {
+    // this.user = JSON.parse(localStorage.getItem('user') || 'null')
+
     const today = new Date();
 
     const fromDate = new Date(today);
@@ -162,10 +249,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const toDate = new Date(today);
     toDate.setHours(23, 59, 59, 999);
 
-    this.store.dispatch(getDashboardData({
+    console.log('Dashboard Request:', {
+      associateId: this.user?.refId,
+      fromDate: fromDate.toISOString(),
+      toDate: toDate.toISOString()
+    });
+
+    this.store.dispatch(
+      getDashboardData({
+        associateId: this.user?.refId,
+        fromDate: fromDate.toISOString(),
+        toDate: toDate.toISOString()
+      })
+    );
+
+    this.store.dispatch(getAppointmentListByRiceptionist({
       associateId: this.user?.refId, fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString()
-    }));
+    }))
     this.store.dispatch(getDashboardDataByReceptionist({
       associateId: this.user?.refId, fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString()
@@ -175,17 +276,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
       toDate: toDate.toISOString()
     }));
 
-
     this.http
-      .get<DashboardData>(
-        '/assets/data-json/data.json'
-      )
+      .get<DashboardData>('/assets/data-json/data.json')
       .subscribe({
 
         next: (data) => {
 
+          console.log('Static Dashboard JSON:', data);
+
           this.dashboardData = data;
-          this.cdr.markForCheck();
+
+          this.updateStatValues();
 
         },
 
@@ -199,7 +300,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
 
       });
-
   }
 
 
@@ -276,31 +376,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   loadUser(): void {
 
-    const userData =
-      localStorage.getItem('loggedInUser');
+    const userData = localStorage.getItem('user');
 
     if (!userData) {
-
+      console.warn('user not found in localStorage');
+      this.user = {};
       return;
-
     }
 
     try {
 
-      const user = JSON.parse(userData);
+      this.user = JSON.parse(userData);
 
-      if (user?.name) {
+      console.log('Logged In User:', this.user);
+      console.log('Associate ID:', this.user?.refId);
 
-        this.username = user.name;
-
+      if (this.user?.username) {
+        this.username = this.user.username;
+      } else if (this.user?.name) {
+        this.username = this.user.name;
       }
 
-    } catch {
+    } catch (error) {
 
+      console.error('Invalid user data:', error);
+
+      this.user = {};
       this.username = 'Front Office';
 
     }
-
   }
 
 

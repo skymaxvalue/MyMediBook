@@ -65,6 +65,8 @@ import { BillsEffects } from "./app/Store/Billing/billing.effect";
 import { BillReducer } from "./app/Store/Billing/billing.reducer";
 import { MessagesEffects } from "./app/Store/Messages/messages.effect";
 import { MessagesReducer } from "./app/Store/Messages/messages.reducer";
+import { organizationReducer } from "./app/Store/Organization/organization.reducer";
+import { OrganizationEffects } from "./app/Store/Organization/organization.effect";
 
 if (environment.production) {
   enableProdMode();
@@ -117,7 +119,8 @@ bootstrapApplication(AppComponent, {
       doctor: doctorSpecialityReducer,
       labresult: LabResultReducer,
       bills: BillReducer,
-      message: MessagesReducer
+      message: MessagesReducer,
+      organization: organizationReducer
     }),
     provideEffects([
       AuthEffects,
@@ -127,7 +130,8 @@ bootstrapApplication(AppComponent, {
       LabResultEffects,
       AuditLogEffects,
       BillsEffects,
-      MessagesEffects
+      MessagesEffects,
+      OrganizationEffects
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

@@ -88,4 +88,21 @@ export const patientReducer = createReducer(
         error: action.error,
     })),
 
+    on(PatientActions.getPatientListForReceptionist, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(PatientActions.getPatientListForReceptionistSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        patientList: action.patientList
+    })),
+
+    on(PatientActions.getPatientListForReceptionistFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
+
 )

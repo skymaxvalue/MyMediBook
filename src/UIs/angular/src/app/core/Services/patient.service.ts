@@ -64,4 +64,11 @@ export class PatientService {
     );
   }
 
+  getPatientList(receptionistId: any): Observable<any> {
+
+    return this.http.get<any>(
+      `${this.apiUrl}${PatientApiEndPoint.GET_PATIENT_LIST_FOR_RECEPTIONIST}${receptionistId}`
+    );
+  }
+
 }
