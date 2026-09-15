@@ -29,3 +29,7 @@ export const selectSearchLisOfPatient = createSelector(
     selectPatientState,
     state => state.searchPatientToCheck
 )
+export const selectPatientListForReceptionist = createSelector(
+    selectPatientState,
+    state => state.patientList
+)

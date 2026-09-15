@@ -13,6 +13,16 @@ export const PATIENT_ROUTES: Routes = [
         canActivate: [loginGuard]
     },
     {
+        path: 'select-hospital',
+        loadComponent: () =>
+            import(
+                '../Pages/Patient-View/select-hospital/select-hospital.component'
+            ).then(
+                m => m.SelectHospitalComponent
+            ),
+        canActivate: [authGuard]
+    },
+    {
         path: 'forgot-password',
         loadComponent: () =>
             import('../auth/patient-login/forget-password/forget-password.component')

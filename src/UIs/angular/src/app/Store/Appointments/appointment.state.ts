@@ -11,6 +11,8 @@ export interface AppointmentState {
     rescheduledAppointment: any;
     DashboardDataSummery: any;
     TodaysAppointments: any;
+    Appointment_list: any[];
+    statusList: any
 }
 
 export const initialAppointmentState: AppointmentState = {
@@ -24,4 +26,6 @@ export const initialAppointmentState: AppointmentState = {
     rescheduledAppointment: null,
     DashboardDataSummery: null,
     TodaysAppointments: [],
+    Appointment_list: [],
+    statusList: null
 };

@@ -289,4 +289,60 @@ export class AppointmentEffects {
         )
     );
 
+    getAppointmentListByReceptionist$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getAppointmentListByRiceptionist),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getAppointmentListForReceptionist(action.associateId, action.fromDate, action.toDate)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getAppointmentListByRiceptionistSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getAppointmentListByRiceptionistFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
+    getAppointmentStatusList$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getAppointmentStatusList),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getAppointmentStatusList()
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getAppointmentStatusListSuccess({
+                                statusList: response.data
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getAppointmentStatusListFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
 }

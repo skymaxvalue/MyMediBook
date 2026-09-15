@@ -426,12 +426,20 @@
                 <!-- Visit Purpose -->
                 <label for="visitPurpose">Dr. Visit Purpose</label>
                 <div class="field-container">
-                    <textarea id="visitPurpose" formControlName="visitPurpose"
-                        placeholder="Enter visit purpose / symptoms"></textarea>
 
-                    @if (getErrorMessage('visitPurpose')) {
+                    <select id="visitPurpose" formControlName="visitPurposeId">
+                        <option value="">Select Visit Purpose</option>
+
+                        @for (purpose of visitPurposes; track purpose.statusId) {
+                        <option [value]="purpose.statusId">
+                            {{ purpose.statusValue }}
+                        </option>
+                        }
+                    </select>
+
+                    @if (getErrorMessage('visitPurposeId')) {
                     <small class="error-message">
-                        {{ getErrorMessage('visitPurpose') }}
+                        {{ getErrorMessage('visitPurposeId') }}
                     </small>
                     }
                 </div>
@@ -439,15 +447,19 @@
                 <!-- Visit Type -->
                 <label for="visitType">Type Of Visit</label>
                 <div class="field-container">
-                    <select id="visitType" formControlName="visitType">
+                    <select id="visitType" formControlName="visitTypeId">
                         <option value="">Select type of visit</option>
-                        <option value="Consultation">Consultation</option>
-                        <option value="Follow-up">Follow-up</option>
+                        @for (type of visitTypes; track type.statusId) {
+                        <option [value]="type.statusId">
+                            {{ type.statusValue }}
+                        </option>
+                        }
+
                     </select>
 
-                    @if (getErrorMessage('visitType')) {
+                    @if (getErrorMessage('visitTypeId')) {
                     <small class="error-message">
-                        {{ getErrorMessage('visitType') }}
+                        {{ getErrorMessage('visitTypeId') }}
                     </small>
                     }
                 </div>

@@ -151,6 +151,12 @@ input[type="date"] {
     gap: 8px 14px;
     margin-top: 6px;
 }
+.address-subfieldsText {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 14px;
+    margin-top: 6px;
+}
 
 .address-subfields .field-pair {
     gap: 6px;
@@ -308,7 +314,7 @@ input[type="radio"] {
 }
 
 textarea {
-    height: 90px;
+    height: 50px;
     resize: vertical;
 }
 

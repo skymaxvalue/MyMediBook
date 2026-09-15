@@ -187,4 +187,42 @@ export const appointmentReducer = createReducer(
         isLoading: false,
         error: action.error
     }))
+    ,
+
+    on(AppointmentActions.getAppointmentListByRiceptionist, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getAppointmentListByRiceptionistSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        Appointments: action.Appointments
+    })),
+
+    on(AppointmentActions.getAppointmentListByRiceptionistFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    }))
+    ,
+
+    on(AppointmentActions.getAppointmentStatusList, (state) => ({
+        ...state,
+        isLoading: true,
+        error: null
+    })),
+
+    on(AppointmentActions.getAppointmentStatusListSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        statusList: action.statusList
+    })),
+
+    on(AppointmentActions.getAppointmentStatusListFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error
+    }))
 );

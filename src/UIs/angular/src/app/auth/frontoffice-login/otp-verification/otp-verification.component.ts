@@ -572,6 +572,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.router.navigate([
       '/front-office/login'
     ]);
+    this.clearTimer();
   }
 
 

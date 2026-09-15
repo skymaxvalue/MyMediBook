@@ -65,7 +65,7 @@ export class PatientLoginComponent implements AfterViewInit, OnInit {
         localStorage.setItem('user', JSON.stringify(response.data));
 
 
-        this.router.navigate(['/patient/dashboard']);
+        this.router.navigate(['/patient/select-hospital']);
 
 
       });

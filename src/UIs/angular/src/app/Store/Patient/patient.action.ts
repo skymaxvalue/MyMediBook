@@ -94,3 +94,19 @@ export const getSearchPatientDetailsFailure = createAction(
     '[Patient search] Data Failure',
     props<{ error: string }>()
 );
+
+export const getPatientListForReceptionist = createAction(
+    '[Patient receptionist] Data List ',
+    props<{ receptionistId: any }>()
+
+);
+
+export const getPatientListForReceptionistSuccess = createAction(
+    '[Patient receptionist] Data Success',
+    props<{ patientList: any }>()
+);
+
+export const getPatientListForReceptionistFailure = createAction(
+    '[Patient receptionist] Data Failure',
+    props<{ error: string }>()
+);

@@ -10,8 +10,8 @@ import {
   ValidationErrors
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { getAgeType, getRelationType } from 'src/app/Store/Appointments/appointment.actions';
-import { selectAgeType, selectRelationShipType } from 'src/app/Store/Appointments/appointment.selcetors';
+import { getAgeType, getAppointmentStatusList, getRelationType } from 'src/app/Store/Appointments/appointment.actions';
+import { selectAgeType, selectAppointmentStatusList, selectRelationShipType } from 'src/app/Store/Appointments/appointment.selcetors';
 import { requestOTP } from 'src/app/Store/Auth/auth.actions';
 import { selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
 import { getPetirntProfileListById, getProfileDataByProfileId } from 'src/app/Store/Patient/patient.action';
@@ -36,6 +36,8 @@ export class BookAppoimentFormComponent implements OnInit {
   relativeList = signal<any[]>([]);
   selectedMember = signal<any | null>(null);
   InsurenceValue: string = '';
+  visitTypes: any[] = [];
+  visitPurposes: any[] = [];
 
   familyMembers = [
     {
@@ -221,8 +223,8 @@ export class BookAppoimentFormComponent implements OnInit {
       address: ['', [Validators.required, Validators.minLength(5)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       email: ['', [Validators.required, Validators.email]],
-      visitPurpose: ['', [Validators.required, Validators.minLength(5)]],
-      visitType: ['', Validators.required],
+      visitPurposeId: [, [Validators.required, Validators.minLength(5)]],
+      visitTypeId: [, Validators.required],
       otpMethod: ['', Validators.required],
       createdBy: [this.loginUser.roleName],
       associateRole: [this.doctor.department]
@@ -382,6 +384,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.store.dispatch(getPetirntProfileListById({ patientId: this.loginUser.refId }));
     this.store.dispatch(getAgeType())
     this.store.dispatch(getRelationType())
+    this.store.dispatch(getAppointmentStatusList())
     this.store.select(selectAgeType).subscribe((res: any) => {
       if (res) {
         console.log(res.data)
@@ -401,6 +404,19 @@ export class BookAppoimentFormComponent implements OnInit {
         this.relativeList.set(res.data)
 
       }
+    })
+    this.store.select(selectAppointmentStatusList).subscribe((res: any) => {
+      const visitTypeData = res.find(
+        (item: any) => item.category === 'VisitType'
+      );
+
+      const visitPurposeData = res.find(
+        (item: any) => item.category === 'VisitPurpose'
+      );
+
+      this.visitTypes = visitTypeData?.statuses ?? [];
+      this.visitPurposes = visitPurposeData?.statuses ?? [];
+      console.log(this.visitTypes, this.visitPurposes, "=========>")
     })
   }
   luhnValidator(control: AbstractControl): ValidationErrors | null {
