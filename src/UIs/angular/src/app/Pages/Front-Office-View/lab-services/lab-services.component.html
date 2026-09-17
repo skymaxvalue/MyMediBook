@@ -1,0 +1,1025 @@
+<section class="ls-page-card">
+
+    <!-- Header -->
+    <div class="ls-page-header">
+
+        <div class="ls-icon-circle">
+            <img src="assets/images/lab.png" alt="Lab Service">
+        </div>
+
+        <h2>Lab Service Request</h2>
+
+        <p>Complete all required fields.</p>
+
+    </div>
+
+
+    <form id="lab-service-form" (ngSubmit)="submitRequest()" novalidate>
+
+
+        <!-- ================= PATIENT SEARCH ================= -->
+
+        <section class="ls-section">
+
+            <div class="ls-section__header">
+
+                <img src="assets/images/front-office/images/search-blue.png" alt="Patient">
+
+                <h3>Select Patient Profile</h3>
+
+            </div>
+
+
+            <div class="ls-search-layout">
+
+                <div class="ls-search-left">
+
+                    <div class="ls-field">
+
+                        <label for="patientLastNameSearch">
+                            Patient Last Name
+                        </label>
+
+                        <div class="ls-search-input">
+
+                            <img src="assets/images/front-office/images/profile-outline.png" alt="">
+
+                            <input id="patientLastNameSearch" type="text" placeholder="Enter last name"
+                                autocomplete="off" [(ngModel)]="patientLastNameSearch" name="patientLastNameSearch"
+                                (input)="searchPatients()">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="ls-field">
+
+                        <label for="patientDobSearch">
+                            Date of Birth
+                        </label>
+
+                        <input id="patientDobSearch" class="ls-input" type="date" [(ngModel)]="patientDobSearch"
+                            name="patientDobSearch" [max]="patientDobMax" (change)="searchPatients()">
+
+                    </div>
+
+                </div>
+
+
+                <div class="ls-search-divider">
+                    <span>OR</span>
+                </div>
+
+
+                <div class="ls-search-right">
+
+                    <div class="ls-field">
+
+                        <label for="patientMobileSearch">
+                            Mobile Number
+                        </label>
+
+                        <div class="ls-search-input">
+
+                            <img src="assets/images/front-office/images/phone-blue.png" alt="">
+
+                            <input id="patientMobileSearch" type="tel" placeholder="Enter mobile number"
+                                autocomplete="off" [(ngModel)]="patientMobileSearch" name="patientMobileSearch"
+                                (input)="searchPatients()">
+
+                        </div>
+
+
+                        <div class="ls-search-actions">
+
+                            <button type="button" id="patientClearBtn" class="ls-btn ls-btn--danger-outline"
+                                (click)="clearPatient()">
+
+                                Clear
+
+                            </button>
+
+
+                            <button type="button" id="patientSearchBtn" class="ls-btn ls-btn--primary ls-search-btn"
+                                (click)="searchPatients()">
+
+                                <img src="assets/images/front-office/images/search-white.png" alt=""
+                                    class="btn-icon-img">
+
+                                Search
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Search Results -->
+
+            <div id="patientSearchResults" class="ls-search-results" [class.show]="showPatientResults" role="listbox">
+
+                <div *ngIf="patientSearchResults.length === 0 && showPatientResults" class="ls-empty-result">
+
+                    No Matching Record Found
+
+                </div>
+
+
+                <div *ngFor="let patient of patientSearchResults" class="ls-result-item" role="option"
+                    (click)="selectPatient(patient)">
+
+
+                    <div class="ls-result-avatar">
+
+                        <svg viewBox="0 0 24 24" fill="none">
+
+                            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7" />
+
+                            <path d="M4 20c1.8-3.5 5-5 8-5s6.2 1.5 8 5" stroke="currentColor" stroke-width="1.7"
+                                stroke-linecap="round" />
+
+                        </svg>
+
+                    </div>
+
+
+                    <div class="ls-result-info">
+
+                        <div class="ls-result-name">
+                            {{ patient.firstName }}
+                            {{ patient.lastName }}
+                        </div>
+
+                        <div class="ls-result-meta">
+
+                            {{ patient.phone }}
+                            • MRN {{ patient.mrn }}
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="button" class="ls-btn ls-btn--secondary ls-btn--sm ls-result-select-btn"
+                        (click)="$event.stopPropagation(); selectPatient(patient)">
+
+                        Select Patient
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PATIENT INFORMATION ================= -->
+
+        <section class="ls-section">
+
+            <div class="ls-section__header">
+
+                <img src="assets/images/front-office/images/profile-outline.png" alt="Patient Information">
+
+                <h3>Patient Information</h3>
+
+            </div>
+
+
+            <div class="ls-grid" style="margin-bottom: 22px;">
+
+                <div class="ls-field">
+
+                    <label>
+                        First Name<span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="First Name" [(ngModel)]="patientFirstName"
+                        name="patientFirstName" readonly>
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Last Name<span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="Last Name" [(ngModel)]="patientLastName"
+                        name="patientLastName" readonly>
+
+                </div>
+
+            </div>
+
+
+            <div class="ls-grid ls-grid--3" style="margin-bottom: 22px;">
+
+                <div class="ls-field">
+
+                    <label>
+                        Date of Birth<span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="date" [(ngModel)]="patientDob" name="patientDob" readonly>
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Gender<span class="ls-req">*</span>
+                    </label>
+
+                    <select class="ls-select ls-select--locked" [(ngModel)]="patientGender" name="patientGender"
+                        tabindex="-1">
+
+                        <option value="">Select</option>
+                        <option>Female</option>
+                        <option>Male</option>
+                        <option>Other</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Medical Record #
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="MRN-000000" [(ngModel)]="patientMrn"
+                        name="patientMrn" readonly>
+
+                </div>
+
+            </div>
+
+
+            <div class="ls-grid">
+
+                <div class="ls-field">
+
+                    <label>
+                        Insurance Provider
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="Insurance Provider name"
+                        [(ngModel)]="patientInsurance" name="patientInsurance" readonly>
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Member ID
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="Policy number" [(ngModel)]="patientMemberId"
+                        name="patientMemberId" readonly>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SPECIMEN ================= -->
+
+        <section class="ls-section">
+
+            <div class="ls-section__header">
+
+                <img src="assets/images/front-office/images/lab-tube.png" alt="Specimen Details">
+
+                <h3>Specimen Details</h3>
+
+            </div>
+
+
+            <div class="ls-field" style="margin-bottom: 22px;">
+
+                <label>
+                    Specimen Type<span class="ls-req">*</span>
+                </label>
+
+
+                <div class="ls-chip-row" id="lab-specimen-type">
+
+                    <span *ngFor="let specimen of specimenTypes" class="ls-chip"
+                        [class.is-selected]="selectedSpecimen === specimen.value"
+                        (click)="selectSpecimen(specimen.value)">
+
+                        <svg *ngIf="selectedSpecimen === specimen.value" viewBox="0 0 20 20" fill="none">
+
+                            <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+
+                        </svg>
+
+                        {{ specimen.label }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="ls-grid">
+
+                <div class="ls-field">
+
+                    <label>
+                        Collection Date &amp; Time
+                        <span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="datetime-local" [(ngModel)]="collectionDateTime"
+                        name="collectionDateTime">
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Collected By<span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="Phlebotomist name / ID" [(ngModel)]="collectedBy"
+                        name="collectedBy">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TESTS ================= -->
+
+        <section class="ls-section">
+
+            <div class="ls-section__header">
+
+                <img src="assets/images/front-office/images/appointment.png" alt="Tests Requested">
+
+                <h3>Tests Requested</h3>
+
+            </div>
+
+
+            <div class="ls-grid ls-grid--4" id="lab-tests-grid" style="margin-bottom: 22px;">
+
+
+                <div *ngFor="let test of tests" class="ls-check-tile" [class.is-selected]="test.selected"
+                    (click)="toggleTest(test)">
+
+
+                    <div class="ls-check-tile__text">
+
+                        <strong>
+                            {{ test.name }}
+                        </strong>
+
+                        <span>
+                            {{ test.code }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="ls-check-tile__box">
+
+                        <svg viewBox="0 0 20 20" fill="none">
+
+                            <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4"
+                                stroke-linecap="round" stroke-linejoin="round" />
+
+                        </svg>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="ls-field">
+
+                <label>
+                    Additional / custom tests
+                </label>
+
+                <input class="ls-input" type="text" placeholder="Enter test name or CPT code" [(ngModel)]="customTests"
+                    name="customTests">
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRIORITY ================= -->
+
+        <section class="ls-section">
+
+            <div class="ls-section__header">
+
+                <img src="assets/images/front-office/images/priority-routine-blue.png" alt="Priority">
+
+                <h3>Priority</h3>
+
+            </div>
+
+
+            <div class="ls-radio-group" id="lab-priority">
+
+
+                <div *ngFor="let priority of priorities" class="ls-radio-card"
+                    [class.is-selected]="selectedPriority === priority.value" (click)="selectPriority(priority.value)">
+
+
+                    <div class="ls-radio-card__text">
+
+                        <div class="ls-radio-card__title">
+
+                            <img class="ls-radio-card__icon" [src]="priority.icon" alt="">
+
+                            <strong>
+                                {{ priority.label }}
+                            </strong>
+
+                        </div>
+
+                        <span>
+                            {{ priority.duration }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="ls-radio-card__dot">
+
+                        <svg viewBox="0 0 20 20" fill="none">
+
+                            <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.4"
+                                stroke-linecap="round" stroke-linejoin="round" />
+
+                        </svg>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ORDERED BY ================= -->
+
+        <section class="ls-section">
+
+            <div class="ls-section__header">
+
+                <img src="assets/images/front-office/images/contact.png" alt="Ordered By">
+
+                <h3>Ordered By</h3>
+
+            </div>
+
+
+            <div class="ls-grid" style="margin-bottom: 22px;">
+
+                <div class="ls-field">
+
+                    <label>
+                        Physician Name<span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="Dr. Name" [(ngModel)]="providerName"
+                        name="providerName">
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Physician Facility Location
+                        <span class="ls-req">*</span>
+                    </label>
+
+                    <input class="ls-input" type="text" placeholder="Enter Address" [(ngModel)]="providerLocation"
+                        name="providerLocation">
+
+                </div>
+
+            </div>
+
+
+            <div class="ls-grid ls-grid--3" style="margin-bottom: 22px;">
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Department
+                    </label>
+
+                    <select class="ls-select" [(ngModel)]="department" name="department">
+
+                        <option value="">Select</option>
+                        <option>Internal Medicine</option>
+                        <option>Cardiology</option>
+                        <option>Endocrinology</option>
+                        <option>Pediatrics</option>
+                        <option>OB/GYN</option>
+                        <option>Orthopedics</option>
+                        <option>Emergency Medicine</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Contact Number
+                    </label>
+
+                    <input class="ls-input" type="tel" placeholder="(000) 000-0000" [(ngModel)]="contactPhone"
+                        name="contactPhone">
+
+                </div>
+
+
+                <div class="ls-field">
+
+                    <label>
+                        Result Delivery Mode
+                    </label>
+
+                    <select class="ls-select" [(ngModel)]="resultDelivery" name="resultDelivery">
+
+                        <option>Print / Pickup</option>
+                        <option>Fax</option>
+                        <option>Secure email</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="ls-field">
+
+                <label>
+                    Clinical Notes / ICD-10 Diagnosis
+                </label>
+
+                <textarea class="ls-textarea" [(ngModel)]="clinicalNotes" name="clinicalNotes"
+                    placeholder="Relevant clinical context, symptoms, or diagnosis codes (e.g. E11.9, Z00.00)…">
+          </textarea>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ACTIONS ================= -->
+
+        <div class="ls-actions">
+
+            <button type="button" class="ls-btn ls-btn--secondary" (click)="saveDraft()">
+
+                <img src="assets/images/front-office/images/save.png" alt="" class="btn-icon-img">
+
+                Save draft
+
+            </button>
+
+
+            <button type="submit" class="ls-btn ls-btn--primary">
+
+                <img src="assets/images/front-office/images/check-white.png" alt="" class="btn-icon-img">
+
+                Submit request
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+
+
+<!-- =====================================================
+     SELECT PATIENT MODAL
+===================================================== -->
+
+<div id="selectPatientModal" class="modal" [style.display]="showSelectPatientModal ? 'flex' : 'none'">
+
+    <div class="modal-content patient-modal-content" role="dialog" aria-modal="true">
+
+
+        <button type="button" class="close-icon" (click)="closeSelectPatientModal()">
+
+            ×
+
+        </button>
+
+
+        <div class="patient-modal-header">
+
+            <span class="icon-badge" aria-hidden="true">
+
+                <img src="assets/images/front-office/images/patient-icon-blue.png" alt="">
+
+            </span>
+
+            <h2>Select Existing Patient</h2>
+
+        </div>
+
+
+        <div class="patient-search-row">
+
+            <div class="patient-search-box">
+
+                <input type="text" placeholder="Search by full name" [(ngModel)]="modalPatientSearch"
+                    (input)="searchModalPatients()">
+
+                <button type="button" class="patient-search-btn" (click)="searchModalPatients()">
+
+                    <img src="assets/images/front-office/images/search-white.png" alt="" class="btn-icon-img">
+
+                </button>
+
+            </div>
+
+
+            <input type="date" class="patient-dob-input" [(ngModel)]="modalPatientDob" (change)="searchModalPatients()">
+
+        </div>
+
+
+        <p class="patient-modal-hint patient-modal-hint-lg">
+
+            Search by name, date of birth, or both to avoid selecting the wrong record.
+
+        </p>
+
+
+        <div class="patient-list" id="patientList">
+
+
+            <div *ngFor="let patient of modalPatientResults" class="ls-result-item"
+                [class.is-active]="modalSelectedPatient?.id === patient.id" (click)="selectModalPatient(patient)">
+
+                <div class="ls-result-avatar">
+
+                    <svg viewBox="0 0 24 24" fill="none">
+
+                        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7" />
+
+                        <path d="M4 20c1.8-3.5 5-5 8-5s6.2 1.5 8 5" stroke="currentColor" stroke-width="1.7"
+                            stroke-linecap="round" />
+
+                    </svg>
+
+                </div>
+
+
+                <div class="ls-result-info">
+
+                    <div class="ls-result-name">
+
+                        {{ patient.firstName }}
+                        {{ patient.lastName }}
+
+                    </div>
+
+                    <div class="ls-result-meta">
+
+                        {{ patient.phone }}
+                        • MRN {{ patient.mrn }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="button" class="clear-btn" (click)="closeSelectPatientModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button" class="book-btn" [disabled]="!modalSelectedPatient" (click)="confirmModalPatient()">
+
+                Select patient
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DRAFT MODAL
+===================================================== -->
+
+<div id="labDraftModal" class="modal" [style.display]="showDraftModal ? 'flex' : 'none'">
+
+    <div class="modal-content ls-modal-sm">
+
+        <button type="button" class="close-icon" (click)="closeDraftModal()">
+
+            ×
+
+        </button>
+
+
+        <div class="ls-modal-icon ls-modal-icon--success">
+
+            <svg viewBox="0 0 20 20" fill="none">
+
+                <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+
+            </svg>
+
+        </div>
+
+
+        <h2 class="ls-modal-title">
+            Draft Saved Successfully
+        </h2>
+
+
+        <div class="ls-summary-list">
+
+            <div class="ls-summary-row">
+
+                <span>Draft ID</span>
+
+                <strong>
+                    {{ draftId }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>Status</span>
+
+                <span class="ls-status-pill ls-status-pill--draft">
+                    Draft
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="button" class="book-btn" (click)="closeDraftModal()">
+
+                OK
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     REVIEW MODAL
+===================================================== -->
+
+<div id="labReviewModal" class="modal" [style.display]="showReviewModal ? 'flex' : 'none'">
+
+    <div class="modal-content ls-modal-sm">
+
+        <button type="button" class="close-icon" (click)="closeReviewModal()">
+
+            ×
+
+        </button>
+
+
+        <div class="patient-modal-header">
+
+            <span class="icon-badge">
+
+                <img src="assets/images/lab.png" alt="">
+
+            </span>
+
+            <h2>
+                Review Lab Request
+            </h2>
+
+        </div>
+
+
+        <div class="ls-summary-list">
+
+            <div class="ls-summary-row">
+
+                <span>Patient Name</span>
+
+                <strong>
+                    {{ patientFirstName }}
+                    {{ patientLastName }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>MRN</span>
+
+                <strong>
+                    {{ patientMrn || '—' }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>Specimen</span>
+
+                <strong>
+                    {{ getSelectedSpecimenLabel() || '—' }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>Selected Tests</span>
+
+                <strong>
+                    {{ getSelectedTests().join(', ') || '—' }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>Priority</span>
+
+                <strong>
+                    {{ getSelectedPriorityLabel() || '—' }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>Ordered By</span>
+
+                <strong>
+                    {{ providerName || '—' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="button" class="clear-btn" (click)="closeReviewModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button" class="book-btn" (click)="confirmRequest()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUCCESS MODAL
+===================================================== -->
+
+<div id="labSuccessModal" class="modal" [style.display]="showSuccessModal ? 'flex' : 'none'">
+
+    <div class="modal-content ls-modal-sm">
+
+        <button type="button" class="close-icon" (click)="closeSuccessModal()">
+
+            ×
+
+        </button>
+
+
+        <div class="ls-modal-icon ls-modal-icon--success">
+
+            <svg viewBox="0 0 20 20" fill="none">
+
+                <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+
+            </svg>
+
+        </div>
+
+
+        <h2 class="ls-modal-title">
+            Laboratory Request Sent
+        </h2>
+
+
+        <div class="ls-summary-list">
+
+            <div class="ls-summary-row">
+
+                <span>Request ID</span>
+
+                <strong>
+                    {{ requestId }}
+                </strong>
+
+            </div>
+
+
+            <div class="ls-summary-row">
+
+                <span>Status</span>
+
+                <span class="ls-status-pill ls-status-pill--pending">
+                    Pending Collection
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="button" class="book-btn" (click)="closeSuccessModal()">
+
+                Done
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
