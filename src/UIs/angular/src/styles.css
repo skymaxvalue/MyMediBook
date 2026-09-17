@@ -11,6 +11,29 @@
   box-sizing: border-box;
   font-family: "Source Sans Pro", sans-serif !important;
 }
+:root {
+  --ls-navy:          #0b2c56;
+  --ls-blue:           #2f6fed;
+  --ls-blue-light:     #3b82f6;
+  --ls-blue-bg:        #e8f0fe;
+  --ls-blue-bg-2:      #f2f6fd;
+  --ls-green:          #16a34a;
+  --ls-green-bg:       #e7f7ed;
+  --ls-grey-bg:        #eef1f6;
+  --ls-white:          #ffffff;
+  --ls-border:         #dfe4ec;
+  --ls-border-strong:  #c7cfdc;
+  --ls-text-900:       #16233c;
+  --ls-text-600:       #4b5768;
+  --ls-text-400:       #8792a2;
+  --ls-danger:         #e0334f;
+  --ls-shadow-card:    0 8px 28px rgba(16, 35, 68, 0.08);
+  --ls-radius-lg:      16px;
+  --ls-radius-md:      10px;
+  --ls-radius-sm:      8px;
+  --ls-radius-pill:    999px;
+  --ls-font: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
 
 :root {
   --primary: #183C75;
