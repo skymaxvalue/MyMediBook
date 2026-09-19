@@ -108,6 +108,14 @@ export class FrontOfficeLayoutComponent implements OnInit {
         url: '/front-office/doctor-availability'
       });
     }
+    else if (url.includes('room-service')) {
+      this.breadcrumbs.push({
+        label: 'Room Service Request',
+        url: '/front-office/book-appointment'
+
+      })
+
+    }
 
   }
 }
