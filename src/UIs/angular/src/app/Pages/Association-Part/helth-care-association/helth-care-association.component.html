@@ -57,26 +57,26 @@
         <div class="shape shape-right shape-end"></div>
 
         @if(currentStep === 0){
-        <app-personal-info [group]="associateForm.controls.personalInfo" (next)="nextStep($event)"
-            [currentStep]="currentStep" [countries]="countries" [states]="states" [cities]="cities"
-            (onSelectCountry)="onSelectCountry($event)" (onSelectState)="onSelectState($event)">
+        <app-personal-info [group]="personalInfoGroup" (next)="nextStep($event)" [currentStep]="currentStep"
+            [countries]="countries" [states]="states" [cities]="cities" (onSelectCountry)="onSelectCountry($event)"
+            (onSelectState)="onSelectState($event)">
         </app-personal-info>
         }
 
         @if(currentStep === 1){
-        <app-qualification [group]="associateForm.controls.qualification" (next)="nextStep($event)"
-            (back)="previousStep()" [currentStep]="currentStep">
+        <app-qualification [group]="qualificationGroup" (next)="nextStep($event)" (back)="previousStep()"
+            [currentStep]="currentStep">
         </app-qualification>
         }
 
         @if(currentStep === 2){
-        <app-experience [group]="associateForm.controls.experience" (next)="nextStep($event)" (back)="previousStep()"
+        <app-experience [group]="experienceGroup" (next)="nextStep($event)" (back)="previousStep()"
             [currentStep]="currentStep">
         </app-experience>
         }
 
         @if(currentStep === 3){
-        <app-employment-details [group]="associateForm.controls.employmentDetails" [speciality]="allSpecialities"
+        <app-employment-details [group]="employmentDetailsGroup" [speciality]="allSpecialities"
             [departments]="allDepartments" [roles]="allRoles" (back)="previousStep()" (submitForm)="submit()"
             [currentStep]="currentStep">
         </app-employment-details>

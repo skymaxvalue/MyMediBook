@@ -3,18 +3,23 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ChangeDetectorRef
-} from '@angular/core';
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 
-import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/Store/app.state';
-import { getAppointmentListByRiceptionist, getDashboardData, getDashboardDataByDoctor, getDashboardDataByReceptionist } from 'src/app/Store/Appointments/appointment.actions';
-import { selectDashboardDataSummery } from 'src/app/Store/Appointments/appointment.selcetors';
-import { JsonPipe } from '@angular/common';
-
+import { FormsModule } from "@angular/forms";
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/Store/app.state";
+import {
+  getAppointmentListByRiceptionist,
+  getDashboardData,
+  getDashboardDataByDoctor,
+  getDashboardDataByReceptionist,
+} from "src/app/Store/Appointments/appointment.actions";
+import { selectDashboardDataSummery } from "src/app/Store/Appointments/appointment.selcetors";
+import { JsonPipe } from "@angular/common";
 
 interface DashboardStat {
   title: string;
@@ -64,26 +69,24 @@ interface DashboardData {
   selector: "app-dashboard",
   imports: [FormsModule],
   templateUrl: "./dashboard.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./dashboard.component.css",
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  searchValue = "";
 
+  username = "Front Office";
 
-  searchValue = '';
+  currentDate = "";
 
-  username = 'Front Office';
-
-  currentDate = '';
-
-  currentTime = '';
+  currentTime = "";
 
   isProfileOpen = false;
 
-  activePage = 'dashboard';
+  activePage = "dashboard";
 
   private timer: any;
   user: any = {};
-
 
   // ==============================
   // DASHBOARD DATA
@@ -95,27 +98,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     services: [],
     billingClaims: [],
     recentPatients: [],
-    todaysQueue: []
+    todaysQueue: [],
   };
   dashboardDataCount = {
     totalAppointmentsCount: 0,
     totalWalkinsWaitingCount: 0,
     totalCheckInCount: 0,
     totalPendingPaymentsCount: 0,
-    totalLabResultsCount: 0
+    totalLabResultsCount: 0,
   };
-
 
   constructor(
     private router: Router,
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private store: Store<AppState>
-  ) { }
-
+  ) {}
 
   ngOnInit(): void {
-
     this.loadUser();
 
     this.updateDate();
@@ -123,100 +123,81 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.startClock();
 
     this.store.select(selectDashboardDataSummery).subscribe((res: any) => {
-
-      console.log('Dashboard API Response:', res);
+      console.log("Dashboard API Response:", res);
 
       const data = res?.data;
 
       // Ignore empty / invalid response
-      if (
-        !data ||
-        Array.isArray(data) ||
-        typeof data !== 'object'
-      ) {
-        console.warn('Dashboard response ignored:', data);
+      if (!data || Array.isArray(data) || typeof data !== "object") {
+        console.warn("Dashboard response ignored:", data);
         return;
       }
 
       // Run update in next JavaScript task
       setTimeout(() => {
-
         this.dashboardDataCount = {
           totalAppointmentsCount: data.totalAppointmentsCount ?? 0,
           totalWalkinsWaitingCount: data.totalWalkinsWaitingCount ?? 0,
           totalCheckInCount: data.totalCheckInCount ?? 0,
           totalPendingPaymentsCount: data.totalPendingPaymentsCount ?? 0,
-          totalLabResultsCount: data.totalLabResultsCount ?? 0
+          totalLabResultsCount: data.totalLabResultsCount ?? 0,
         };
 
-        console.log(
-          'Dashboard Counts Updated:',
-          this.dashboardDataCount
-        );
+        console.log("Dashboard Counts Updated:", this.dashboardDataCount);
 
         this.updateStatValues();
 
         // Tell Angular to update the UI
         this.cdr.detectChanges();
-
       }, 0);
-
     });
 
     this.loadDashboardData();
   }
 
   updateStatValues(): void {
+    this.dashboardData.stats = this.dashboardData.stats.map((stat) => {
+      switch (stat.title) {
+        case "Today's Appointments":
+          return {
+            ...stat,
+            value: this.dashboardDataCount.totalAppointmentsCount,
+          };
 
-    this.dashboardData.stats =
-      this.dashboardData.stats.map(stat => {
+        case "Walk-ins Waiting":
+          return {
+            ...stat,
+            value: this.dashboardDataCount.totalWalkinsWaitingCount,
+          };
 
-        switch (stat.title) {
+        case "Checked In":
+          return {
+            ...stat,
+            value: this.dashboardDataCount.totalCheckInCount,
+          };
 
-          case "Today's Appointments":
-            return {
-              ...stat,
-              value: this.dashboardDataCount.totalAppointmentsCount
-            };
+        case "Pending Payments":
+          return {
+            ...stat,
+            value: this.dashboardDataCount.totalPendingPaymentsCount,
+          };
 
-          case "Walk-ins Waiting":
-            return {
-              ...stat,
-              value: this.dashboardDataCount.totalWalkinsWaitingCount
-            };
+        case "Lab Results":
+          return {
+            ...stat,
+            value: this.dashboardDataCount.totalLabResultsCount,
+          };
 
-          case "Checked In":
-            return {
-              ...stat,
-              value: this.dashboardDataCount.totalCheckInCount
-            };
-
-          case "Pending Payments":
-            return {
-              ...stat,
-              value: this.dashboardDataCount.totalPendingPaymentsCount
-            };
-
-          case "Lab Results":
-            return {
-              ...stat,
-              value: this.dashboardDataCount.totalLabResultsCount
-            };
-
-          default:
-            return {
-              ...stat,
-              value: 0
-            };
-        }
-
-      });
-
+        default:
+          return {
+            ...stat,
+            value: 0,
+          };
+      }
+    });
   }
   getStatCount(title: string): number {
-
     switch (title) {
-
       case "Today's Appointments":
         return this.dashboardDataCount.totalAppointmentsCount;
 
@@ -237,7 +218,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-
   loadDashboardData(): void {
     // this.user = JSON.parse(localStorage.getItem('user') || 'null')
 
@@ -249,304 +229,213 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const toDate = new Date(today);
     toDate.setHours(23, 59, 59, 999);
 
-    console.log('Dashboard Request:', {
+    console.log("Dashboard Request:", {
       associateId: this.user?.refId,
       fromDate: fromDate.toISOString(),
-      toDate: toDate.toISOString()
+      toDate: toDate.toISOString(),
     });
 
     this.store.dispatch(
       getDashboardData({
         associateId: this.user?.refId,
         fromDate: fromDate.toISOString(),
-        toDate: toDate.toISOString()
+        toDate: toDate.toISOString(),
       })
     );
 
-    this.store.dispatch(getAppointmentListByRiceptionist({
-      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
-      toDate: toDate.toISOString()
-    }))
-    this.store.dispatch(getDashboardDataByReceptionist({
-      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
-      toDate: toDate.toISOString()
-    }));
-    this.store.dispatch(getDashboardDataByDoctor({
-      associateId: this.user?.refId, fromDate: fromDate.toISOString(),
-      toDate: toDate.toISOString()
-    }));
+    this.store.dispatch(
+      getAppointmentListByRiceptionist({
+        associateId: this.user?.refId,
+        fromDate: fromDate.toISOString(),
+        toDate: toDate.toISOString(),
+      })
+    );
+    this.store.dispatch(
+      getDashboardDataByReceptionist({
+        associateId: this.user?.refId,
+        fromDate: fromDate.toISOString(),
+        toDate: toDate.toISOString(),
+      })
+    );
+    this.store.dispatch(
+      getDashboardDataByDoctor({
+        associateId: this.user?.refId,
+        fromDate: fromDate.toISOString(),
+        toDate: toDate.toISOString(),
+      })
+    );
 
-    this.http
-      .get<DashboardData>('/assets/data-json/data.json')
-      .subscribe({
+    this.http.get<DashboardData>("/assets/data-json/data.json").subscribe({
+      next: (data) => {
+        console.log("Static Dashboard JSON:", data);
 
-        next: (data) => {
+        this.dashboardData = data;
 
-          console.log('Static Dashboard JSON:', data);
+        this.updateStatValues();
+      },
 
-          this.dashboardData = data;
-
-          this.updateStatValues();
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Dashboard JSON loading failed:',
-            error
-          );
-
-        }
-
-      });
+      error: (error) => {
+        console.error("Dashboard JSON loading failed:", error);
+      },
+    });
   }
-
 
   // ==============================
   // DATE
   // ==============================
 
   updateDate(): void {
-
     const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
 
-      weekday: 'long',
+      day: "numeric",
 
-      day: 'numeric',
+      month: "long",
 
-      month: 'long',
-
-      year: 'numeric'
-
+      year: "numeric",
     };
 
-    this.currentDate =
-      new Date().toLocaleDateString(
-        'en-IN',
-        options
-      );
-
+    this.currentDate = new Date().toLocaleDateString("en-IN", options);
   }
-
 
   // ==============================
   // TIME
   // ==============================
 
   updateTime(): void {
-
     const options: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
 
-      hour: '2-digit',
+      minute: "2-digit",
 
-      minute: '2-digit',
-
-      hour12: true
-
+      hour12: true,
     };
 
-    this.currentTime =
-      new Date().toLocaleTimeString(
-        'en-IN',
-        options
-      );
-
+    this.currentTime = new Date().toLocaleTimeString("en-IN", options);
   }
-
 
   // ==============================
   // CLOCK
   // ==============================
 
   startClock(): void {
-
     this.timer = setInterval(() => {
-
       this.updateTime();
-
     }, 1000);
-
   }
-
 
   // ==============================
   // USER
   // ==============================
 
   loadUser(): void {
-
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
 
     if (!userData) {
-      console.warn('user not found in localStorage');
+      console.warn("user not found in localStorage");
       this.user = {};
       return;
     }
 
     try {
-
       this.user = JSON.parse(userData);
 
-      console.log('Logged In User:', this.user);
-      console.log('Associate ID:', this.user?.refId);
+      console.log("Logged In User:", this.user);
+      console.log("Associate ID:", this.user?.refId);
 
       if (this.user?.username) {
         this.username = this.user.username;
       } else if (this.user?.name) {
         this.username = this.user.name;
       }
-
     } catch (error) {
-
-      console.error('Invalid user data:', error);
+      console.error("Invalid user data:", error);
 
       this.user = {};
-      this.username = 'Front Office';
-
+      this.username = "Front Office";
     }
   }
-
 
   // ==============================
   // SEARCH
   // ==============================
 
   openSearchPage(): void {
+    const value = this.searchValue.trim();
 
-    const value =
-      this.searchValue.trim();
-
-    this.router.navigate(
-      ['/front-office/search-patient'],
-      {
-        queryParams: value
-          ? { q: value }
-          : {}
-      }
-    );
-
+    this.router.navigate(["/front-office/search-patient"], {
+      queryParams: value ? { q: value } : {},
+    });
   }
-
 
   // ==============================
   // NAVIGATION
   // ==============================
 
   navigate(page: string): void {
-
     this.activePage = page;
 
-    this.router.navigate([
-      `/front-office/${page}`
-    ]);
-
+    this.router.navigate([`/front-office/${page}`]);
   }
-
 
   // ==============================
   // VIEW ALL
   // ==============================
 
   viewAllPatients(): void {
-
-    this.router.navigate([
-      '/front-office/patients'
-    ]);
-
+    this.router.navigate(["/front-office/patients"]);
   }
-
 
   viewAllQueue(): void {
-
-    this.router.navigate([
-      '/front-office/queue'
-    ]);
-
+    this.router.navigate(["/front-office/queue"]);
   }
-
 
   // ==============================
   // PROFILE
   // ==============================
 
   toggleProfile(event: Event): void {
-
     event.stopPropagation();
 
-    this.isProfileOpen =
-      !this.isProfileOpen;
-
+    this.isProfileOpen = !this.isProfileOpen;
   }
 
-
-  @HostListener('document:click')
-
+  @HostListener("document:click")
   closeProfile(): void {
-
     this.isProfileOpen = false;
-
   }
-
 
   openProfile(): void {
-
     this.isProfileOpen = false;
 
-    this.router.navigate([
-      '/front-office/profile'
-    ]);
-
+    this.router.navigate(["/front-office/profile"]);
   }
-
 
   // ==============================
   // LOGOUT
   // ==============================
 
   logout(): void {
-
-    if (
-      !confirm(
-        'Are you sure you want to logout?'
-      )
-    ) {
-
+    if (!confirm("Are you sure you want to logout?")) {
       return;
-
     }
 
-    localStorage.removeItem(
-      'loggedInUser'
-    );
+    localStorage.removeItem("loggedInUser");
 
-    localStorage.removeItem(
-      'isLoggedIn'
-    );
+    localStorage.removeItem("isLoggedIn");
 
-    localStorage.removeItem(
-      'pendingUser'
-    );
+    localStorage.removeItem("pendingUser");
 
-    this.router.navigate([
-      '/patient/login'
-    ]);
-
+    this.router.navigate(["/patient/login"]);
   }
-
 
   // ==============================
   // DESTROY
   // ==============================
 
   ngOnDestroy(): void {
-
     if (this.timer) {
-
       clearInterval(this.timer);
-
     }
-
   }
-
 }

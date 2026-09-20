@@ -6,14 +6,15 @@ import {
   ElementRef,
   OnInit,
   Signal,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AppState } from 'src/app/Store/app.state';
-import { Store } from '@ngrx/store';
-import { getMyAllBills } from 'src/app/Store/Billing/billing.actions';
-import { selectMyAllLabResultList } from 'src/app/Store/Lab-Results/lab-result.selcetors';
-import { selectMyBills } from 'src/app/Store/Billing/billing.selcetors';
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { AppState } from "src/app/Store/app.state";
+import { Store } from "@ngrx/store";
+import { getMyAllBills } from "src/app/Store/Billing/billing.actions";
+import { selectMyAllLabResultList } from "src/app/Store/Lab-Results/lab-result.selcetors";
+import { selectMyBills } from "src/app/Store/Billing/billing.selcetors";
 import { PdfService } from "src/app/core/Services/pdf.service";
 
 interface Bill {
@@ -34,44 +35,42 @@ interface Bill {
   selector: "app-billing",
   imports: [CommonModule, FormsModule],
   templateUrl: "./billing.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./billing.component.css",
 })
 export class BillingComponent implements OnInit {
-  @ViewChild('detailsModal')
+  @ViewChild("detailsModal")
   detailsModal!: ElementRef;
-  loginUser = JSON.parse(
-    localStorage.getItem("user") || "null"
-  );
-  constructor(private store: Store<AppState>, private pdfService: PdfService) {
+  loginUser = JSON.parse(localStorage.getItem("user") || "null");
+  constructor(
+    private store: Store<AppState>,
+    private pdfService: PdfService
+  ) {
     if (this.loginUser?.refId) {
-
-      this.store.dispatch(getMyAllBills({ patientId: this.loginUser?.refId }))
+      this.store.dispatch(getMyAllBills({ patientId: this.loginUser?.refId }));
     } else {
       console.error("Patient ID not found in localStorage");
     }
-
   }
   ngOnInit(): void {
     this.store.select(selectMyBills).subscribe((res: any) => {
       if (res) {
-
-        console.log('Billing API Response:', res);
+        console.log("Billing API Response:", res);
 
         const data = Array.isArray(res) ? res : [];
 
         this.mapBillingData(data);
       }
-    })
+    });
   }
-  @ViewChild('printArea')
+  @ViewChild("printArea")
   printArea!: ElementRef;
 
   bills = signal<any[]>([]);
 
+  searchText = signal("");
 
-  searchText = signal('');
-
-  sortValue = signal('');
+  sortValue = signal("");
 
   currentPage = signal(1);
 
@@ -79,267 +78,190 @@ export class BillingComponent implements OnInit {
 
   selectedBill = signal<Bill | null>(null);
 
-  sortColumn = signal('');
+  sortColumn = signal("");
 
-  sortDirection = signal<'asc' | 'desc'>('asc');
-
+  sortDirection = signal<"asc" | "desc">("asc");
 
   filteredBills = computed(() => {
-
     let data = [...this.bills()];
 
     const search = this.searchText().trim().toLowerCase();
 
     if (search) {
-
-      data = data.filter(b =>
-        b.patient.toLowerCase().includes(search) ||
-        b.doctor.toLowerCase().includes(search) ||
-        b.clinicAddress.toLowerCase().includes(search)
+      data = data.filter(
+        (b) =>
+          b.patient.toLowerCase().includes(search) ||
+          b.doctor.toLowerCase().includes(search) ||
+          b.clinicAddress.toLowerCase().includes(search)
       );
-
     }
 
     switch (this.sortValue()) {
-
-      case 'nameAsc':
+      case "nameAsc":
         data.sort((a, b) => a.patient.localeCompare(b.patient));
         break;
 
-      case 'nameDesc':
+      case "nameDesc":
         data.sort((a, b) => b.patient.localeCompare(a.patient));
         break;
 
-      case 'newest':
-        data.sort(
-          (a, b) =>
-            new Date(b.visitDate).getTime() -
-            new Date(a.visitDate).getTime()
-        );
+      case "newest":
+        data.sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
         break;
 
-      case 'oldest':
-        data.sort(
-          (a, b) =>
-            new Date(a.visitDate).getTime() -
-            new Date(b.visitDate).getTime()
-        );
+      case "oldest":
+        data.sort((a, b) => new Date(a.visitDate).getTime() - new Date(b.visitDate).getTime());
         break;
     }
 
     const column = this.sortColumn();
 
     if (column) {
-
       data.sort((a: any, b: any) => {
-
         let valueA = a[column];
         let valueB = b[column];
 
-        if (column === 'visitDate') {
-
+        if (column === "visitDate") {
           valueA = new Date(valueA).getTime();
           valueB = new Date(valueB).getTime();
-
         } else {
-
           valueA = String(valueA).toLowerCase();
           valueB = String(valueB).toLowerCase();
-
         }
 
         if (valueA === valueB) return 0;
 
-        return this.sortDirection() === 'asc'
-          ? valueA > valueB ? 1 : -1
-          : valueA < valueB ? 1 : -1;
-
+        return this.sortDirection() === "asc"
+          ? valueA > valueB
+            ? 1
+            : -1
+          : valueA < valueB
+            ? 1
+            : -1;
       });
-
     }
 
     return data;
-
   });
   closeModal() {
-    this.selectedBill.set(null)
+    this.selectedBill.set(null);
   }
 
-
   paginatedBills = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
 
-    const start =
-      (this.currentPage() - 1) * this.pageSize();
-
-    return this.filteredBills().slice(
-      start,
-      start + this.pageSize()
-    );
-
+    return this.filteredBills().slice(start, start + this.pageSize());
   });
 
-  totalPages = computed(() =>
-    Math.ceil(
-      this.filteredBills().length /
-      this.pageSize()
-    )
-  );
+  totalPages = computed(() => Math.ceil(this.filteredBills().length / this.pageSize()));
 
   mapBillingData(data: any[] = []): void {
-
     if (!Array.isArray(data)) {
-      console.warn('Billing data is not an array:', data);
+      console.warn("Billing data is not an array:", data);
       this.bills.set([]);
       return;
     }
 
     const mappedBills: Bill[] = data
-      .filter(item => item?.claims?.length > 0)
+      .filter((item) => item?.claims?.length > 0)
       .map((item: any) => {
-
         const claim = item.claims[0];
 
         return {
           id: claim.claimId,
-          patient: 'Self',
-          doctor: 'N/A',
-          clinicAddress: 'N/A',
+          patient: "Self",
+          doctor: "N/A",
+          clinicAddress: "N/A",
 
           visitDate: claim.dateOfService,
 
           totalCharge: claim.totalChargeAmount || 0,
           insuranceCovered: claim.totalPaidAmount || 0,
           adjustments: claim.totalAdjustmentAmount || 0,
-          patientResponsibility:
-            claim.totalPatientResponsibility || 0,
+          patientResponsibility: claim.totalPatientResponsibility || 0,
 
-          paymentDate:
-            item.insurancePayments?.[0]?.paymentDate || '',
+          paymentDate: item.insurancePayments?.[0]?.paymentDate || "",
 
-          remainingBalance:
-            claim.remainingBalance || 0,
+          remainingBalance: claim.remainingBalance || 0,
 
-          image: '/assets/images/user.png',
+          image: "/assets/images/user.png",
 
           claimId: claim.claimId,
           appointmentId: claim.appointmentId,
           claimStatus: claim.claimStatus,
 
-          totalAllowedAmount:
-            claim.totalAllowedAmount || 0,
+          totalAllowedAmount: claim.totalAllowedAmount || 0,
 
-          totalPaidAmount:
-            claim.totalPaidAmount || 0,
+          totalPaidAmount: claim.totalPaidAmount || 0,
 
-          currencyCode:
-            claim.currencyCode || 'INR',
+          currencyCode: claim.currencyCode || "INR",
 
-          lineItems:
-            item.lineItems || [],
+          lineItems: item.lineItems || [],
 
-          insurancePayments:
-            item.insurancePayments || [],
+          insurancePayments: item.insurancePayments || [],
 
-          adjustmentDetails:
-            item.adjustments || [],
+          adjustmentDetails: item.adjustments || [],
 
-          responsibilityDetails:
-            item.patientResponsibility || []
+          responsibilityDetails: item.patientResponsibility || [],
         };
       });
 
     this.bills.set(mappedBills);
 
-    console.log('Final Bills:', this.bills());
+    console.log("Final Bills:", this.bills());
   }
   searchBills() {
-
     this.currentPage.set(1);
-
   }
 
   sortBills() {
-
     this.currentPage.set(1);
-
   }
 
   sortTable(column: string) {
-
     if (this.sortColumn() === column) {
-
-      this.sortDirection.set(
-        this.sortDirection() === 'asc'
-          ? 'desc'
-          : 'asc'
-      );
-
+      this.sortDirection.set(this.sortDirection() === "asc" ? "desc" : "asc");
     } else {
-
       this.sortColumn.set(column);
 
-      this.sortDirection.set('asc');
-
+      this.sortDirection.set("asc");
     }
-
   }
 
   previousPage() {
-
     if (this.currentPage() > 1) {
-
-      this.currentPage.update(v => v - 1);
-
+      this.currentPage.update((v) => v - 1);
     }
-
   }
 
   nextPage() {
-
     if (this.currentPage() < this.totalPages()) {
-
-      this.currentPage.update(v => v + 1);
-
+      this.currentPage.update((v) => v + 1);
     }
-
   }
 
-
   getSortIcon(column: string): string {
+    if (this.sortColumn() !== column) return "▼";
 
-    if (this.sortColumn() !== column)
-      return '▼';
-
-    return this.sortDirection() === 'asc'
-      ? '▲'
-      : '▼';
-
+    return this.sortDirection() === "asc" ? "▲" : "▼";
   }
 
   formatDate(date: string): string {
-
-    return new Date(date).toLocaleDateString(
-      'en-GB',
-      {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      }
-    );
-
+    return new Date(date).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   }
 
   openMap(address: string) {
-
     window.open(
       `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`,
-      '_blank'
+      "_blank"
     );
-
   }
 
   showDetails(bill: Bill) {
-
     this.selectedBill.set(bill);
 
     // const modal = new bootstrap.Modal(
@@ -347,9 +269,7 @@ export class BillingComponent implements OnInit {
     // );
 
     // modal.show();
-
   }
-
 
   // downloadPDF() {
 
@@ -376,36 +296,24 @@ export class BillingComponent implements OnInit {
   // }
 
   async downloadPDF(): Promise<void> {
-
     if (!this.printArea) {
-      console.error('Billing PDF element not found');
+      console.error("Billing PDF element not found");
       return;
     }
 
     try {
-
-      const billId = this.selectedBill()?.id || 'Invoice';
+      const billId = this.selectedBill()?.id || "Invoice";
 
       await this.pdfService.downloadPdf(
         this.printArea.nativeElement,
         `Billing-Invoice-${billId}.pdf`
       );
-
     } catch (error) {
-
-      console.error(
-        'Error while generating billing PDF:',
-        error
-      );
-
+      console.error("Error while generating billing PDF:", error);
     }
   }
 
-
   printBill() {
-
     window.print();
-
   }
-
 }

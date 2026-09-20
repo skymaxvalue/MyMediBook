@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, HostListener, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { AuthService } from "src/app/core/Services/auth.service";
 import { TabServiceService } from "src/app/core/Services/tab-service.service";
@@ -8,20 +8,18 @@ import { TabServiceService } from "src/app/core/Services/tab-service.service";
   selector: "app-admin-header",
   imports: [CommonModule, RouterModule],
   templateUrl: "./admin-header.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./admin-header.component.css",
 })
 export class AdminHeaderComponent implements OnInit {
-
   showProfile = false;
   mobileMenuOpen = false;
 
-  username = '';
+  username = "";
 
-  formattedDate = '';
+  formattedDate = "";
 
-
-
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
     const today = new Date();
@@ -33,15 +31,10 @@ export class AdminHeaderComponent implements OnInit {
       month: "long",
     });
 
-
     this.formattedDate = `${month} ${day}${this.getOrdinal(day)} ${year}`;
-    this.username =
-      JSON.parse(localStorage.getItem('user') || '{}')?.data?.firstName ?? 'User';
+    this.username = JSON.parse(localStorage.getItem("user") || "{}")?.data?.firstName ?? "User";
 
     this.setDate();
-
-
-
   }
 
   getOrdinal(day: number): string {
@@ -63,24 +56,18 @@ export class AdminHeaderComponent implements OnInit {
     }
   }
   setDate() {
-
     const today = new Date();
 
-    this.formattedDate =
-      today.toLocaleDateString('en-US', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-
+    this.formattedDate = today.toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   }
 
   changeTab(tab: string) {
-
     this.mobileMenuOpen = false;
-
-
   }
 
   toggleMenu() {
@@ -93,22 +80,18 @@ export class AdminHeaderComponent implements OnInit {
   }
 
   toggleProfile(event: Event) {
-
     event.stopPropagation();
 
     this.showProfile = !this.showProfile;
-
   }
 
   logout() {
-
-    this.authService.logout()
+    this.authService.logout();
 
     // router navigate
-
   }
 
-  @HostListener('document:click')
+  @HostListener("document:click")
   closeMenus() {
     this.showProfile = false;
     // this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -117,6 +100,4 @@ export class AdminHeaderComponent implements OnInit {
   stop(event: Event) {
     event.stopPropagation();
   }
-
 }
-

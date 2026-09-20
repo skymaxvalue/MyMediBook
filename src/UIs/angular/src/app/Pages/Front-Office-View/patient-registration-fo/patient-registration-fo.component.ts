@@ -1,17 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/Store/app.state';
-import * as AuthActions from 'src/app/Store/Auth/auth.actions';
-import { selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
-
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Router, RouterModule } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/Store/app.state";
+import * as AuthActions from "src/app/Store/Auth/auth.actions";
+import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
 
 interface InsuranceData {
   provider: string;
@@ -35,7 +29,7 @@ interface Appointment {
   phone: string;
   email: string;
   dateOfBirth: string;
-  age: number | '';
+  age: number | "";
   ageUnit: string;
   gender: string;
   address: string;
@@ -50,10 +44,9 @@ interface Appointment {
 
 @Component({
   selector: "app-patient-registration-fo",
-  imports: [CommonModule,
-    ReactiveFormsModule,
-    RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: "./patient-registration-fo.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./patient-registration-fo.component.css",
 })
 export class PatientRegistrationFOComponent implements OnInit {
@@ -61,15 +54,12 @@ export class PatientRegistrationFOComponent implements OnInit {
   countries: any[] = [];
   states: any[] = [];
   cities: any[] = [];
-  maxDateOfBirth: string = '';
+  maxDateOfBirth: string = "";
   permanentStates: any[] = [];
   permanentCities: any[] = [];
-  addressType: 'present' | 'permanent' = 'present';
-
-
+  addressType: "present" | "permanent" = "present";
 
   showInsuranceModal = false;
-
 
   showPaymentModal = false;
   paymentError: string = "";
@@ -77,85 +67,68 @@ export class PatientRegistrationFOComponent implements OnInit {
   insuranceData: any;
   insuranceError: string = "";
 
-
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.setMaxDateOfBirth();
     this.createForm();
 
     this.initialAPICalls();
-    this.store.select(
-      state => state.auth.getStates
-    ).subscribe((response: any) => {
+    this.store
+      .select((state) => state.auth.getStates)
+      .subscribe((response: any) => {
+        if (!response?.data) {
+          return;
+        }
 
-      if (!response?.data) {
-        return;
-      }
+        if (this.addressType === "present") {
+          this.states = response.data;
 
-      if (this.addressType === 'present') {
-
-        this.states = response.data;
-
-        const presentAddress =
-          this.registrationForm.get(
-            'contactInformation.presentAddress'
+          const presentAddress = this.registrationForm.get(
+            "contactInformation.presentAddress"
           ) as FormGroup;
 
-        presentAddress.get('stateId')?.enable();
+          presentAddress.get("stateId")?.enable();
+        } else {
+          this.permanentStates = response.data;
 
-      } else {
-
-        this.permanentStates = response.data;
-
-        const permanentAddress =
-          this.registrationForm.get(
-            'contactInformation.permanentAddress'
+          const permanentAddress = this.registrationForm.get(
+            "contactInformation.permanentAddress"
           ) as FormGroup;
 
-        permanentAddress.get('stateId')?.enable();
+          permanentAddress.get("stateId")?.enable();
+        }
+      });
 
-      }
+    this.store
+      .select((state) => state.auth.getCities)
+      .subscribe((response: any) => {
+        if (!response?.data) {
+          return;
+        }
 
-    });
+        if (this.addressType === "present") {
+          this.cities = response.data;
 
-    this.store.select(
-      state => state.auth.getCities
-    ).subscribe((response: any) => {
-
-      if (!response?.data) {
-        return;
-      }
-
-      if (this.addressType === 'present') {
-
-        this.cities = response.data;
-
-        const presentAddress =
-          this.registrationForm.get(
-            'contactInformation.presentAddress'
+          const presentAddress = this.registrationForm.get(
+            "contactInformation.presentAddress"
           ) as FormGroup;
 
-        presentAddress.get('cityId')?.enable();
+          presentAddress.get("cityId")?.enable();
+        } else {
+          this.permanentCities = response.data;
 
-      } else {
-
-        this.permanentCities = response.data;
-
-        const permanentAddress =
-          this.registrationForm.get(
-            'contactInformation.permanentAddress'
+          const permanentAddress = this.registrationForm.get(
+            "contactInformation.permanentAddress"
           ) as FormGroup;
 
-        permanentAddress.get('cityId')?.enable();
-
-      }
-
-    });
+          permanentAddress.get("cityId")?.enable();
+        }
+      });
 
     // this.store.select(
     //   state => state.auth.getStates
@@ -164,7 +137,6 @@ export class PatientRegistrationFOComponent implements OnInit {
     //   if (!response?.data) {
     //     return;
     //   }
-
 
     //   if (this.addressType === 'present') {
 
@@ -199,7 +171,6 @@ export class PatientRegistrationFOComponent implements OnInit {
     //   if (!response?.data) {
     //     return;
     //   }
-
 
     //   if (this.addressType === 'present') {
 
@@ -252,7 +223,6 @@ export class PatientRegistrationFOComponent implements OnInit {
 
     //   }),
 
-
     //   // =========================
     //   // PRESENT ADDRESS
     //   // =========================
@@ -296,7 +266,6 @@ export class PatientRegistrationFOComponent implements OnInit {
 
     //   }),
 
-
     //   // =========================
     //   // PERMANENT ADDRESS
     //   // =========================
@@ -329,7 +298,6 @@ export class PatientRegistrationFOComponent implements OnInit {
 
     //   }),
 
-
     //   // =========================
     //   // VERIFICATION
     //   // =========================
@@ -339,7 +307,6 @@ export class PatientRegistrationFOComponent implements OnInit {
     //     otpMethod: ['', Validators.required]
 
     //   }),
-
 
     //   // =========================
     //   // INSURANCE
@@ -358,7 +325,6 @@ export class PatientRegistrationFOComponent implements OnInit {
     //     insuranceAddress: ['']
 
     //   }),
-
 
     //   // =========================
     //   // PAYMENT
@@ -379,105 +345,59 @@ export class PatientRegistrationFOComponent implements OnInit {
     //   })
 
     // });
-
   }
 
-
-
   createForm(): void {
-
     this.registrationForm = this.fb.group({
-
       // =========================
       // PERSONAL DETAILS
       // =========================
 
       personalDetails: this.fb.group({
+        firstName: ["", Validators.required],
 
-        firstName: ['', Validators.required],
+        lastName: ["", Validators.required],
 
-        lastName: ['', Validators.required],
+        gender: ["", Validators.required],
 
-        gender: ['', Validators.required],
+        dateOfBirth: ["", Validators.required],
 
-        dateOfBirth: ['', Validators.required],
+        age: [{ value: "", disabled: true }, Validators.required],
 
-        age: [
-          { value: '', disabled: true },
-          Validators.required
-        ],
+        ageUnit: [{ value: "Years", disabled: true }],
 
-        ageUnit: [
-          { value: 'Years', disabled: true }
-        ],
-
-        insuranceChoice: ['', Validators.required]
-
+        insuranceChoice: ["", Validators.required],
       }),
-
 
       // =========================
       // CONTACT INFORMATION
       // =========================
 
       contactInformation: this.fb.group({
-
         // =========================
         // CONTACT DETAILS
         // =========================
 
-        phoneCode: [
-          '',
-          Validators.required
-        ],
+        phoneCode: ["", Validators.required],
 
-        phone: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(/^[0-9]{10}$/)
-          ]
-        ],
+        phone: ["", [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
 
-        email: [
-          '',
-          Validators.email
-        ],
+        email: ["", Validators.email],
 
         // =========================
         // PRESENT ADDRESS
         // =========================
 
         presentAddress: this.fb.group({
+          address: ["", Validators.required],
 
-          address: [
-            '',
-            Validators.required
-          ],
+          countryId: ["", Validators.required],
 
-          countryId: [
-            '',
-            Validators.required
-          ],
+          stateId: [{ value: "", disabled: true }, Validators.required],
 
-          stateId: [
-            { value: '', disabled: true },
-            Validators.required
-          ],
+          cityId: [{ value: "", disabled: true }, Validators.required],
 
-          cityId: [
-            { value: '', disabled: true },
-            Validators.required
-          ],
-
-          pinCode: [
-            '',
-            [
-              Validators.required,
-              Validators.pattern(/^[0-9]{6}$/)
-            ]
-          ]
-
+          pinCode: ["", [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
         }),
 
         // =========================
@@ -485,167 +405,105 @@ export class PatientRegistrationFOComponent implements OnInit {
         // =========================
 
         permanentAddress: this.fb.group({
+          sameAsPresentAddress: [false],
 
-          sameAsPresentAddress: [
-            false
-          ],
+          address: ["", Validators.required],
 
-          address: [
-            '',
-            Validators.required
-          ],
+          countryId: ["", Validators.required],
 
-          countryId: [
-            '',
-            Validators.required
-          ],
+          stateId: [{ value: "", disabled: true }, Validators.required],
 
-          stateId: [
-            { value: '', disabled: true },
-            Validators.required
-          ],
+          cityId: [{ value: "", disabled: true }, Validators.required],
 
-          cityId: [
-            { value: '', disabled: true },
-            Validators.required
-          ],
-
-          pinCode: [
-            '',
-            [
-              Validators.required,
-              Validators.pattern(/^[0-9]{6}$/)
-            ]
-          ]
-
-        })
-
+          pinCode: ["", [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+        }),
       }),
-
 
       // =========================
       // VERIFICATION
       // =========================
 
       verification: this.fb.group({
-
-        otpMethod: [
-          '',
-          Validators.required
-        ]
-
+        otpMethod: ["", Validators.required],
       }),
-
 
       // =========================
       // INSURANCE DETAILS
       // =========================
 
       insuranceDetails: this.fb.group({
+        provider: ["", Validators.required],
 
-        provider: [
-          '',
-          Validators.required
-        ],
+        policy: ["", Validators.required],
 
-        policy: [
-          '',
-          Validators.required
-        ],
+        groupId: [""],
 
-        groupId: [
-          ''
-        ],
+        holderName: ["", Validators.required],
 
-        holderName: [
-          '',
-          Validators.required
-        ],
-
-        insuranceAddress: [
-          '',
-          Validators.required
-        ]
-
+        insuranceAddress: ["", Validators.required],
       }),
-
 
       // =========================
       // PAYMENT DETAILS
       // =========================
 
       paymentDetails: this.fb.group({
-
         paymentType: [
-          '',
+          "",
           // Validators.required
         ],
 
         cardHolder: [
-          '',
+          "",
           // Validators.required
         ],
 
         cardNumber: [
-          '',
+          "",
           // Validators.required
         ],
 
         expiry: [
-          '',
+          "",
           // Validators.required
         ],
 
         cvv: [
-          '',
+          "",
           // Validators.required
-        ]
-
-      })
-
+        ],
+      }),
     });
-
   }
   initialAPICalls(): void {
+    this.store.dispatch(AuthActions.getCountries());
 
+    this.store
+      .select((state) => state.auth.getCountries)
+      .subscribe((response: any) => {
+        if (!response?.data) {
+          return;
+        }
 
-    this.store.dispatch(
-      AuthActions.getCountries()
-    );
-
-
-    this.store.select(
-      state => state.auth.getCountries
-    ).subscribe((response: any) => {
-
-      if (!response?.data) {
-        return;
-      }
-
-      console.log("Countries:", response.data);
-      this.countries = response.data;
-
-    });
-
+        console.log("Countries:", response.data);
+        this.countries = response.data;
+      });
   }
 
   onCountryChange(event: Event): void {
-
-    const countryId = Number(
-      (event.target as HTMLSelectElement).value
-    );
+    const countryId = Number((event.target as HTMLSelectElement).value);
 
     const presentAddress = this.registrationForm.get(
-      'contactInformation.presentAddress'
+      "contactInformation.presentAddress"
     ) as FormGroup;
 
     // Present address select झाला आहे हे आधी set करा
-    this.addressType = 'present';
+    this.addressType = "present";
 
     // Reset State & City
     presentAddress.patchValue({
-      stateId: '',
-      cityId: ''
+      stateId: "",
+      cityId: "",
     });
 
     // Clear dropdown arrays
@@ -653,164 +511,135 @@ export class PatientRegistrationFOComponent implements OnInit {
     this.cities = [];
 
     // Disable dependent dropdowns
-    presentAddress.get('stateId')?.disable();
-    presentAddress.get('cityId')?.disable();
+    presentAddress.get("stateId")?.disable();
+    presentAddress.get("cityId")?.disable();
 
     if (!countryId) {
       return;
     }
 
-    console.log('Present Country ID:', countryId);
+    console.log("Present Country ID:", countryId);
 
     // Get States API
     this.store.dispatch(
       AuthActions.getStates({
-        countryId
+        countryId,
       })
     );
   }
   onPermanentCountryChange(event: Event): void {
+    const countryId = Number((event.target as HTMLSelectElement).value);
 
-    const countryId =
-      Number((event.target as HTMLSelectElement).value);
-
-    const permanentAddress =
-      this.registrationForm.get(
-        'contactInformation.permanentAddress'
-      ) as FormGroup;
+    const permanentAddress = this.registrationForm.get(
+      "contactInformation.permanentAddress"
+    ) as FormGroup;
 
     permanentAddress.patchValue({
-      stateId: '',
-      cityId: ''
+      stateId: "",
+      cityId: "",
     });
 
     this.permanentStates = [];
     this.permanentCities = [];
 
-    permanentAddress.get('stateId')?.disable();
-    permanentAddress.get('cityId')?.disable();
+    permanentAddress.get("stateId")?.disable();
+    permanentAddress.get("cityId")?.disable();
 
     if (!countryId) {
       return;
     }
 
-    this.addressType = 'permanent';
+    this.addressType = "permanent";
 
     this.store.dispatch(
       AuthActions.getStates({
-        countryId
+        countryId,
       })
     );
-
   }
 
-
   onStateChange(event: Event): void {
+    const stateId = Number((event.target as HTMLSelectElement).value);
 
-    const stateId =
-      Number((event.target as HTMLSelectElement).value);
-
-    const presentAddress =
-      this.registrationForm.get(
-        'contactInformation.presentAddress'
-      ) as FormGroup;
+    const presentAddress = this.registrationForm.get(
+      "contactInformation.presentAddress"
+    ) as FormGroup;
 
     presentAddress.patchValue({
-      cityId: ''
+      cityId: "",
     });
 
     this.cities = [];
 
-    presentAddress.get('cityId')?.disable();
+    presentAddress.get("cityId")?.disable();
 
     if (!stateId) {
       return;
     }
 
-    this.addressType = 'present';
+    this.addressType = "present";
 
     this.store.dispatch(
       AuthActions.getCities({
-        stateId
+        stateId,
       })
     );
-
   }
   onPermanentStateChange(event: Event): void {
+    const stateId = Number((event.target as HTMLSelectElement).value);
 
-    const stateId =
-      Number((event.target as HTMLSelectElement).value);
-
-    const permanentAddress =
-      this.registrationForm.get(
-        'contactInformation.permanentAddress'
-      ) as FormGroup;
+    const permanentAddress = this.registrationForm.get(
+      "contactInformation.permanentAddress"
+    ) as FormGroup;
 
     permanentAddress.patchValue({
-      cityId: ''
+      cityId: "",
     });
 
     this.permanentCities = [];
 
-    permanentAddress.get('cityId')?.disable();
+    permanentAddress.get("cityId")?.disable();
 
     if (!stateId) {
       return;
     }
 
-    this.addressType = 'permanent';
+    this.addressType = "permanent";
 
     this.store.dispatch(
       AuthActions.getCities({
-        stateId
+        stateId,
       })
     );
-
   }
 
-
   updateAgeFromDob(): void {
-    const dobValue = this.registrationForm.get(
-      'personalDetails.dateOfBirth'
-    )?.value;
+    const dobValue = this.registrationForm.get("personalDetails.dateOfBirth")?.value;
 
-    const ageControl = this.registrationForm.get(
-      'personalDetails.age'
-    );
+    const ageControl = this.registrationForm.get("personalDetails.age");
 
-    const ageUnitControl = this.registrationForm.get(
-      'personalDetails.ageUnit'
-    );
+    const ageUnitControl = this.registrationForm.get("personalDetails.ageUnit");
 
     if (!dobValue) {
-      ageControl?.setValue('');
-      ageUnitControl?.setValue('Years');
+      ageControl?.setValue("");
+      ageUnitControl?.setValue("Years");
       return;
     }
 
     const dob = new Date(`${dobValue}T00:00:00`);
     const today = new Date();
 
-    if (
-      Number.isNaN(dob.getTime()) ||
-      dob > today
-    ) {
-      ageControl?.setValue('');
-      ageUnitControl?.setValue('Years');
+    if (Number.isNaN(dob.getTime()) || dob > today) {
+      ageControl?.setValue("");
+      ageUnitControl?.setValue("Years");
       return;
     }
 
-    let years =
-      today.getFullYear() -
-      dob.getFullYear();
+    let years = today.getFullYear() - dob.getFullYear();
 
-    let months =
-      today.getMonth() -
-      dob.getMonth();
+    let months = today.getMonth() - dob.getMonth();
 
-    const days =
-      today.getDate() -
-      dob.getDate();
+    const days = today.getDate() - dob.getDate();
 
     if (days < 0) {
       months--;
@@ -823,16 +652,11 @@ export class PatientRegistrationFOComponent implements OnInit {
 
     // Less than one year
     if (years <= 0) {
-
       const totalMonths = Math.max(0, months);
 
       ageControl?.setValue(totalMonths);
 
-      ageUnitControl?.setValue(
-        totalMonths === 1
-          ? 'Month'
-          : 'Months'
-      );
+      ageUnitControl?.setValue(totalMonths === 1 ? "Month" : "Months");
 
       return;
     }
@@ -840,41 +664,26 @@ export class PatientRegistrationFOComponent implements OnInit {
     // One year or more
     ageControl?.setValue(years);
 
-    ageUnitControl?.setValue(
-      years === 1
-        ? 'Year'
-        : 'Years'
-    );
+    ageUnitControl?.setValue(years === 1 ? "Year" : "Years");
   }
   onInsuranceChange(): void {
+    this.insuranceError = "";
 
-    this.insuranceError = '';
+    const insuranceChoice = this.registrationForm.get("personalDetails.insuranceChoice")?.value;
 
-    const insuranceChoice =
-      this.registrationForm.get(
-        'personalDetails.insuranceChoice'
-      )?.value;
-
-    if (insuranceChoice === 'yes') {
-
+    if (insuranceChoice === "yes") {
       this.showPaymentModal = false;
       this.showInsuranceModal = true;
-
-    } else if (insuranceChoice === 'no') {
-
+    } else if (insuranceChoice === "no") {
       this.showInsuranceModal = false;
       this.showPaymentModal = true;
     }
   }
 
   confirmInsurance(): void {
+    this.insuranceError = "";
 
-    this.insuranceError = '';
-
-    const insuranceForm =
-      this.registrationForm.get(
-        'insuranceDetails'
-      );
+    const insuranceForm = this.registrationForm.get("insuranceDetails");
 
     if (!insuranceForm) {
       return;
@@ -883,9 +692,7 @@ export class PatientRegistrationFOComponent implements OnInit {
     insuranceForm.markAllAsTouched();
 
     if (insuranceForm.invalid) {
-
-      this.insuranceError =
-        'Please fill all required insurance details.';
+      this.insuranceError = "Please fill all required insurance details.";
 
       return;
     }
@@ -893,48 +700,37 @@ export class PatientRegistrationFOComponent implements OnInit {
     const data = insuranceForm.getRawValue();
 
     this.insuranceData = {
-      provider: data.provider?.trim() || '',
-      policy: data.policy?.trim() || '',
-      groupId: data.groupId?.trim() || '',
-      holderName: data.holderName?.trim() || '',
-      insuranceAddress:
-        data.insuranceAddress?.trim() || ''
+      provider: data.provider?.trim() || "",
+      policy: data.policy?.trim() || "",
+      groupId: data.groupId?.trim() || "",
+      holderName: data.holderName?.trim() || "",
+      insuranceAddress: data.insuranceAddress?.trim() || "",
     };
 
     this.showInsuranceModal = false;
   }
   closeInsuranceModal(): void {
-
     this.showInsuranceModal = false;
 
-    this.registrationForm
-      .get('personalDetails.insuranceChoice')
-      ?.setValue('');
+    this.registrationForm.get("personalDetails.insuranceChoice")?.setValue("");
 
-    this.registrationForm
-      .get('insuranceDetails')
-      ?.reset();
+    this.registrationForm.get("insuranceDetails")?.reset();
 
     this.insuranceData = null;
 
-    this.insuranceError = '';
+    this.insuranceError = "";
   }
 
   closePaymentModal(): void {
-
     this.showPaymentModal = false;
 
-    this.registrationForm
-      .get('personalDetails.insuranceChoice')
-      ?.setValue('');
+    this.registrationForm.get("personalDetails.insuranceChoice")?.setValue("");
 
-    this.registrationForm
-      .get('paymentDetails')
-      ?.reset();
+    this.registrationForm.get("paymentDetails")?.reset();
 
     this.paymentData = null;
 
-    this.paymentError = '';
+    this.paymentError = "";
   }
 
   // =========================
@@ -946,16 +742,12 @@ export class PatientRegistrationFOComponent implements OnInit {
 
     today.setFullYear(today.getFullYear() - 18);
 
-    this.maxDateOfBirth = today.toISOString().split('T')[0];
+    this.maxDateOfBirth = today.toISOString().split("T")[0];
   }
   confirmPayment(): void {
+    this.paymentError = "";
 
-    this.paymentError = '';
-
-    const paymentForm =
-      this.registrationForm.get(
-        'paymentDetails'
-      );
+    const paymentForm = this.registrationForm.get("paymentDetails");
 
     if (!paymentForm) {
       return;
@@ -964,9 +756,7 @@ export class PatientRegistrationFOComponent implements OnInit {
     paymentForm.markAllAsTouched();
 
     if (paymentForm.invalid) {
-
-      this.paymentError =
-        'Please fill all required payment details.';
+      this.paymentError = "Please fill all required payment details.";
 
       return;
     }
@@ -974,21 +764,15 @@ export class PatientRegistrationFOComponent implements OnInit {
     const data = paymentForm.getRawValue();
 
     this.paymentData = {
+      paymentType: data.paymentType,
 
-      paymentType:
-        data.paymentType,
+      cardHolder: data.cardHolder?.trim() || "",
 
-      cardHolder:
-        data.cardHolder?.trim() || '',
+      cardNumber: data.cardNumber?.trim() || "",
 
-      cardNumber:
-        data.cardNumber?.trim() || '',
+      expiry: data.expiry?.trim() || "",
 
-      expiry:
-        data.expiry?.trim() || '',
-
-      cvv:
-        data.cvv?.trim() || ''
+      cvv: data.cvv?.trim() || "",
     };
 
     this.showPaymentModal = false;
@@ -999,38 +783,34 @@ export class PatientRegistrationFOComponent implements OnInit {
   // =========================
 
   async submitRegistration(): Promise<void> {
-
     if (this.registrationForm.invalid) {
-      console.log(this.registrationForm)
+      console.log(this.registrationForm);
       this.registrationForm.markAllAsTouched();
       return;
     }
 
     const formData = this.registrationForm.getRawValue();
 
-    console.log('Registration Data:', formData);
+    console.log("Registration Data:", formData);
     await this.store.dispatch(AuthActions.requestOTP({ email: formData.contactInformation.email }));
     await this.store.select(selectRequestedOTP).subscribe((res: any) => {
       if (res?.data) {
-        this.router.navigate(['/front-office/otp-verification-for-registration'], {
+        this.router.navigate(["/front-office/otp-verification-for-registration"], {
           state: {
             registrationData: formData,
             isRegisterPatient: true,
-
-          }
-        })
+          },
+        });
         // API call here
       }
-    })
+    });
   }
-
 
   // =========================
   // CLEAR FORM
   // =========================
 
   clearForm(): void {
-
     this.registrationForm.reset();
 
     this.states = [];
@@ -1038,117 +818,88 @@ export class PatientRegistrationFOComponent implements OnInit {
     this.permanentStates = [];
     this.permanentCities = [];
 
-    this.registrationForm
-      .get('contactInformation.presentAddress.stateId')
-      ?.disable();
+    this.registrationForm.get("contactInformation.presentAddress.stateId")?.disable();
 
-    this.registrationForm
-      .get('contactInformation.presentAddress.cityId')
-      ?.disable();
+    this.registrationForm.get("contactInformation.presentAddress.cityId")?.disable();
 
-    this.registrationForm
-      .get('contactInformation.permanentAddress.stateId')
-      ?.disable();
+    this.registrationForm.get("contactInformation.permanentAddress.stateId")?.disable();
 
-    this.registrationForm
-      .get('contactInformation.permanentAddress.cityId')
-      ?.disable();
+    this.registrationForm.get("contactInformation.permanentAddress.cityId")?.disable();
 
-    this.registrationForm
-      .get('personalDetails.ageUnit')
-      ?.setValue('Years');
+    this.registrationForm.get("personalDetails.ageUnit")?.setValue("Years");
 
-    this.registrationForm
-      .get('personalDetails.age')
-      ?.setValue('');
+    this.registrationForm.get("personalDetails.age")?.setValue("");
 
     this.insuranceData = null;
     this.paymentData = null;
 
-    this.insuranceError = '';
-    this.paymentError = '';
+    this.insuranceError = "";
+    this.paymentError = "";
 
     this.showInsuranceModal = false;
     this.showPaymentModal = false;
 
-    this.addressType = 'present';
-
+    this.addressType = "present";
   }
 
   onSameAsPresentAddressChange(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
 
     const presentAddress = this.registrationForm.get(
-      'contactInformation.presentAddress'
+      "contactInformation.presentAddress"
     ) as FormGroup;
 
     const permanentAddress = this.registrationForm.get(
-      'contactInformation.permanentAddress'
+      "contactInformation.permanentAddress"
     ) as FormGroup;
 
     if (checked) {
-
       const presentValue = presentAddress.getRawValue();
 
-      console.log('Present Address:', presentValue);
+      console.log("Present Address:", presentValue);
 
       permanentAddress.patchValue({
         address: presentValue.address,
         countryId: presentValue.countryId,
         stateId: presentValue.stateId,
         cityId: presentValue.cityId,
-        pinCode: presentValue.pinCode
+        pinCode: presentValue.pinCode,
       });
 
       // Enable controls if required
-      permanentAddress.get('stateId')?.enable();
-      permanentAddress.get('cityId')?.enable();
+      permanentAddress.get("stateId")?.enable();
+      permanentAddress.get("cityId")?.enable();
 
       // Optional: copy dropdown lists also
       this.permanentStates = [...this.states];
       this.permanentCities = [...this.cities];
 
-      console.log(
-        'Permanent Address After Patch:',
-        permanentAddress.getRawValue()
-      );
-
+      console.log("Permanent Address After Patch:", permanentAddress.getRawValue());
     } else {
-
       permanentAddress.patchValue({
-        address: '',
-        countryId: '',
-        stateId: '',
-        cityId: '',
-        pinCode: ''
+        address: "",
+        countryId: "",
+        stateId: "",
+        cityId: "",
+        pinCode: "",
       });
 
       this.permanentStates = [];
       this.permanentCities = [];
 
-      permanentAddress.get('stateId')?.disable();
-      permanentAddress.get('cityId')?.disable();
+      permanentAddress.get("stateId")?.disable();
+      permanentAddress.get("cityId")?.disable();
     }
   }
-
 
   // =========================
   // INPUT HELPERS
   // =========================
 
   allowOnlyNumbers(event: KeyboardEvent): void {
+    const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
 
-    const allowedKeys = [
-      'Backspace',
-      'Delete',
-      'ArrowLeft',
-      'ArrowRight',
-      'Tab'
-    ];
-
-    if (
-      allowedKeys.includes(event.key)
-    ) {
+    if (allowedKeys.includes(event.key)) {
       return;
     }
 
@@ -1160,33 +911,22 @@ export class PatientRegistrationFOComponent implements OnInit {
   formatCardNumber(event: Event): void {
     const input = event.target as HTMLInputElement;
 
-    let value = input.value
-      .replace(/\D/g, '')
-      .slice(0, 16);
+    let value = input.value.replace(/\D/g, "").slice(0, 16);
 
-    value = value.replace(/(.{4})/g, '$1 ').trim();
+    value = value.replace(/(.{4})/g, "$1 ").trim();
 
-    this.registrationForm
-      .get('paymentDetails.cardNumber')
-      ?.setValue(value, { emitEvent: false });
+    this.registrationForm.get("paymentDetails.cardNumber")?.setValue(value, { emitEvent: false });
   }
 
   formatExpiry(event: Event): void {
     const input = event.target as HTMLInputElement;
 
-    let value = input.value
-      .replace(/\D/g, '')
-      .slice(0, 4);
+    let value = input.value.replace(/\D/g, "").slice(0, 4);
 
     if (value.length >= 3) {
-      value =
-        value.substring(0, 2) +
-        ' / ' +
-        value.substring(2);
+      value = value.substring(0, 2) + " / " + value.substring(2);
     }
 
-    this.registrationForm
-      .get('paymentDetails.expiry')
-      ?.setValue(value, { emitEvent: false });
+    this.registrationForm.get("paymentDetails.expiry")?.setValue(value, { emitEvent: false });
   }
 }

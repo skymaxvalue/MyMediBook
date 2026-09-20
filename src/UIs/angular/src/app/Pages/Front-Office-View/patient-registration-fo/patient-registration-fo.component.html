@@ -454,7 +454,7 @@
 
                                 <input id="presentPinCode" type="text" maxlength="6" class="form-control"
                                     formControlName="pinCode" placeholder="Enter PIN code"
-                                    (input)="allowOnlyNumbers($event)" />
+                                    (keydown)="allowOnlyNumbers($event)" />
 
                                 @if (
                                 registrationForm.get(
@@ -669,7 +669,7 @@
 
                                 <input id="permanentPinCode" type="text" maxlength="6" class="form-control"
                                     formControlName="pinCode" placeholder="Enter PIN code"
-                                    (input)="allowOnlyNumbers($event)" />
+                                    (keydown)="allowOnlyNumbers($event)" />
 
                                 @if (
                                 registrationForm.get(

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, HostListener, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
 import { AuthService } from "src/app/core/Services/auth.service";
 import { TabServiceService } from "src/app/core/Services/tab-service.service";
@@ -8,61 +8,64 @@ import { TabServiceService } from "src/app/core/Services/tab-service.service";
   selector: "app-patient-header",
   imports: [CommonModule, RouterModule],
   templateUrl: "./patient-header.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./patient-header.component.css",
 })
 export class PatientHeaderComponent implements OnInit {
-  selectedHospitalName = '';
+  selectedHospitalName = "";
   showProfile = false;
   mobileMenuOpen = false;
 
-  username = '';
+  username = "";
 
-  formattedDate = '';
+  formattedDate = "";
 
-  activeTab = 'appointments';
+  activeTab = "appointments";
 
   navItems = [
     {
-      key: 'appointments',
-      label: 'My Appointments',
-      route: '/patient/dashboard/appointments'
+      key: "appointments",
+      label: "My Appointments",
+      route: "/patient/dashboard/appointments",
     },
     {
-      key: 'specialities',
-      label: 'Specialities',
-      route: '/patient/dashboard/specialities'
+      key: "specialities",
+      label: "Specialities",
+      route: "/patient/dashboard/specialities",
     },
     {
-      key: 'medicine',
-      label: 'Medicine Orders',
-      route: '/patient/dashboard/medicine'
+      key: "medicine",
+      label: "Medicine Orders",
+      route: "/patient/dashboard/medicine",
     },
     {
-      key: 'labresult',
-      label: 'Lab Results',
-      route: '/patient/dashboard/labresult'
+      key: "labresult",
+      label: "Lab Results",
+      route: "/patient/dashboard/labresult",
     },
     {
-      key: 'billing',
-      label: 'Billing',
-      route: '/patient/dashboard/billing'
+      key: "billing",
+      label: "Billing",
+      route: "/patient/dashboard/billing",
     },
     {
-      key: 'messages',
-      label: 'Messages',
-      route: '/patient/dashboard/messages'
+      key: "messages",
+      label: "Messages",
+      route: "/patient/dashboard/messages",
     },
     {
-      key: 'setting',
-      label: 'Settings',
-      route: '/patient/dashboard/settings'
-    }
+      key: "setting",
+      label: "Settings",
+      route: "/patient/dashboard/settings",
+    },
   ];
 
-  constructor(private tabService: TabServiceService, private authService: AuthService) { }
+  constructor(
+    private tabService: TabServiceService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-
     const today = new Date();
 
     const day = today.getDate();
@@ -74,19 +77,15 @@ export class PatientHeaderComponent implements OnInit {
 
     this.formattedDate = `${month} ${day}${this.getOrdinal(day)} ${year}`;
 
-    this.username =
-      JSON.parse(localStorage.getItem('user') || '{}')?.data?.firstName ?? 'User';
+    this.username = JSON.parse(localStorage.getItem("user") || "{}")?.data?.firstName ?? "User";
 
     // Selected Hospital
-    const selectedHospital = localStorage.getItem('selectedHospital');
+    const selectedHospital = localStorage.getItem("selectedHospital");
 
     if (selectedHospital) {
-
       const hospital = JSON.parse(selectedHospital);
 
-      this.selectedHospitalName =
-        hospital?.hospitalName ?? 'Hospital';
-
+      this.selectedHospitalName = hospital?.hospitalName ?? "Hospital";
     }
 
     this.setDate();
@@ -94,7 +93,6 @@ export class PatientHeaderComponent implements OnInit {
     this.tabService.activeTab$.subscribe((tab: any) => {
       this.activeTab = tab;
     });
-
   }
 
   getOrdinal(day: number): string {
@@ -116,25 +114,20 @@ export class PatientHeaderComponent implements OnInit {
     }
   }
   setDate() {
-
     const today = new Date();
 
-    this.formattedDate =
-      today.toLocaleDateString('en-US', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-
+    this.formattedDate = today.toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   }
 
   changeTab(tab: string) {
-
     this.mobileMenuOpen = false;
 
     this.tabService.changeTab(tab);
-
   }
 
   toggleMenu() {
@@ -147,22 +140,18 @@ export class PatientHeaderComponent implements OnInit {
   }
 
   toggleProfile(event: Event) {
-
     event.stopPropagation();
 
     this.showProfile = !this.showProfile;
-
   }
 
   logout() {
-
-    this.authService.logout()
+    this.authService.logout();
 
     // router navigate
-
   }
 
-  @HostListener('document:click')
+  @HostListener("document:click")
   closeMenus() {
     this.showProfile = false;
     // this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -171,5 +160,4 @@ export class PatientHeaderComponent implements OnInit {
   stop(event: Event) {
     event.stopPropagation();
   }
-
 }

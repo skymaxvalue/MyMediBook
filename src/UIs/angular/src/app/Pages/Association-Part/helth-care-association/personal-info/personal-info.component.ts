@@ -3,82 +3,70 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnInit
-} from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/Store/app.state';
+  OnInit,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/Store/app.state";
 import * as AuthActions from "../../../../Store/Auth/auth.actions";
-import { Country } from 'src/app/core/Models/Patient-Model';
+import { Country } from "src/app/core/Models/Patient-Model";
 @Component({
   selector: "app-personal-info",
   imports: [FormsModule, ReactiveFormsModule],
   templateUrl: "./personal-info.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./personal-info.component.css",
 })
 export class PersonalInfoComponent implements OnInit {
-
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   isImage = false;
-  isFileUploaded = false
-  maxDate: string = '';
+  isFileUploaded = false;
+  maxDate: string = "";
   @Input() group!: FormGroup;
   @Input() currentStep!: number;
-  @Input() countries: Country[] = []
+  @Input() countries: Country[] = [];
   @Input() states: any[] = [];
   @Input() cities: any[] = [];
   @Output() next = new EventEmitter<any>();
   @Output() onSelectCountry = new EventEmitter<any>();
   @Output() onSelectState = new EventEmitter<any>();
   showLanguageModal = false;
-  newLanguage = '';
+  newLanguage = "";
 
-  languages = [
-    'English',
-    'Hindi',
-    'Bengali',
-    'Tamil'
-  ];
+  languages = ["English", "Hindi", "Bengali", "Tamil"];
   selectedLanguages: string[] = [];
   ageError: string = "";
   isValidAge: boolean = false;
 
-
-
-  constructor(private store: Store<AppState>) {
-  }
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    console.log(this.group.value)
+    console.log(this.group.value);
     const date = new Date();
     date.setFullYear(date.getFullYear() - 18);
 
-    this.maxDate = date.toISOString().split('T')[0];
+    this.maxDate = date.toISOString().split("T")[0];
   }
 
-
   async onCountryChange(event: any) {
-    await this.onSelectCountry.emit(event.target.value)
+    await this.onSelectCountry.emit(event.target.value);
     // const stateControl = this.group.get('stateId');
     // this.group.get('stateId')?.enable();
-
   }
 
   async onStateChange(event: any) {
-    await this.onSelectState.emit(event.target.value)
-
-
+    await this.onSelectState.emit(event.target.value);
   }
   onCheckboxChange(event: any) {
     const checked = (event.target as HTMLInputElement).checked;
     if (checked) {
-      this.group.get('permanentAddress')?.setValue(this.group.get('residentialAddress')?.value)
+      this.group.get("permanentAddress")?.setValue(this.group.get("residentialAddress")?.value);
     }
   }
 
   onFileSelected(event: Event): void {
-
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
@@ -103,10 +91,8 @@ export class PersonalInfoComponent implements OnInit {
 
   closeLanguageModal() {
     this.showLanguageModal = false;
-    this.newLanguage = '';
+    this.newLanguage = "";
   }
-
-
 
   addLanguage() {
     const language = this.newLanguage.trim();
@@ -119,18 +105,15 @@ export class PersonalInfoComponent implements OnInit {
   }
 
   onLanguageChange(event: Event, language: string) {
-
     const checked = (event.target as HTMLInputElement).checked;
 
     if (checked) {
       this.selectedLanguages.push(language);
     } else {
-      this.selectedLanguages =
-        this.selectedLanguages.filter(x => x !== language);
+      this.selectedLanguages = this.selectedLanguages.filter((x) => x !== language);
     }
 
-    this.group.get('languagesSpoken')
-      ?.setValue(this.selectedLanguages);
+    this.group.get("languagesSpoken")?.setValue(this.selectedLanguages);
   }
   allowOnlyNumbers(event: KeyboardEvent): void {
     const charCode = event.which ? event.which : event.keyCode;
@@ -142,11 +125,10 @@ export class PersonalInfoComponent implements OnInit {
   }
 
   onDobChange(event: any) {
-
     const value = event.target.value;
 
     if (!value) {
-      this.ageError = 'Please select date of birth';
+      this.ageError = "Please select date of birth";
       this.isValidAge = false;
       return;
     }
@@ -165,13 +147,12 @@ export class PersonalInfoComponent implements OnInit {
     }
 
     if (age >= 18) {
-      this.ageError = '';
+      this.ageError = "";
       this.isValidAge = true;
     } else {
-      this.ageError = 'Associate must be 18 years or older';
+      this.ageError = "Associate must be 18 years or older";
       this.isValidAge = false;
     }
-
   }
 
   uploadFile(): void {
@@ -186,15 +167,13 @@ export class PersonalInfoComponent implements OnInit {
     reader.onload = () => {
       const base64String = reader.result as string;
 
-      this.group.get('identityFile')?.setValue(base64String);
-
+      this.group.get("identityFile")?.setValue(base64String);
     };
 
     reader.readAsDataURL(this.selectedFile);
 
     this.isImage = true;
     this.isFileUploaded = true;
-
   }
 
   onNext() {

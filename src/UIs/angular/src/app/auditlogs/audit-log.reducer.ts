@@ -6,7 +6,7 @@ export interface AuditLogState {
   auditLogs: IAuditLogEntry[];
   totalItems: number,
   loading: boolean;
-  error: string;
+  error: string | null;
 }
 
 const initialState: AuditLogState = {

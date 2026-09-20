@@ -7,21 +7,20 @@ import {
 import { bootstrapApplication } from "@angular/platform-browser";
 import { BrowserModule } from "@angular/platform-browser";
 import { provideRouter } from "@angular/router";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
   //  StoreModule,
-  provideStore
+  provideStore,
 } from "@ngrx/store";
 import {
   //  StoreDevtoolsModule,
-  provideStoreDevtools
+  provideStoreDevtools,
 } from "@ngrx/store-devtools";
 import {
   //  EffectsModule,
-  provideEffects
+  provideEffects,
 } from "@ngrx/effects";
-import { ToastrModule } from "ngx-toastr";
 import { ErrorHandler, provideAppInitializer, isDevMode } from "@angular/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatTimepickerModule } from "@angular/material/timepicker";
@@ -40,9 +39,6 @@ import { AuthInitializer } from "./app/auth/auth.initializer";
 import { AuthService } from "./app/auth/auth.service";
 
 // Guards
-import { ProductDetailGuard } from "./app/products/view-product-details/product-detail.guard";
-import { AddProductGuard } from "./app/products/add-product/add-product.guard";
-import { EditProductGuard } from "./app/products/edit-product/edit-product.guard";
 
 // Audit Log State
 import { auditLogReducer } from "./app/auditlogs/audit-log.reducer";
@@ -51,8 +47,8 @@ import { AuditLogEffects } from "./app/auditlogs/audit-log.effects";
 
 // Auth State
 import { AuthEffects } from "./app/Store/Auth/auth.effects";
-import { AuthState } from "./app/Store/Auth/auth.state"
-import { authReducer } from "./app/Store/Auth/auth.reducer"
+import { AuthState } from "./app/Store/Auth/auth.state";
+import { authReducer } from "./app/Store/Auth/auth.reducer";
 import { PatientEffects } from "./app/Store/Patient/patient.effect";
 import { patientReducer } from "./app/Store/Patient/patient.reducer";
 import { appointmentReducer } from "./app/Store/Appointments/appointment.reducer";
@@ -88,11 +84,7 @@ bootstrapApplication(AppComponent, {
       // }),
       // EffectsModule.forRoot([]),
       // EffectsModule.forFeature([AuditLogEffects]),
-      ToastrModule.forRoot({
-        positionClass: 'toast-top-right',
-        preventDuplicates: true,
-        newestOnTop: true
-      }),
+
       MatDatepickerModule,
       MatTimepickerModule,
       MatNativeDateModule,
@@ -101,13 +93,11 @@ bootstrapApplication(AppComponent, {
       MatDialogModule
     ),
     provideRouter(routes),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     authInterceptorProvider,
     loggingInterceptorProvider,
     provideAppInitializer(() => AuthInitializer(inject(AuthService))()),
-    ProductDetailGuard,
-    AddProductGuard,
-    EditProductGuard,
+
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler,
@@ -120,7 +110,7 @@ bootstrapApplication(AppComponent, {
       labresult: LabResultReducer,
       bills: BillReducer,
       message: MessagesReducer,
-      organization: organizationReducer
+      organization: organizationReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -131,7 +121,7 @@ bootstrapApplication(AppComponent, {
       AuditLogEffects,
       BillsEffects,
       MessagesEffects,
-      OrganizationEffects
+      OrganizationEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

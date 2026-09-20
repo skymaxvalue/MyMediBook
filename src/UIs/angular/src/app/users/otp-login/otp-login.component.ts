@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { RouterModule, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 
 @Component({
   selector: "app-otp-login",
@@ -21,8 +21,8 @@ export class OtpLoginComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastService
+  ) { }
 
   ngOnInit(): void {
     this.otpForm = this.fb.group({
@@ -43,21 +43,26 @@ export class OtpLoginComponent implements OnInit, OnDestroy {
       this.otpSent = true;
       this.startTimer();
       // SIMULATION: In a real app, this would call a backend API
-      this.toastr.success(`OTP sent to ${this.otpForm.value.identifier}`, "Success");
+      this.toastr.success("Success", `OTP sent to ${this.otpForm.value.identifier}`);
       console.log("SIMULATION: Your OTP is 1234");
-      this.toastr.info("For testing, please use OTP: 1234", "Simulation Mode", {
-        timeOut: 10000,
-      });
+      this.toastr.info(
+        "Simulation Mode",
+        "For testing, please use OTP: 1234"
+      );
     } else {
       this.otpForm.controls["identifier"].markAsTouched();
-      this.toastr.error("Please enter a valid email or phone number", "Error");
+
+      this.toastr.error(
+        "Error",
+        "Please enter a valid email or phone number"
+      );
     }
   }
 
   verifyOtp(): void {
     if (this.otpForm.valid) {
       const otp = `${this.otpForm.value.otp1}${this.otpForm.value.otp2}${this.otpForm.value.otp3}${this.otpForm.value.otp4}`;
-      
+
       // SIMULATION: Validating against our hardcoded test OTP
       if (otp === "1234") {
         this.toastr.success("Login Successful!", "Welcome");

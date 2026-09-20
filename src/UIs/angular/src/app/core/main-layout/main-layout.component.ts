@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { NavComponent } from "../nav.component";
 import { NotificationComponent } from "../notification.component";
@@ -8,20 +8,24 @@ import { ConfirmationModalComponent } from "src/app/shared/Components/confirmati
 
 @Component({
   selector: "app-main-layout",
-  imports: [RouterOutlet, NavbarComponent, NotificationComponent, FooterComponent, ConfirmationModalComponent],
+  imports: [
+    RouterOutlet,
+    NavbarComponent,
+    NotificationComponent,
+    FooterComponent,
+    ConfirmationModalComponent,
+  ],
   templateUrl: "./main-layout.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./main-layout.component.css",
 })
 export class MainLayoutComponent {
   CurrentUrl: string;
 
   constructor(private router: Router) {
-
-    this.CurrentUrl = this.router.url
+    this.CurrentUrl = this.router.url;
     this.router.events.subscribe(() => {
       window.scrollTo(0, 0);
     });
-
   }
-
 }

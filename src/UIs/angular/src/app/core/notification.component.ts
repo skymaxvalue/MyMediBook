@@ -1,19 +1,20 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { HubConnectionBuilder } from "@microsoft/signalr";
-import { ToastrService } from "ngx-toastr";
 
 import { AuthService } from "../auth/auth.service";
 import { environment } from "src/environments/environment";
+import { ToastService } from "../shared/Components/Toaster/toast.service";
 
 @Component({
   selector: "app-notification",
   template: "",
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 export class NotificationComponent implements OnInit {
   constructor(
     public auth: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -29,9 +30,7 @@ export class NotificationComponent implements OnInit {
     connection.start().then(
       function () {
         console.log("Connected to NotificationHub");
-        vm.toastr.success("Connected to NotificationHub", "", {
-          progressBar: true,
-        });
+        vm.toastr.success("Success", "Connected to NotificationHub");
       },
       function () {
         // console.log(
@@ -47,9 +46,7 @@ export class NotificationComponent implements OnInit {
 
     connection.on("ReceiveMessage", (message) => {
       console.log("Received Message from NotificationHub: " + message);
-      vm.toastr.info(message, "Received Message from NotificationHub:", {
-        progressBar: true,
-      });
+      vm.toastr.info("Received Message from NotificationHub:", message);
     });
   }
 }

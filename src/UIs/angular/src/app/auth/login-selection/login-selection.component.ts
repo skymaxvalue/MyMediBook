@@ -1,17 +1,17 @@
-import { Component } from "@angular/core";
-import { Router } from '@angular/router';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login-selection",
   imports: [],
   templateUrl: "./login-selection.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./login-selection.component.css",
 })
 export class LoginSelectionComponent {
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   onLoginTypeChange(event: Event): void {
-
     const selectElement = event.target as HTMLSelectElement;
 
     const loginType = selectElement.value;
@@ -21,20 +21,17 @@ export class LoginSelectionComponent {
     }
 
     switch (loginType) {
-
-      case 'front-office':
-        this.router.navigate(['/front-office/login']);
+      case "front-office":
+        this.router.navigate(["/front-office/login"]);
         break;
 
-      case 'patient':
-        this.router.navigate(['/patient/login']);
+      case "patient":
+        this.router.navigate(["/patient/login"]);
         break;
 
-      case 'admin':
-        this.router.navigate(['/admin/login']);
+      case "admin":
+        this.router.navigate(["/admin/login"]);
         break;
-
     }
   }
-
 }

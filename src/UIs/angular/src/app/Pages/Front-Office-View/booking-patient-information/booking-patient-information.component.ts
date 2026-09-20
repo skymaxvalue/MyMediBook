@@ -1,30 +1,28 @@
-import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 
+import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/Store/app.state";
+import * as AuthActions from "src/app/Store/Auth/auth.actions";
 import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/Store/app.state';
-import * as AuthActions from 'src/app/Store/Auth/auth.actions';
-import { selectCity, selectCountry, selectRequestedOTP, selectState } from 'src/app/Store/Auth/auth.selectors';
-import { Router } from '@angular/router';
-import { createAppointment, getAppointmentStatusList } from 'src/app/Store/Appointments/appointment.actions';
-import { getCities, getCountries, getStates, requestOTP } from 'src/app/Store/Auth/auth.actions';
-import { getPatientListForReceptionist } from 'src/app/Store/Patient/patient.action';
-import { HttpClient } from '@angular/common/http';
-import { selectAppointmentStatusList } from 'src/app/Store/Appointments/appointment.selcetors';
-import { selectPatientListForReceptionist } from 'src/app/Store/Patient/patient.selectors';
-import { filter, take } from 'rxjs/operators';
+  selectCity,
+  selectCountry,
+  selectRequestedOTP,
+  selectState,
+} from "src/app/Store/Auth/auth.selectors";
+import { Router } from "@angular/router";
+import {
+  createAppointment,
+  getAppointmentStatusList,
+} from "src/app/Store/Appointments/appointment.actions";
+import { getCities, getCountries, getStates, requestOTP } from "src/app/Store/Auth/auth.actions";
+import { getPatientListForReceptionist } from "src/app/Store/Patient/patient.action";
+import { HttpClient } from "@angular/common/http";
+import { selectAppointmentStatusList } from "src/app/Store/Appointments/appointment.selcetors";
+import { selectPatientListForReceptionist } from "src/app/Store/Patient/patient.selectors";
+import { filter, take } from "rxjs/operators";
 
 interface Doctor {
   id?: number | string;
@@ -39,7 +37,7 @@ interface Patient {
   gender?: string;
   dateOfBirth?: string;
   age?: number;
-  ageType?: 'years' | 'months';
+  ageType?: "years" | "months";
   phone?: string;
   email?: string;
   address?: string;
@@ -62,34 +60,29 @@ interface ResponsibleParty {
 }
 
 @Component({
-  selector: 'app-booking-patient-information',
+  selector: "app-booking-patient-information",
   standalone: true,
 
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule],
 
-  templateUrl: './booking-patient-information.component.html',
-  styleUrl: './booking-patient-information.component.css'
+  templateUrl: "./booking-patient-information.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./booking-patient-information.component.css",
 })
-export class BookingPatientInformationComponent
-  implements OnInit, OnDestroy {
-
+export class BookingPatientInformationComponent implements OnInit, OnDestroy {
   @Input() doctor!: any;
 
-  @Input() selectedDate: string = '';
+  @Input() selectedDate: string = "";
 
   @Input() selectedSlot: any;
 
-  user: any = JSON.parse(localStorage.getItem('user') || 'null')
-
+  user: any = JSON.parse(localStorage.getItem("user") || "null");
 
   appointmentOtpModal = false;
 
-  appointmentOtp = '';
+  appointmentOtp = "";
 
-  appointmentOtpError = '';
+  appointmentOtpError = "";
 
   appointmentOtpTimeRemaining = 60;
 
@@ -99,8 +92,7 @@ export class BookingPatientInformationComponent
 
   bookingFailed = false;
 
-  bookingErrorMessage = '';
-
+  bookingErrorMessage = "";
 
   bookingForm!: FormGroup;
 
@@ -111,22 +103,21 @@ export class BookingPatientInformationComponent
   responsiblePartySearchForm!: FormGroup;
 
   responsiblePartyForm!: FormGroup;
-  responsiblePartySearchError = '';
+  responsiblePartySearchError = "";
 
   insuranceForm!: FormGroup;
 
   paymentForm!: FormGroup;
 
+  patientType: "existing" | "new" = "existing";
 
-  patientType: 'existing' | 'new' = 'existing';
+  accountHolder: "self" | "other" | null = null;
 
-  accountHolder: 'self' | 'other' | null = null;
+  insuranceChoice: "yes" | "no" | null = null;
 
-  insuranceChoice: 'yes' | 'no' | null = null;
+  otpMethod: "mobile" | "email" | "none" | null = null;
 
-  otpMethod: 'mobile' | 'email' | 'none' | null = null;
-
-  rpOtpChannel: 'phone' | 'email' | 'none' = 'phone';
+  rpOtpChannel: "phone" | "email" | "none" = "phone";
 
   selectPatientModal = false;
 
@@ -141,13 +132,11 @@ export class BookingPatientInformationComponent
 
   paymentModal = false;
 
-
   patients: Patient[] = [];
 
   selectedPatient: Patient | null = null;
 
   highlightedPatient: Patient | null = null;
-
 
   responsiblePartyFound: ResponsibleParty | null = null;
 
@@ -155,213 +144,140 @@ export class BookingPatientInformationComponent
 
   responsiblePartyNotFound = false;
 
-  linkedAccountMessage = '';
+  linkedAccountMessage = "";
 
-  savedInfoType: 'phone' | 'email' | null = null;
+  savedInfoType: "phone" | "email" | null = null;
 
   savedInfoPatient: Patient | null = null;
 
-  otp = '';
+  otp = "";
 
-  otpError = '';
+  otpError = "";
 
   otpTimeRemaining = 60;
 
   private otpTimer?: ReturnType<typeof setInterval>;
-
 
   states: any[] = [];
   countries: any[] = [];
 
   selectedCountryId: number | null = null;
 
-
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
     private router: Router,
     private http: HttpClient
-  ) {
+  ) { }
 
+  get patientDobControl(): FormControl {
+    return this.patientSearchForm.get("dob") as FormControl;
   }
 
-
   ngOnInit(): void {
-
     this.createForms();
-    this.InitialApiCall()
+    this.InitialApiCall();
     this.loadPatients();
 
     this.setupFormSubscriptions();
-    console.log(this.doctor)
-
+    console.log(this.doctor);
   }
 
-
   private createForms(): void {
-
-
     this.bookingForm = this.fb.group({
-
-      patientType: ['existing', Validators.required],
+      patientType: ["existing", Validators.required],
 
       patientId: [null],
       profileId: [null],
 
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      gender: ['', Validators.required],
+      firstName: ["", Validators.required],
+      lastName: ["", Validators.required],
+      gender: ["", Validators.required],
 
-      dateOfBirth: ['', Validators.required],
+      dateOfBirth: ["", Validators.required],
 
-      age: [
-        '',
-        [
-          Validators.required,
-          Validators.min(0)
-        ]
-      ],
+      age: ["", [Validators.required, Validators.min(0)]],
 
-      ageType: ['years', Validators.required],
+      ageType: ["years", Validators.required],
       ageTypeId: [null],
 
-      phone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[0-9]{10}$/)
-        ]
-      ],
+      phone: ["", [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
 
-      email: [
-        '',
-        [
-          Validators.required,
-          Validators.email
-        ]
-      ],
+      email: ["", [Validators.required, Validators.email]],
 
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
+      address: ["", Validators.required],
+      city: ["", Validators.required],
+      state: ["", Validators.required],
 
-      pinCode: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[0-9]{6}$/)
-        ]
-      ],
+      pinCode: ["", [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
 
       sameAsPresentAddress: [false],
 
-      permanentAddress: ['', Validators.required],
-      permanentCity: ['', Validators.required],
-      permanentState: ['', Validators.required],
-      permanentCountry: [''],
-      permanentPinCode: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[0-9]{6}$/)
-        ]
-      ],
+      permanentAddress: ["", Validators.required],
+      permanentCity: ["", Validators.required],
+      permanentState: ["", Validators.required],
+      permanentCountry: [""],
+      permanentPinCode: ["", [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
 
-      visitPurpose: ['', Validators.required],
-      visitType: ['', Validators.required],
+      visitPurpose: ["", Validators.required],
+      visitType: ["", Validators.required],
 
-      otp: ['', Validators.required],
+      otp: ["", Validators.required],
 
-      insurance: ['', Validators.required],
+      insurance: ["", Validators.required],
 
-      accountHolder: [''],
-      accountHolderName: [''],
-      relationToPatient: [''],
-      relationTypeId: [null]
-
+      accountHolder: [""],
+      accountHolderName: [""],
+      relationToPatient: [""],
+      relationTypeId: [null],
     });
-
 
     this.patientSearchForm = this.fb.group({
+      search: [""],
 
-      search: [''],
-
-      dob: ['']
-
+      dob: [""],
     });
-
 
     this.responsiblePartySearchForm = this.fb.group({
+      mobile: ["", Validators.pattern(/^[0-9]{10}$/)],
 
-      mobile: [
-        '',
-        Validators.pattern(/^[0-9]{10}$/)
-      ],
+      name: [""],
 
-      name: [''],
-
-      dob: ['']
-
+      dob: [""],
     });
-
 
     this.responsiblePartyForm = this.fb.group({
+      accountHolder: ["", Validators.required],
 
-      accountHolder: ['', Validators.required],
+      accountHolderName: [""],
 
-      accountHolderName: [''],
-
-      relationToPatient: ['']
-
+      relationToPatient: [""],
     });
-
 
     this.insuranceForm = this.fb.group({
+      provider: ["", Validators.required],
 
-      provider: ['', Validators.required],
+      policy: ["", Validators.required],
 
-      policy: ['', Validators.required],
+      groupId: ["", Validators.required],
 
-      groupId: ['', Validators.required],
+      holderName: ["", Validators.required],
 
-      holderName: ['', Validators.required],
-
-      address: ['', Validators.required]
-
+      address: ["", Validators.required],
     });
-
 
     this.paymentForm = this.fb.group({
+      paymentType: ["", Validators.required],
 
-      paymentType: ['', Validators.required],
+      cardHolder: ["", Validators.required],
 
-      cardHolder: ['', Validators.required],
+      cardNumber: ["", [Validators.required, Validators.pattern(/^[0-9]{12,19}$/)]],
 
-      cardNumber: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[0-9]{12,19}$/)
-        ]
-      ],
+      expiry: ["", Validators.required],
 
-      expiry: [
-        '',
-        Validators.required
-      ],
-
-      cvv: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[0-9]{3,4}$/)
-        ]
-      ]
-
+      cvv: ["", [Validators.required, Validators.pattern(/^[0-9]{3,4}$/)]],
     });
-
   }
-
 
   // submitBooking(): void {
 
@@ -387,7 +303,6 @@ export class BookingPatientInformationComponent
   //     return;
   //   }
 
-
   //   // -----------------------------
   //   // EMAIL OTP
   //   // -----------------------------
@@ -398,7 +313,6 @@ export class BookingPatientInformationComponent
 
   //     return;
   //   }
-
 
   //   // -----------------------------
   //   // NO OTP
@@ -414,18 +328,16 @@ export class BookingPatientInformationComponent
   // }
 
   private getCitiesByState(stateId: number): void {
-    console.log('Loading cities for state:', stateId);
+    console.log("Loading cities for state:", stateId);
 
     this.store.dispatch(
       getCities({
-        stateId: stateId
+        stateId: stateId,
       })
     );
   }
   async submitBooking(): Promise<void> {
-
     if (this.bookingForm.invalid) {
-
       this.bookingForm.markAllAsTouched();
 
       return;
@@ -433,61 +345,41 @@ export class BookingPatientInformationComponent
 
     const formData = this.bookingForm.getRawValue();
 
-    console.log('Appointment Form Data:', formData);
+    console.log("Appointment Form Data:", formData);
 
     const otpMethod = formData.otp;
 
-    if (otpMethod === 'none') {
-
+    if (otpMethod === "none") {
       this.bookAppointment();
 
       return;
     } else {
-      await this.store.dispatch(requestOTP({ email: formData.email }))
+      await this.store.dispatch(requestOTP({ email: formData.email }));
 
-      await this.store
-        .select(selectRequestedOTP)
-        .subscribe((res: any) => {
+      await this.store.select(selectRequestedOTP).subscribe((res: any) => {
+        if (res?.data) {
+          this.router.navigate(["/front-office/otp-verification-for-appointment"], {
+            state: {
+              appointmentData: formData,
 
-          if (res?.data) {
+              doctor: this.doctor,
 
-            this.router.navigate(
-              ['/front-office/otp-verification-for-appointment'],
-              {
-                state: {
+              selectedDate: this.selectedDate,
 
-                  appointmentData: formData,
+              selectedSlot: this.selectedSlot,
 
-                  doctor: this.doctor,
+              isBookAppointment: true,
 
-                  selectedDate: this.selectedDate,
-
-                  selectedSlot: this.selectedSlot,
-
-                  isBookAppointment: true,
-
-                  otpMethod: 'email'
-
-                }
-              }
-            );
-
-          }
-
-        });
+              otpMethod: "email",
+            },
+          });
+        }
+      });
 
       return;
     }
-
-
-
-
-
-
-
   }
   bookAppointment(): void {
-
     const formData = this.bookingForm.getRawValue();
 
     const payload = {
@@ -516,56 +408,47 @@ export class BookingPatientInformationComponent
       otpMethod: formData.otp,
 
       insuranceData: {
-        provider: this.insuranceForm.value.provider ?? '',
-        policy: this.insuranceForm.value.policy ?? '',
-        groupId: this.insuranceForm.value.groupId ?? '',
-        holderName: this.insuranceForm.value.holderName ?? '',
-        address: this.insuranceForm.value.address ?? ''
+        provider: this.insuranceForm.value.provider ?? "",
+        policy: this.insuranceForm.value.policy ?? "",
+        groupId: this.insuranceForm.value.groupId ?? "",
+        holderName: this.insuranceForm.value.holderName ?? "",
+        address: this.insuranceForm.value.address ?? "",
       },
 
       paymentData: {
-        paymentType: this.paymentForm.value.paymentType ?? '',
-        cardHolder: this.paymentForm.value.cardHolder ?? '',
-        cardNumber: this.paymentForm.value.cardNumber ?? '',
-        expiry: this.paymentForm.value.expiry ?? ''
+        paymentType: this.paymentForm.value.paymentType ?? "",
+        cardHolder: this.paymentForm.value.cardHolder ?? "",
+        cardNumber: this.paymentForm.value.cardNumber ?? "",
+        expiry: this.paymentForm.value.expiry ?? "",
       },
 
-      insurance: this.insuranceChoice === 'yes',
+      insurance: this.insuranceChoice === "yes",
 
-      createdBy: 'current-user',
-      associateRole: 'Doctor'
+      createdBy: "current-user",
+      associateRole: "Doctor",
     };
 
+    console.log("BOOK APPOINTMENT PAYLOAD:", payload);
 
-
-    console.log(
-      'BOOK APPOINTMENT PAYLOAD:',
-      payload
-    );
-
-    this.store.dispatch(createAppointment({ appointment: payload }))
-
+    this.store.dispatch(createAppointment({ appointment: payload }));
 
     this.bookingSuccess = true;
-
   }
 
   onCountryChange(event: any) {
     this.store.dispatch(
       getStates({
-        countryId: event.target.value
+        countryId: event.target.value,
       })
     );
   }
 
   private InitialApiCall(): void {
-
     // ==============================
     // COUNTRIES
     // ==============================
 
     this.store.dispatch(getCountries());
-
 
     // ==============================
     // APPOINTMENT STATUS
@@ -573,117 +456,80 @@ export class BookingPatientInformationComponent
 
     this.store.dispatch(getAppointmentStatusList());
 
-
     // ==============================
     // PATIENTS
     // ==============================
 
     this.store.dispatch(
       getPatientListForReceptionist({
-        receptionistId: this.user.refId
+        receptionistId: this.user.refId,
       })
     );
 
-
-    this.store.select(selectCountry)
+    this.store
+      .select(selectCountry)
       .pipe(
         filter((res: any) => {
-          const countries = Array.isArray(res)
-            ? res
-            : Array.isArray(res?.data)
-              ? res.data
-              : [];
+          const countries = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
 
           return countries.length > 0;
         }),
         take(1)
       )
       .subscribe((res: any) => {
+        console.log("COUNTRY RESPONSE:", res);
 
-        console.log('COUNTRY RESPONSE:', res);
+        this.countries = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
 
-        this.countries = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.data)
-            ? res.data
-            : [];
-
-        console.log('COUNTRIES:', this.countries);
+        console.log("COUNTRIES:", this.countries);
 
         // Country list मिळाल्यानंतर location फक्त एकदाच
         this.getCurrentLocation();
-
       });
-
 
     // ==============================
     // STATES
     // ==============================
 
-    this.store.select(selectState)
-      .subscribe((res: any) => {
+    this.store.select(selectState).subscribe((res: any) => {
+      console.log("STATE RESPONSE:", res);
 
-        console.log('STATE RESPONSE:', res);
+      this.states = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
 
-        this.states = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.data)
-            ? res.data
-            : [];
-
-        console.log('STATES:', this.states);
-
-      });
-
+      console.log("STATES:", this.states);
+    });
 
     // ==============================
     // CITIES
     // ==============================
 
-    this.store.select(selectCity)
-      .subscribe((res: any) => {
+    this.store.select(selectCity).subscribe((res: any) => {
+      console.log("CITY RESPONSE:", res);
 
-        console.log('CITY RESPONSE:', res);
+      this.cities = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
 
-        this.cities = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.data)
-            ? res.data
-            : [];
+      console.log("CITIES:", this.cities);
 
-        console.log('CITIES:', this.cities);
-
-        // City API response आल्यानंतर enable
-        this.citiesLoading = false;
-
-      });
-
+      // City API response आल्यानंतर enable
+      this.citiesLoading = false;
+    });
 
     // ==============================
     // APPOINTMENT STATUS
     // ==============================
 
-    this.store.select(selectAppointmentStatusList)
-      .subscribe((res: any) => {
-
-        console.log('Appointment Status:', res);
-
-      });
-
+    this.store.select(selectAppointmentStatusList).subscribe((res: any) => {
+      console.log("Appointment Status:", res);
+    });
 
     // ==============================
     // PATIENTS
     // ==============================
 
-    this.store.select(selectPatientListForReceptionist)
-      .subscribe((res: any) => {
-
-        console.log('Patients:', res);
-
-      });
-
+    this.store.select(selectPatientListForReceptionist).subscribe((res: any) => {
+      console.log("Patients:", res);
+    });
   }
-
 
   onStateChange(event: Event): void {
     const stateId = Number((event.target as HTMLSelectElement).value);
@@ -691,7 +537,7 @@ export class BookingPatientInformationComponent
     if (!stateId) {
       this.cities = [];
       this.bookingForm.patchValue({
-        city: ''
+        city: "",
       });
       return;
     }
@@ -699,49 +545,30 @@ export class BookingPatientInformationComponent
     this.getCitiesByState(stateId);
   }
   private getCurrentLocation(): void {
-
     if (!navigator.geolocation) {
-
-      console.log('Geolocation is not supported by this browser.');
+      console.log("Geolocation is not supported by this browser.");
 
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
-
       (position) => {
-
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        console.log('Latitude:', latitude);
-        console.log('Longitude:', longitude);
+        console.log("Latitude:", latitude);
+        console.log("Longitude:", longitude);
 
-        this.getCountryFromLocation(
-          latitude,
-          longitude
-        );
-
+        this.getCountryFromLocation(latitude, longitude);
       },
 
       (error) => {
-
-        console.log(
-          'Unable to get current location:',
-          error
-        );
-
+        console.log("Unable to get current location:", error);
       }
-
     );
-
   }
 
-  private getCountryFromLocation(
-    latitude: number,
-    longitude: number
-  ): void {
-
+  private getCountryFromLocation(latitude: number, longitude: number): void {
     const url =
       `https://nominatim.openstreetmap.org/reverse` +
       `?format=jsonv2` +
@@ -749,283 +576,174 @@ export class BookingPatientInformationComponent
       `&lon=${longitude}`;
 
     this.http.get<any>(url).subscribe({
-
       next: (response: any) => {
+        const countryCode = response?.address?.country_code?.toUpperCase();
 
-        const countryCode =
-          response?.address?.country_code?.toUpperCase();
-
-        console.log(
-          'Detected Country Code:',
-          countryCode
-        );
+        console.log("Detected Country Code:", countryCode);
 
         if (countryCode) {
           this.findCountryAndLoadStates(countryCode);
         }
-
       },
 
       error: (error: any) => {
-        console.error(
-          'Reverse geocoding failed:',
-          error
-        );
-      }
-
+        console.error("Reverse geocoding failed:", error);
+      },
     });
   }
 
-  private findCountryAndLoadStates(
-    countryCode: string
-  ): void {
-
+  private findCountryAndLoadStates(countryCode: string): void {
     const country = this.countries.find(
-      (item: any) =>
-        item.countryCode?.toUpperCase() ===
-        countryCode.toUpperCase()
+      (item: any) => item.countryCode?.toUpperCase() === countryCode.toUpperCase()
     );
 
-
-
     if (!country) {
-
-      console.log(
-        'Country not found in API list:',
-        countryCode
-      );
+      console.log("Country not found in API list:", countryCode);
 
       return;
     }
 
-    console.log(
-      'Matched Country:',
-      country
-    );
+    console.log("Matched Country:", country);
 
     this.selectedCountryId = country.countryId;
 
-    console.log(
-      'Detected Country ID:',
-      this.selectedCountryId
-    );
+    console.log("Detected Country ID:", this.selectedCountryId);
 
-    this.getStatesByCountry(
-      this.selectedCountryId
-    );
+    this.getStatesByCountry(this.selectedCountryId);
   }
 
-  private getStatesByCountry(
-    countryId: any
-  ): void {
-
-    console.log(
-      'Loading states for countryId:',
-      countryId
-    );
+  private getStatesByCountry(countryId: any): void {
+    console.log("Loading states for countryId:", countryId);
 
     this.store.dispatch(
       getStates({
-        countryId: countryId
+        countryId: countryId,
       })
     );
   }
 
   private setupFormSubscriptions(): void {
-
     // Patient Type
 
-    this.bookingForm
-      .get('patientType')
-      ?.valueChanges
-      .subscribe(value => {
+    this.bookingForm.get("patientType")?.valueChanges.subscribe((value) => {
+      this.patientType = value;
 
-        this.patientType = value;
+      if (value === "existing") {
+        this.openSelectPatientModal();
+      } else {
+        this.clearPatientDetails();
 
-        if (value === 'existing') {
-
-          this.openSelectPatientModal();
-
-        } else {
-
-          this.clearPatientDetails();
-
-          this.closeSelectPatientModal();
-
-        }
-
-      });
-
+        this.closeSelectPatientModal();
+      }
+    });
 
     // Same Address
 
-    this.bookingForm
-      .get('sameAsPresentAddress')
-      ?.valueChanges
-      .subscribe(checked => {
-
-        if (checked) {
-
-          this.copyPresentAddress();
-
-        }
-
-      });
-
+    this.bookingForm.get("sameAsPresentAddress")?.valueChanges.subscribe((checked) => {
+      if (checked) {
+        this.copyPresentAddress();
+      }
+    });
 
     // Insurance
 
-    this.bookingForm
-      .get('insurance')
-      ?.valueChanges
-      .subscribe(value => {
+    this.bookingForm.get("insurance")?.valueChanges.subscribe((value) => {
+      this.insuranceChoice = value;
 
-        this.insuranceChoice = value;
-
-        if (value === 'yes') {
-
-          // Yes → Open Insurance Modal
-          this.openInsuranceModal();
-
-        } else if (value === 'no') {
-
-          // No → Open Payment Modal
-          this.openPaymentModal();
-
-        }
-
-      });
-
+      if (value === "yes") {
+        // Yes → Open Insurance Modal
+        this.openInsuranceModal();
+      } else if (value === "no") {
+        // No → Open Payment Modal
+        this.openPaymentModal();
+      }
+    });
 
     // Account holder
 
-    this.bookingForm
-      .get('accountHolder')
-      ?.valueChanges
-      .subscribe(value => {
-
-        this.accountHolder = value;
-
-      });
-
+    this.bookingForm.get("accountHolder")?.valueChanges.subscribe((value) => {
+      this.accountHolder = value;
+    });
   }
 
-
-
   private loadPatients(): void {
-
     // Replace this with API call
 
     this.patients = [
-
       {
         id: 1,
-        firstName: 'Rahul',
-        lastName: 'Patil',
-        gender: 'Male',
-        dateOfBirth: '1995-05-12',
+        firstName: "Rahul",
+        lastName: "Patil",
+        gender: "Male",
+        dateOfBirth: "1995-05-12",
         age: 31,
-        ageType: 'years',
-        phone: '9876543210',
-        email: 'rahul@example.com',
-        address: 'Pimpri',
-        city: 'Pune',
-        state: 'Maharashtra',
-        pinCode: '411018'
+        ageType: "years",
+        phone: "9876543210",
+        email: "rahul@example.com",
+        address: "Pimpri",
+        city: "Pune",
+        state: "Maharashtra",
+        pinCode: "411018",
       },
 
       {
         id: 2,
-        firstName: 'Sneha',
-        lastName: 'Shinde',
-        gender: 'Female',
-        dateOfBirth: '1998-10-20',
+        firstName: "Sneha",
+        lastName: "Shinde",
+        gender: "Female",
+        dateOfBirth: "1998-10-20",
         age: 27,
-        ageType: 'years',
-        phone: '9876501234',
-        email: 'sneha@example.com',
-        address: 'Wakad',
-        city: 'Pune',
-        state: 'Maharashtra',
-        pinCode: '411057'
-      }
-
+        ageType: "years",
+        phone: "9876501234",
+        email: "sneha@example.com",
+        address: "Wakad",
+        city: "Pune",
+        state: "Maharashtra",
+        pinCode: "411057",
+      },
     ];
-
   }
-
-
 
   get filteredPatients(): Patient[] {
+    const search = this.patientSearchForm.get("search")?.value?.trim()?.toLowerCase() || "";
 
-    const search =
-      this.patientSearchForm
-        .get('search')
-        ?.value
-        ?.trim()
-        ?.toLowerCase() || '';
+    const dob = this.patientSearchForm.get("dob")?.value || "";
 
-    const dob =
-      this.patientSearchForm
-        .get('dob')
-        ?.value || '';
+    return this.patients.filter((patient) => {
+      const fullName = `${patient.firstName} ${patient.lastName}`.toLowerCase();
 
+      const matchesName = !search || fullName.includes(search);
 
-    return this.patients.filter(patient => {
-
-      const fullName =
-        `${patient.firstName} ${patient.lastName}`
-          .toLowerCase();
-
-      const matchesName =
-        !search ||
-        fullName.includes(search);
-
-      const matchesDob =
-        !dob ||
-        patient.dateOfBirth === dob;
+      const matchesDob = !dob || patient.dateOfBirth === dob;
 
       return matchesName && matchesDob;
-
     });
-
   }
-
 
   // ====================================================
   // EXISTING PATIENT MODAL
   // ====================================================
 
   openSelectPatientModal(): void {
-
     this.selectPatientModal = true;
 
     this.patientSearchForm.reset({
-      search: '',
-      dob: ''
+      search: "",
+      dob: "",
     });
 
     this.highlightedPatient = null;
-
   }
-
 
   closeSelectPatientModal(): void {
-
     this.selectPatientModal = false;
-
   }
-
 
   selectPatient(patient: Patient): void {
-
     this.highlightedPatient = patient;
-
   }
 
-
   confirmPatientSelection(): void {
-
     if (!this.highlightedPatient) {
       return;
     }
@@ -1033,7 +751,6 @@ export class BookingPatientInformationComponent
     this.selectedPatient = this.highlightedPatient;
 
     this.bookingForm.patchValue({
-
       patientId: this.selectedPatient.id,
 
       firstName: this.selectedPatient.firstName,
@@ -1046,7 +763,7 @@ export class BookingPatientInformationComponent
 
       age: this.selectedPatient.age,
 
-      ageType: this.selectedPatient.ageType || 'years',
+      ageType: this.selectedPatient.ageType || "years",
 
       phone: this.selectedPatient.phone,
 
@@ -1058,75 +775,59 @@ export class BookingPatientInformationComponent
 
       state: this.selectedPatient.state,
 
-      pinCode: this.selectedPatient.pinCode
-
+      pinCode: this.selectedPatient.pinCode,
     });
 
     this.closeSelectPatientModal();
-
   }
-
 
   // ====================================================
   // RESPONSIBLE PARTY
   // ====================================================
 
   searchResponsibleParty(): void {
-
     const form = this.responsiblePartySearchForm;
 
-    const mobile = (form.get('mobile')?.value || '').trim();
-    const name = (form.get('name')?.value || '').trim();
-    const dob = form.get('dob')?.value || '';
+    const mobile = (form.get("mobile")?.value || "").trim();
+    const name = (form.get("name")?.value || "").trim();
+    const dob = form.get("dob")?.value || "";
 
-    console.log('SEARCH CLICKED');
-    console.log('Mobile:', mobile);
-    console.log('Name:', name);
-    console.log('DOB:', dob);
+    console.log("SEARCH CLICKED");
+    console.log("Mobile:", mobile);
+    console.log("Name:", name);
+    console.log("DOB:", dob);
 
     // Reset previous result
-    this.responsiblePartySearchError = '';
+    this.responsiblePartySearchError = "";
     this.responsiblePartyFound = null;
     this.responsiblePartyNotFound = false;
     this.responsiblePartySearched = false;
-
 
     // ----------------------------------------
     // VALIDATION
     // ----------------------------------------
 
     if (!mobile && !name) {
-
-      this.responsiblePartySearchError =
-        'Please enter mobile number or patient full name.';
+      this.responsiblePartySearchError = "Please enter mobile number or patient full name.";
 
       return;
     }
-
 
     // Mobile validation
     if (mobile && !/^[0-9]{10}$/.test(mobile)) {
-
-      this.responsiblePartySearchError =
-        'Please enter a valid 10-digit mobile number.';
+      this.responsiblePartySearchError = "Please enter a valid 10-digit mobile number.";
 
       return;
     }
-
 
     // ----------------------------------------
     // SEARCH
     // ----------------------------------------
 
-    const result = this.patients.find(patient => {
+    const result = this.patients.find((patient) => {
+      const patientFullName = `${patient.firstName} ${patient.lastName}`.trim().toLowerCase();
 
-      const patientFullName =
-        `${patient.firstName} ${patient.lastName}`
-          .trim()
-          .toLowerCase();
-
-      const enteredName =
-        name.toLowerCase();
+      const enteredName = name.toLowerCase();
 
       // Search by mobile
       if (mobile) {
@@ -1135,102 +836,75 @@ export class BookingPatientInformationComponent
 
       // Search by name
       if (name) {
-
-        const nameMatch =
-          patientFullName === enteredName;
+        const nameMatch = patientFullName === enteredName;
 
         // If DOB entered, check DOB also
         if (dob) {
-          return (
-            nameMatch &&
-            patient.dateOfBirth === dob
-          );
+          return nameMatch && patient.dateOfBirth === dob;
         }
 
         return nameMatch;
       }
 
       return false;
-
     });
 
-
-    console.log('SEARCH RESULT:', result);
-
+    console.log("SEARCH RESULT:", result);
 
     this.responsiblePartySearched = true;
-
 
     // ----------------------------------------
     // FOUND
     // ----------------------------------------
 
     if (result) {
-
       this.responsiblePartyFound = {
-
         id: result.id,
 
-        name:
-          `${result.firstName} ${result.lastName}`,
+        name: `${result.firstName} ${result.lastName}`,
 
         phone: result.phone,
 
-        email: result.email
-
+        email: result.email,
       };
 
       this.responsiblePartyNotFound = false;
 
-      console.log(
-        'Responsible Party Found:',
-        this.responsiblePartyFound
-      );
-
+      console.log("Responsible Party Found:", this.responsiblePartyFound);
     }
 
     // ----------------------------------------
     // NOT FOUND
     // ----------------------------------------
-
     else {
-
       this.responsiblePartyFound = null;
 
       this.responsiblePartyNotFound = true;
 
-      console.log('Responsible Party NOT Found');
-
+      console.log("Responsible Party NOT Found");
     }
-
   }
 
   continueWithAccount(): void {
-
     if (!this.responsiblePartyFound) {
       return;
     }
 
-    this.linkedAccountMessage =
-      `Account linked with ${this.responsiblePartyFound.name}`;
+    this.linkedAccountMessage = `Account linked with ${this.responsiblePartyFound.name}`;
 
     this.responsiblePartyChannelModal = true;
-
   }
 
-
   searchAgainResponsibleParty(): void {
-
     this.responsiblePartyFound = null;
 
     this.responsiblePartyNotFound = false;
 
     this.responsiblePartySearched = false;
 
-    this.responsiblePartySearchError = '';
+    this.responsiblePartySearchError = "";
 
     this.responsiblePartySearchForm.reset();
-
   }
 
   // ====================================================
@@ -1238,289 +912,196 @@ export class BookingPatientInformationComponent
   // ====================================================
 
   continueResponsiblePartyChannel(): void {
-
     this.responsiblePartyChannelModal = false;
 
     this.responsiblePartyOtpModal = true;
 
     this.startOtpTimer();
-
   }
-
 
   closeResponsiblePartyChannelModal(): void {
-
     this.responsiblePartyChannelModal = false;
-
   }
 
-
   closeResponsiblePartyOtpModal(): void {
-
     this.responsiblePartyOtpModal = false;
 
     this.stopOtpTimer();
-
   }
 
-
   changeRpOtpChannel(): void {
-
     this.responsiblePartyOtpModal = false;
 
     this.responsiblePartyChannelModal = true;
-
   }
-
 
   verifyResponsiblePartyOtp(): void {
-
     // Replace with API OTP verification
 
-    if (this.otp === '1234') {
-
+    if (this.otp === "1234") {
       this.responsiblePartyOtpModal = false;
 
-      this.linkedAccountMessage =
-        'Responsible party verified successfully.';
-
+      this.linkedAccountMessage = "Responsible party verified successfully.";
     } else {
-
-      this.otpError =
-        'Incorrect OTP. Please try again.';
-
+      this.otpError = "Incorrect OTP. Please try again.";
     }
-
   }
-
 
   resendOtp(): void {
+    this.otp = "";
 
-    this.otp = '';
-
-    this.otpError = '';
+    this.otpError = "";
 
     this.startOtpTimer();
-
   }
 
-
   startOtpTimer(): void {
-
     this.stopOtpTimer();
 
     this.otpTimeRemaining = 60;
 
-    this.otpTimer =
-      setInterval(() => {
+    this.otpTimer = setInterval(() => {
+      this.otpTimeRemaining--;
 
-        this.otpTimeRemaining--;
-
-        if (this.otpTimeRemaining <= 0) {
-
-          this.stopOtpTimer();
-
-        }
-
-      }, 1000);
-
+      if (this.otpTimeRemaining <= 0) {
+        this.stopOtpTimer();
+      }
+    }, 1000);
   }
 
-
   stopOtpTimer(): void {
-
     if (this.otpTimer) {
-
       clearInterval(this.otpTimer);
 
       this.otpTimer = undefined;
-
     }
-
   }
-
 
   get otpTimerText(): string {
+    const minutes = Math.floor(this.otpTimeRemaining / 60)
+      .toString()
+      .padStart(2, "0");
 
-    const minutes =
-      Math.floor(this.otpTimeRemaining / 60)
-        .toString()
-        .padStart(2, '0');
-
-    const seconds =
-      (this.otpTimeRemaining % 60)
-        .toString()
-        .padStart(2, '0');
+    const seconds = (this.otpTimeRemaining % 60).toString().padStart(2, "0");
 
     return `${minutes}:${seconds}`;
-
   }
-
 
   // ====================================================
   // INSURANCE
   // ====================================================
 
   openInsuranceModal(): void {
-
     this.insuranceModal = true;
-
   }
-
 
   closeInsuranceModal(): void {
-
     this.insuranceModal = false;
-
   }
 
-
   confirmInsurance(): void {
-
     if (this.insuranceForm.invalid) {
-
       this.insuranceForm.markAllAsTouched();
 
       return;
-
     }
 
     this.insuranceModal = false;
-
   }
-
 
   // ====================================================
   // PAYMENT
   // ====================================================
 
   openPaymentModal(): void {
-
     this.paymentModal = true;
-
   }
-
 
   closePaymentModal(): void {
-
     this.paymentModal = false;
-
   }
 
-
   confirmPayment(): void {
-
     if (this.paymentForm.invalid) {
-
       this.paymentForm.markAllAsTouched();
 
       return;
-
     }
 
     this.paymentModal = false;
-
   }
-
 
   // ====================================================
   // ADDRESS
   // ====================================================
 
   copyPresentAddress(): void {
-
     this.bookingForm.patchValue({
       permanentCountry: this.selectedCountryId,
 
-      permanentAddress:
-        this.bookingForm.get('address')?.value,
+      permanentAddress: this.bookingForm.get("address")?.value,
 
-      permanentCity:
-        this.bookingForm.get('city')?.value,
+      permanentCity: this.bookingForm.get("city")?.value,
 
-      permanentState:
-        this.bookingForm.get('state')?.value,
+      permanentState: this.bookingForm.get("state")?.value,
 
-      permanentPinCode:
-        this.bookingForm.get('pinCode')?.value
-
+      permanentPinCode: this.bookingForm.get("pinCode")?.value,
     });
-
   }
-
 
   // ====================================================
   // SAVED INFO
   // ====================================================
 
   closeSavedInfoModal(): void {
-
     this.savedInfoModal = false;
-
   }
 
-
   useSavedInfo(): void {
-
     if (!this.savedInfoPatient) {
       return;
     }
 
-    this.bookingForm.patchValue(
-      this.savedInfoPatient
-    );
+    this.bookingForm.patchValue(this.savedInfoPatient);
 
     this.savedInfoModal = false;
-
   }
-
 
   useNewInfo(): void {
-
     this.savedInfoModal = false;
-
   }
-
 
   // ====================================================
   // CLEAR
   // ====================================================
 
   clearPatientDetails(): void {
-
     this.selectedPatient = null;
 
     this.bookingForm.patchValue({
-
       patientId: null,
 
-      firstName: '',
+      firstName: "",
 
-      lastName: '',
+      lastName: "",
 
-      gender: '',
+      gender: "",
 
-      dateOfBirth: '',
+      dateOfBirth: "",
 
-      age: '',
+      age: "",
 
-      ageType: 'years'
-
+      ageType: "years",
     });
-
   }
 
-
   clearForm(): void {
-
     this.bookingForm.reset({
+      patientType: "existing",
 
-      patientType: 'existing',
+      ageType: "years",
 
-      ageType: 'years',
-
-      sameAsPresentAddress: false
-
+      sameAsPresentAddress: false,
     });
 
     this.selectedPatient = null;
@@ -1528,9 +1109,7 @@ export class BookingPatientInformationComponent
     this.insuranceChoice = null;
 
     this.accountHolder = null;
-
   }
-
 
   // ====================================================
   // SUBMIT
@@ -1545,7 +1124,6 @@ export class BookingPatientInformationComponent
   //     return;
 
   //   }
-
 
   //   const payload = {
 
@@ -1563,41 +1141,26 @@ export class BookingPatientInformationComponent
 
   //   };
 
-
   //   console.log(
   //     'Booking Payload:',
   //     payload
   //   );
 
-
   //   // Call your booking API here
 
   // }
-
 
   // ====================================================
   // HELPERS
   // ====================================================
 
   isInvalid(controlName: string): boolean {
+    const control = this.bookingForm.get(controlName);
 
-    const control =
-      this.bookingForm.get(controlName);
-
-    return !!(
-      control &&
-      control.invalid &&
-      control.touched
-    );
-
+    return !!(control && control.invalid && control.touched);
   }
-
 
   ngOnDestroy(): void {
-
     this.stopOtpTimer();
-
   }
-
 }
-

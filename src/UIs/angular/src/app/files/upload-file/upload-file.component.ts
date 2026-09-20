@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -13,6 +13,7 @@ import { GuidEmpty } from "src/app/shared/constants";
   templateUrl: "./upload-file.component.html",
   styleUrls: ["./upload-file.component.css"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, RouterModule],
 })
 export class UploadFileComponent implements OnInit {

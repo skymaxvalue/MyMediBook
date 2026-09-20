@@ -1,10 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, OnInit, signal } from "@angular/core";
+import { Component, computed, OnInit, signal, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { delay } from "rxjs";
 import { AppState } from "src/app/Store/app.state";
-import { deleteAssociatesAndItsSchedule, getAllAssociates } from "src/app/Store/Doctor/doctor.action";
+import {
+  deleteAssociatesAndItsSchedule,
+  getAllAssociates,
+} from "src/app/Store/Doctor/doctor.action";
 import { selectGelAllAssociate } from "src/app/Store/Doctor/doctor.selectors";
 
 interface AssociateSchedule {
@@ -24,11 +27,11 @@ interface AssociateSchedule {
   isActive: boolean;
 }
 
-
 @Component({
   selector: "app-association-list",
   imports: [CommonModule],
   templateUrl: "./association-list.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./association-list.component.css",
 })
 export class AssociationListComponent implements OnInit {
@@ -36,9 +39,7 @@ export class AssociationListComponent implements OnInit {
 
   sortColumn = signal<number | null>(null);
   ascending = signal(true);
-  readonly STORAGE_KEY = 'associateScheduleDatabaseRows';
-
-
+  readonly STORAGE_KEY = "associateScheduleDatabaseRows";
 
   deleteRow: AssociateSchedule | null = null;
 
@@ -46,16 +47,17 @@ export class AssociationListComponent implements OnInit {
 
   sortDirection: { [key: number]: boolean } = {};
 
-  constructor(private router: Router, private store: Store<AppState>) {
-    this.store.dispatch(getAllAssociates())
+  constructor(
+    private router: Router,
+    private store: Store<AppState>
+  ) {
+    this.store.dispatch(getAllAssociates());
   }
 
   ngOnInit(): void {
-
     this.loadRows();
-    this.getSelectorData()
+    this.getSelectorData();
   }
-
 
   sortedSchedules = computed(() => {
     const rows = [...this.schedules()];
@@ -71,12 +73,11 @@ export class AssociationListComponent implements OnInit {
   getSelectorData() {
     this.store.select(selectGelAllAssociate).subscribe((res: any) => {
       if (res) {
-        this.schedules.set(res)
+        this.schedules.set(res);
       }
-    })
+    });
   }
   loadRows() {
-
     // const defaultRows: AssociateSchedule[] = [
     //   {
     //     associateId: 1,
@@ -105,10 +106,7 @@ export class AssociationListComponent implements OnInit {
     // this.schedules.set(rows);
   }
   saveRows() {
-    localStorage.setItem(
-      this.STORAGE_KEY,
-      JSON.stringify(this.schedules())
-    );
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.schedules()));
   }
 
   edit(id: any, index: number) {
@@ -118,8 +116,7 @@ export class AssociationListComponent implements OnInit {
     //   row.associateId
     // ]);
 
-    console.log('EDIT CLICKED ID:', id);
-
+    console.log("EDIT CLICKED ID:", id);
 
     this.router.navigate([`/admin/update-association/`, id]);
     // localStorage.setItem(
@@ -134,26 +131,24 @@ export class AssociationListComponent implements OnInit {
   }
 
   openDelete(row: AssociateSchedule) {
-
     this.deleteRow = row;
 
     this.showDeleteModal = true;
   }
 
   deleteConfirmed() {
-
     if (!this.deleteRow) return;
     const payload = {
       associateId: this.deleteRow.associateId,
       isActive: this.deleteRow.isActive ? 0 : 1,
-      updatedBy: JSON.parse(localStorage.getItem('user') || '{}')?.fullName
-    }
-    this.store.dispatch(deleteAssociatesAndItsSchedule({ associate: payload }))
+      updatedBy: JSON.parse(localStorage.getItem("user") || "{}")?.fullName,
+    };
+    this.store.dispatch(deleteAssociatesAndItsSchedule({ associate: payload }));
     // this.schedules.update(rows =>
     //   rows.filter((x: any) => x.associateId !== this.deleteRow!.associateId)
     // );
-    delay(2000)
-    this.store.dispatch(getAllAssociates())
+    delay(2000);
+    this.store.dispatch(getAllAssociates());
 
     this.saveRows();
 
@@ -161,62 +156,46 @@ export class AssociationListComponent implements OnInit {
   }
 
   closeModal() {
-
     this.showDeleteModal = false;
 
     this.deleteRow = null;
   }
 
   sort(column: number) {
-
     this.sortDirection[column] = !this.sortDirection[column];
 
     const asc = this.sortDirection[column];
 
-    const fields = [
-      'name',
-      'dept',
-      'spec',
-      'from',
-      'to',
-      'time'
-    ];
+    const fields = ["name", "dept", "spec", "from", "to", "time"];
 
     const field = fields[column];
 
     const rows = [...this.schedules()];
 
     rows.sort((a: any, b: any) => {
-
       let valA = a[field];
 
       let valB = b[field];
 
       if (column === 3 || column === 4) {
-
         valA = new Date(valA).getTime();
 
         valB = new Date(valB).getTime();
       }
 
       if (column === 5) {
-
         valA = parseInt(valA);
 
         valB = parseInt(valB);
       }
 
-      if (typeof valA === 'string') {
-
+      if (typeof valA === "string") {
         valA = valA.toLowerCase();
 
         valB = valB.toLowerCase();
       }
 
-      return asc
-        ? valA > valB ? 1 : -1
-        : valA < valB ? 1 : -1;
+      return asc ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
     });
   }
-
 }
