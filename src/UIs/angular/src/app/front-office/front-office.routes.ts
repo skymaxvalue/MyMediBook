@@ -125,6 +125,12 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                 loadComponent: () =>
                     import('../Pages/Front-Office-View/lab-services/lab-services.component')
                         .then(m => m.LabServiceComponent)
+            },
+            {
+                path: 'room-service',
+                loadComponent: () =>
+                    import('../Pages/Front-Office-View/room-service/room-service.component')
+                        .then(m => m.RoomServiceComponent)
             }
 
         ]
