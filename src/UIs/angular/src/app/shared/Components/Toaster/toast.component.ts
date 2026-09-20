@@ -1,37 +1,34 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ToastService } from './toast.service';
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ToastService } from "./toast.service";
 
 @Component({
-    selector: 'app-toast',
-    standalone: true,
-    imports: [CommonModule],
-    templateUrl: './toast.component.html',
-    styleUrl: './toast.component.css'
+  selector: "app-toast",
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: "./toast.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./toast.component.css",
 })
 export class ToastComponent {
+  toastService = inject(ToastService);
 
-    toastService = inject(ToastService);
+  getIcon(type: string): string {
+    switch (type) {
+      case "success":
+        return "✔";
 
-    getIcon(type: string): string {
+      case "error":
+        return "✖";
 
-        switch (type) {
-            case 'success':
-                return '✔';
+      case "warning":
+        return "⚠";
 
-            case 'error':
-                return '✖';
+      case "info":
+        return "ℹ";
 
-            case 'warning':
-                return '⚠';
-
-            case 'info':
-                return 'ℹ';
-
-            default:
-                return '';
-        }
-
+      default:
+        return "";
     }
-
+  }
 }

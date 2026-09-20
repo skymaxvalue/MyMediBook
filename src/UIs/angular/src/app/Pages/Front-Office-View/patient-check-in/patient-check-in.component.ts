@@ -1,45 +1,38 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/Store/app.state';
-import { getAppointmentListByAssociateId } from 'src/app/Store/Appointments/appointment.actions';
-import { selectAppointmentListByAssociateID } from 'src/app/Store/Appointments/appointment.selcetors';
-import { loadDoctorSpecialities } from 'src/app/Store/Doctor/doctor.action';
-import { selectDoctorSpecialities } from 'src/app/Store/Doctor/doctor.selectors';
-import { getSearchPatientDetails } from 'src/app/Store/Patient/patient.action';
-import { selectSearchLisOfPatient } from 'src/app/Store/Patient/patient.selectors';
-
-
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/Store/app.state";
+import { getAppointmentListByAssociateId } from "src/app/Store/Appointments/appointment.actions";
+import { selectAppointmentListByAssociateID } from "src/app/Store/Appointments/appointment.selcetors";
+import { loadDoctorSpecialities } from "src/app/Store/Doctor/doctor.action";
+import { selectDoctorSpecialities } from "src/app/Store/Doctor/doctor.selectors";
+import { getSearchPatientDetails } from "src/app/Store/Patient/patient.action";
+import { selectSearchLisOfPatient } from "src/app/Store/Patient/patient.selectors";
 
 @Component({
-  selector: 'app-patient-check-in',
+  selector: "app-patient-check-in",
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-  templateUrl: './patient-check-in.component.html',
-  styleUrl: './patient-check-in.component.css'
+  imports: [CommonModule, FormsModule],
+  templateUrl: "./patient-check-in.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: "./patient-check-in.component.css",
 })
 export class PatientCheckInComponent implements OnInit {
-
-
-  patientName = '';
-  dob = '';
-  doctorName = '';
+  patientName = "";
+  dob = "";
+  doctorName = "";
 
   selectedDoctor: any = null;
 
-  doctorSearch = '';
+  doctorSearch = "";
 
   showDoctorDropdown = false;
 
   hasSearched = false;
 
-  checkInTime = '';
-
+  checkInTime = "";
 
   doctorDropdownOpen = false;
 
@@ -48,182 +41,174 @@ export class PatientCheckInComponent implements OnInit {
   showConfirmModal = false;
   showSuccessModal = false;
 
-
-  doctors: any[] = []
+  doctors: any[] = [];
   filteredDoctors: any[] = [...this.doctors];
 
-
   appointments = [
-
     {
       id: 1,
-      patientName: 'Ravi Kumar',
-      dob: '01/04/2001',
-      appointmentDate: '14/07/2026',
-      address: '123 MG Road, Delhi',
-      phone: '+91 98765 43210',
-      email: 'ravi.kumar@email.com',
-      doctor: 'Dr. Kumaravel',
-      department: 'General Physician',
-      room: '#5, 2nd Floor',
-      appointmentTime: '10:00 AM',
-      uhid: 'HH24567',
-      checkedIn: false
+      patientName: "Ravi Kumar",
+      dob: "01/04/2001",
+      appointmentDate: "14/07/2026",
+      address: "123 MG Road, Delhi",
+      phone: "+91 98765 43210",
+      email: "ravi.kumar@email.com",
+      doctor: "Dr. Kumaravel",
+      department: "General Physician",
+      room: "#5, 2nd Floor",
+      appointmentTime: "10:00 AM",
+      uhid: "HH24567",
+      checkedIn: false,
     },
 
     {
       id: 2,
-      patientName: 'Raveen Kumar',
-      dob: '04/01/2001',
-      appointmentDate: '14/07/2026',
-      address: '45 Park Street, Mumbai',
-      phone: '+91 91234 56789',
-      email: 'raveen.kumar@email.com',
-      doctor: 'Dr. Kumaravel',
-      department: 'General Physician',
-      room: '#5, 2nd Floor',
-      appointmentTime: '10:30 AM',
-      uhid: 'HH24568',
-      checkedIn: false
+      patientName: "Raveen Kumar",
+      dob: "04/01/2001",
+      appointmentDate: "14/07/2026",
+      address: "45 Park Street, Mumbai",
+      phone: "+91 91234 56789",
+      email: "raveen.kumar@email.com",
+      doctor: "Dr. Kumaravel",
+      department: "General Physician",
+      room: "#5, 2nd Floor",
+      appointmentTime: "10:30 AM",
+      uhid: "HH24568",
+      checkedIn: false,
     },
 
     {
       id: 3,
-      patientName: 'Ananya Sharma',
-      dob: '15/08/1998',
-      appointmentDate: '14/07/2026',
-      address: '22 Lake Road, Kolkata',
-      phone: '+91 98765 12345',
-      email: 'ananya.sharma@email.com',
-      doctor: 'Dr. Kumaravel',
-      department: 'General Physician',
-      room: '#5, 2nd Floor',
-      appointmentTime: '11:00 AM',
-      uhid: 'HH24569',
-      checkedIn: false
+      patientName: "Ananya Sharma",
+      dob: "15/08/1998",
+      appointmentDate: "14/07/2026",
+      address: "22 Lake Road, Kolkata",
+      phone: "+91 98765 12345",
+      email: "ananya.sharma@email.com",
+      doctor: "Dr. Kumaravel",
+      department: "General Physician",
+      room: "#5, 2nd Floor",
+      appointmentTime: "11:00 AM",
+      uhid: "HH24569",
+      checkedIn: false,
     },
 
     {
       id: 4,
-      patientName: 'Sourav Das',
-      dob: '22/11/1995',
-      appointmentDate: '14/07/2026',
-      address: '18 Station Road, Kolkata',
-      phone: '+91 98301 45678',
-      email: 'sourav.das@email.com',
-      doctor: 'Dr. Priya',
-      department: 'Cardiology',
-      room: '#8, 3rd Floor',
-      appointmentTime: '09:00 AM',
-      uhid: 'HH24570',
-      checkedIn: false
+      patientName: "Sourav Das",
+      dob: "22/11/1995",
+      appointmentDate: "14/07/2026",
+      address: "18 Station Road, Kolkata",
+      phone: "+91 98301 45678",
+      email: "sourav.das@email.com",
+      doctor: "Dr. Priya",
+      department: "Cardiology",
+      room: "#8, 3rd Floor",
+      appointmentTime: "09:00 AM",
+      uhid: "HH24570",
+      checkedIn: false,
     },
 
     {
       id: 5,
-      patientName: 'Priyanka Sen',
-      dob: '08/03/2000',
-      appointmentDate: '14/07/2026',
-      address: '67 Salt Lake, Kolkata',
-      phone: '+91 98745 67890',
-      email: 'priyanka.sen@email.com',
-      doctor: 'Dr. Priya',
-      department: 'Cardiology',
-      room: '#8, 3rd Floor',
-      appointmentTime: '09:30 AM',
-      uhid: 'HH24571',
-      checkedIn: false
+      patientName: "Priyanka Sen",
+      dob: "08/03/2000",
+      appointmentDate: "14/07/2026",
+      address: "67 Salt Lake, Kolkata",
+      phone: "+91 98745 67890",
+      email: "priyanka.sen@email.com",
+      doctor: "Dr. Priya",
+      department: "Cardiology",
+      room: "#8, 3rd Floor",
+      appointmentTime: "09:30 AM",
+      uhid: "HH24571",
+      checkedIn: false,
     },
 
     {
       id: 6,
-      patientName: 'Arindam Roy',
-      dob: '12/06/1989',
-      appointmentDate: '14/07/2026',
-      address: '34 VIP Road, Kolkata',
-      phone: '+91 91236 78901',
-      email: 'arindam.roy@email.com',
-      doctor: 'Dr. Priya',
-      department: 'Cardiology',
-      room: '#8, 3rd Floor',
-      appointmentTime: '10:00 AM',
-      uhid: 'HH24572',
-      checkedIn: false
+      patientName: "Arindam Roy",
+      dob: "12/06/1989",
+      appointmentDate: "14/07/2026",
+      address: "34 VIP Road, Kolkata",
+      phone: "+91 91236 78901",
+      email: "arindam.roy@email.com",
+      doctor: "Dr. Priya",
+      department: "Cardiology",
+      room: "#8, 3rd Floor",
+      appointmentTime: "10:00 AM",
+      uhid: "HH24572",
+      checkedIn: false,
     },
 
     {
       id: 7,
-      patientName: 'Neha Gupta',
-      dob: '19/02/1997',
-      appointmentDate: '14/07/2026',
-      address: '56 MG Road, Delhi',
-      phone: '+91 98123 45678',
-      email: 'neha.gupta@email.com',
-      doctor: 'Dr. Arjun',
-      department: 'Orthopedics',
-      room: '#12, 4th Floor',
-      appointmentTime: '11:00 AM',
-      uhid: 'HH24573',
-      checkedIn: false
+      patientName: "Neha Gupta",
+      dob: "19/02/1997",
+      appointmentDate: "14/07/2026",
+      address: "56 MG Road, Delhi",
+      phone: "+91 98123 45678",
+      email: "neha.gupta@email.com",
+      doctor: "Dr. Arjun",
+      department: "Orthopedics",
+      room: "#12, 4th Floor",
+      appointmentTime: "11:00 AM",
+      uhid: "HH24573",
+      checkedIn: false,
     },
 
     {
       id: 8,
-      patientName: 'Rahul Mehta',
-      dob: '05/09/1992',
-      appointmentDate: '14/07/2026',
-      address: '89 Park Street, Kolkata',
-      phone: '+91 98761 23456',
-      email: 'rahul.mehta@email.com',
-      doctor: 'Dr. Arjun',
-      department: 'Orthopedics',
-      room: '#12, 4th Floor',
-      appointmentTime: '11:30 AM',
-      uhid: 'HH24574',
-      checkedIn: false
+      patientName: "Rahul Mehta",
+      dob: "05/09/1992",
+      appointmentDate: "14/07/2026",
+      address: "89 Park Street, Kolkata",
+      phone: "+91 98761 23456",
+      email: "rahul.mehta@email.com",
+      doctor: "Dr. Arjun",
+      department: "Orthopedics",
+      room: "#12, 4th Floor",
+      appointmentTime: "11:30 AM",
+      uhid: "HH24574",
+      checkedIn: false,
     },
 
     {
       id: 9,
-      patientName: 'Moumita Ghosh',
-      dob: '27/12/2002',
-      appointmentDate: '14/07/2026',
-      address: '41 Garia Road, Kolkata',
-      phone: '+91 90070 12345',
-      email: 'moumita.ghosh@email.com',
-      doctor: 'Dr. Arjun',
-      department: 'Orthopedics',
-      room: '#12, 4th Floor',
-      appointmentTime: '12:00 PM',
-      uhid: 'HH24575',
-      checkedIn: false
-    }
-
+      patientName: "Moumita Ghosh",
+      dob: "27/12/2002",
+      appointmentDate: "14/07/2026",
+      address: "41 Garia Road, Kolkata",
+      phone: "+91 90070 12345",
+      email: "moumita.ghosh@email.com",
+      doctor: "Dr. Arjun",
+      department: "Orthopedics",
+      room: "#12, 4th Floor",
+      appointmentTime: "12:00 PM",
+      uhid: "HH24575",
+      checkedIn: false,
+    },
   ];
-
-
 
   searchResults: any[] = [];
 
   searched = false;
   doctorList: any[] = [];
 
-  constructor(private router: Router, private store: Store<AppState>) {
-    store.dispatch(loadDoctorSpecialities())
+  constructor(
+    private router: Router,
+    private store: Store<AppState>
+  ) {
+    store.dispatch(loadDoctorSpecialities());
   }
   ngOnInit(): void {
     this.store.select(selectDoctorSpecialities).subscribe((res: any) => {
       if (res) {
-        this.doctors = res.flatMap(
-          (speciality: any) => speciality.doctors
-        );
-        console.log(this.doctors)
+        this.doctors = res.flatMap((speciality: any) => speciality.doctors);
+        console.log(this.doctors);
       }
-    })
+    });
   }
-
-
-
 
   openDoctorDropdown(): void {
     this.showDoctorDropdown = true;
@@ -276,7 +261,6 @@ export class PatientCheckInComponent implements OnInit {
   }
 
   onDoctorInput(): void {
-
     this.selectedDoctor = null;
 
     this.doctorDropdownOpen = true;
@@ -286,7 +270,7 @@ export class PatientCheckInComponent implements OnInit {
     const search = this.doctorSearch.trim().toLowerCase();
 
     this.filteredDoctors = this.doctors.filter((doctor: any) =>
-      (doctor.name || '').toLowerCase().includes(search)
+      (doctor.name || "").toLowerCase().includes(search)
     );
 
     this.showDoctorDropdown = true;
@@ -296,32 +280,31 @@ export class PatientCheckInComponent implements OnInit {
     const d = new Date(date);
 
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
   }
 
   handleSearch(): void {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     this.dob;
-    this.patientName
+    this.patientName;
     if (this.dob || this.patientName || this.selectedDoctor) {
       const payload: any = {
         name: this.patientName,
         dob: this.dob ? this.dob : null,
         associateId: this.selectedDoctor?.associateId,
         fromDate: today,
-        toDate: today
-      }
+        toDate: today,
+      };
 
-      this.store.dispatch(getSearchPatientDetails({ payload: payload }))
+      this.store.dispatch(getSearchPatientDetails({ payload: payload }));
       this.searchByDoctor(this.selectedDoctor);
     }
     this.selectedAppointment = null;
     this.hasSearched = true;
     this.searched = true;
-
 
     // if (this.selectedDoctor) {
     //   this.store.dispatch(getAppointmentListByAssociateId({ associateId: this.selectedDoctor.associateId }))
@@ -346,47 +329,30 @@ export class PatientCheckInComponent implements OnInit {
     //   return;
     // }
 
-
-
-
     // No valid search criteria
     this.searchResults = [];
   }
-  searchByPatient(
-    patientName: string,
-    dob: string
-  ): void {
+  searchByPatient(patientName: string, dob: string): void {
+    const formattedDob = this.formatInputDate(dob);
 
-    const formattedDob =
-      this.formatInputDate(dob);
+    const searchName = patientName.trim().toLowerCase();
 
-    const searchName =
-      patientName
-        .trim()
-        .toLowerCase();
+    this.searchResults = this.appointments.filter((appointment) => {
+      const nameMatches = appointment.patientName.toLowerCase().includes(searchName);
 
-    this.searchResults =
-      this.appointments.filter(appointment => {
+      const dobMatches = appointment.dob === formattedDob;
 
-        const nameMatches =
-          appointment.patientName
-            .toLowerCase()
-            .includes(searchName);
-
-        const dobMatches =
-          appointment.dob === formattedDob;
-
-        return nameMatches && dobMatches;
-      });
+      return nameMatches && dobMatches;
+    });
   }
 
   searchByDoctor(doctorName: any): void {
     this.store.select(selectSearchLisOfPatient).subscribe((res: any) => {
       if (res) {
-        this.searchResults = res.data
-        console.log(this.searchResults)
+        this.searchResults = res.data;
+        console.log(this.searchResults);
       }
-    })
+    });
     // this.searchResults =
     //   this.appointments.filter(
     //     appointment =>
@@ -396,12 +362,11 @@ export class PatientCheckInComponent implements OnInit {
   }
 
   formatInputDate(value: string): string {
-
     if (!value) {
-      return '';
+      return "";
     }
 
-    const parts = value.split('-');
+    const parts = value.split("-");
 
     if (parts.length !== 3) {
       return value;
@@ -410,16 +375,11 @@ export class PatientCheckInComponent implements OnInit {
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
 
-
-  selectAppointment(
-    appointment: any
-  ): void {
-
+  selectAppointment(appointment: any): void {
     this.selectedAppointment = { ...appointment };
   }
 
   handleCheckIn(): void {
-
     if (!this.selectedAppointment) {
       return;
     }
@@ -428,73 +388,57 @@ export class PatientCheckInComponent implements OnInit {
   }
 
   confirmCheckIn(): void {
-
     if (!this.selectedAppointment) {
       return;
     }
 
     this.selectedAppointment.checkedIn = true;
-    console.log('Check-in confirmed for:', this.selectedAppointment);
+    console.log("Check-in confirmed for:", this.selectedAppointment);
 
     const checkInData = {
+      patientId: this.selectedAppointment.id,
 
-      patientId:
-        this.selectedAppointment.id,
+      patientName: this.selectedAppointment.fullName,
 
-      patientName:
-        this.selectedAppointment.fullName,
+      uhid: this.selectedAppointment.uhid,
 
-      uhid:
-        this.selectedAppointment.uhid,
+      doctor: this.selectedAppointment.doctor
+        ? this.selectedAppointment?.doctor
+        : this.selectedDoctor.name,
 
-      doctor:
-        this.selectedAppointment.doctor ? this.selectedAppointment?.doctor : this.selectedDoctor.name,
+      department: this.selectedAppointment.department
+        ? this.selectedAppointment.department
+        : this.selectedDoctor.department,
 
-      department:
-        this.selectedAppointment.department ? this.selectedAppointment.department : this.selectedDoctor.department,
+      room: this.selectedAppointment.room ? this.selectedAppointment.room : 2,
 
-      room:
-        this.selectedAppointment.room ? this.selectedAppointment.room : 2,
+      appointmentTime: this.selectedAppointment.appointmentTime,
 
-      appointmentTime:
-        this.selectedAppointment.appointmentTime,
+      checkInTime: this.getCurrentTime(),
 
-      checkInTime:
-        this.getCurrentTime(),
-
-      checkInDate:
-        this.getCurrentDate()
+      checkInDate: this.getCurrentDate(),
     };
 
-    localStorage.setItem(
-      'currentCheckIn',
-      JSON.stringify(checkInData)
-    );
+    localStorage.setItem("currentCheckIn", JSON.stringify(checkInData));
 
     this.showConfirmModal = false;
 
     this.showSuccessModal = true;
   }
 
-
   viewQueue(): void {
     if (!this.selectedAppointment) {
       return;
     }
 
-    this.router.navigate(
-      ['/front-office/doctor-queue'],
-      {
-        queryParams: {
-          doctor: this.selectedAppointment.doctor
-        }
-      }
-    );
+    this.router.navigate(["/front-office/doctor-queue"], {
+      queryParams: {
+        doctor: this.selectedAppointment.doctor,
+      },
+    });
   }
 
-
   done(): void {
-
     this.showSuccessModal = false;
 
     this.selectedAppointment = null;
@@ -508,32 +452,19 @@ export class PatientCheckInComponent implements OnInit {
     this.showSuccessModal = false;
   }
 
-
   getCurrentTime(): string {
-
-    return new Date().toLocaleTimeString(
-      'en-IN',
-      {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      }
-    );
+    return new Date().toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   }
 
   getCurrentDate(): string {
-
-    return new Date().toLocaleDateString(
-      'en-IN'
-    );
+    return new Date().toLocaleDateString("en-IN");
   }
 
-
-  trackById(
-    index: number,
-    appointment: any
-  ): number {
-
+  trackById(index: number, appointment: any): number {
     return appointment.id;
   }
 }

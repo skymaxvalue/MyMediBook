@@ -3,13 +3,18 @@ import {
   ElementRef,
   QueryList,
   ViewChildren,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
-import { selectForgotPassReset, selectRequestedOTP, selectVerifyOTP } from "src/app/Store/Auth/auth.selectors";
+import {
+  selectForgotPassReset,
+  selectRequestedOTP,
+  selectVerifyOTP,
+} from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
-import { Store } from '@ngrx/store';
+import { Store } from "@ngrx/store";
 import * as AuthActions from "../../../Store/Auth/auth.actions";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 
@@ -17,6 +22,7 @@ import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
   selector: "app-forget-password",
   imports: [FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: "./forget-password.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./forget-password.component.css",
 })
 export class ForgetPasswordComponent {
@@ -24,50 +30,42 @@ export class ForgetPasswordComponent {
   isOtpVerified = false;
   showNewPassword = false;
   showConfirmPassword = false;
-  emailOrMobile: any = '';
+  emailOrMobile: any = "";
   otpArray = [1, 2, 3, 4];
 
-  @ViewChildren('otpInput')
+  @ViewChildren("otpInput")
   otpInputs!: QueryList<ElementRef>;
-  timer = '05:00';
+  timer = "05:00";
   seconds = 300;
   interval: any;
-  newPassword: string = '';
-  confirmPassword: string = '';
+  newPassword: string = "";
+  confirmPassword: string = "";
 
-  newPasswordError: string = '';
-  confirmPasswordError: string = '';
+  newPasswordError: string = "";
+  confirmPasswordError: string = "";
   showPassword: boolean = false;
   OtpData: any;
   resetPasswordToken: any;
 
-  constructor(private router: Router, private store: Store<AppState>, private cdr: ChangeDetectorRef, private toast: ToastService,) {
-
-  }
+  constructor(
+    private router: Router,
+    private store: Store<AppState>,
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService
+  ) {}
   moveNext(event: Event, index: number): void {
-
     const input = event.target as HTMLInputElement;
 
-    if (
-      input.value.length === 1 &&
-      index < this.otpInputs.length - 1
-    ) {
-      this.otpInputs.toArray()[index + 1]
-        .nativeElement.focus();
+    if (input.value.length === 1 && index < this.otpInputs.length - 1) {
+      this.otpInputs.toArray()[index + 1].nativeElement.focus();
     }
   }
 
   movePrevious(event: KeyboardEvent, index: number): void {
-
     const input = event.target as HTMLInputElement;
 
-    if (
-      event.key === 'Backspace' &&
-      input.value === '' &&
-      index > 0
-    ) {
-      this.otpInputs.toArray()[index - 1]
-        .nativeElement.focus();
+    if (event.key === "Backspace" && input.value === "" && index > 0) {
+      this.otpInputs.toArray()[index - 1].nativeElement.focus();
     }
   }
 
@@ -75,15 +73,13 @@ export class ForgetPasswordComponent {
     clearInterval(this.interval);
 
     this.seconds = 300;
-    this.timer = '05:00';
+    this.timer = "05:00";
 
     this.interval = setInterval(() => {
-
       const mins = Math.floor(this.seconds / 60);
       const secs = this.seconds % 60;
 
-      this.timer =
-        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      this.timer = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 
       this.cdr.detectChanges();
 
@@ -92,83 +88,75 @@ export class ForgetPasswordComponent {
       } else {
         clearInterval(this.interval);
       }
-
     }, 1000);
   }
   sendOtp() {
+    this.store.dispatch(AuthActions.requestOTP({ email: this.emailOrMobile }));
 
-    this.store.dispatch(AuthActions.requestOTP({ email: this.emailOrMobile }))
-
-
-    this.store.select(state => state.auth.requestedOtp).subscribe((OTP: any) => {
-
-      if (OTP) {
-        this.OtpData = OTP
-        console.log(OTP)
-        this.isOtpSent = true;
-        this.startTimer();
-      }
-    });
-
-
+    this.store
+      .select((state) => state.auth.requestedOtp)
+      .subscribe((OTP: any) => {
+        if (OTP) {
+          this.OtpData = OTP;
+          console.log(OTP);
+          this.isOtpSent = true;
+          this.startTimer();
+        }
+      });
   }
 
   async verifyOtp() {
-    const otp = this.otpInputs
-      .map(input => input.nativeElement.value)
-      .join('');
+    const otp = this.otpInputs.map((input) => input.nativeElement.value).join("");
 
-    console.log('OTP:', otp);
+    console.log("OTP:", otp);
 
     if (otp.length !== this.otpArray.length) {
-      console.log('Please enter complete OTP');
+      console.log("Please enter complete OTP");
       return;
     }
     // Implement OTP verification logic here
-    await this.store.dispatch(AuthActions.verifyOTP({ email: this.emailOrMobile, otpCode: String(otp) }))
+    await this.store.dispatch(
+      AuthActions.verifyOTP({ email: this.emailOrMobile, otpCode: String(otp) })
+    );
 
     await this.store.select(selectVerifyOTP).subscribe((res: any) => {
       if (res) {
         alert("OTP verified successfully!");
         this.isOtpSent = false;
         this.isOtpVerified = true;
-        this.resetPasswordToken = res.token
+        this.resetPasswordToken = res.token;
         console.log("OTP verified successfully.");
       }
-    })
-
+    });
   }
 
   resetPassword(): void {
-
-    this.newPasswordError = '';
-    this.confirmPasswordError = '';
+    this.newPasswordError = "";
+    this.confirmPasswordError = "";
 
     if (!this.newPassword) {
-      this.newPasswordError = 'New password is required';
-    }
-
-    else if (this.newPassword.length < 6) {
-      this.newPasswordError =
-        'New password must be at least 6 characters';
+      this.newPasswordError = "New password is required";
+    } else if (this.newPassword.length < 6) {
+      this.newPasswordError = "New password must be at least 6 characters";
     }
 
     if (!this.confirmPassword) {
-      this.confirmPasswordError =
-        'Confirm password is required';
+      this.confirmPasswordError = "Confirm password is required";
+    } else if (this.newPassword !== this.confirmPassword) {
+      this.confirmPasswordError = "New password and confirm password do not match";
     }
 
-    else if (this.newPassword !== this.confirmPassword) {
-      this.confirmPasswordError =
-        'New password and confirm password do not match';
-    }
-
-    this.store.dispatch(AuthActions.ForrgetResetPassword({ password: this.confirmPassword, token: this.resetPasswordToken }))
+    this.store.dispatch(
+      AuthActions.ForrgetResetPassword({
+        password: this.confirmPassword,
+        token: this.resetPasswordToken,
+      })
+    );
     this.store.select(selectForgotPassReset).subscribe((res: any) => {
       if (res) {
-        this.router.navigate(['/patient/login']);
+        this.router.navigate(["/patient/login"]);
       }
-    })
+    });
 
     // if (
     //   !this.newPasswordError &&
@@ -180,10 +168,9 @@ export class ForgetPasswordComponent {
     // }
   }
   resendOtp() {
-
     if (this.seconds > 0) return;
 
-    alert('OTP Resent');
+    alert("OTP Resent");
 
     clearInterval(this.interval);
 
@@ -191,13 +178,10 @@ export class ForgetPasswordComponent {
   }
 
   toggleNewPassword() {
-    this.showNewPassword =
-      !this.showNewPassword;
+    this.showNewPassword = !this.showNewPassword;
   }
 
   toggleConfirmPassword() {
-    this.showConfirmPassword =
-      !this.showConfirmPassword;
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
-
 }

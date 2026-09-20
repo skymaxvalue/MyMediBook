@@ -1,24 +1,30 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-experience",
   imports: [FormsModule, ReactiveFormsModule],
   templateUrl: "./experience.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./experience.component.css",
 })
 export class ExperienceComponent implements OnInit {
-
   @Input() group!: FormGroup;
   @Input() currentStep!: number;
 
   @Output() next = new EventEmitter<number>();
   @Output() back = new EventEmitter<void>();
-  minJoiningDate: string = '';
+  minJoiningDate: string = "";
 
   ngOnInit(): void {
-
-    this.minJoiningDate = new Date().toISOString().split('T')[0];
+    this.minJoiningDate = new Date().toISOString().split("T")[0];
   }
 
   onNext() {

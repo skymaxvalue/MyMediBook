@@ -1,48 +1,31 @@
-import {
-  Component,
-  HostListener,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import {
-  Router,
-  NavigationEnd
-} from '@angular/router';
+import { Component, HostListener, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Router, NavigationEnd } from "@angular/router";
 
-import { filter } from 'rxjs/operators';
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-front-office-header",
   imports: [],
   templateUrl: "./front-office-header.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./front-office-header.component.css",
 })
 export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
+  currentDate = "";
 
-  currentDate = '';
-
-  currentTime = '';
+  currentTime = "";
 
   private timer: any;
 
-
-  username = 'Front Office';
-
+  username = "Front Office";
 
   isProfileOpen = false;
 
+  activePage = "dashboard";
 
-  activePage = 'dashboard';
-
-
-  constructor(
-    private router: Router
-  ) { }
-
-
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-
     this.updateDate();
 
     this.updateTime();
@@ -56,379 +39,194 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
     // Update active menu whenever route changes
     this.router.events
-      .pipe(
-        filter(
-          (event): event is NavigationEnd =>
-            event instanceof NavigationEnd
-        )
-      )
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-
-        this.setActivePage(
-          event.urlAfterRedirects
-        );
-
+        this.setActivePage(event.urlAfterRedirects);
       });
-
   }
 
   setActivePage(url: string): void {
-
-    if (url.includes('/front-office/dashboard')) {
-
-      this.activePage = 'dashboard';
-
-    }
-    else if (
-      url.includes('/front-office/patient-registration')
-    ) {
-
-      this.activePage = 'patient-registration';
-
-    }
-    else if (
-      url.includes('/front-office/book-appointment')
-    ) {
-
-      this.activePage = 'book-appointment';
-
-    }
-    else if (
-      url.includes('/front-office/patient-checkin')
-    ) {
-
-      this.activePage = 'patient-checkin';
-
-    }
-    else if (
-      url.includes('/front-office/lab-service')
-    ) {
-
-      this.activePage = 'lab-service';
-
-    }
-    else if (
-      url.includes('/front-office/insurance')
-    ) {
-
-      this.activePage = 'insurance';
-
-    }
-    else if (
-      url.includes('/front-office/queue')
-    ) {
-
-      this.activePage = 'queue';
-
-    }
-    else if (
-      url.includes('/front-office/doctor-schedule')
-    ) {
-
-      this.activePage = 'doctor-schedule';
-
-    }
-    else if (
-      url.includes('/front-office/reports')
-    ) {
-
-      this.activePage = 'reports';
-
-    }
-    else if (
-      url.includes('/front-office/settings')
-    ) {
-
-      this.activePage = 'settings';
-
+    if (url.includes("/front-office/dashboard")) {
+      this.activePage = "dashboard";
+    } else if (url.includes("/front-office/patient-registration")) {
+      this.activePage = "patient-registration";
+    } else if (url.includes("/front-office/book-appointment")) {
+      this.activePage = "book-appointment";
+    } else if (url.includes("/front-office/patient-checkin")) {
+      this.activePage = "patient-checkin";
+    } else if (url.includes("/front-office/lab-service")) {
+      this.activePage = "lab-service";
+    } else if (url.includes("/front-office/insurance")) {
+      this.activePage = "insurance";
+    } else if (url.includes("/front-office/queue")) {
+      this.activePage = "queue";
+    } else if (url.includes("/front-office/doctor-schedule")) {
+      this.activePage = "doctor-schedule";
+    } else if (url.includes("/front-office/reports")) {
+      this.activePage = "reports";
+    } else if (url.includes("/front-office/settings")) {
+      this.activePage = "settings";
     } else {
-      this.activePage = ''
+      this.activePage = "";
     }
   }
-
 
   updateDate(): void {
-
     const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
 
-      weekday: 'long',
+      day: "numeric",
 
-      day: 'numeric',
+      month: "long",
 
-      month: 'long',
-
-      year: 'numeric'
-
+      year: "numeric",
     };
 
-
-    this.currentDate =
-      new Date().toLocaleDateString(
-        'en-IN',
-        options
-      );
-
+    this.currentDate = new Date().toLocaleDateString("en-IN", options);
   }
 
-
   updateTime(): void {
-
     const options: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
 
-      hour: '2-digit',
+      minute: "2-digit",
 
-      minute: '2-digit',
-
-      hour12: true
-
+      hour12: true,
     };
 
-
-    this.currentTime =
-      new Date().toLocaleTimeString(
-        'en-IN',
-        options
-      );
-
+    this.currentTime = new Date().toLocaleTimeString("en-IN", options);
   }
 
   startClock(): void {
-
     this.timer = setInterval(() => {
-
       this.updateTime();
-
     }, 1000);
-
   }
 
-
-
   loadUser(): void {
-
-    const userData =
-      localStorage.getItem('loggedInUser');
-
+    const userData = localStorage.getItem("loggedInUser");
 
     if (!userData) {
-
-      this.username = 'Front Office';
+      this.username = "Front Office";
 
       return;
-
     }
-
 
     try {
-
       const user = JSON.parse(userData);
 
-
       if (user?.name) {
-
         this.username = user.name;
-
       } else {
-
-        this.username = 'Front Office';
-
+        this.username = "Front Office";
       }
-
+    } catch {
+      this.username = "Front Office";
     }
-
-    catch {
-
-      this.username = 'Front Office';
-
-    }
-
   }
 
   toggleProfile(event: Event): void {
-
     event.stopPropagation();
 
-    this.isProfileOpen =
-      !this.isProfileOpen;
-
+    this.isProfileOpen = !this.isProfileOpen;
   }
 
-
-  @HostListener('document:click')
-
+  @HostListener("document:click")
   closeProfile(): void {
-
     this.isProfileOpen = false;
-
   }
-
 
   openProfile(): void {
-
     this.isProfileOpen = false;
 
-    this.router.navigate([
-      '/front-office/profile'
-    ]);
-
+    this.router.navigate(["/front-office/profile"]);
   }
 
-
-
   navigate(page: string): void {
-
     this.activePage = page;
 
-
     switch (page) {
-
-      case 'dashboard':
-
-        this.router.navigate([
-          '/front-office/dashboard'
-        ]);
+      case "dashboard":
+        this.router.navigate(["/front-office/dashboard"]);
 
         break;
 
-
-      case 'patient-registration':
-
-        this.router.navigate([
-          '/front-office/patient-registration'
-        ]);
+      case "patient-registration":
+        this.router.navigate(["/front-office/patient-registration"]);
 
         break;
 
-
-      case 'book-appointment':
-
-        this.router.navigate([
-          '/front-office/book-appointment'
-        ], {
+      case "book-appointment":
+        this.router.navigate(["/front-office/book-appointment"], {
           state: {
-            isFrontOfficePage: true
-          }
+            isFrontOfficePage: true,
+          },
         });
 
         break;
 
-
-      case 'patient-checkin':
-
-        this.router.navigate([
-          '/front-office/patient-checkin'
-        ]);
+      case "patient-checkin":
+        this.router.navigate(["/front-office/patient-checkin"]);
 
         break;
 
-
-      case 'lab-service':
-
-        this.router.navigate([
-          '/front-office/lab-service'
-        ]);
+      case "lab-service":
+        this.router.navigate(["/front-office/lab-service"]);
 
         break;
 
-
-      case 'insurance':
-
-        this.router.navigate([
-          '/front-office/insurance'
-        ]);
+      case "insurance":
+        this.router.navigate(["/front-office/insurance"]);
 
         break;
 
-
-      case 'queue':
-
-        this.router.navigate([
-          '/front-office/queue'
-        ]);
+      case "queue":
+        this.router.navigate(["/front-office/queue"]);
 
         break;
 
-
-      case 'doctor-schedule':
-
-        this.router.navigate([
-          '/front-office/doctor-schedule'
-        ]);
+      case "doctor-schedule":
+        this.router.navigate(["/front-office/doctor-schedule"]);
 
         break;
 
-
-      case 'reports':
-
-        this.router.navigate([
-          '/front-office/reports'
-        ]);
+      case "reports":
+        this.router.navigate(["/front-office/reports"]);
 
         break;
 
-
-      case 'settings':
-
-        this.router.navigate([
-          '/front-office/settings'
-        ]);
+      case "settings":
+        this.router.navigate(["/front-office/settings"]);
 
         break;
-
     }
-
   }
 
   logout(): void {
-
-    const confirmed =
-      confirm(
-        'Are you sure you want to logout?'
-      );
-
+    const confirmed = confirm("Are you sure you want to logout?");
 
     if (!confirmed) {
-
       return;
-
     }
 
+    localStorage.removeItem("loggedInUser");
 
-    localStorage.removeItem(
-      'loggedInUser'
-    );
+    localStorage.removeItem("isLoggedIn");
 
-    localStorage.removeItem(
-      'isLoggedIn'
-    );
-
-    localStorage.removeItem(
-      'pendingUser'
-    );
-
+    localStorage.removeItem("pendingUser");
 
     this.isProfileOpen = false;
 
-
-    this.router.navigate([
-      '/patient/login'
-    ]);
-
+    this.router.navigate(["/patient/login"]);
   }
-
 
   // ==============================
   // DESTROY
   // ==============================
 
   ngOnDestroy(): void {
-
     if (this.timer) {
-
       clearInterval(this.timer);
-
     }
-
   }
-
 }

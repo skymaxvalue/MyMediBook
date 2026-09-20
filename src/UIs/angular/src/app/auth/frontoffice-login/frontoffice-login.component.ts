@@ -1,33 +1,34 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormsModule } from '@angular/forms';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { take } from 'rxjs/operators';
-import { AuthService } from 'src/app/core/Services/auth.service';
-import { AppState } from 'src/app/Store/app.state';
-import { login, requestOTP } from 'src/app/Store/Auth/auth.actions';
-import { selectLoginUser, selectRequestedOTP } from 'src/app/Store/Auth/auth.selectors';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { FormBuilder, FormsModule } from "@angular/forms";
+import { Router, RouterLink, RouterOutlet } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { take } from "rxjs/operators";
+import { AuthService } from "src/app/core/Services/auth.service";
+import { AppState } from "src/app/Store/app.state";
+import { login, requestOTP } from "src/app/Store/Auth/auth.actions";
+import { selectLoginUser, selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
 @Component({
   selector: "app-frontoffice-login",
   imports: [FormsModule, RouterLink],
   templateUrl: "./frontoffice-login.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./frontoffice-login.component.css",
 })
 export class FrontofficeLoginComponent {
-
-  username = '';
-  password = '';
+  username = "";
+  password = "";
 
   remember = false;
   showPassword = false;
   emailId: any;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     public auth: AuthService,
     private form_builder: FormBuilder,
     private store: Store<AppState>
   ) {
-    const savedUser = localStorage.getItem('rememberedUsername');
+    const savedUser = localStorage.getItem("rememberedUsername");
 
     if (savedUser) {
       this.username = savedUser;
@@ -40,17 +41,16 @@ export class FrontofficeLoginComponent {
   }
 
   onLogin(): void {
-
     const user = this.username.trim();
     const pass = this.password.trim();
 
     if (!user) {
-      alert('Please enter Employee ID.');
+      alert("Please enter Employee ID.");
       return;
     }
 
     if (!pass) {
-      alert('Please enter Password.');
+      alert("Please enter Password.");
       return;
     }
 
@@ -58,86 +58,59 @@ export class FrontofficeLoginComponent {
       login({
         username: this.username,
         password: this.password,
-        role: 'associate'
+        role: "associate",
       })
     );
 
-    this.store
-      .select(selectLoginUser)
-      .subscribe((res: any) => {
+    this.store.select(selectLoginUser).subscribe((res: any) => {
+      if (!res) {
+        return;
+      }
 
-        if (!res) {
+      this.emailId = res.data.email;
+
+      localStorage.setItem("loginTime", Date.now().toString());
+
+      localStorage.setItem("token", res.tokenKey);
+
+      localStorage.setItem("refreshToken", res.refreshToken);
+
+      localStorage.setItem("user", JSON.stringify(res.data));
+
+      // Request OTP
+      this.store.dispatch(
+        requestOTP({
+          email: this.emailId,
+        })
+      );
+
+      this.store.select(selectRequestedOTP).subscribe((otpRes: any) => {
+        if (!otpRes) {
           return;
         }
 
-        this.emailId = res.data.email;
-
-        localStorage.setItem(
-          'loginTime',
-          Date.now().toString()
-        );
-
-        localStorage.setItem(
-          'token',
-          res.tokenKey
-        );
-
-        localStorage.setItem(
-          'refreshToken',
-          res.refreshToken
-        );
-
-        localStorage.setItem(
-          'user',
-          JSON.stringify(res.data)
-        );
-
-        // Request OTP
-        this.store.dispatch(
-          requestOTP({
-            email: this.emailId
-          })
-        );
-
-        this.store
-          .select(selectRequestedOTP)
-          .subscribe((otpRes: any) => {
-
-            if (!otpRes) {
-              return;
-            }
-
-            this.router.navigate(
-              ['/front-office/otp-verification'],
-              {
-                state: {
-                  emailId: this.emailId,
-                  flow: 'login'
-                }
-              }
-            );
-
-          });
-
+        this.router.navigate(["/front-office/otp-verification"], {
+          state: {
+            emailId: this.emailId,
+            flow: "login",
+          },
+        });
       });
+    });
   }
 
   private shakeForm(): void {
-
-    const card = document.querySelector('.login-card');
+    const card = document.querySelector(".login-card");
 
     if (!card) {
       return;
     }
 
-    card.classList.remove('shake');
+    card.classList.remove("shake");
 
     // Force browser reflow so animation can restart
     void (card as HTMLElement).offsetWidth;
 
-    card.classList.add('shake');
+    card.classList.add("shake");
   }
-
-
-
 }

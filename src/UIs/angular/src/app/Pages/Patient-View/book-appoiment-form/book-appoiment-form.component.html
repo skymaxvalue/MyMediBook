@@ -2,188 +2,192 @@
 <!-- book-appoiment-form.component.html -->
 
 <div class="availability-container">
-    <h2>Patient Information</h2>
+  <h2>Patient Information</h2>
 
-    <div class="schedule-box">
-        <form [formGroup]="bookingForm" (ngSubmit)="submitForm()">
-            <div class="form-grid">
+  <div class="schedule-box">
+    <form [formGroup]="bookingForm" (ngSubmit)="submitForm()">
+      <div class="form-grid">
+        <label>Patient Type</label>
+        <div class="field-container">
+          <div class="mobile-radio-group otp-method-group">
+            <label class="otp-option">
+              <input type="radio" formControlName="patientType" value="existing" />
+              <span> Select Existing Patient</span>
+            </label>
 
-                <label>Patient Type</label>
-                <div class="field-container">
-                    <div class="mobile-radio-group otp-method-group">
-                        <label class="otp-option">
+            <label class="otp-option">
+              <input type="radio" formControlName="patientType" value="new" />
+              <span> Add New Patient</span>
+            </label>
+          </div>
+        </div>
 
-                            <input type="radio" formControlName="patientType" value="existing">
-                            <span> Select Existing Patient</span>
-                        </label>
+        @if (bookingForm.value.patientType === "existing") {
+          <label for="gender">Select Patient Profile</label>
+          <div
+            class="custom-select"
+            (click)="$event.stopPropagation()"
+            [class.open]="isPatientDropdownOpen"
+          >
+            <div class="selected-patient" id="selectedPatient" (click)="togglePatientDropdown()">
+              <div class="selected-left">
+                <img src="/assets/images/user.png" alt="" />
+                <span>{{ selectedPatientName() }}</span>
+              </div>
 
-                        <label class="otp-option">
-                            <input type="radio" formControlName="patientType" value="new">
-                            <span> Add New Patient</span>
-                        </label>
-                    </div>
-
-
+              <span class="arrow">&#9662;</span>
+            </div>
+            @if (isPatientDropdownOpen) {
+              <div class="dropdown" id="patientDropdown">
+                <div class="search-box">
+                  <input
+                    type="text"
+                    id="patientSearch"
+                    placeholder="Search patient..."
+                    [ngModel]="patientSearch()"
+                    (ngModelChange)="patientSearch.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                    (click)="$event.stopPropagation()"
+                  />
                 </div>
 
-                @if(bookingForm.value.patientType === 'existing'){
-
-                <label for="gender">Select Patient Profile</label>
-                <div class="custom-select" (click)="$event.stopPropagation()" [class.open]="isPatientDropdownOpen">
-
-                    <div class="selected-patient" id="selectedPatient" (click)="togglePatientDropdown()">
-
-                        <div class="selected-left">
-                            <img src="/assets/images/user.png" alt="">
-                            <span>{{ selectedPatientName() }}</span>
-                        </div>
-
-                        <span class="arrow">&#9662;</span>
-
+                @for (patient of filteredPatients(); track patient.profileId) {
+                  <div
+                    class="patient-option"
+                    [attr.data-value]="patient.profileId"
+                    (click)="onProfileChange(patient)"
+                  >
+                    <div class="option-left">
+                      <img src="/assets/images/user.png" alt="" />
+                      <div>
+                        <h4>{{ patient.fullName }}</h4>
+                        <span>{{ patient.relationTypeName }}</span>
+                      </div>
                     </div>
-                    @if(isPatientDropdownOpen){
-
-                    <div class="dropdown" id="patientDropdown">
-
-                        <div class="search-box">
-
-                            <input type="text" id="patientSearch" placeholder="Search patient..."
-                                [ngModel]="patientSearch()" (ngModelChange)="patientSearch.set($event)"
-                                [ngModelOptions]=" {standalone: true}" (click)="$event.stopPropagation()" />
-
-                        </div>
-
-                        @for (patient of filteredPatients(); track patient.profileId) {
-                        <div class="patient-option" [attr.data-value]="patient.profileId"
-                            (click)="onProfileChange(patient)">
-                            <div class="option-left">
-                                <img src="/assets/images/user.png" alt="">
-                                <div>
-                                    <h4>{{ patient.fullName }}</h4>
-                                    <span>{{ patient.relationTypeName }}</span>
-
-                                </div>
-                            </div>
-                            <i class="fas fa-check check-icon"></i>
-                        </div>
-                        }
-
-                        @if(filteredPatients().length === 0){
-
-                        <div class="no-data">
-                            No patient found
-                        </div>
-
-                        }
-
-                    </div>
-                    }
-
-
-
-
-                </div>
-
+                    <i class="fas fa-check check-icon"></i>
+                  </div>
                 }
 
+                @if (filteredPatients().length === 0) {
+                  <div class="no-data">No patient found</div>
+                }
+              </div>
+            }
+          </div>
+        }
 
-                <!-- First Name -->
-                <label for="firstName">First Name</label>
-                <div class="field-container">
-                    <input id="firstName" type="text" formControlName="firstName" placeholder="Enter patient first name"
-                        (keypress)="allowOnlyText($event)" />
-                    @if (getErrorMessage('firstName')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('firstName') }}
-                    </small>
-                    }
-                </div>
+        <!-- First Name -->
+        <label for="firstName">First Name</label>
+        <div class="field-container">
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="Enter patient first name"
+            (keypress)="allowOnlyText($event)"
+          />
+          @if (getErrorMessage("firstName")) {
+            <small class="error-message">
+              {{ getErrorMessage("firstName") }}
+            </small>
+          }
+        </div>
 
-                <!-- Last Name -->
-                <label for="lastName">Last Name</label>
-                <div class="field-container">
-                    <input id="lastName" type="text" formControlName="lastName" placeholder="Enter patient last name"
-                        (keypress)="allowOnlyText($event)" />
-                    @if (getErrorMessage('lastName')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('lastName') }}
-                    </small>
-                    }
-                </div>
-                <label for="lastName">Select relation with patient</label>
-                <div class="field-container">
-                    <select id="gender" formControlName="relationTypeId" (change)="OnSelectRelationShip($event)">
-                        <option value="">Select relation with patient</option>
-                        @for (item of relations; track $index) {
-                        <option [value]="item.relationTypeId">{{item.relationTypeName}}</option>
+        <!-- Last Name -->
+        <label for="lastName">Last Name</label>
+        <div class="field-container">
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Enter patient last name"
+            (keypress)="allowOnlyText($event)"
+          />
+          @if (getErrorMessage("lastName")) {
+            <small class="error-message">
+              {{ getErrorMessage("lastName") }}
+            </small>
+          }
+        </div>
+        <label for="lastName">Select relation with patient</label>
+        <div class="field-container">
+          <select
+            id="gender"
+            formControlName="relationTypeId"
+            (change)="OnSelectRelationShip($event)"
+          >
+            <option value="">Select relation with patient</option>
+            @for (item of relations; track $index) {
+              <option [value]="item.relationTypeId">{{ item.relationTypeName }}</option>
+            }
+          </select>
+        </div>
 
-                        }
+        <!-- Date of Birth -->
+        <label for="dateOfBirth">Date Of Birth</label>
+        <div class="field-container">
+          <input id="dateOfBirth" type="date" formControlName="dateOfBirth" />
+          @if (getErrorMessage("dateOfBirth")) {
+            <small class="error-message">
+              {{ getErrorMessage("dateOfBirth") }}
+            </small>
+          }
+        </div>
 
+        <!-- Age -->
+        <label>Age</label>
+        <div class="field-container">
+          <div class="inline-group age-type-group">
+            <input
+              id="age"
+              type="number"
+              formControlName="age"
+              placeholder="Enter age"
+              style="width: 120px"
+            />
+            @for (item of ageType; track $index) {
+              <label class="age-option">
+                <input
+                  type="radio"
+                  [value]="$safeNavigationMigration(item?.ageTypeId)"
+                  formControlName="ageTypeId"
+                />
+                <span>{{ item.ageTypeName }}</span>
+              </label>
+            }
+          </div>
 
-                    </select>
-                </div>
+          @if (getErrorMessage("age")) {
+            <small class="error-message">
+              {{ getErrorMessage("age") }}
+            </small>
+          }
 
-                <!-- Date of Birth -->
-                <label for="dateOfBirth">Date Of Birth</label>
-                <div class="field-container">
-                    <input id="dateOfBirth" type="date" formControlName="dateOfBirth" />
-                    @if (getErrorMessage('dateOfBirth')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('dateOfBirth') }}
-                    </small>
-                    }
-                </div>
+          @if (getErrorMessage("ageType")) {
+            <small class="error-message">
+              {{ getErrorMessage("ageType") }}
+            </small>
+          }
+        </div>
 
-                <!-- Age -->
-                <label>Age</label>
-                <div class="field-container">
-                    <div class="inline-group age-type-group">
+        <!-- Gender -->
+        <label for="gender">Gender</label>
+        <div class="field-container">
+          <select id="gender" formControlName="gender">
+            <option value="">Select patient gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
 
-                        <input id="age" type="number" formControlName="age" placeholder="Enter age"
-                            style="width: 120px" />
-                        @for (item of ageType; track $index) {
+          @if (getErrorMessage("gender")) {
+            <small class="error-message">
+              {{ getErrorMessage("gender") }}
+            </small>
+          }
+        </div>
 
-                        <label class="age-option">
-                            <input type="radio" [value]="item?.ageTypeId" formControlName="ageTypeId" />
-                            <span>{{item.ageTypeName}}</span>
-                        </label>
-                        }
-
-
-
-                    </div>
-
-                    @if (getErrorMessage('age')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('age') }}
-                    </small>
-                    }
-
-                    @if (getErrorMessage('ageType')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('ageType') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- Gender -->
-                <label for="gender">Gender</label>
-                <div class="field-container">
-                    <select id="gender" formControlName="gender">
-                        <option value="">Select patient gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-
-                    @if (getErrorMessage('gender')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('gender') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- Insurance -->
-                <!-- @if(selectedProfileData?.insuranceData){
+        <!-- Insurance -->
+        <!-- @if(selectedProfileData?.insuranceData){
                 <label>Do you want change insurance?</label>
                 <div class="field-container">
                     <div class="mobile-radio-group">
@@ -229,451 +233,427 @@
                 </div>
                 } -->
 
+        @if (selectedProfileData?.insuranceData?.length > 0) {
+          <label for="">Existing Insurance Details</label>
 
-                @if (selectedProfileData?.insuranceData?.length > 0) {
-                <label for="">Existing Insurance Details</label>
+          <div class="existing-insurance-section">
+            <div class="insurance-cards">
+              @for (insurance of selectedProfileData.insuranceData; track $index) {
+                <div
+                  class="insurance-card"
+                  [class.active]="selectedProfileData.insuranceData.length - 1 === $index"
+                  (click)="selectInsurance(insurance)"
+                >
+                  <div class="insurance-card-top">
+                    <div class="insurance-icon">🛡</div>
 
-                <div class="existing-insurance-section">
-
-
-
-                    <div class="insurance-cards">
-
-                        @for (insurance of selectedProfileData.insuranceData; track $index) {
-
-                        <div class="insurance-card"
-                            [class.active]="selectedProfileData.insuranceData.length - 1 === $index"
-                            (click)="selectInsurance(insurance)">
-
-                            <div class="insurance-card-top">
-
-                                <div class="insurance-icon">
-                                    🛡
-                                </div>
-
-                                <div class="insurance-provider">
-                                    {{ insurance.provider }}
-                                </div>
-
-                                <span class="active-badge">
-                                    Active
-                                </span>
-
-                                @if (selectedProfileData.insuranceData.length - 1 === $index) {
-                                <span class="selected-check">✓</span>
-                                }
-
-                            </div>
-
-                            <div class="insurance-name">
-                                {{ insurance.provider }}
-                            </div>
-
-                            <div class="insurance-row">
-                                <span>Policy No.</span>
-                                <strong>{{ insurance.policy || '-' }}</strong>
-                            </div>
-
-                            <div class="insurance-row">
-                                <span>Group ID</span>
-                                <strong>{{ insurance.groupId || '-' }}</strong>
-                            </div>
-
-                            <div class="insurance-row">
-                                <span>Holder Name</span>
-                                <strong>{{ insurance.holderName || '-' }}</strong>
-                            </div>
-
-                            <div class="insurance-row">
-                                <span>Address</span>
-                                <strong>{{ insurance.address || '-' }}</strong>
-                            </div>
-
-                        </div>
-
-                        }
-
+                    <div class="insurance-provider">
+                      {{ insurance.provider }}
                     </div>
 
-                </div>
+                    <span class="active-badge"> Active </span>
 
-                }
-                @if (selectedProfileData?.paymentData?.length > 0) {
-                <label for=""> Existing Payment Details</label>
-                <div class="existing-payment-section">
-
-                    <div class="payment-cards">
-
-                        @for (payment of selectedProfileData.paymentData; track $index) {
-
-                        <div class="payment-card" [class.active]="selectedProfileData.paymentData.length - 1 === $index"
-                            (click)="selectPayment(payment)">
-
-                            <div class="payment-card-top">
-
-                                <div class="payment-icon">
-                                    💳
-                                </div>
-
-                                <div class="payment-type">
-                                    {{ payment.paymentType || 'Card' }}
-                                </div>
-
-                                <span class="active-badge">
-                                    Active
-                                </span>
-
-                                @if (selectedProfileData.paymentData.length - 1 === $index) {
-                                <span class="selected-check">✓</span>
-                                }
-
-                            </div>
-
-                            <div class="payment-name">
-                                {{ payment.cardHolder || '-' }}
-                            </div>
-
-                            <div class="payment-row">
-                                <span>Card Number</span>
-                                <strong>
-                                    {{ maskCardNumber(payment.cardNumber) }}
-                                </strong>
-                            </div>
-
-                            <div class="payment-row">
-                                <span>Expiry</span>
-                                <strong>
-                                    {{ payment.expiry || '-' }}
-                                </strong>
-                            </div>
-
-                        </div>
-
-                        }
-
-                    </div>
-
-                </div>
-
-                }
-                <label>
-                    {{ selectedProfileData?.insuranceData
-                    ? 'Do you want to change insurance?'
-                    : 'Do you have insurance?' }}
-                </label>
-
-                <div class="field-container">
-
-                    <div class="mobile-radio-group">
-
-                        <label class="radio-item">
-                            <input type="radio" value="yes" formControlName="insurance" />
-                            <span>Yes</span>
-                        </label>
-
-                        <label class="radio-item">
-                            <input type="radio" value="no" formControlName="insurance" />
-                            <span>No</span>
-                        </label>
-
-                    </div>
-
-                    @if (getErrorMessage('insurance')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('insurance') }}
-                    </small>
+                    @if (selectedProfileData.insuranceData.length - 1 === $index) {
+                      <span class="selected-check">✓</span>
                     }
+                  </div>
 
+                  <div class="insurance-name">
+                    {{ insurance.provider }}
+                  </div>
+
+                  <div class="insurance-row">
+                    <span>Policy No.</span>
+                    <strong>{{ insurance.policy || "-" }}</strong>
+                  </div>
+
+                  <div class="insurance-row">
+                    <span>Group ID</span>
+                    <strong>{{ insurance.groupId || "-" }}</strong>
+                  </div>
+
+                  <div class="insurance-row">
+                    <span>Holder Name</span>
+                    <strong>{{ insurance.holderName || "-" }}</strong>
+                  </div>
+
+                  <div class="insurance-row">
+                    <span>Address</span>
+                    <strong>{{ insurance.address || "-" }}</strong>
+                  </div>
                 </div>
-
-                <!-- Address -->
-                <label for="address">Primary Address</label>
-                <div class="field-container">
-                    <textarea id="address" formControlName="address" placeholder="Enter patient address"></textarea>
-
-                    @if (getErrorMessage('address')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('address') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- Phone -->
-                <label for="phone">Contact Number</label>
-                <div class="field-container">
-                    <input id="phone" type="tel" formControlName="phone" placeholder="Enter contact number"
-                        (keypress)="allowOnlyNumbers($event)" />
-
-                    @if (getErrorMessage('phone')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('phone') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- Email -->
-                <label for="email">Email Address</label>
-                <div class="field-container">
-                    <input id="email" type="email" formControlName="email" placeholder="Enter email address" />
-
-                    @if (getErrorMessage('email')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('email') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- Visit Purpose -->
-                <label for="visitPurpose">Dr. Visit Purpose</label>
-                <div class="field-container">
-
-                    <select id="visitPurpose" formControlName="visitPurposeId">
-                        <option value="">Select Visit Purpose</option>
-
-                        @for (purpose of visitPurposes; track purpose.statusId) {
-                        <option [value]="purpose.statusId">
-                            {{ purpose.statusValue }}
-                        </option>
-                        }
-                    </select>
-
-                    @if (getErrorMessage('visitPurposeId')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('visitPurposeId') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- Visit Type -->
-                <label for="visitType">Type Of Visit</label>
-                <div class="field-container">
-                    <select id="visitType" formControlName="visitTypeId">
-                        <option value="">Select type of visit</option>
-                        @for (type of visitTypes; track type.statusId) {
-                        <option [value]="type.statusId">
-                            {{ type.statusValue }}
-                        </option>
-                        }
-
-                    </select>
-
-                    @if (getErrorMessage('visitTypeId')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('visitTypeId') }}
-                    </small>
-                    }
-                </div>
-
-                <!-- OTP Method -->
-                <label>OTP Verification</label>
-                <div class="field-container">
-                    <div class="mobile-radio-group otp-method-group">
-                        <label class="otp-option">
-                            <input type="radio" value="mobile" formControlName="otpMethod" />
-                            <span>Mobile Number</span>
-                        </label>
-
-                        <label class="otp-option">
-                            <input type="radio" value="email" formControlName="otpMethod" />
-                            <span>Email Address</span>
-                        </label>
-                    </div>
-
-                    @if (getErrorMessage('otpMethod')) {
-                    <small class="error-message">
-                        {{ getErrorMessage('otpMethod') }}
-                    </small>
-                    }
-                </div>
+              }
             </div>
+          </div>
+        }
+        @if (selectedProfileData?.paymentData?.length > 0) {
+          <label for=""> Existing Payment Details</label>
+          <div class="existing-payment-section">
+            <div class="payment-cards">
+              @for (payment of selectedProfileData.paymentData; track $index) {
+                <div
+                  class="payment-card"
+                  [class.active]="selectedProfileData.paymentData.length - 1 === $index"
+                  (click)="selectPayment(payment)"
+                >
+                  <div class="payment-card-top">
+                    <div class="payment-icon">💳</div>
 
-            <div class="form-actions">
-                <button type="submit" class="book-btn">
-                    Confirm
-                </button>
+                    <div class="payment-type">
+                      {{ payment.paymentType || "Card" }}
+                    </div>
 
-                <button type="button" class="clear-btn" (click)="clearForm()">
-                    Clear
-                </button>
+                    <span class="active-badge"> Active </span>
+
+                    @if (selectedProfileData.paymentData.length - 1 === $index) {
+                      <span class="selected-check">✓</span>
+                    }
+                  </div>
+
+                  <div class="payment-name">
+                    {{ payment.cardHolder || "-" }}
+                  </div>
+
+                  <div class="payment-row">
+                    <span>Card Number</span>
+                    <strong>
+                      {{ maskCardNumber(payment.cardNumber) }}
+                    </strong>
+                  </div>
+
+                  <div class="payment-row">
+                    <span>Expiry</span>
+                    <strong>
+                      {{ payment.expiry || "-" }}
+                    </strong>
+                  </div>
+                </div>
+              }
             </div>
-        </form>
-    </div>
+          </div>
+        }
+        <label>
+          {{
+            selectedProfileData?.insuranceData
+              ? "Do you want to change insurance?"
+              : "Do you have insurance?"
+          }}
+        </label>
+
+        <div class="field-container">
+          <div class="mobile-radio-group">
+            <label class="radio-item">
+              <input type="radio" value="yes" formControlName="insurance" />
+              <span>Yes</span>
+            </label>
+
+            <label class="radio-item">
+              <input type="radio" value="no" formControlName="insurance" />
+              <span>No</span>
+            </label>
+          </div>
+
+          @if (getErrorMessage("insurance")) {
+            <small class="error-message">
+              {{ getErrorMessage("insurance") }}
+            </small>
+          }
+        </div>
+
+        <!-- Address -->
+        <label for="address">Primary Address</label>
+        <div class="field-container">
+          <textarea
+            id="address"
+            formControlName="address"
+            placeholder="Enter patient address"
+          ></textarea>
+
+          @if (getErrorMessage("address")) {
+            <small class="error-message">
+              {{ getErrorMessage("address") }}
+            </small>
+          }
+        </div>
+
+        <!-- Phone -->
+        <label for="phone">Contact Number</label>
+        <div class="field-container">
+          <input
+            id="phone"
+            type="tel"
+            formControlName="phone"
+            placeholder="Enter contact number"
+            (keypress)="allowOnlyNumbers($event)"
+          />
+
+          @if (getErrorMessage("phone")) {
+            <small class="error-message">
+              {{ getErrorMessage("phone") }}
+            </small>
+          }
+        </div>
+
+        <!-- Email -->
+        <label for="email">Email Address</label>
+        <div class="field-container">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter email address"
+          />
+
+          @if (getErrorMessage("email")) {
+            <small class="error-message">
+              {{ getErrorMessage("email") }}
+            </small>
+          }
+        </div>
+
+        <!-- Visit Purpose -->
+        <label for="visitPurpose">Dr. Visit Purpose</label>
+        <div class="field-container">
+          <select id="visitPurpose" formControlName="visitPurposeId">
+            <option value="">Select Visit Purpose</option>
+
+            @for (purpose of visitPurposes; track purpose.statusId) {
+              <option [value]="purpose.statusId">
+                {{ purpose.statusValue }}
+              </option>
+            }
+          </select>
+
+          @if (getErrorMessage("visitPurposeId")) {
+            <small class="error-message">
+              {{ getErrorMessage("visitPurposeId") }}
+            </small>
+          }
+        </div>
+
+        <!-- Visit Type -->
+        <label for="visitType">Type Of Visit</label>
+        <div class="field-container">
+          <select id="visitType" formControlName="visitTypeId">
+            <option value="">Select type of visit</option>
+            @for (type of visitTypes; track type.statusId) {
+              <option [value]="type.statusId">
+                {{ type.statusValue }}
+              </option>
+            }
+          </select>
+
+          @if (getErrorMessage("visitTypeId")) {
+            <small class="error-message">
+              {{ getErrorMessage("visitTypeId") }}
+            </small>
+          }
+        </div>
+
+        <!-- OTP Method -->
+        <label>OTP Verification</label>
+        <div class="field-container">
+          <div class="mobile-radio-group otp-method-group">
+            <label class="otp-option">
+              <input type="radio" value="mobile" formControlName="otpMethod" />
+              <span>Mobile Number</span>
+            </label>
+
+            <label class="otp-option">
+              <input type="radio" value="email" formControlName="otpMethod" />
+              <span>Email Address</span>
+            </label>
+          </div>
+
+          @if (getErrorMessage("otpMethod")) {
+            <small class="error-message">
+              {{ getErrorMessage("otpMethod") }}
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="book-btn">Confirm</button>
+
+        <button type="button" class="clear-btn" (click)="clearForm()">Clear</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Insurance Modal -->
 
 @if (showInsuranceModal) {
-<div class="modal">
+  <div class="modal">
     <div class="modal-content" [formGroup]="insuranceForm">
+      <!-- Fixed Header -->
+      <div class="modal-header">
+        <h2>Insurance Details</h2>
+        <div class="close-icon" (click)="closeInsuranceModal()">✖</div>
+      </div>
 
-        <!-- Fixed Header -->
-        <div class="modal-header">
-            <h2>Insurance Details</h2>
-            <div class="close-icon" (click)="closeInsuranceModal()">✖</div>
+      <!-- Scrollable Body -->
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>Provider Name</label>
+          <div class="field-container">
+            <input formControlName="provider" placeholder="Enter provider name" />
+            @if (getNestedError("insuranceData", "provider", "Provider Name")) {
+              <small class="error-message">
+                {{ getNestedError("insuranceData", "provider", "Provider Name") }}
+              </small>
+            }
+          </div>
+
+          <label>Insurance Policy Id</label>
+          <div class="field-container">
+            <input formControlName="policy" placeholder="Enter policy id" />
+            @if (getNestedError("insuranceData", "policy", "Insurance Policy Id")) {
+              <small class="error-message">
+                {{ getNestedError("insuranceData", "policy", "Insurance Policy Id") }}
+              </small>
+            }
+          </div>
+
+          <label>Insurance Group Id</label>
+          <div class="field-container">
+            <input formControlName="groupId" placeholder="Enter group id" />
+            @if (getNestedError("insuranceData", "groupId", "Insurance Group Id")) {
+              <small class="error-message">
+                {{ getNestedError("insuranceData", "groupId", "Insurance Group Id") }}
+              </small>
+            }
+          </div>
+
+          <label>Primary Holder Name</label>
+          <div class="field-container">
+            <input formControlName="holderName" placeholder="Enter holder name" />
+            @if (getNestedError("insuranceData", "holderName", "Primary Holder Name")) {
+              <small class="error-message">
+                {{ getNestedError("insuranceData", "holderName", "Primary Holder Name") }}
+              </small>
+            }
+          </div>
+
+          <label>Primary Address</label>
+          <div class="field-container">
+            <input formControlName="address" placeholder="Enter address" />
+            @if (getNestedError("insuranceData", "address", "Primary Address")) {
+              <small class="error-message">
+                {{ getNestedError("insuranceData", "address", "Primary Address") }}
+              </small>
+            }
+          </div>
         </div>
+      </div>
 
-        <!-- Scrollable Body -->
-        <div class="modal-body">
-            <div class="form-grid">
-                <label>Provider Name</label>
-                <div class="field-container">
-                    <input formControlName="provider" placeholder="Enter provider name" />
-                    @if (getNestedError('insuranceData', 'provider', 'Provider Name')) {
-                    <small class="error-message">
-                        {{ getNestedError('insuranceData', 'provider', 'Provider Name') }}
-                    </small>
-                    }
-                </div>
-
-                <label>Insurance Policy Id</label>
-                <div class="field-container">
-                    <input formControlName="policy" placeholder="Enter policy id" />
-                    @if (getNestedError('insuranceData', 'policy', 'Insurance Policy Id')) {
-                    <small class="error-message">
-                        {{ getNestedError('insuranceData', 'policy', 'Insurance Policy Id') }}
-                    </small>
-                    }
-                </div>
-
-                <label>Insurance Group Id</label>
-                <div class="field-container">
-                    <input formControlName="groupId" placeholder="Enter group id" />
-                    @if (getNestedError('insuranceData', 'groupId', 'Insurance Group Id')) {
-                    <small class="error-message">
-                        {{ getNestedError('insuranceData', 'groupId', 'Insurance Group Id') }}
-                    </small>
-                    }
-                </div>
-
-                <label>Primary Holder Name</label>
-                <div class="field-container">
-                    <input formControlName="holderName" placeholder="Enter holder name" />
-                    @if (getNestedError('insuranceData', 'holderName', 'Primary Holder Name')) {
-                    <small class="error-message">
-                        {{ getNestedError('insuranceData', 'holderName', 'Primary Holder Name') }}
-                    </small>
-                    }
-                </div>
-
-                <label>Primary Address</label>
-                <div class="field-container">
-                    <input formControlName="address" placeholder="Enter address" />
-                    @if (getNestedError('insuranceData', 'address', 'Primary Address')) {
-                    <small class="error-message">
-                        {{ getNestedError('insuranceData', 'address', 'Primary Address') }}
-                    </small>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <!-- Fixed Footer -->
-        <div class="modal-footer">
-            <button type="button" class="book-btn" (click)="confirmInsurance()">
-                Confirm
-            </button>
-            <button type="button" class="cancel-btn" (click)="closeInsuranceModal()">
-                Cancel
-            </button>
-        </div>
+      <!-- Fixed Footer -->
+      <div class="modal-footer">
+        <button type="button" class="book-btn" (click)="confirmInsurance()">Confirm</button>
+        <button type="button" class="cancel-btn" (click)="closeInsuranceModal()">Cancel</button>
+      </div>
     </div>
-</div>
+  </div>
 }
 
 <!-- Payment Modal -->
 @if (showPaymentModal) {
-<div class="modal">
+  <div class="modal">
     <div class="modal-content" [formGroup]="paymentForm">
+      <!-- Fixed Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">Payment Details</h2>
+        <div class="close-icon" (click)="closePaymentModal()">✖</div>
+      </div>
 
-        <!-- Fixed Header -->
-        <div class="modal-header">
-            <h2 class="modal-title">Payment Details</h2>
-            <div class="close-icon" (click)="closePaymentModal()">✖</div>
-        </div>
+      <!-- Scrollable Body -->
+      <div class="modal-body">
+        <div class="form-grid">
+          <label>Payment Type</label>
+          <div class="field-container">
+            <input formControlName="paymentType" placeholder="Enter Payment Type" />
+            @if (getNestedError("paymentData", "paymentType", "Payment Type")) {
+              <small class="error-message">
+                {{ getNestedError("paymentData", "paymentType", "Payment Type") }}
+              </small>
+            }
+          </div>
 
-        <!-- Scrollable Body -->
-        <div class="modal-body">
-            <div class="form-grid">
-                <label>Payment Type</label>
-                <div class="field-container">
-                    <input formControlName="paymentType" placeholder="Enter Payment Type" />
-                    @if (getNestedError('paymentData', 'paymentType', 'Payment Type')) {
-                    <small class="error-message">
-                        {{ getNestedError('paymentData', 'paymentType', 'Payment Type') }}
-                    </small>
-                    }
-                </div>
+          <label>Card Holder Name</label>
+          <div class="field-container">
+            <input formControlName="cardHolder" placeholder="Enter Card Holder Name" />
+            @if (getNestedError("paymentData", "cardHolder", "Card Holder Name")) {
+              <small class="error-message">
+                {{ getNestedError("paymentData", "cardHolder", "Card Holder Name") }}
+              </small>
+            }
+          </div>
 
-                <label>Card Holder Name</label>
-                <div class="field-container">
-                    <input formControlName="cardHolder" placeholder="Enter Card Holder Name" />
-                    @if (getNestedError('paymentData', 'cardHolder', 'Card Holder Name')) {
-                    <small class="error-message">
-                        {{ getNestedError('paymentData', 'cardHolder', 'Card Holder Name') }}
-                    </small>
-                    }
-                </div>
+          <label>Card Number</label>
 
-                <label>Card Number</label>
+          <div class="field-container">
+            <input
+              formControlName="cardNumber"
+              placeholder="Enter Card Number"
+              maxlength="19"
+              inputmode="numeric"
+              (input)="formatCardNumber($event)"
+            />
 
-                <div class="field-container">
+            @if (getPaymentError("cardNumber")) {
+              <small class="error-message">
+                {{ getPaymentError("cardNumber") }}
+              </small>
+            }
+          </div>
 
-                    <input formControlName="cardNumber" placeholder="Enter Card Number" maxlength="19"
-                        inputmode="numeric" (input)="formatCardNumber($event)" />
+          <label>Expiry Date</label>
 
-                    @if (getPaymentError('cardNumber')) {
-                    <small class="error-message">
-                        {{ getPaymentError('cardNumber') }}
-                    </small>
-                    }
+          <div class="inline-row">
+            <div class="field-container expiry-container">
+              <input
+                formControlName="expiry"
+                placeholder="MM/YY"
+                maxlength="5"
+                inputmode="numeric"
+                (input)="formatExpiry($event)"
+              />
 
-                </div>
-
-                <label>Expiry Date</label>
-
-                <div class="inline-row">
-
-                    <div class="field-container expiry-container">
-
-                        <input formControlName="expiry" placeholder="MM/YY" maxlength="5" inputmode="numeric"
-                            (input)="formatExpiry($event)" />
-
-                        @if (getPaymentError('expiry')) {
-                        <small class="error-message">
-                            {{ getPaymentError('expiry') }}
-                        </small>
-                        }
-
-                    </div>
-
-                    <span class="cvv-label">CVV</span>
-
-                    <div class="field-container cvv-container">
-
-                        <input type="password" formControlName="cvv" placeholder="XXX" maxlength="4" inputmode="numeric"
-                            (keypress)="allowOnlyNumbers($event)" />
-
-                        @if (getPaymentError('cvv')) {
-                        <small class="error-message">
-                            {{ getPaymentError('cvv') }}
-                        </small>
-                        }
-
-                    </div>
-
-                </div>
+              @if (getPaymentError("expiry")) {
+                <small class="error-message">
+                  {{ getPaymentError("expiry") }}
+                </small>
+              }
             </div>
-        </div>
 
-        <!-- Fixed Footer -->
-        <div class="modal-footer">
-            <button type="button" class="book-btn" (click)="confirmPayment()">
-                Confirm
-            </button>
-            <button type="button" class="cancel-btn" (click)="closePaymentModal()">
-                Cancel
-            </button>
+            <span class="cvv-label">CVV</span>
+
+            <div class="field-container cvv-container">
+              <input
+                type="password"
+                formControlName="cvv"
+                placeholder="XXX"
+                maxlength="4"
+                inputmode="numeric"
+                (keypress)="allowOnlyNumbers($event)"
+              />
+
+              @if (getPaymentError("cvv")) {
+                <small class="error-message">
+                  {{ getPaymentError("cvv") }}
+                </small>
+              }
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Fixed Footer -->
+      <div class="modal-footer">
+        <button type="button" class="book-btn" (click)="confirmPayment()">Confirm</button>
+        <button type="button" class="cancel-btn" (click)="closePaymentModal()">Cancel</button>
+      </div>
     </div>
-</div>
+  </div>
 }

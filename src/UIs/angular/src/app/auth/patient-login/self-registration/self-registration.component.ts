@@ -1,21 +1,31 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnInit,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { JsonPipe } from "@angular/common";
 import { NgxsmkTelInputComponent, IntlTelI18n, CountryMap } from "ngxsmk-tel-input";
 import { Router, RouterModule } from "@angular/router";
 import { PatientRegister } from "../../../core/Models/Patient-Model";
-import { selectRegisteredPatient, selectSecurityQuestions } from "src/app/Store/Auth/auth.selectors";
+import {
+  selectRegisteredPatient,
+  selectSecurityQuestions,
+} from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
-import { Store } from '@ngrx/store';
+import { Store } from "@ngrx/store";
 import * as AuthActions from "../../../Store/Auth/auth.actions";
-import * as PatientAction from "../../../Store/Patient/patient.action"
-import { ToastrService } from "ngx-toastr";
+import * as PatientAction from "../../../Store/Patient/patient.action";
 
 @Component({
   selector: "app-self-registration",
-  imports: [ReactiveFormsModule, RouterModule,],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: "./self-registration.component.html",
   styleUrls: ["./self-registration.component.css"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 export class SelfRegistrationComponent implements OnInit {
@@ -24,61 +34,53 @@ export class SelfRegistrationComponent implements OnInit {
   patientRegisterRequest: PatientRegister = {} as PatientRegister;
   countries: any[] = [];
   states: any[] = [];
-  cities: any[] = []
-  url: string = ""
-  user: any
+  cities: any[] = [];
+  url: string = "";
+  user: any;
   showPassword: boolean = false;
-  showconfirmPasswordPassword: boolean = false
+  showconfirmPasswordPassword: boolean = false;
   securityQuestions: any[] | undefined;
-  dob: string = '';
-  ageError: string = '';
+  dob: string = "";
+  ageError: string = "";
   isValidAge: boolean = false;
-  maxDate: string = '';
+  maxDate: string = "";
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private store: Store<AppState>,
-    private toastr: ToastrService
-
   ) {
-    this.user = JSON.parse(localStorage.getItem('user') || 'null');
-
+    this.user = JSON.parse(localStorage.getItem("user") || "null");
   }
 
   ngOnInit(): void {
     // console.log(this.router.url);
     this.formInitialization();
-    this.url = this.router.url
+    this.url = this.router.url;
     const date = new Date();
     date.setFullYear(date.getFullYear() - 18);
 
-    this.maxDate = date.toISOString().split('T')[0];
-    if (this.router.url === '/profile-update' && this.user.data) {
+    this.maxDate = date.toISOString().split("T")[0];
+    if (this.router.url === "/profile-update" && this.user.data) {
       queueMicrotask(() => {
         this.initialAPICalls();
       });
       this.initialSelectors();
       this.loadPatientData();
     } else {
-      // 
+      //
       queueMicrotask(() => {
         this.initialAPICalls();
       });
       this.initialSelectors();
-
     }
-
-
-
   }
 
   onDobChange(event: any) {
-
     const value = event.target.value;
 
     if (!value) {
-      this.ageError = 'Please select date of birth';
+      this.ageError = "Please select date of birth";
       this.isValidAge = false;
       return;
     }
@@ -97,16 +99,15 @@ export class SelfRegistrationComponent implements OnInit {
     }
 
     if (age >= 18) {
-      this.ageError = '';
+      this.ageError = "";
       this.isValidAge = true;
     } else {
-      this.ageError = 'User must be 18 years or older';
+      this.ageError = "User must be 18 years or older";
       this.isValidAge = false;
     }
   }
 
   get f() {
-
     return this.signupForm.controls;
   }
   markStepTouched(fields: string[]) {
@@ -114,7 +115,6 @@ export class SelfRegistrationComponent implements OnInit {
       this.signupForm.get(field)?.markAsTouched();
     });
   }
-
 
   nextStep() {
     if (this.currentStep === 0) {
@@ -128,10 +128,13 @@ export class SelfRegistrationComponent implements OnInit {
         this.markStepTouched(["firstName", "lastName", "phoneNumber", "dateOfBirth", "email"]);
         return;
       }
-      if (this.url === '/profile-update') {
+      if (this.url === "/profile-update") {
         // console.log(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId, "------------>")
-        this.loadStates(this.patientRegisterRequest.countryId, this.patientRegisterRequest.stateId, this.patientRegisterRequest.cityId)
-
+        this.loadStates(
+          this.patientRegisterRequest.countryId,
+          this.patientRegisterRequest.stateId,
+          this.patientRegisterRequest.cityId
+        );
       }
     }
 
@@ -180,19 +183,16 @@ export class SelfRegistrationComponent implements OnInit {
     queueMicrotask(() => {
       this.store.dispatch(
         PatientAction.getPatientDetailsById({
-          id: this.user.data.patientId
+          id: this.user.data.patientId,
         })
       );
-
-    })
-
+    });
 
     this.store
-      .select(state => state.patient.patientDetails)
+      .select((state) => state.patient.patientDetails)
       .subscribe((response: any) => {
         // console.log(response, "---------->")
         if (response?.data) {
-
           this.patientRegisterRequest = response.data;
 
           this.signupForm.patchValue({
@@ -212,42 +212,37 @@ export class SelfRegistrationComponent implements OnInit {
             username: this.patientRegisterRequest.username,
             securityQuestionId: this.patientRegisterRequest.securityQuestionId,
             securityAnswer: this.patientRegisterRequest.securityAnswer,
-            phoneCountryCode: this.patientRegisterRequest.phoneCountryCode
+            phoneCountryCode: this.patientRegisterRequest.phoneCountryCode,
           });
 
-          this.signupForm.get('password')?.disable();
-          this.signupForm.get('confirmPassword')?.disable();
+          this.signupForm.get("password")?.disable();
+          this.signupForm.get("confirmPassword")?.disable();
 
           const dob = this.patientRegisterRequest.dateOfBirth
-            ? new Date(this.patientRegisterRequest.dateOfBirth).toISOString().split('T')[0]
+            ? new Date(this.patientRegisterRequest.dateOfBirth).toISOString().split("T")[0]
             : null;
 
           this.signupForm.patchValue({
-            dateOfBirth: dob
+            dateOfBirth: dob,
           });
         }
-
       });
-
   }
 
   loadStates(countryId: number, stateId: number, cityId: number) {
+    this.store.dispatch(AuthActions.getStates({ countryId }));
 
-    this.store.dispatch(
-      AuthActions.getStates({ countryId })
-    );
-
-    this.store.select(state => state.auth.getStates)
+    this.store
+      .select((state) => state.auth.getStates)
       .subscribe((response: any) => {
-
         if (!response?.data) return;
 
         this.states = response.data;
 
-        this.signupForm.get('stateId')?.enable();
+        this.signupForm.get("stateId")?.enable();
         this.signupForm.patchValue({
           countryId,
-          stateId
+          stateId,
         });
 
         // Step 2
@@ -256,87 +251,75 @@ export class SelfRegistrationComponent implements OnInit {
   }
 
   loadCities(stateId: number, cityId: number) {
+    this.store.dispatch(AuthActions.getCities({ stateId }));
 
-    this.store.dispatch(
-      AuthActions.getCities({ stateId })
-    );
-
-    this.store.select(state => state.auth.getCities)
+    this.store
+      .select((state) => state.auth.getCities)
       .subscribe((response: any) => {
-
         if (!response?.data) return;
 
         this.cities = response.data;
 
-        this.signupForm.get('cityId')?.enable();
+        this.signupForm.get("cityId")?.enable();
 
         this.signupForm.patchValue({
-          cityId
+          cityId,
         });
       });
   }
   async onCountryChange(event: any) {
+    await this.store.dispatch(AuthActions.getStates({ countryId: event.target.value }));
+    await this.store
+      .select((state) => state.auth.getStates)
+      .subscribe((states: any) => {
+        if (states) {
+          this.signupForm.get("stateId")?.enable();
 
-    await this.store.dispatch(
-      AuthActions.getStates({ countryId: event.target.value })
-    );
-    await this.store.select(state => state.auth.getStates).subscribe((states: any) => {
-
-      if (states) {
-        this.signupForm.get('stateId')?.enable();
-
-        this.states = states.data;
-      }
-    });
+          this.states = states.data;
+        }
+      });
     // const country = event.target.value;
     // this.states = this.statesData[country] || [];
   }
 
   async onStateChange(event: any) {
-
-    await this.store.dispatch(
-      AuthActions.getCities({ stateId: event.target.value })
-    );
-    await this.store.select(state => state.auth.getCities).subscribe((cities: any) => {
-      if (cities) {
-        this.signupForm.get('cityId')?.enable();
-        this.cities = cities.data;
-      }
-    });
+    await this.store.dispatch(AuthActions.getCities({ stateId: event.target.value }));
+    await this.store
+      .select((state) => state.auth.getCities)
+      .subscribe((cities: any) => {
+        if (cities) {
+          this.signupForm.get("cityId")?.enable();
+          this.cities = cities.data;
+        }
+      });
   }
 
   initialAPICalls() {
     // console.log('Dispatching Get Countries');
-    this.store.dispatch(
-      AuthActions.getSecurityQuestions()
-    );
-    this.store.dispatch(
-      AuthActions.getCountries()
-    );
+    this.store.dispatch(AuthActions.getSecurityQuestions());
+    this.store.dispatch(AuthActions.getCountries());
   }
 
   initialSelectors() {
-    this.store
-      .select(selectSecurityQuestions)
-      .subscribe((questions: any) => {
-        this.securityQuestions = questions?.data;
-
-      });
-    this.store.select(state => state.auth.getCountries).subscribe((countries: any) => {
-      if (countries.data) {
-
-        this.countries = countries.data;
-
-        this.signupForm.get('phoneCountryCode')?.setValue(this.countries[0]?.phoneCode)
-      }
+    this.store.select(selectSecurityQuestions).subscribe((questions: any) => {
+      this.securityQuestions = questions?.data;
     });
-    this.store.select(state => state.auth.registeredPatient).subscribe((patient: any) => {
-      if (patient) {
+    this.store
+      .select((state) => state.auth.getCountries)
+      .subscribe((countries: any) => {
+        if (countries.data) {
+          this.countries = countries.data;
 
-        this.router.navigate(['/patient/login']);
-      }
-    }
-    )
+          this.signupForm.get("phoneCountryCode")?.setValue(this.countries[0]?.phoneCode);
+        }
+      });
+    this.store
+      .select((state) => state.auth.registeredPatient)
+      .subscribe((patient: any) => {
+        if (patient) {
+          this.router.navigate(["/patient/login"]);
+        }
+      });
   }
 
   formInitialization() {
@@ -359,13 +342,11 @@ export class SelfRegistrationComponent implements OnInit {
       confirmPassword: [""],
       securityQuestionId: [null, Validators.required],
       securityAnswer: ["", Validators.required],
-      phoneCountryCode: [""]
+      phoneCountryCode: [""],
     });
-
   }
 
   onSubmit() {
-
     if (this.currentStep === 2) {
       if (
         this.f.username.invalid ||
@@ -386,7 +367,6 @@ export class SelfRegistrationComponent implements OnInit {
     }
 
     const payload: PatientRegister = {
-
       firstName: this.signupForm.value.firstName,
       middleName: this.signupForm.value.middleName,
       lastName: this.signupForm.value.lastName,
@@ -406,31 +386,29 @@ export class SelfRegistrationComponent implements OnInit {
       securityAnswer: this.signupForm.value.securityAnswer,
       phoneCountryCode: this.signupForm.value.phoneCountryCode,
       isActive: true,
-      createdBy: 'SelfRegistration',
+      createdBy: "SelfRegistration",
       createdDate: new Date().toISOString(),
-      updatedBy: 'SelfRegistration',
-      updatedDate: new Date().toISOString()
-    }
+      updatedBy: "SelfRegistration",
+      updatedDate: new Date().toISOString(),
+    };
 
-    if (this.url === '/profile-update') {
-      payload.patientId = this.user.data.patientId,
-        this.store.dispatch(PatientAction.updatePatientDetailsById({ patient: payload }))
+    if (this.url === "/profile-update") {
+      ((payload.patientId = this.user.data.patientId),
+        this.store.dispatch(PatientAction.updatePatientDetailsById({ patient: payload })));
     } else {
-
       this.store.dispatch(
         AuthActions.register({
-          patient: payload
+          patient: payload,
         })
       );
-
     }
 
-    this.store.select(state => state.auth.registeredPatient).subscribe((patient: any) => {
-
-      if (patient) {
-
-      }
-    })
+    this.store
+      .select((state) => state.auth.registeredPatient)
+      .subscribe((patient: any) => {
+        if (patient) {
+        }
+      });
     // this.router.navigate(["/login"]);
   }
   allowOnlyText(event: KeyboardEvent): void {
@@ -458,6 +436,6 @@ export class SelfRegistrationComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
   toggleconfirmPassword() {
-    this.showconfirmPasswordPassword = !this.showconfirmPasswordPassword
+    this.showconfirmPasswordPassword = !this.showconfirmPasswordPassword;
   }
 }

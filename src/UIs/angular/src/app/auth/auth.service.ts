@@ -10,7 +10,7 @@ import { environment } from "src/environments/environment";
 })
 export class AuthService {
   private _userManager: UserManager;
-  private _user: User;
+  private _user: User | null = null;
 
   constructor(private httpClient: HttpClient) {
     var config = {
@@ -20,24 +20,30 @@ export class AuthService {
       scope: "openid profile ClassifiedAds.WebAPI",
       response_type: "code",
       post_logout_redirect_uri: `${environment.CurrentUrl}?postLogout=true`,
-      userStore: new WebStorageStateStore({ store: window.localStorage }),
+      userStore: new WebStorageStateStore({
+        store: window.localStorage,
+      }),
     };
+
     this._userManager = new UserManager(config);
   }
 
   loadUser() {
     var promise = this._userManager.getUser();
+
     promise.then((user) => {
       if (user && !user.expired) {
         this._user = user;
       }
     });
+
     return promise;
   }
 
   login(returnUrl: string): Promise<any> {
     console.log("Return Url:", returnUrl);
     localStorage.setItem("returnUrl", returnUrl);
+
     return this._userManager.signinRedirect();
   }
 
@@ -46,7 +52,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this._user && this._user.access_token && !this._user.expired;
+    return !!(
+      this._user &&
+      this._user.access_token &&
+      !this._user.expired
+    );
   }
 
   getAccessToken(): string {
@@ -56,11 +66,20 @@ export class AuthService {
   signoutRedirectCallback(): Promise<any> {
     return this._userManager.signoutRedirectCallback();
   }
-  // Sign in with Google
 
+  // Sign in with Google
   getCurrentUser(): IUser {
+    if (!this._user) {
+      return {
+        id: "",
+        userName: "phongnguyend",
+        firstName: "Phong",
+        lastName: "Nguyen",
+      };
+    }
+
     return {
-      id: this._user.profile.sub,
+      id: this._user.profile.sub ?? "",
       userName: "phongnguyend",
       firstName: "Phong",
       lastName: "Nguyen",
@@ -71,5 +90,5 @@ export class AuthService {
     return this.isLoggedIn();
   }
 
-  updateCurrentUser(firstName: string, lastName: string) {}
+  updateCurrentUser(firstName: string, lastName: string) { }
 }

@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Router, RouterModule } from "@angular/router";
 
 interface AppointmentData {
   firstName?: string;
@@ -18,13 +18,12 @@ interface SummaryRow {
 
 @Component({
   selector: "app-succses",
-  imports: [CommonModule,
-    RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: "./succses.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./succses.component.css",
 })
 export class SuccsesComponent implements OnInit {
-
   appointment: AppointmentData | null = null;
 
   summaryRows: SummaryRow[] = [];
@@ -32,27 +31,20 @@ export class SuccsesComponent implements OnInit {
   showSuccess = false;
   showEmpty = false;
 
-  private readonly BOOKING_ID_KEY = 'latestBookingId';
-  private readonly BOOKING_ID_FOR_KEY = 'latestBookingIdFor';
+  private readonly BOOKING_ID_KEY = "latestBookingId";
+  private readonly BOOKING_ID_FOR_KEY = "latestBookingIdFor";
   displayData: any;
 
-  constructor(
-    private router: Router
-  ) {
-
-  }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.loadAppointmentData();
     this.displayData = history.state.successData;
-
   }
 
   private loadAppointmentData(): void {
-
     try {
-
-      const raw = localStorage.getItem('latestAppointment');
+      const raw = localStorage.getItem("latestAppointment");
 
       if (!raw) {
         this.showEmptyState();
@@ -73,67 +65,37 @@ export class SuccsesComponent implements OnInit {
       this.summaryRows = this.buildSummaryRows(data);
 
       this.showSuccessState();
-
     } catch (error) {
-
-      console.error(
-        'Error reading appointment data:',
-        error
-      );
+      console.error("Error reading appointment data:", error);
 
       this.showEmptyState();
     }
   }
 
-  private getBookingId(
-    data: AppointmentData
-  ): string {
-
+  private getBookingId(data: AppointmentData): string {
     const fingerprint = JSON.stringify(data);
 
-    const storedFor =
-      localStorage.getItem(this.BOOKING_ID_FOR_KEY);
+    const storedFor = localStorage.getItem(this.BOOKING_ID_FOR_KEY);
 
-    const storedId =
-      localStorage.getItem(this.BOOKING_ID_KEY);
+    const storedId = localStorage.getItem(this.BOOKING_ID_KEY);
 
     // Same appointment → keep same booking ID
-    if (
-      storedId &&
-      storedFor === fingerprint
-    ) {
+    if (storedId && storedFor === fingerprint) {
       return storedId;
     }
 
+    const id = "APT-" + Date.now().toString().slice(-8);
 
-    const id =
-      'APT-' +
-      Date.now()
-        .toString()
-        .slice(-8);
+    localStorage.setItem(this.BOOKING_ID_KEY, id);
 
-    localStorage.setItem(
-      this.BOOKING_ID_KEY,
-      id
-    );
-
-    localStorage.setItem(
-      this.BOOKING_ID_FOR_KEY,
-      fingerprint
-    );
+    localStorage.setItem(this.BOOKING_ID_FOR_KEY, fingerprint);
 
     return id;
   }
 
-
-
   private formatDate(value?: string): string {
-
-    if (
-      !value ||
-      value === 'Not Selected'
-    ) {
-      return value || 'Not selected';
+    if (!value || value === "Not Selected") {
+      return value || "Not selected";
     }
 
     const parsed = new Date(value);
@@ -142,123 +104,81 @@ export class SuccsesComponent implements OnInit {
       return value;
     }
 
-    return parsed.toLocaleDateString(
-      'en-US',
-      {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      }
-    );
+    return parsed.toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   }
 
+  private buildSummaryRows(data: AppointmentData): SummaryRow[] {
+    const patientName = [data.firstName, data.lastName].filter(Boolean).join(" ") || "—";
 
-  private buildSummaryRows(
-    data: AppointmentData
-  ): SummaryRow[] {
+    const doctorName = localStorage.getItem("selectedDoctorName") || "Dr. Kumar";
 
-    const patientName =
-      [
-        data.firstName,
-        data.lastName
-      ]
-        .filter(Boolean)
-        .join(' ') || '—';
-
-    const doctorName =
-      localStorage.getItem(
-        'selectedDoctorName'
-      ) || 'Dr. Kumar';
-
-    const specialty =
-      localStorage.getItem(
-        'selectedSpecialty'
-      ) || 'General Physician';
+    const specialty = localStorage.getItem("selectedSpecialty") || "General Physician";
 
     const consultationType =
-      data.visitType ||
-      localStorage.getItem(
-        'selectedVisitType'
-      ) ||
-      'Consultation';
+      data.visitType || localStorage.getItem("selectedVisitType") || "Consultation";
 
     return [
-
       {
-        label: 'Patient Name',
-        value: patientName
+        label: "Patient Name",
+        value: patientName,
       },
 
       {
-        label: 'Doctor',
-        value: doctorName
+        label: "Doctor",
+        value: doctorName,
       },
 
       {
-        label: 'Specialty',
-        value: specialty
+        label: "Specialty",
+        value: specialty,
       },
 
       {
-        label: 'Date',
-        value: this.formatDate(data.date)
+        label: "Date",
+        value: this.formatDate(data.date),
       },
 
       {
-        label: 'Time',
-        value: data.time || 'Not selected'
+        label: "Time",
+        value: data.time || "Not selected",
       },
 
       {
-        label: 'Consultation Type',
-        value: consultationType
-      }
-
+        label: "Consultation Type",
+        value: consultationType,
+      },
     ];
   }
 
-
   private showSuccessState(): void {
-
     this.showSuccess = true;
     this.showEmpty = false;
   }
 
   private showEmptyState(): void {
-
     this.showSuccess = false;
     this.showEmpty = true;
   }
 
-
   goToDashboard(): void {
-
-    this.router.navigate([
-      '/front-office/dashboard'
-    ]);
+    this.router.navigate(["/front-office/dashboard"]);
   }
 
   bookAnotherAppointment(): void {
-
-    this.router.navigate([
-      '/front-office/specialities'
-    ]);
+    this.router.navigate(["/front-office/specialities"]);
   }
 
   goToBookAppointment(): void {
-
-    this.router.navigate([
-      '/front-office/book-appointment'
-    ]);
+    this.router.navigate(["/front-office/book-appointment"]);
   }
 
-
   contactSupport(): void {
-
     // Replace with your actual support route
-    this.router.navigate([
-      '/front-office/contact-support'
-    ]);
+    this.router.navigate(["/front-office/contact-support"]);
   }
 }

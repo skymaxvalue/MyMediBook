@@ -1,21 +1,20 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 
 @Component({
   selector: "app-reschedule-success",
   imports: [CommonModule],
   templateUrl: "./reschedule-success.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./reschedule-success.component.css",
 })
 export class RescheduleSuccessComponent implements OnInit {
-  constructor(private router: Router) {
-
-  }
+  constructor(private router: Router) {}
   appointment: any;
 
   ngOnInit(): void {
-    const data = localStorage.getItem('appointmentToReschedule');
+    const data = localStorage.getItem("appointmentToReschedule");
 
     if (data) {
       this.appointment = JSON.parse(data);
@@ -23,8 +22,8 @@ export class RescheduleSuccessComponent implements OnInit {
   }
 
   backToDashboard(): void {
-    localStorage.removeItem('appointmentToReschedule')
-    this.router.navigate(['/patient/dashboard/appointments']);
+    localStorage.removeItem("appointmentToReschedule");
+    this.router.navigate(["/patient/dashboard/appointments"]);
   }
 
   downloadConfirmation(): void {

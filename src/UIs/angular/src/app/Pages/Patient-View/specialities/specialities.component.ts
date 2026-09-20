@@ -1,5 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
@@ -13,74 +21,65 @@ import { environment } from "src/environments/environment";
   selector: "app-specialities",
   imports: [CommonModule, FormsModule],
   templateUrl: "./specialities.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./specialities.component.css",
 })
 export class SpecialitiesComponent implements OnInit {
-  apiUrl = environment.OpenIdConnect.apiUrl
+  apiUrl = environment.OpenIdConnect.apiUrl;
   specialities: any[] = [];
   filteredSpecialities: any[] = [];
   @Output() onDoctorSelected = new EventEmitter<any>();
-  searchText: any = '';
-  searchedText: string = '';
-  isFrontOfficePage: boolean = false
-  constructor(private router: Router, private toast: ToastService, private store: Store<AppState>, private cdr: ChangeDetectorRef) {
-
-    this.isFrontOfficePage = history.state.isFrontOfficePage
-    this.store.dispatch(
-      loadDoctorSpecialities());
+  searchText: any = "";
+  searchedText: string = "";
+  isFrontOfficePage: boolean = false;
+  constructor(
+    private router: Router,
+    private toast: ToastService,
+    private store: Store<AppState>,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.isFrontOfficePage = history.state.isFrontOfficePage;
+    this.store.dispatch(loadDoctorSpecialities());
   }
   ngOnInit(): void {
-
     // throw new Error("Method not implemented.");
-    this.store.select(selectDoctorSpecialities)
-      .subscribe((res: any) => {
-
-        console.log("Store Data:", res);
-        this.specialities = res;
-        this.filteredSpecialities = [...this.specialities];
-        this.cdr.detectChanges();
-        console.log("Length:", this.specialities.length);
-
-      });
+    this.store.select(selectDoctorSpecialities).subscribe((res: any) => {
+      console.log("Store Data:", res);
+      this.specialities = res;
+      this.filteredSpecialities = [...this.specialities];
+      this.cdr.detectChanges();
+      console.log("Length:", this.specialities.length);
+    });
   }
 
   goToAvailability(doctor: any, ocId: any) {
-    if (doctor.fromDate && doctor.fromTime || doctor.toDate && doctor.toTime) {
-
+    if ((doctor.fromDate && doctor.fromTime) || (doctor.toDate && doctor.toTime)) {
       if (this.isFrontOfficePage) {
-        this.router.navigate(
-          ['/front-office/doctor-availability'],
-          {
-            state: {
-              doctor,
-              isFrontOfficePage: true
-            }
-          }
-        );
+        this.router.navigate(["/front-office/doctor-availability"], {
+          state: {
+            doctor,
+            isFrontOfficePage: true,
+          },
+        });
       } else {
-        this.router.navigate(
-          ['/patient/dashboard/doctor-availability'],
-          {
-            state: {
-              doctor
-            }
-          }
-        );
-
+        this.router.navigate(["/patient/dashboard/doctor-availability"], {
+          state: {
+            doctor,
+          },
+        });
       }
     } else {
-      this.toast.info('Info', "Doctor is not available")
+      this.toast.info("Info", "Doctor is not available");
     }
   }
 
   // Currently not in used due to change backend data
   getAmPmTime(time: string): string {
-
-    const [hours, minutes] = time.split(':');
+    const [hours, minutes] = time.split(":");
 
     let h = parseInt(hours, 10);
 
-    const ampm = h >= 12 ? 'PM' : 'AM';
+    const ampm = h >= 12 ? "PM" : "AM";
 
     h = h % 12;
     h = h ? h : 12; // 0 → 12
@@ -96,15 +95,16 @@ export class SpecialitiesComponent implements OnInit {
     const search = this.searchText.toLowerCase();
 
     this.filteredSpecialities = this.specialities
-      .map(speciality => ({
+      .map((speciality) => ({
         ...speciality,
-        doctors: speciality.doctors.filter((doctor: any) =>
-          doctor.name.toLowerCase().includes(search) ||
-          doctor.department.toLowerCase().includes(search) ||
-          speciality.category.toLowerCase().includes(search)
-        )
+        doctors: speciality.doctors.filter(
+          (doctor: any) =>
+            doctor.name.toLowerCase().includes(search) ||
+            doctor.department.toLowerCase().includes(search) ||
+            speciality.category.toLowerCase().includes(search)
+        ),
       }))
-      .filter(speciality => speciality.doctors.length > 0);
+      .filter((speciality) => speciality.doctors.length > 0);
   }
 
   // get filteredSpecialities() {
@@ -112,7 +112,6 @@ export class SpecialitiesComponent implements OnInit {
   //   if (!this.searchedText.trim()) {
   //     return this.specialities;
   //   }
-
 
   //   return this.specialities
   //     .map(speciality => ({
@@ -133,6 +132,6 @@ export class SpecialitiesComponent implements OnInit {
 
   clearSearch() {
     this.searchText = null;
-    this.searchedText = '';
+    this.searchedText = "";
   }
 }

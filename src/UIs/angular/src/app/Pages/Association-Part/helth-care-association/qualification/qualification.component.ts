@@ -1,14 +1,21 @@
-import { Component, Input, EventEmitter, Output, OnInit } from "@angular/core";
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  Input,
+  EventEmitter,
+  Output,
+  OnInit,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-qualification",
   imports: [FormsModule, ReactiveFormsModule],
   templateUrl: "./qualification.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./qualification.component.css",
 })
 export class QualificationComponent implements OnInit {
-
   @Input() group!: FormGroup;
   @Input() currentStep!: number;
 
@@ -16,21 +23,19 @@ export class QualificationComponent implements OnInit {
   @Output() back = new EventEmitter<void>();
   selectedFile: File | null = null;
   previewUrl: string | null = null;
-  isFileUploaded = false
-  maxDate: string = '';
-  minExpiryDate: string = '';
+  isFileUploaded = false;
+  maxDate: string = "";
+  minExpiryDate: string = "";
   ngOnInit(): void {
-
     const nextYear = new Date();
     nextYear.setFullYear(nextYear.getFullYear() + 1);
 
-    this.maxDate = nextYear.toISOString().split('T')[0];
+    this.maxDate = nextYear.toISOString().split("T")[0];
 
     nextYear.setFullYear(nextYear.getFullYear() + 1);
 
-    this.minExpiryDate = new Date().toISOString().split('T')[0];
+    this.minExpiryDate = new Date().toISOString().split("T")[0];
   }
-
 
   onPrevious() {
     this.back.emit();
@@ -47,16 +52,13 @@ export class QualificationComponent implements OnInit {
     }
   }
 
-
   onFileSelected(event: Event): void {
-
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
     }
   }
-
 
   uploadFile(): void {
     if (!this.selectedFile) {
@@ -70,18 +72,13 @@ export class QualificationComponent implements OnInit {
     reader.onload = () => {
       const base64String = reader.result as string;
 
-      this.group.get('qualificationDocuments')?.setValue(base64String);
-
+      this.group.get("qualificationDocuments")?.setValue(base64String);
     };
 
     reader.readAsDataURL(this.selectedFile);
 
-
     this.isFileUploaded = true;
-
-
   }
-
 
   onNext() {
     if (this.group.invalid) {

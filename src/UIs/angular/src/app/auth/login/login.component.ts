@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { AuthService } from "../auth.service";
 import { Router, RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
@@ -7,9 +7,9 @@ import { environment } from "src/environments/environment";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { selectLoginUser } from "src/app/Store/Auth/auth.selectors";
 import { AppState } from "src/app/Store/app.state";
-import { Store } from '@ngrx/store';
-import * as AuthActions from "../../Store/Auth/auth.actions"
-import { filter, take } from 'rxjs/operators';
+import { Store } from "@ngrx/store";
+import * as AuthActions from "../../Store/Auth/auth.actions";
+import { filter, take } from "rxjs/operators";
 
 declare const google: any;
 
@@ -17,6 +17,7 @@ declare const google: any;
   selector: "app-login",
   imports: [CommonModule, FormsModule, RouterModule, ReactiveFormsModule],
   templateUrl: "./login.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./login.component.css",
 })
 export class LoginComponent implements AfterViewInit, OnInit {
@@ -24,34 +25,27 @@ export class LoginComponent implements AfterViewInit, OnInit {
   clientId = environment.ResourceServer.GoogleClientID;
   loginForm!: FormGroup;
   isShowPatientLogin: boolean = false;
-  isShowAdminLogin: boolean = false
-  loginRole: string = '';
+  isShowAdminLogin: boolean = false;
+  loginRole: string = "";
   constructor(
     public auth: AuthService,
     private form_builder: FormBuilder,
     private router: Router,
     private store: Store<AppState>
   ) {
-
     // alert(this.router.url)
     if (this.router.url === "/patient-login") {
-
       this.isShowPatientLogin = true;
       this.loginRole = "Patient";
-
     }
 
     if (this.router.url === "/admin-login") {
-
       this.isShowAdminLogin = true;
       this.loginRole = "Admin";
-
     }
 
     if (this.router.url === "/associate-login") {
-
       this.loginRole = "Associate";
-
     }
   }
 
@@ -59,38 +53,36 @@ export class LoginComponent implements AfterViewInit, OnInit {
     this.waitForGoogle();
   }
   ngOnInit(): void {
-
     this.loginForm = this.form_builder.group({
       username: ["", [Validators.required]],
       password: ["", [Validators.required]],
       remember: [false],
     });
-    this.store.select(selectLoginUser)
+    this.store
+      .select(selectLoginUser)
       .pipe(
-        filter(response => !!response),
+        filter((response) => !!response),
         take(1)
       )
       .subscribe((response: any) => {
-        localStorage.setItem('loginTime', Date.now().toString());
-        localStorage.setItem('token', response.tokenKey);
-        localStorage.setItem('refreshToken', response.refreshToken);
-        localStorage.setItem('user', JSON.stringify(response.data));
+        localStorage.setItem("loginTime", Date.now().toString());
+        localStorage.setItem("token", response.tokenKey);
+        localStorage.setItem("refreshToken", response.refreshToken);
+        localStorage.setItem("user", JSON.stringify(response.data));
 
         switch (response.data.roleName) {
-
-          case 'Patient':
-            this.router.navigate(['/patient/dashboard']);
+          case "Patient":
+            this.router.navigate(["/patient/dashboard"]);
             break;
 
-          case 'Associate':
-            this.router.navigate(['/associate/dashboard']);
+          case "Associate":
+            this.router.navigate(["/associate/dashboard"]);
             break;
 
-          case 'Admin':
-            this.router.navigate(['/associate/dashboard']);
+          case "Admin":
+            this.router.navigate(["/associate/dashboard"]);
             break;
         }
-
       });
   }
 
@@ -136,20 +128,15 @@ export class LoginComponent implements AfterViewInit, OnInit {
   async onSubmit() {
     if (this.isShowPatientLogin) {
       if (this.loginForm.valid) {
-
         this.store.dispatch(
           AuthActions.login({
-
             username: this.loginForm.value.username,
 
             password: this.loginForm.value.password,
 
-            role: this.loginRole
-
+            role: this.loginRole,
           })
         );
-
-
       } else {
         this.loginForm.markAllAsTouched();
       }
@@ -162,14 +149,13 @@ export class LoginComponent implements AfterViewInit, OnInit {
         //   this.router.navigate(["/dashboard"]);
         // }
 
-        const patient =
-          this.store.dispatch(
-            AuthActions.login({
-              username: this.loginForm.value.username,
-              password: this.loginForm.value.password,
-              role: this.loginRole
-            })
-          );
+        const patient = this.store.dispatch(
+          AuthActions.login({
+            username: this.loginForm.value.username,
+            password: this.loginForm.value.password,
+            role: this.loginRole,
+          })
+        );
         // await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
         //   console.log(patient, "----------")
         //   if (patient) {
@@ -180,13 +166,10 @@ export class LoginComponent implements AfterViewInit, OnInit {
         //     this.router.navigate(['/associate/dashboard']);
         //   }
         // });
-
-
       } else {
         this.loginForm.markAllAsTouched();
       }
     }
-
   }
   get f() {
     return this.loginForm.controls;

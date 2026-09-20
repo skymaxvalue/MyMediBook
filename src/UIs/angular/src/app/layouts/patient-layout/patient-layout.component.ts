@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { NotificationComponent } from "src/app/core/notification.component";
 import { PatientFooterComponent } from "./patient-footer/patient-footer.component";
@@ -7,8 +7,15 @@ import { ConfirmationModalComponent } from "src/app/shared/Components/confirmati
 
 @Component({
   selector: "app-patient-layout",
-  imports: [NotificationComponent, RouterOutlet, PatientHeaderComponent, PatientFooterComponent, ConfirmationModalComponent],
+  imports: [
+    NotificationComponent,
+    RouterOutlet,
+    PatientHeaderComponent,
+    PatientFooterComponent,
+    ConfirmationModalComponent,
+  ],
   templateUrl: "./patient-layout.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./patient-layout.component.css",
 })
-export class PatientLayoutComponent { }
+export class PatientLayoutComponent {}
