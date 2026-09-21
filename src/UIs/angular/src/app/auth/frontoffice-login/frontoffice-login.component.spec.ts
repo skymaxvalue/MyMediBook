@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
+import { RouterTestingModule } from "@angular/router/testing";
 import { FrontofficeLoginComponent } from "./frontoffice-login.component";
+import { provideMockStore } from "@ngrx/store/testing";
 
 describe("FrontofficeLoginComponent", () => {
   let component: FrontofficeLoginComponent;
@@ -8,7 +10,11 @@ describe("FrontofficeLoginComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FrontofficeLoginComponent],
+      imports: [FrontofficeLoginComponent, RouterTestingModule
+      ],
+      providers: [
+        provideMockStore()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FrontofficeLoginComponent);

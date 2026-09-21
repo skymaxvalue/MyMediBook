@@ -27,7 +27,7 @@ import { GuidEmpty } from "src/app/shared/constants";
     MatNativeDateModule,
     MatInputModule,
     MatFormFieldModule
-],
+  ],
 })
 export class AddEditUserComponent implements OnInit {
   formMode: string = "add";
@@ -51,7 +51,7 @@ export class AddEditUserComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get("id");
@@ -59,7 +59,9 @@ export class AddEditUserComponent implements OnInit {
       this.formMode = "edit";
       this.userService.getUser(id).subscribe({
         next: (user) => {
-          this.user = user;
+          if (user) {
+            this.user = user;
+          }
         },
         error: (err) => (this.postErrorMessage = err),
       });
@@ -92,7 +94,10 @@ export class AddEditUserComponent implements OnInit {
           (result) => {
             console.log("success: ", result);
             this.isDirty = false;
-            this.router.navigate(["/users", result.id]);
+
+            if (result) {
+              this.router.navigate(["/users", result.id]);
+            }
           },
           (error) => this.onHttpError(error)
         );

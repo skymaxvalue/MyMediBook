@@ -8,6 +8,7 @@ import { FileService } from "../file.service";
 import { NgModel, NgForm } from "@angular/forms";
 import { GuidEmpty } from "src/app/shared/constants";
 
+
 @Component({
   selector: "app-upload-file",
   templateUrl: "./upload-file.component.html",
@@ -35,9 +36,9 @@ export class UploadFileComponent implements OnInit {
     private fileService: FileService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onBlur(field: NgModel) {
     if (field.dirty) {
@@ -57,7 +58,10 @@ export class UploadFileComponent implements OnInit {
         (result) => {
           console.log("success: ", result);
           this.isDirty = false;
-          this.router.navigate(["/files/edit", result.id]);
+          if (result) {
+            this.router.navigate(["/files/edit", result.id]);
+
+          }
         },
         (error) => this.onHttpError(error)
       );

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { AssignScheduleAsspciationComponent } from "./assign-schedule-asspciation.component";
+import { provideMockStore } from "@ngrx/store/testing";
 
 describe("AssignScheduleAsspciationComponent", () => {
   let component: AssignScheduleAsspciationComponent;
@@ -9,6 +10,9 @@ describe("AssignScheduleAsspciationComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AssignScheduleAsspciationComponent],
+      providers: [
+        provideMockStore()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AssignScheduleAsspciationComponent);

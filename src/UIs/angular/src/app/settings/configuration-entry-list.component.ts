@@ -19,16 +19,18 @@ import { MatDialogModule } from "@angular/material/dialog";
 export class ConfigurationEntryListComponent implements OnInit {
   GuidEmpty = GuidEmpty;
   configurationEntries: IConfigurationEntry[] = [];
-  selectedEntry: IConfigurationEntry = null;
-  addUpdateModalRef: MatDialogRef<any>;
-  deleteModalRef: MatDialogRef<any>;
-  importExcelModalRef: MatDialogRef<any>;
-  errorMessage;
-  importingFile;
+  selectedEntry: IConfigurationEntry | null = null;
+
+  addUpdateModalRef!: MatDialogRef<any>;
+  deleteModalRef!: MatDialogRef<any>;
+  importExcelModalRef!: MatDialogRef<any>;
+
+  errorMessage: string = "";
+  importingFile: File | null = null;
   constructor(
     private configurationEntriesService: ConfigurationEntriesService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.configurationEntriesService.getConfigurationEntries().subscribe({
@@ -75,8 +77,11 @@ export class ConfigurationEntryListComponent implements OnInit {
   }
 
   confirmAddUpdate(form: NgForm) {
-    if (form.invalid) return;
-    var request =
+    if (form.invalid || !this.selectedEntry) {
+      return;
+    }
+
+    const request =
       this.selectedEntry.id == GuidEmpty
         ? this.configurationEntriesService.addConfigurationEntry(this.selectedEntry)
         : this.configurationEntriesService.updateConfigurationEntry(this.selectedEntry);
@@ -92,16 +97,21 @@ export class ConfigurationEntryListComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.configurationEntriesService.deleteConfigurationEntry(this.selectedEntry).subscribe({
-      next: (rs) => {
-        console.log(rs);
-        this.deleteModalRef.close();
-        this.ngOnInit();
-      },
-      error: (err) => (this.errorMessage = err),
-    });
-  }
+    if (!this.selectedEntry) {
+      return;
+    }
 
+    this.configurationEntriesService
+      .deleteConfigurationEntry(this.selectedEntry)
+      .subscribe({
+        next: (rs) => {
+          console.log(rs);
+          this.deleteModalRef.close();
+          this.ngOnInit();
+        },
+        error: (err) => (this.errorMessage = err),
+      });
+  }
   cancelDelete() {
     this.deleteModalRef.close();
   }

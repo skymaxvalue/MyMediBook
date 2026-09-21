@@ -1,12 +1,12 @@
 export interface IUser {
   id: string;
-  userName: string;
-  email: string;
+  userName: string | null;
+  email: string | null;
   emailConfirmed: boolean;
-  phoneNumber: string;
+  phoneNumber: string | null;
   phoneNumberConfirmed: boolean;
   twoFactorEnabled: boolean;
   lockoutEnabled: boolean;
-  lockoutEnd: Date;
+  lockoutEnd: Date | null;
   accessFailedCount: number;
 }

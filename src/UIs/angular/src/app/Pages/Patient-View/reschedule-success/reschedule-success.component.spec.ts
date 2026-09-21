@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { RescheduleSuccessComponent } from "./reschedule-success.component";
+import { provideMockStore } from "@ngrx/store/testing";
 
 describe("RescheduleSuccessComponent", () => {
   let component: RescheduleSuccessComponent;
@@ -9,6 +10,9 @@ describe("RescheduleSuccessComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RescheduleSuccessComponent],
+      providers: [
+        provideMockStore()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RescheduleSuccessComponent);

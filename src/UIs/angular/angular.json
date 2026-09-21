@@ -53,31 +53,31 @@
               "namedChunks": false,
               "extractLicenses": true,
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
+                 {
+    "type": "initial",
+    "maximumWarning": "2MB",
+    "maximumError": "3MB"
+  },
+  {
+    "type": "anyComponentStyle",
+    "maximumWarning": "20kB",
+    "maximumError": "25kB"
+  }
               ]
             }
           },
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "buildTarget": "angular:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "angular:build:production"
-            }
-          }
+          "builder": "@angular/build:dev-server",
+     "options": {
+     "buildTarget": "angular:build"
+                 },
+         "configurations": {
+         "production": {
+      "buildTarget": "angular:build:production"
+    }
+  }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

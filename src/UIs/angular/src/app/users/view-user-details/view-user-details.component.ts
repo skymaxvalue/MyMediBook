@@ -17,26 +17,28 @@ import { MatDialogModule } from "@angular/material/dialog";
   imports: [FormsModule, RouterModule, MatDialogModule],
 })
 export class ViewUserDetailsComponent implements OnInit {
-  user: IUser = null;
+  user: IUser | null = null;
   setPasswordModel: any = {};
   passwordValidationErrors: any = [];
   postErrorMessage: string = "";
-  setPasswordModalRef: MatDialogRef<any>;
-  sendPasswordResetEmailModalRef: MatDialogRef<any>;
-  sendEmailAddressConfirmationEmailModalRef: MatDialogRef<any>;
+  setPasswordModalRef!: MatDialogRef<any>;
+  sendPasswordResetEmailModalRef!: MatDialogRef<any>;
+  sendEmailAddressConfirmationEmailModalRef!: MatDialogRef<any>;
   constructor(
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get("id");
     if (id) {
       this.userService.getUser(id).subscribe({
         next: (user) => {
-          this.user = user;
+          if (user) {
+            this.user = user;
+          }
         },
         error: (err) => (this.postErrorMessage = err),
       });
@@ -58,6 +60,10 @@ export class ViewUserDetailsComponent implements OnInit {
   }
 
   confirmSendPasswordResetEmail() {
+    if (!this.user) {
+      return;
+    }
+
     this.userService.sendPasswordResetEmail(this.user.id).subscribe({
       next: () => {
         this.sendPasswordResetEmailModalRef.close();
@@ -75,36 +81,52 @@ export class ViewUserDetailsComponent implements OnInit {
   }
 
   confirmSendEmailAddressConfirmationEmail() {
-    this.userService.sendEmailAddressConfirmationEmail(this.user.id).subscribe({
-      next: () => {
-        this.sendEmailAddressConfirmationEmailModalRef.close();
-      },
-      error: (err) => {
-        this.postErrorMessage = err;
-      },
-    });
+    if (!this.user) {
+      return;
+    }
+
+    this.userService
+      .sendEmailAddressConfirmationEmail(this.user.id)
+      .subscribe({
+        next: () => {
+          this.sendEmailAddressConfirmationEmailModalRef.close();
+        },
+        error: (err) => {
+          this.postErrorMessage = err;
+        },
+      });
   }
 
   confirmSetPassword(form: NgForm) {
+    if (!this.user) {
+      return;
+    }
+
     if (
       this.setPasswordModel.password &&
       this.setPasswordModel.password == this.setPasswordModel.confirmPassword
     ) {
-      this.userService.setPassword(this.user.id, this.setPasswordModel.confirmPassword).subscribe({
-        next: () => {
-          setTimeout(() => {
-            this.setPasswordModel = {};
-          }, 1000);
-          this.setPasswordModalRef.close();
-        },
-        error: (err) => {
-          if (Array.isArray(err)) {
-            this.passwordValidationErrors = err;
-          } else {
-            this.postErrorMessage = err;
-          }
-        },
-      });
+      this.userService
+        .setPassword(
+          this.user.id,
+          this.setPasswordModel.confirmPassword
+        )
+        .subscribe({
+          next: () => {
+            setTimeout(() => {
+              this.setPasswordModel = {};
+            }, 1000);
+
+            this.setPasswordModalRef.close();
+          },
+          error: (err) => {
+            if (Array.isArray(err)) {
+              this.passwordValidationErrors = err;
+            } else {
+              this.postErrorMessage = err;
+            }
+          },
+        });
     }
   }
 }

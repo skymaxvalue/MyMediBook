@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { provideMockStore } from "@ngrx/store/testing";
 import { PatientRegistrationFOComponent } from "./patient-registration-fo.component";
 
 describe("PatientRegistrationFOComponent", () => {
@@ -9,6 +9,9 @@ describe("PatientRegistrationFOComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PatientRegistrationFOComponent],
+      providers: [
+        provideMockStore()
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PatientRegistrationFOComponent);
