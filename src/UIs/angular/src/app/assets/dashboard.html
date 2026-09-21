@@ -7,6 +7,7 @@
     <title>Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/dashboard.css">
 
 
@@ -19,6 +20,8 @@
 
 <div class="dashboard-container">
 
+<!-- ===== Appointments card ===== -->
+<div class="dashboard-card">
 
 <div class="appointments-topbar">
 
@@ -35,18 +38,18 @@
 
     </div>
 
-    <div class="patient-filter">
+    <div class="topbar-controls">
 
-        <label class="filter-label">Filter by Patient :</label>
+    <div class="filter-group">
 
-
+        <label class="filter-label">Family Member</label>
 
     <div class="custom-select">
 
         <div class="selected-patient" id="selectedPatient">
 
             <div class="selected-left">
-                <img src="images/user.png" alt="">
+                <img src="images/user-icon.png" alt="">
                 <span id="selectedText">All Patients</span>
             </div>
 
@@ -68,7 +71,7 @@
 
             <div class="patient-option active" data-value="all">
     <div class="option-left">
-        <img src="images/user.png" alt="">
+        <img src="images/user-icon.png" alt="">
         <span>All Patients</span>
     </div>
     <i class="fas fa-check check-icon"></i>
@@ -76,7 +79,7 @@
 
 <div class="patient-option" data-value="Self">
     <div class="option-left">
-        <img src="images/user.png" alt="">
+        <img src="images/user-icon.png" alt="">
         <span>Self</span>
     </div>
     <i class="fas fa-check check-icon"></i>
@@ -84,7 +87,7 @@
 
 <div class="patient-option" data-value="Ramesh">
     <div class="option-left">
-        <img src="images/user.png" alt="">
+        <img src="images/user-icon.png" alt="">
         <span>Ramesh</span>
     </div>
     <i class="fas fa-check check-icon"></i>
@@ -92,7 +95,7 @@
 
 <div class="patient-option" data-value="Lakshmi">
     <div class="option-left">
-        <img src="images/user.png" alt="">
+        <img src="images/user-icon.png" alt="">
         <span>Lakshmi</span>
     </div>
     <i class="fas fa-check check-icon"></i>
@@ -100,7 +103,7 @@
 
 <div class="patient-option" data-value="Raman">
     <div class="option-left">
-        <img src="images/user.png" alt="">
+        <img src="images/user-icon.png" alt="">
         <span>Raman</span>
     </div>
     <i class="fas fa-check check-icon"></i>
@@ -112,15 +115,16 @@
 
 </div>
 
-    <div class="status-filter">
+    <div class="filter-group">
 
-    <label class="filter-label">Filter by Status :</label>
+    <label class="filter-label">Filter by Status</label>
 
     <div class="custom-select" id="statusSelect">
 
         <div class="selected-patient" id="selectedStatus">
 
             <div class="selected-left">
+                <img src="images/filter-icon.png" alt="">
                 <span id="selectedStatusText">All Status</span>
             </div>
 
@@ -172,6 +176,12 @@
     </div>
 
 </div>
+
+    <button class="new-btn" onclick="goToSpecialities()">
+        <img src="images/plus-icon.png" alt="">New Appointment
+    </button>
+
+    </div>
 
 </div>
 
@@ -326,11 +336,24 @@
             </tbody>
         </table>
 
-        <div class="btn-container">
-            <button class="new-btn" onclick="goToSpecialities()">
-                <img src="images/calendar.png" alt="">New Appointment</button>
+        <div class="table-footer">
 
-            
+            <span class="results-count">Showing 5 of 5 appointments</span>
+
+            <div class="pagination">
+
+                <button class="page-arrow" id="prevPageBtn" disabled>
+                    <img src="images/arrow-left-icon.png" alt="Previous">
+                </button>
+
+                <button class="page-number active">1</button>
+
+                <button class="page-arrow" id="nextPageBtn" disabled>
+                    <img src="images/arrow-right-icon.png" alt="Next">
+                </button>
+
+            </div>
+
         </div>
 
     </div>

@@ -19,6 +19,8 @@ function initNavbar() {
     setActiveTab();
     setupDropdown();
     setupMobileMenu();
+    setupHospitalModal();
+    restoreSavedHospital();
 }
 
 function setUsername() {
@@ -57,42 +59,36 @@ function setDate() {
 }
 
 function setupNavbar() {
-    document.querySelectorAll(".nav-item").forEach(item => {
-    item.onclick = () => {
-
-        const nav = document.getElementById("navbar");
-        const btn = document.getElementById("mobileMenuBtn");
-
-        nav?.classList.remove("show");
-
-        if (btn) {
-            btn.textContent = "☰";
-        }
-
-        const page = item.getAttribute("data-page");
-
-        if (page === "appointments")
-            location.href = "dashboard.html";
-
-        if (page === "specialities")
-            location.href = "specialities.html";
-
-        if (page === "medicine")
-            location.href = "medicine-orders.html";
-
-        if (page === "lab-results")
-            location.href = "lab-results.html";
-
-        if (page === "billing")
-            location.href = "billing.html";
-
-        if (page === "messages")
-            location.href = "messages.html";
-
-        if (page === "settings")
-            location.href = "settings.html";
+    const routes = {
+        "appointments": "dashboard.html",
+        "specialities": "specialities.html",
+        "medicine": "medicine-orders.html",
+        "lab-results": "lab-results.html",
+        "billing": "billing.html",
+        "messages": "messages.html",
+        "settings": "settings.html"
     };
-});
+
+    document.querySelectorAll(".nav-item").forEach(item => {
+        item.onclick = () => {
+
+            const nav = document.getElementById("navbar");
+            const btn = document.getElementById("mobileMenuBtn");
+
+            nav?.classList.remove("show");
+            if (btn) btn.textContent = "☰";
+
+            const page = item.getAttribute("data-page");
+            const target = routes[page];
+            if (!target) return;
+
+            document.body.classList.add("page-exit");
+
+            setTimeout(() => {
+                window.location.href = target;
+            }, 120);
+        };
+    });
 }
 
 function setActiveTab() {
@@ -190,3 +186,142 @@ function setupMobileMenu() {
     });
 }
 
+
+
+// ============ Select Hospital modal ============
+
+let pendingHospital = null;
+
+function openHospitalModal() {
+    document.getElementById("hospitalModal")?.classList.add("show");
+}
+
+function closeHospitalModal() {
+    document.getElementById("hospitalModal")?.classList.remove("show");
+}
+
+function setupHospitalModal() {
+
+    const hospitalModalEl = document.getElementById("hospitalModal");
+    if (!hospitalModalEl) return;
+
+    hospitalModalEl.addEventListener("click", function (e) {
+        if (e.target === this) {
+            closeHospitalModal();
+        }
+    });
+
+    const hospitalOptions = hospitalModalEl.querySelectorAll(".hospital-option:not(.no-results)");
+
+    hospitalOptions.forEach(option => {
+
+        option.onclick = () => {
+
+            hospitalOptions.forEach(o => {
+                o.classList.remove("selected");
+                o.querySelector(".hospital-radio").classList.remove("checked");
+            });
+
+            option.classList.add("selected");
+            option.querySelector(".hospital-radio").classList.add("checked");
+
+            pendingHospital = {
+                name: option.dataset.name,
+                location: option.dataset.location
+            };
+
+        };
+
+    });
+
+    const hospitalSearchInput = document.getElementById("hospitalSearch");
+    const noHospitalResults = document.getElementById("noHospitalResults");
+
+    if (!hospitalSearchInput || !noHospitalResults) return;
+
+    hospitalSearchInput.addEventListener("keyup", () => {
+
+        const value = hospitalSearchInput.value.toLowerCase();
+        let visibleCount = 0;
+
+        hospitalOptions.forEach(option => {
+
+            const matches =
+                option.dataset.name.toLowerCase().includes(value) ||
+                option.dataset.location.toLowerCase().includes(value);
+
+            option.style.display = matches ? "flex" : "none";
+
+            if (matches) visibleCount++;
+
+        });
+
+        noHospitalResults.style.display = visibleCount === 0 ? "block" : "none";
+
+    });
+
+}
+
+function confirmSwitchHospital() {
+
+    if (pendingHospital) {
+
+        applyHospital(pendingHospital);
+
+        localStorage.setItem("currentHospital", JSON.stringify(pendingHospital));
+
+    }
+
+    closeHospitalModal();
+
+}
+
+function applyHospital(hospital) {
+
+    const nameEl = document.getElementById("currentHospitalName");
+    const locationEl = document.getElementById("currentHospitalLocation");
+    const headerNameEl = document.getElementById("headerHospitalName");
+
+    if (nameEl) nameEl.innerText = hospital.name;
+    if (locationEl) locationEl.innerText = hospital.location;
+    if (headerNameEl) headerNameEl.innerText = hospital.name.toUpperCase();
+
+    const hospitalOptions = document.querySelectorAll("#hospitalList .hospital-option:not(.no-results)");
+
+    hospitalOptions.forEach(option => {
+
+        const isMatch = option.dataset.name === hospital.name;
+        const radio = option.querySelector(".hospital-radio");
+
+        option.classList.toggle("selected", isMatch);
+        if (radio) radio.classList.toggle("checked", isMatch);
+
+        let badge = option.querySelector(".current-badge");
+
+        if (isMatch && !badge) {
+            badge = document.createElement("span");
+            badge.className = "current-badge";
+            badge.innerText = "Current";
+            option.insertBefore(badge, radio);
+        } else if (!isMatch && badge) {
+            badge.remove();
+        }
+
+    });
+
+    pendingHospital = hospital;
+
+}
+
+function restoreSavedHospital() {
+
+    const saved = localStorage.getItem("currentHospital");
+    if (!saved) return;
+
+    try {
+        applyHospital(JSON.parse(saved));
+    } catch (e) {
+        console.error("Failed to restore saved hospital:", e);
+    }
+
+}

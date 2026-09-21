@@ -61,14 +61,12 @@ function loadPatients() {
 const patients = loadPatients();
 let selectedPatient = null;
 
-/* ======================================================
-   INIT
-====================================================== */
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
     initPatientSearch();
-    loadDraft();
+    
 
     document
         .getElementById("saveDraftBtn")
@@ -78,9 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/* ======================================================
-   PATIENT SEARCH (AUTO)
-====================================================== */
+
 
 const lastNameInput = document.getElementById("patientLastNameSearch");
 const dobInput = document.getElementById("patientDobSearch");
@@ -228,9 +224,7 @@ function clearSearch() {
 
 }
 
-/* ======================================================
-   POPULATE DATABASE VALUES
-====================================================== */
+
 
 function populatePatient(patient) {
 
@@ -256,83 +250,17 @@ function populatePatient(patient) {
 
 }
 
-/* ======================================================
-   SAVE DRAFT
-====================================================== */
+
 
 function saveDraft() {
-
-    const draft = {
-
-        patient: selectedPatient,
-
-        admissionDate:
-            document.getElementById("admissionDate").value,
-
-        expectedDischarge:
-            document.getElementById("expectedDischarge").value,
-
-        patientContact:
-            document.getElementById("patientContact").value,
-
-        emergencyName:
-            document.getElementById("emergencyName").value,
-
-        emergencyPhone:
-            document.getElementById("emergencyPhone").value,
-
-        physician:
-            document.getElementById("attendingPhysician").value
-
-    };
-
-    localStorage.setItem(
-        ROOM_DRAFT_KEY,
-        JSON.stringify(draft)
-    );
-
-    document.getElementById("draftSavedModal").classList.add("show");
-
+   
+    document
+        .getElementById("draftSavedModal")
+        .classList.add("show");
 }
 
-/* ======================================================
-   LOAD SAVED DRAFT
-====================================================== */
 
-function loadDraft() {
 
-    const raw = localStorage.getItem(ROOM_DRAFT_KEY);
-
-    if (!raw) return;
-
-    const draft = JSON.parse(raw);
-
-    if (draft.patient)
-        populatePatient(draft.patient);
-
-    document.getElementById("admissionDate").value =
-        draft.admissionDate || "";
-
-    document.getElementById("expectedDischarge").value =
-        draft.expectedDischarge || "";
-
-    document.getElementById("patientContact").value =
-        draft.patientContact || "";
-
-    document.getElementById("emergencyName").value =
-        draft.emergencyName || "";
-
-    document.getElementById("emergencyPhone").value =
-        draft.emergencyPhone || "";
-
-    document.getElementById("attendingPhysician").value =
-        draft.physician || "";
-
-}
-
-/* ======================================================
-   MULTI STEP STEPPER (5 STEPS)
-====================================================== */
 
 let currentStep = 1;
 
@@ -348,7 +276,7 @@ backBtn.addEventListener("click", previousStep);
 
 function nextStep() {
 
-    // Validate Step 1
+  
     if (currentStep === 1) {
 
         if (!selectedPatient) {
@@ -426,9 +354,6 @@ function goToStep(step) {
 
 }
 
-/* ======================================================
-   SAVE CURRENT FORM DATA
-====================================================== */
 
 function saveStepData() {
 
@@ -508,9 +433,7 @@ function saveStepData() {
 
 }
 
-/* ======================================================
-   FINAL SUBMIT (placeholder)
-====================================================== */
+
 
 function submitRoomRequest() {
 
