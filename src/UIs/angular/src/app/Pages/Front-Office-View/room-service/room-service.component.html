@@ -1,0 +1,876 @@
+<main class="dashboard-container">
+
+    <section class="rs-page-card">
+
+        <!-- HEADER -->
+
+        <div class="rs-page-header">
+
+            <div class="rs-title-group">
+
+                <div class="rs-icon-circle">
+
+                    <img src="/assets/images/front-office/images/room-service.png" alt="">
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Room Service Request
+                    </h2>
+
+                    <p>
+                        Clinical & hospitality services ·
+                        Complete all steps to submit
+                    </p>
+
+                </div>
+
+            </div>
+
+            <span class="rs-request-id">
+                RSQ-GU07BT
+            </span>
+
+        </div>
+
+
+        <!-- STEPPER -->
+
+        <div class="rs-stepper">
+
+            @for (
+            step of [1,2,3,4,5];
+            track step
+            ) {
+
+            <div class="rs-step" [class.active]="currentStep === step">
+
+                <span>
+                    {{ step < 10 ? '0' + step : step }} </span>
+
+                        <strong>
+
+                            @switch (step) {
+
+                            @case (1) {
+                            Patient
+                            }
+
+                            @case (2) {
+                            Room
+                            }
+
+                            @case (3) {
+                            Meals
+                            }
+
+                            @case (4) {
+                            Services
+                            }
+
+                            @case (5) {
+                            Review
+                            }
+
+                            }
+
+                        </strong>
+
+            </div>
+
+            }
+
+        </div>
+
+
+        <form [formGroup]="roomServiceForm" (ngSubmit)="nextStep()">
+
+            <!-- ================================================= -->
+            <!-- STEP 1 -->
+            <!-- ================================================= -->
+
+            @if (currentStep === 1) {
+
+            <section class="rs-step-panel active">
+
+                <!-- PATIENT SEARCH -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/search-blue.png" alt="">
+
+                        <h3>
+                            Select Patient Profile
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-search-layout" [formGroup]="patientSearchForm">
+
+                        <div class="rs-search-column">
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Patient Last Name
+                                </label>
+
+                                <div class="rs-input-icon">
+
+                                    <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+
+                                    <input type="text" formControlName="lastName" placeholder="Enter last name"
+                                        (input)="searchPatients()">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Date of Birth
+                                </label>
+
+                                <input type="date" formControlName="dob" (change)="searchPatients()">
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="rs-search-divider">
+
+                            <span>
+                                OR
+                            </span>
+
+                        </div>
+
+
+                        <div class="rs-search-column">
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Mobile Number
+                                </label>
+
+                                <div class="rs-input-icon">
+
+                                    <img src="/assets/images/front-office/images/phone-blue.png" alt="">
+
+                                    <input type="tel" formControlName="mobile" placeholder="Enter mobile number"
+                                        (input)="searchPatients()">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="rs-search-actions">
+
+                                <button type="button" class="btn-outline-danger" (click)="clearSearch()">
+                                    Clear
+                                </button>
+
+
+                                <button type="button" class="btn-primary" (click)="searchPatients()">
+
+                                    <img src="/assets/images/front-office/images/search-white.png" alt="">
+
+                                    Search
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEARCH RESULTS -->
+
+                    @if (showPatientResults) {
+
+                    <div class="rs-search-results show">
+
+                        @if (filteredPatients.length > 0) {
+
+                        @for (
+                        patient of filteredPatients;
+                        track patient.id
+                        ) {
+
+                        <div class="rs-result-item">
+
+                            <div class="rs-result-left">
+
+                                <div class="rs-result-avatar">
+
+                                    <img src="/assets/images/front-office/images/profile-outline.png" alt="">
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="rs-result-name">
+                                        {{ patient.firstName }}
+                                        {{ patient.lastName }}
+                                    </div>
+
+                                    <div class="rs-result-meta">
+                                        {{ patient.phone }}
+                                        •
+                                        {{ patient.mrn }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <button type="button" class="btn-select" (click)="selectPatient(patient)">
+                                Select Patient
+                            </button>
+
+                        </div>
+
+                        }
+
+                        } @else {
+
+                        <div class="rs-empty-result">
+                            No Matching Record Found
+                        </div>
+
+                        }
+
+                    </div>
+
+                    }
+
+                </section>
+
+
+                <!-- PATIENT INFORMATION -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="">
+
+                        <h3>
+                            Patient Information
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-grid-2">
+
+                        <div class="rs-field">
+
+                            <label>
+                                First Name *
+                            </label>
+
+                            <input type="text" [value]="selectedPatient?.firstName || ''" readonly>
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Last Name *
+                            </label>
+
+                            <input type="text" [value]="selectedPatient?.lastName || ''" readonly>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rs-grid-3">
+
+                        <div class="rs-field">
+
+                            <label>
+                                Date of Birth *
+                            </label>
+
+                            <input type="date" [value]="selectedPatient?.dob || ''" readonly>
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Gender *
+                            </label>
+
+                            <select [value]="selectedPatient?.gender || ''" disabled>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Medical Record #
+                            </label>
+
+                            <input type="text" [value]="selectedPatient?.mrn || ''" readonly>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rs-grid-2">
+
+                        <div class="rs-field">
+
+                            <label>
+                                Insurance Provider
+                            </label>
+
+                            <input type="text" [value]="selectedPatient?.insurance || ''" readonly>
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Member ID
+                            </label>
+
+                            <input type="text" [value]="selectedPatient?.memberId || ''" readonly>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ADMISSION -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/phone-blue.png" alt="">
+
+                        <h3>
+                            Admission & Contact
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-grid-3">
+
+                        <div class="rs-field">
+
+                            <label>
+                                Admission Date *
+                            </label>
+
+                            <input type="date" formControlName="admissionDate">
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Expected Discharge
+                            </label>
+
+                            <input type="date" formControlName="expectedDischarge">
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Patient Contact #
+                            </label>
+
+                            <input type="tel" formControlName="patientContact" placeholder="(000) 000-0000">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rs-grid-2">
+
+                        <div class="rs-field">
+
+                            <label>
+                                Emergency Contact Name
+                            </label>
+
+                            <input type="text" formControlName="emergencyName" placeholder="Full name">
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Emergency Contact Phone
+                            </label>
+
+                            <input type="tel" formControlName="emergencyPhone" placeholder="(000) 000-0000">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rs-field">
+
+                        <label>
+                            Attending Physician
+                        </label>
+
+                        <input type="text" formControlName="attendingPhysician"
+                            placeholder="Dr. Last, First — department">
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- STEP 2 -->
+            <!-- ================================================= -->
+
+            @if (currentStep === 2) {
+
+            <section class="rs-step-panel active">
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/room-service.png" alt="">
+
+                        <h3>
+                            Room Type Preference
+                        </h3>
+
+                    </div>
+
+
+                    <div class="room-grid">
+
+                        @for (
+                        room of roomTypes;
+                        track room.value
+                        ) {
+
+                        <label class="room-card" [class.selected]="
+                                        roomServiceForm.get('roomType')?.value
+                                        === room.value
+                                    ">
+
+                            <input type="radio" formControlName="roomType" [value]="room.value">
+
+                            <img [src]="room.image" alt="">
+
+                            <h4>
+                                {{ room.title }}
+                            </h4>
+
+                            <p>
+                                {{ room.description }}
+                            </p>
+
+                        </label>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- AMENITIES -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/settings-icon.png" alt="">
+
+                        <h3>
+                            Room Amenities Requested
+                        </h3>
+
+                    </div>
+
+
+                    <div class="amenity-grid">
+
+                        @for (
+                        amenity of amenities;
+                        track amenity.value
+                        ) {
+
+                        <label>
+
+                            <input type="checkbox" [checked]="
+                                            isAmenitySelected(
+                                                amenity.value
+                                            )
+                                        " (change)="
+                                            toggleAmenity(
+                                                amenity.value
+                                            )
+                                        ">
+
+                            {{ amenity.label }}
+
+                        </label>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- HOUSEKEEPING -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/cleaning-icon.png" alt="">
+
+                        <h3>
+                            Housekeeping Schedule
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-grid-2">
+
+                        <div class="rs-field">
+
+                            <label>
+                                Preferred Cleaning Time
+                            </label>
+
+                            <select formControlName="cleaningTime">
+
+                                <option>
+                                    Early morning (6–8 AM)
+                                </option>
+
+                                <option>
+                                    Morning (8–11 AM)
+                                </option>
+
+                                <option>
+                                    Afternoon (1–4 PM)
+                                </option>
+
+                                <option>
+                                    Evening (5–7 PM)
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Frequency
+                            </label>
+
+                            <select formControlName="cleaningFrequency">
+
+                                <option>
+                                    Once daily
+                                </option>
+
+                                <option>
+                                    Twice daily
+                                </option>
+
+                                <option>
+                                    On request
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rs-field">
+
+                        <label>
+                            Special Housekeeping Notes
+                        </label>
+
+                        <textarea formControlName="housekeepingNotes" maxlength="500"
+                            placeholder="Allergies to cleaning products, preferred scents, do-not-disturb windows..."></textarea>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- STEP 3 -->
+            <!-- ================================================= -->
+
+            @if (currentStep === 3) {
+
+            <section class="rs-step-panel active">
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <h3>
+                            Meal Preferences
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Step 3 content can be added here.
+                    </p>
+
+                </section>
+
+            </section>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- STEP 4 -->
+            <!-- ================================================= -->
+
+            @if (currentStep === 4) {
+
+            <section class="rs-step-panel active">
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <h3>
+                            Services
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Step 4 content can be added here.
+                    </p>
+
+                </section>
+
+            </section>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- STEP 5 -->
+            <!-- ================================================= -->
+
+            @if (currentStep === 5) {
+
+            <section class="rs-step-panel active">
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <h3>
+                            Review Request
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        Review the complete room service request
+                        before submitting.
+                    </p>
+
+                    @if (selectedPatient) {
+
+                    <div class="review-box">
+
+                        <strong>
+                            Patient:
+                        </strong>
+
+                        {{ selectedPatient.firstName }}
+                        {{ selectedPatient.lastName }}
+
+                    </div>
+
+                    }
+
+                </section>
+
+            </section>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- FOOTER -->
+            <!-- ================================================= -->
+
+            <div class="rs-form-footer">
+
+                <div class="rs-step-count">
+
+                    Step {{ currentStep }}
+                    of {{ totalSteps }}
+
+                </div>
+
+
+                <div class="rs-footer-actions">
+
+                    <button type="button" class="btn-outline" (click)="saveDraft()">
+
+                        <img src="/assets/images/front-office/images/save.png" alt="">
+
+                        Save draft
+
+                    </button>
+
+
+                    @if (currentStep > 1) {
+
+                    <button type="button" class="btn-outline" (click)="previousStep()">
+
+                        <img src="/assets/images/front-office/images/arrow-left.png" alt="">
+
+                        Back
+
+                    </button>
+
+                    }
+
+
+                    <button type="button" class="btn-primary" (click)="nextStep()">
+
+                        @if (currentStep === totalSteps) {
+
+                        Submit
+
+                        <img src="/assets/images/front-office/images/check-white.png" alt="">
+
+                        } @else {
+
+                        Continue
+
+                        <img src="/assets/images/front-office/images/arrow-right.png" alt="">
+
+                        }
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<!-- ===================================================== -->
+<!-- DRAFT MODAL -->
+<!-- ===================================================== -->
+
+@if (showDraftModal) {
+
+<div class="modal-overlay show">
+
+    <div class="modal-card">
+
+        <div class="modal-success-icon">
+
+            <img src="/assets/images/front-office/images/icon-normal.png" alt="Success">
+
+        </div>
+
+
+        <h3>
+            Draft Saved
+        </h3>
+
+
+        <p>
+            Your Room Service Request has been saved successfully.
+            You can continue later from your drafts.
+        </p>
+
+
+        <button type="button" class="btn-primary modal-btn" (click)="closeDraftModal()">
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+}
