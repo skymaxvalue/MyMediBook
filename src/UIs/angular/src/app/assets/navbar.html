@@ -44,11 +44,11 @@
 
         <div class="hospital">
              <img class="hospital-icon" src="images/hospital.png" alt="">
-            <span>HEALTH HEAVEN <br class="mobile-break"> MEDICAL CENTER</span>
+            <span id="headerHospitalName">HEALTH HEAVEN <br class="mobile-break"> MEDICAL CENTER</span>
         </div>
 
         <div class="title">
-            Patient Activity Center
+            PATIENT ACTIVITY CENTER
         </div>
 
     </div>
@@ -94,20 +94,159 @@
 </div>
 
 
+<div class="hospital-strip">
+
+    <div class="hospital-info">
+
+        <div class="hospital-strip-icon">
+            <img src="images/hospital.png" alt="">
+        </div>
+
+        <div class="hospital-text">
+            <span class="hospital-label">CURRENT HOSPITAL</span>
+            <div class="hospital-name-row">
+                <h3 id="currentHospitalName">Health Haven Medical Center</h3>
+                <span class="active-badge"><span class="active-dot"></span>Active</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hospital-location">
+        <img src="images/location-pin-icon.png" alt="">
+        <span id="currentHospitalLocation">Hospital Location, Street Address</span>
+    </div>
+
+    <button class="change-hospital-btn" onclick="openHospitalModal()">
+        <img src="images/change-hospital-icon.png" alt="">
+        Change Hospital
+        <span class="chevron">&#9662;</span>
+    </button>
+
+</div>
+
+
 <div class="navbar" id="navbar">
-    <div class="nav-item" data-page="appointments">My Appointments</div>
+    <div class="nav-item" data-page="appointments"><img src="images/tab-appointments-icon.png" alt="">My Appointments</div>
 
-    <div class="nav-item" data-page="specialities">Specialities</div>
+    <div class="nav-item" data-page="specialities"><img src="images/tab-specialities-icon.png" alt="">Specialities</div>
 
-    <div class="nav-item" data-page="medicine">Medicine Orders</div>
+    <div class="nav-item" data-page="medicine"><img src="images/tab-medicine-icon.png" alt="">Medicine Orders</div>
 
-    <div class="nav-item" data-page="lab-results">Lab Results</div>
+    <div class="nav-item" data-page="lab-results"><img src="images/tab-lab-icon.png" alt="">Lab Results</div>
 
-    <div class="nav-item" data-page="billing">Billing</div>
+    <div class="nav-item" data-page="billing"><img src="images/tab-billing-icon.png" alt="">Billing</div>
 
-    <div class="nav-item" data-page="messages">Messages</div>
+    <div class="nav-item" data-page="messages"><img src="images/tab-messages-icon.png" alt="">Messages</div>
 
-    <div class="nav-item" data-page="settings">Settings</div>
+    <div class="nav-item" data-page="settings"><img src="images/tab-settings-icon.png" alt="">Settings</div>
+</div>
+
+
+<div id="hospitalModal" class="modal-overlay">
+
+    <div class="hospital-modal">
+
+        <button class="close-modal" onclick="closeHospitalModal()">
+            <img src="images/close-circle.png" alt="Close">
+        </button>
+
+        <div class="hospital-modal-header">
+            <h2>Select Hospital</h2>
+            <p class="modal-subtitle">Choose a hospital to view information and manage appointments</p>
+        </div>
+
+        <div class="hospital-search-box">
+            <img src="images/search-icon.png" alt="">
+            <input type="text" id="hospitalSearch" placeholder="Search hospital name, city, or location...">
+        </div>
+
+        <div class="hospital-list" id="hospitalList">
+
+            <div class="hospital-option selected" data-name="Health Haven Medical Center" data-location="Main Campus, Kolkata">
+
+                <img class="hospital-thumb" src="images/hospital-photo-1.png" alt="">
+
+                <div class="hospital-option-text">
+                    <h4>Health Haven Medical Center</h4>
+                    <span class="hospital-option-location">
+                        <img src="images/location-pin-icon.png" alt="">
+                        Main Campus, Kolkata
+                    </span>
+                </div>
+
+                <span class="current-badge">Current</span>
+
+                <span class="hospital-radio checked"></span>
+
+            </div>
+
+            <div class="hospital-option" data-name="Health Haven Salt Lake" data-location="Salt Lake, Kolkata">
+
+                <img class="hospital-thumb" src="images/hospital-photo-2.png" alt="">
+
+                <div class="hospital-option-text">
+                    <h4>Health Haven Salt Lake</h4>
+                    <span class="hospital-option-location">
+                        <img src="images/location-pin-icon.png" alt="">
+                        Salt Lake, Kolkata
+                    </span>
+                </div>
+
+                <span class="hospital-radio"></span>
+
+            </div>
+
+            <div class="hospital-option" data-name="Health Haven New Town" data-location="New Town, Kolkata">
+
+                <img class="hospital-thumb" src="images/hospital-photo-3.png" alt="">
+
+                <div class="hospital-option-text">
+                    <h4>Health Haven New Town</h4>
+                    <span class="hospital-option-location">
+                        <img src="images/location-pin-icon.png" alt="">
+                        New Town, Kolkata
+                    </span>
+                </div>
+
+                <span class="hospital-radio"></span>
+
+            </div>
+
+            <div class="hospital-option" data-name="Health Haven Howrah" data-location="Howrah, West Bengal">
+
+                <img class="hospital-thumb" src="images/hospital-photo-4.png" alt="">
+
+                <div class="hospital-option-text">
+                    <h4>Health Haven Howrah</h4>
+                    <span class="hospital-option-location">
+                        <img src="images/location-pin-icon.png" alt="">
+                        Howrah, West Bengal
+                    </span>
+                </div>
+
+                <span class="hospital-radio"></span>
+
+            </div>
+
+            <div class="hospital-option no-results" id="noHospitalResults" style="display:none;">
+                No hospitals match your search.
+            </div>
+
+        </div>
+
+        <div class="hospital-modal-buttons">
+
+            <button class="keep-btn" onclick="closeHospitalModal()">Cancel</button>
+
+            <button class="delete-btn hospital-switch-btn" id="switchHospitalBtn" onclick="confirmSwitchHospital()">
+                Switch Hospital
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
 
