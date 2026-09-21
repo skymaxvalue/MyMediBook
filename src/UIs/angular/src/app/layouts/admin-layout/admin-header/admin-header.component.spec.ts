@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { AdminHeaderComponent } from "./admin-header.component";
+import { provideMockStore } from "@ngrx/store/testing";
 
 describe("AdminHeaderComponent", () => {
   let component: AdminHeaderComponent;
@@ -9,6 +10,9 @@ describe("AdminHeaderComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminHeaderComponent],
+      providers: [
+        provideMockStore()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminHeaderComponent);

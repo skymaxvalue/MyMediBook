@@ -16,14 +16,14 @@ import { MatDialogModule } from "@angular/material/dialog";
 })
 export class ListUsersComponent implements OnInit {
   users: IUser[] = [];
-  selectedUser: IUser = null;
-  modalRef: MatDialogRef<any>;
-  errorMessage;
-  auditLogs: IAuditLogEntry[];
+  selectedUser: IUser | null = null;
+  modalRef!: MatDialogRef<any>;
+  errorMessage: string = "";
+  auditLogs: IAuditLogEntry[] = [];
   constructor(
     private userService: UserService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe({
@@ -40,6 +40,10 @@ export class ListUsersComponent implements OnInit {
   }
 
   confirmDelete() {
+    if (!this.selectedUser) {
+      return;
+    }
+
     this.userService.deleteUser(this.selectedUser).subscribe({
       next: (rs) => {
         console.log(rs);
@@ -57,8 +61,14 @@ export class ListUsersComponent implements OnInit {
   viewAuditLogs(template: TemplateRef<any>, file: IUser) {
     this.userService.getAuditLogs(file.id).subscribe({
       next: (logs) => {
-        this.auditLogs = logs;
-        this.dialog.open(template, { width: "90%", maxWidth: "1200px" });
+        if (logs) {
+          this.auditLogs = logs;
+        }
+
+        this.dialog.open(template, {
+          width: "90%",
+          maxWidth: "1200px",
+        });
       },
       error: (err) => (this.errorMessage = err),
     });

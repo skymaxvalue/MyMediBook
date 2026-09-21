@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { provideMockStore } from "@ngrx/store/testing";
 import { QualificationComponent } from "./qualification.component";
 
 describe("QualificationComponent", () => {
@@ -9,6 +9,9 @@ describe("QualificationComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [QualificationComponent],
+      providers: [
+        provideMockStore()
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(QualificationComponent);

@@ -16,14 +16,14 @@ import { MatDialogModule } from "@angular/material/dialog";
 })
 export class ListFilesComponent implements OnInit {
   files: IFile[] = [];
-  selectedFile: IFile = null;
-  modalRef: MatDialogRef<any>;
-  errorMessage;
-  auditLogs: IAuditLogEntry[];
+  selectedFile: IFile | null = null;
+  modalRef!: MatDialogRef<any>;
+  errorMessage: string = "";
+  auditLogs: IAuditLogEntry[] = [];
   constructor(
     private fileService: FileService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fileService.getFiles().subscribe({
@@ -40,7 +40,7 @@ export class ListFilesComponent implements OnInit {
         const url = window.URL.createObjectURL(rs);
         const element = document.createElement("a");
         element.href = url;
-        element.download = file.fileName;
+        element.download = file.fileName ?? "downloaded-file";
         document.body.appendChild(element);
         element.click();
       },
@@ -54,6 +54,10 @@ export class ListFilesComponent implements OnInit {
   }
 
   confirmDelete() {
+    if (!this.selectedFile) {
+      return;
+    }
+
     this.fileService.deleteFile(this.selectedFile).subscribe({
       next: (rs) => {
         console.log(rs);
@@ -71,8 +75,14 @@ export class ListFilesComponent implements OnInit {
   viewAuditLogs(template: TemplateRef<any>, file: IFile) {
     this.fileService.getAuditLogs(file.id).subscribe({
       next: (logs) => {
-        this.auditLogs = logs;
-        this.dialog.open(template, { width: "90%", maxWidth: "1200px" });
+        if (logs) {
+          this.auditLogs = logs;
+        }
+
+        this.dialog.open(template, {
+          width: "90%",
+          maxWidth: "1200px",
+        });
       },
       error: (err) => (this.errorMessage = err),
     });

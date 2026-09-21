@@ -19,11 +19,6 @@ import { getMyLabResults } from 'src/app/Store/Lab-Results/lab-result.actions';
 import { selectMyAllLabResultList } from 'src/app/Store/Lab-Results/lab-result.selcetors';
 import { PdfService } from 'src/app/core/Services/pdf.service';
 
-// IMPORTANT:
-// इथे तुमच्या project मधील actual selector import करा.
-// उदाहरण:
-// import { selectMyLabResults } from 'src/app/Store/Lab-Results/lab-result.selectors';
-
 
 type SortField =
   | 'patientName'
@@ -713,7 +708,6 @@ export class LabResultComponent {
       .trim();
 
 
-    // Example: 90 - 110
     const rangeMatch = range.match(
       /(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/
     );

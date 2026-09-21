@@ -13,7 +13,7 @@ import { IAuditLogEntry } from "../auditlogs/audit-log";
 export class FileService {
   private fileUrl = environment.ResourceServer.Endpoint + "files";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getFiles(): Observable<IFile[]> {
     return this.http
@@ -29,10 +29,21 @@ export class FileService {
 
   uploadFile(file: IFile): Observable<IFile | undefined> {
     const formData: FormData = new FormData();
-    formData.append("formFile", file.formFile);
-    formData.append("name", file.name);
-    formData.append("description", file.description);
+
+    if (file.formFile) {
+      formData.append("formFile", file.formFile);
+    }
+
+    if (file.name) {
+      formData.append("name", file.name);
+    }
+
+    if (file.description) {
+      formData.append("description", file.description);
+    }
+
     formData.append("encrypted", file.encrypted.toString());
+
     return this.http
       .post<IFile>(this.fileUrl, formData)
       .pipe(catchError(this.handleError));

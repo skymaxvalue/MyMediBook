@@ -32,19 +32,26 @@ export class EditFileComponent implements OnInit {
   postErrorMessage: string = "";
   postError = false;
   isDirty = false;
-  auditLogs: IAuditLogEntry[];
+  auditLogs: IAuditLogEntry[] = [];
   constructor(
     private fileService: FileService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get("id");
+
+    if (!id) {
+      return;
+    }
+
     this.fileService.getFile(id).subscribe({
       next: (file) => {
-        this.file = file;
+        if (file) {
+          this.file = file;
+        }
       },
       //error: err => this.errorMessage = err
     });
@@ -77,8 +84,14 @@ export class EditFileComponent implements OnInit {
   viewAuditLogs(template: TemplateRef<any>) {
     this.fileService.getAuditLogs(this.file.id).subscribe({
       next: (logs) => {
-        this.auditLogs = logs;
-        this.dialog.open(template, { width: "90%", maxWidth: "1200px" });
+        if (logs) {
+          this.auditLogs = logs;
+        }
+
+        this.dialog.open(template, {
+          width: "90%",
+          maxWidth: "1200px",
+        });
       },
       error: (error) => this.onHttpError(error),
     });

@@ -12,9 +12,15 @@ describe("UploadFileComponent", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UploadFileComponent],
-      imports: [FormsModule, RouterTestingModule],
-      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
+      imports: [
+        UploadFileComponent,
+        FormsModule,
+        RouterTestingModule
+      ],
+      providers: [
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting()
+      ],
     }).compileComponents();
   }));
 

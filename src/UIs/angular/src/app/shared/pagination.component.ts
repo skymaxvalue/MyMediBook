@@ -10,12 +10,14 @@ import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core
 })
 export class PaginationComponent implements OnChanges {
   pageNumbers: Array<number> = [];
-  totalPages: number;
-  constructor() {}
+  totalPages: number = 0;
+  constructor() { }
 
-  @Input() totalItems: number;
-  @Input() currentPage: number;
-  @Input() pageSize: number;
+
+
+  @Input() totalItems: number = 0;
+  @Input() currentPage: number = 1;
+  @Input() pageSize: number = 10;
   @Output() pageSelected = new EventEmitter<number>();
 
   selectPage = (page: number) => {
