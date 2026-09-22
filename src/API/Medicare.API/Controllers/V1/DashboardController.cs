@@ -23,6 +23,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Receptionist/GetDashboardSummary")]
         public async Task<IActionResult> GetDashboardSummary(DataRequestModel model)
         {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             DashboardSummaryModel response = new DashboardSummaryModel();
             response = await _mediator.Send(new GetDashboardSummaryQuery(model));
             return HandleResponse(response);
@@ -32,6 +33,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Receptionist/GetRecentPatientList")]
         public async Task<IActionResult> GetDashbGetRecentPatientListoardSummary(DataRequestModel model)
         {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             List<RecentPatientDataModel> response = new List<RecentPatientDataModel>();
             response = await _mediator.Send(new GetRecentPatientListQuery(model));
             return HandleListResponse(response);
@@ -41,6 +43,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Receptionist/GetPatientQueueList")]
         public async Task<IActionResult> GetPatientQueueList(DataRequestModel model)
         {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             List<PatientQueueDataModel> response = new List<PatientQueueDataModel>();
             response = await _mediator.Send(new GetTodaysPatientQueueQuery(model));
             return  HandleListResponse(response);

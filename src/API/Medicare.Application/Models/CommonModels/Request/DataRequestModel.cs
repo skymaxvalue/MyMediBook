@@ -4,6 +4,7 @@ namespace Medicare.Application.Models.CommonModels.Request
 {
     public class DataRequestModel
     {
+        [JsonIgnore]
         public int AssociateId { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }

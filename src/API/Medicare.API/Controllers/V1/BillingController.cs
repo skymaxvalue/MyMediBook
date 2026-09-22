@@ -28,9 +28,10 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetBillingListByPatientId/{patientId}")]
-        public async Task<IActionResult> GetBillsByPatientId(int patientId)
+        [Route("GetBillingListByPatientId")]
+        public async Task<IActionResult> GetBillsByPatientId()
         {
+            int patientId = int.Parse(User.FindFirst("RefId")!.Value);
             List<BillingSummaryModel> response = new List<BillingSummaryModel>();
             response = await _mediator.Send(new GetBillingListByPatientIdQuery(patientId));
             return HandleListResponse(response);

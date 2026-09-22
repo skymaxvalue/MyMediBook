@@ -7,6 +7,8 @@ namespace Medicare.Application.Models.Patient
     {
         public int ProfileId { get; set; }
         public int PatientId { get; set; }
+        public int EnrollmentId { get; set; }  
+        public bool IsSelf { get; set; }  
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? FullName { get; set; }

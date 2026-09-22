@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Medicare.Application.Features.Commands.Patient;
 using Medicare.Application.Features.Queries.Patient;
+using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Models.Hospital;
+using Medicare.Application.Models.JwtTokens;
 using Medicare.Application.Models.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +18,15 @@ namespace Medicare.API.Controllers.V1
     public class PatientController : BaseApiController
     {
         private readonly IMediator _mediator;
-        public PatientController(IMediator mediator)
+        private readonly IJwtTokenRepository _jwtTokenRepository;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IConfiguration _config;
+        public PatientController(IMediator mediator, IJwtTokenRepository jwtTokenRepository, IRefreshTokenRepository refreshTokenRepository, IConfiguration config)
         {
             _mediator = mediator;
+            _jwtTokenRepository = jwtTokenRepository;
+            _refreshTokenRepository = refreshTokenRepository;
+            _config = config;
         }
 
         [HttpGet]
@@ -33,17 +42,19 @@ namespace Medicare.API.Controllers.V1
         [Route("UpdatePatientDetails")]
         public async Task<IActionResult> UpdatePatientDetails([FromBody] UpdatePatientRequestModel model)
         {
+            model.PatientId = int.Parse(User.FindFirst("RefId")!.Value);
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new UpdatePatientCommand(model));
             return HandleResponse(response);
         }
 
         [HttpGet]
-        [Route("GetPatientById/{Id}")]
-        public async Task<IActionResult> GetPatientById([FromRoute] int Id)
+        [Route("GetPatientById")]
+        public async Task<IActionResult> GetPatientById()
         {
+            int patientId = int.Parse(User.FindFirst("RefId")!.Value);
             PatientDetailModel response = new PatientDetailModel();
-            response = await _mediator.Send(new GetPatientByIdQuery(Id));
+            response = await _mediator.Send(new GetPatientByIdQuery(patientId));
             return HandleResponse(response);
         }
 
@@ -57,11 +68,12 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpGet]
-        [Route("GetPatientProfileListById/{patientId}")]
-        public async Task<IActionResult> GetPatientProfileListById([FromRoute] int patientId)
+        [Route("GetPatientProfileListById")]
+        public async Task<IActionResult> GetPatientProfileListById()
         {
+            int enrollmentId = int.Parse(User.FindFirst("activeEnrollmentId")!.Value);
             List<PatientProfileModel> response = new List<PatientProfileModel>();
-            response = await _mediator.Send(new GetPatientProfileListByIdQuery(patientId));
+            response = await _mediator.Send(new GetPatientProfileListByIdQuery(enrollmentId));
             return HandleListResponse(response);
         }
 
@@ -83,5 +95,96 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [HttpPost]
+        [Route("EnrollPatientInHospital")]
+        public async Task<IActionResult> EnrollPatientInHospital([FromBody] EnrollPatientRequest model)
+        {
+            string userId = User.FindFirst("UserId")!.Value; 
+            EnrollPatientResponse response = new EnrollPatientResponse();
+            response = await _mediator.Send(new EnrollPatientInHospitalCommand(model.HospitalId, userId));
+            
+            if (response.IsSuccess != 1)        
+                return HandleResponse(response);
+
+            JwtPatientClaimModel tokenModel = new JwtPatientClaimModel()
+            {
+                UserId = Guid.Parse(userId),
+                RefId = int.Parse(User.FindFirst("RefId")!.Value),
+                UserType = User.FindFirst("UserType")!.Value,
+                Email = User.FindFirst("email")!.Value,
+                Username = User.FindFirst("unique_name")!.Value,
+                FullName = User.FindFirst("FullName")!.Value,
+                RoleName = User.FindFirst("UserType")!.Value,
+
+                ActiveHospitalId = response.HospitalId,
+                ActiveTenantId = response.TenantId,
+                ActiveEnrollmentId = response.EnrollmentId,
+                PatientRefNo = response.PatientRefNo,
+                TenantId = response.TenantId,
+                AllEnrollments = response.Enrollments
+            };
+
+            var token = _jwtTokenRepository.GeneratePatientToken(tokenModel);
+
+            string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
+            DateTime expiryDate = DateTime.UtcNow.AddDays(
+                int.Parse(_config["JwtSettings:RefreshTokenExpDays"]));
+
+            await _refreshTokenRepository.SaveRefreshTokenAsync(new JwtRefreshTokenModel
+            {
+                UserId = Guid.Parse(userId),
+                UserType = User.FindFirst("UserType")!.Value,
+                RefreshToken = refreshToken,
+                ExpiryDate = expiryDate
+            });
+
+            return HandleLoginResponse(response, token, refreshToken);
+        }
+
+        [HttpPost]
+        [Route("SwitchHospital")]
+        public async Task<IActionResult> SwitchHospital([FromBody] SwitchHospitalRequest model)
+        {
+            string userId = User.FindFirst("UserId")!.Value;
+            SwitchHospitalResponse response = new SwitchHospitalResponse();
+            response = await _mediator.Send(new SwitchHospitalCommand(model.HospitalId, userId));
+            
+            if (response.IsSuccess != 1)  
+                return HandleResponse(response);
+            
+            var token =  _jwtTokenRepository.GeneratePatientToken(new JwtPatientClaimModel
+            {
+                UserId = Guid.Parse(userId),
+                RefId = int.Parse(User.FindFirst("RefId")!.Value),
+                UserType = User.FindFirst("UserType")!.Value,
+                Email = User.FindFirst("email")!.Value,
+                Username = User.FindFirst("unique_name")!.Value,
+                FullName = User.FindFirst("FullName")!.Value,
+                RoleName = User.FindFirst("UserType")!.Value,
+
+                ActiveHospitalId = response.HospitalId,
+                ActiveTenantId = response.TenantId,
+                ActiveEnrollmentId = response.EnrollmentId,
+                PatientRefNo = response.PatientRefNo,
+                TenantId = response.TenantId,
+                AllEnrollments = response.Enrollments
+            });
+
+            string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
+            DateTime expiryDate = DateTime.UtcNow.AddDays(int.Parse(_config["JwtSettings:RefreshTokenExpDays"]));
+
+            var refreshTokenData = new JwtRefreshTokenModel
+            {
+                UserId = Guid.Parse(userId),
+                UserType = User.FindFirst("UserType")!.Value,
+                RefreshToken = refreshToken,
+                ExpiryDate = expiryDate
+            };
+
+            await _refreshTokenRepository.SaveRefreshTokenAsync(refreshTokenData);
+
+
+            return HandleLoginResponse(response, token, refreshToken);
+        }
     }
 }

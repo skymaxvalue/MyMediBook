@@ -7,7 +7,7 @@ namespace Medicare.Application.Interfaces.IDoctor
 {
     public interface IDoctorRepository
     {
-        Task<List<DoctorItemModel>> GetDoctorListAsync();
+        Task<List<DoctorItemModel>> GetDoctorListAsync(int activeHospitalId);
         Task<List<DoctorSpecialityDataModel>> GetDoctorSpecialityListAsync(string? doctorName, string? departmentName);
         Task<ResponseModel> CreateDoctorTimeSlotsAsync(AssociateScheduleModel model);
         Task<List<DoctorAvailabilityModel>> GetDoctorTimeSlotsAsync(DoctorTimeSlotRequestModel model);

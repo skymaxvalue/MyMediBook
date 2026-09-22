@@ -66,6 +66,7 @@ namespace Medicare.Application.Models.Patient
 
     public class UpdatePatientRequestModel
     {
+        [JsonIgnore]
         public int PatientId { get; set; }
         public string FirstName { get; set; }
         public string? MiddleName { get; set; }

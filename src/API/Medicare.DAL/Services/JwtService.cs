@@ -33,7 +33,11 @@ namespace Medicare.DAL.Services
                 new Claim("RefId",                              model.RefId.ToString()),
                 new Claim("UserType",                           model.UserType),
                 new Claim("FullName",                           model.FullName ?? ""),
-                new Claim("TenantId",                           model.TenantId.ToString())
+                new Claim("TenantId",                           model.TenantId.ToString()),
+                new Claim("RoleName",                           model.RoleName.ToString()),
+                new Claim("ActiveTenantId",                     model.ActiveTenantId.ToString()),
+                new Claim("ActiveHospitalId",                   model.ActiveHospitalId.ToString())
+
             };
 
             var token = new JwtSecurityToken(
@@ -47,7 +51,6 @@ namespace Medicare.DAL.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
         public string GeneratePasswordResetToken(string userId, string refId)
         {
             var key = new SymmetricSecurityKey(
@@ -57,7 +60,7 @@ namespace Medicare.DAL.Services
             {
                 new Claim("userId",     userId),
                 new Claim("refId",      refId),
-                new Claim("purpose",    "password-reset"), // prevents reuse of auth tokens
+                new Claim("purpose",    "password-reset"), 
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -65,7 +68,7 @@ namespace Medicare.DAL.Services
                 issuer: _configuration["JwtSettings:Issuer"],
                 audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30), // short lived
+                expires: DateTime.UtcNow.AddMinutes(30), 
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 
@@ -78,7 +81,6 @@ namespace Medicare.DAL.Services
             bytesGenerator.GetBytes(bytes);
             return Convert.ToBase64String(bytes);
         }
-
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
@@ -183,6 +185,56 @@ namespace Medicare.DAL.Services
             {
                 return null;
             }
+        }
+        public string GeneratePatientToken(JwtPatientClaimModel model)
+        {
+            var enrollmentsJson = System.Text.Json.JsonSerializer.Serialize(
+                    model.AllEnrollments.Select(e => new
+                    {
+                        enrollmentId = e.EnrollmentId,
+                        hospitalId = e.HospitalId,
+                        tenantId = e.TenantId,
+                        hospitalName = e.HospitalName
+                    })
+                );
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SigningKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,      model.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email,    model.Email ?? ""),        
+                new Claim(JwtRegisteredClaimNames.UniqueName, model.Username ?? ""),   
+                new Claim(JwtRegisteredClaimNames.Jti,      Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat,      DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
+                new Claim("UserId",             model.UserId.ToString()),
+                new Claim("PatientId",          model.PatientId.ToString()),
+                new Claim("RefId",              model.PatientId.ToString()),
+                new Claim("UserType",           "Patient"),
+                new Claim("Email",              model.Email ?? ""),
+                new Claim("Username",           model.Username ?? ""),                 
+                new Claim("FullName",           model.FullName ?? ""),                 
+                new Claim("RoleName",           model.RoleName ?? ""),                 
+                new Claim("ActiveHospitalId",   model.ActiveHospitalId.ToString()),
+                new Claim("ActiveTenantId",     model.ActiveTenantId.ToString()),
+                new Claim("ActiveEnrollmentId", model.ActiveEnrollmentId.ToString()),
+                new Claim("PatientRefNo",       model.PatientRefNo ?? ""),
+                new Claim("EnrollmentsJson",    enrollmentsJson),
+                new Claim("Role",               "Patient"),
+                new Claim(ClaimTypes.Role,      "Patient"),                            
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                signingCredentials: creds,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["JwtSettings:TokenExpiryMinutes"]))
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

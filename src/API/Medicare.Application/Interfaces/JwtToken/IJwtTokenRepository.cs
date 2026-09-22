@@ -12,5 +12,6 @@ namespace Medicare.Application.Interfaces.JwtToken
         string GeneratePasswordResetToken(string userId, string employeeId);
         string GenerateAppointmentConfirmationToken(int appointmentId);
         int? ValidateAppointmentConfirmationToken(string token);
+        string GeneratePatientToken(JwtPatientClaimModel model);
     }
 }
