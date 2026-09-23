@@ -90,6 +90,7 @@ namespace Medicare.API.Controllers.V1
         [Route("SearchPatient")]
         public async Task<IActionResult> SearchPatient(SearchPatientRequestModel model)
         {
+            model.HospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             List<SearchPatientResponseModel> response = new List<SearchPatientResponseModel>();
             response = await _mediator.Send(new SearchPatientCommand(model));
             return HandleListResponse(response);

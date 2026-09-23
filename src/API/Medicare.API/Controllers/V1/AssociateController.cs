@@ -33,8 +33,9 @@ namespace Medicare.API.Controllers.V1
         [Route("GetAssociateList")]
         public async Task<IActionResult> GetAssociateList()
         {
+            int hospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             List<AssociateListModel> response = new List<AssociateListModel>();
-            response = await _mediator.Send(new GetAssociateListQuery());
+            response = await _mediator.Send(new GetAssociateListQuery(hospitalId));
             return HandleListResponse(response);
         }
 

@@ -1,9 +1,14 @@
-﻿namespace Medicare.Application.Models.Appointment
+﻿using System.Text.Json.Serialization;
+
+namespace Medicare.Application.Models.Appointment
 {
     public class AppointmentMasterModel
     {
+        [JsonIgnore]
         public int PatientId { get; set; }
         public int ProfileId { get; set; }
+        [JsonIgnore]
+        public int EnrollmentId { get; set; }
         public int AssociateId { get; set; }
         public int SlotId { get; set; }
         public string FirstName { get; set; }

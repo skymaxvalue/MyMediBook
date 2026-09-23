@@ -194,6 +194,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("DOB", model.DOB);
                 param.Add("FromDate", model.FromDate?.Date);
                 param.Add("ToDate", model.ToDate?.Date);
+                param.Add("HospitalId", model.HospitalId);
 
                 returnData = await _context.QueryStoredProcListAsync<SearchPatientResponseModel>(procName, param);
             }

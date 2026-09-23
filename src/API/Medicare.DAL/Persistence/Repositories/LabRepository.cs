@@ -91,7 +91,7 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<List<LabResultSummaryModel>> GetLabResultDetailByProfileIdAsync(int profileId)
+        public async Task<List<LabResultSummaryModel>> GetLabResultDetailByProfileIdAsync(int profileId, int enrollmentId)
         {
             string procName = "USP_GetLabResultsByProfileId";
             List<LabResultSummaryModel> returnData = new List<LabResultSummaryModel>();
@@ -99,6 +99,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("ProfileId", profileId);
+                param.Add("EnrollmentId", enrollmentId);
 
                 returnData = await _context.QueryStoredProcListAsync<LabResultSummaryModel>(procName, param);
             }

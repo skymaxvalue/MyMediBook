@@ -50,10 +50,11 @@ namespace Medicare.API.Controllers.V1
 
         [HttpGet]
         [Route("GetLabResultsByProfileId/{profileId}")]
-        public async Task<IActionResult> GetLabResultsByProfileId(int profileId)
+        public async Task<IActionResult> GetLabResultsByProfileId([FromRoute] int profileId)
         {
+            int enrollmentId = int.Parse(User.FindFirst("ActiveEnrollmentId")!.Value);
             List<LabResultSummaryModel> response = new List<LabResultSummaryModel>();
-            response = await _mediator.Send(new GetLabResultsByProfileIdQuery(profileId));
+            response = await _mediator.Send(new GetLabResultsByProfileIdQuery(profileId, enrollmentId));
             return HandleListResponse(response);
         }
     }

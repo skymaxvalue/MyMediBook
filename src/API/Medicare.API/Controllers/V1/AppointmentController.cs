@@ -28,6 +28,8 @@ namespace Medicare.API.Controllers.V1
         [Route("CreateAppointment")]
         public async Task<IActionResult> CreateAppointment(AppointmentMasterModel model)
         {
+            model.PatientId = int.Parse(User.FindFirst("RefId")!.Value);
+            model.EnrollmentId = int.Parse(User.FindFirst("ActiveEnrollmentId")!.Value);
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateAppointmentCommand(model));
             return HandleResponse(response);

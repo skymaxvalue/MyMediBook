@@ -1,4 +1,4 @@
-﻿using Medicare.Application.Models.Appointment;
+﻿using System.Text.Json.Serialization;
 
 namespace Medicare.Application.Models.Patient
 {
@@ -9,6 +9,8 @@ namespace Medicare.Application.Models.Patient
         public int? AssociateId { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        [JsonIgnore]
+        public int HospitalId { get; set; }
     }
     public class SearchPatientResponseModel
     {

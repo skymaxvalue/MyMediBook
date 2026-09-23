@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<List<LabResultSummaryModel>> Handle(GetLabResultsByProfileIdQuery request, CancellationToken cancellationToken)
         {
-            return await _labRepository.GetLabResultDetailByProfileIdAsync(request.profileId);
+            return await _labRepository.GetLabResultDetailByProfileIdAsync(request.profileId, request.enrollmentId);
         }
     }
 }

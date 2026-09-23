@@ -9,7 +9,7 @@ namespace Medicare.Application.Interfaces.IAssociate
         Task<ResponseModel> UpdateAssociateDetailAsync(UpdateAssociateRequestModel model);
         Task<ResponseModel> DeleteAssociateAsync(DeleteAssociateRequestModel model);
         Task<List<AssociateDetailDto>> GetAssociateDetailByIdAsync(int associateId);
-        Task<List<AssociateListModel>> GetAssociateListAsync();
+        Task<List<AssociateListModel>> GetAssociateListAsync(int hospitalId);
         Task<AssociateDetailDto> GetAssociateInfoByUsername(string username);
     }
 }

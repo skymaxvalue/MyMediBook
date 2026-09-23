@@ -8,6 +8,6 @@ namespace Medicare.Application.Interfaces.ILab
         Task<ResponseModel> CreateLabResultAsync(LabResultModel model);
         Task<LabResultSummaryModel> GetLabResultDetailByIdAsync(int id);
         Task<List<LabResultSummaryModel>> GetLabResultDetailByPatientIdAsync(int patientId);
-        Task<List<LabResultSummaryModel>> GetLabResultDetailByProfileIdAsync(int profileId);
+        Task<List<LabResultSummaryModel>> GetLabResultDetailByProfileIdAsync(int profileId, int enrollmentId);
     }
 }

@@ -133,6 +133,7 @@ namespace Medicare.DAL.Persistence.Repositories
                     profileParam.Add("PatientId", model.PatientId);
                     profileParam.Add("FirstName", model.FirstName);
                     profileParam.Add("LastName", model.LastName);
+                    profileParam.Add("EnrollmentId", model.EnrollmentId);
                     profileParam.Add("DateOfBirth", model.DateOfBirth);
                     profileParam.Add("Age", model.Age);
                     profileParam.Add("AgeTypeId", model.AgeTypeId);
