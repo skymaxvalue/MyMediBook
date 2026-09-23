@@ -5,16 +5,16 @@ using Medicare.Application.Models.Doctor;
 
 namespace Medicare.Application.Handlers.QueryHandlers
 {
-    public class GetDoctorListQueryHandler : IRequestHandler<GetDoctorListQuery, List<DoctorCategoryModel>>
+    public class GetDoctorListByHospitalIdQueryHandler : IRequestHandler<GetDoctorListByHospitalIdQuery, List<DoctorCategoryModel>>
     {
         private readonly IDoctorRepository _doctorRepository;
-        public GetDoctorListQueryHandler(IDoctorRepository doctorRepository)
+        public GetDoctorListByHospitalIdQueryHandler(IDoctorRepository doctorRepository)
         {
             _doctorRepository = doctorRepository;
         }
-        public async Task<List<DoctorCategoryModel>> Handle(GetDoctorListQuery request, CancellationToken cancellationToken)
+        public async Task<List<DoctorCategoryModel>> Handle(GetDoctorListByHospitalIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _doctorRepository.GetDoctorListAsync();
+            var result = await _doctorRepository.GetDoctorListAsync(request.activeHospitalId);
             var returnData = result
              .GroupBy(x => new
              {

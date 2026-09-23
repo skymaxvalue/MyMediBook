@@ -40,18 +40,44 @@ namespace Medicare.API.Controllers.V1
             AuthResultModel response = new AuthResultModel();
             response = await _mediator.Send(new AuthCommand(model));
             if (response.IsSuccess != 1) return HandleResponse(response);
-            var token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
+            string token = string.Empty;
+            if (response.UserType == "Patient")
             {
-                UserId = response.UserId,
-                RefId = response.RefId,
-                UserType = response.UserType,
-                Email = response.Email,
-                Username = response.Username,
-                FullName = response.FullName,
-                RoleName = response.RoleName,
-                TenantId = response.TenantId,
-            });
+                token = _jwtTokenRepository.GeneratePatientToken(new JwtPatientClaimModel
+                {
+                    UserId = response.UserId,
+                    RefId = response.RefId,
+                    PatientId = response.PatientId,
+                    UserType = response.UserType,
+                    Email = response.Email,
+                    Username = response.Username,
+                    FullName = response.FullName,
+                    RoleName = response.RoleName,
+                    TenantId = response.TenantId,
 
+                    ActiveHospitalId = response.ActiveHospitalId,
+                    ActiveTenantId = response.ActiveTenantId,
+                    ActiveEnrollmentId = response.ActiveEnrollmentId,
+                    PatientRefNo = response.PatientRefNo,
+                    AllEnrollments = response.Enrollments
+                });
+            } else
+            {
+                token = _jwtTokenRepository.GenerateToken(new JwtTokenClaimModel
+                {
+                    UserId = response.UserId,
+                    RefId = response.RefId,
+                    UserType = response.UserType,
+                    Email = response.Email,
+                    Username = response.Username,
+                    FullName = response.FullName,
+                    RoleName = response.RoleName,
+                    TenantId = response.TenantId,
+                    ActiveTenantId = response.ActiveTenantId,
+                    ActiveHospitalId = response.ActiveHospitalId
+                });
+            }
+            
             string refreshToken = _jwtTokenRepository.GenerateRefreshToken();
             DateTime expiryDate = DateTime.UtcNow.AddDays(int.Parse(_config["JwtSettings:RefreshTokenExpDays"]));
 

@@ -19,13 +19,16 @@ namespace Medicare.DAL.Persistence.Repositories
             _context = context;
             _errorLog = errorLogRepository;
         }
-        public async Task<List<DoctorItemModel>> GetDoctorListAsync()
+        public async Task<List<DoctorItemModel>> GetDoctorListAsync(int activeHospitalId)
         {
             string procName = "USP_GetDoctorList";
             List<DoctorItemModel> returnData = new List<DoctorItemModel>();
             try
             {
-                returnData = await _context.QueryStoredProcListAsync<DoctorItemModel>(procName);
+                var param = new DynamicParameters();
+                param.Add("HospitalId", activeHospitalId);
+                
+                returnData = await _context.QueryStoredProcListAsync<DoctorItemModel>(procName, param);
             }
             catch (Exception ex)
             {

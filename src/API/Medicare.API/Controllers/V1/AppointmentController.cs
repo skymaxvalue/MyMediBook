@@ -71,9 +71,10 @@ namespace Medicare.API.Controllers.V1
         }
         
         [HttpGet]
-        [Route("Patient/GetMyAppointmentList/{patientId}")]
-        public async Task<IActionResult> GetMyAppointmentListByPatientId(int patientId)
+        [Route("Patient/GetMyAppointmentList")]
+        public async Task<IActionResult> GetMyAppointmentListByPatientId()
         {
+            int patientId = int.Parse(User.FindFirst("RefId")!.Value);
             List<PatientAppointmentModel> response = new List<PatientAppointmentModel>();
             response = await _mediator.Send(new GetMyAppointmentListByPatientIdQuery(patientId));
             return HandleListResponse(response);
@@ -83,6 +84,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Doctor/GetMyAppointmentList")]
         public async Task<IActionResult> GetMyAppointmentListByAssociateId(DataRequestModel model)
         {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             List<PatientProfileModel> response = new List<PatientProfileModel>();
             response = await _mediator.Send(new GetMyAppointmentListByAssociateIdQuery(model));
             return HandleListResponse(response);

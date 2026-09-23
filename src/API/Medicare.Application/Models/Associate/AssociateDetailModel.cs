@@ -152,6 +152,8 @@ namespace Medicare.Application.Models.Associate
         public int? ConsultationTime { get; set; }
         public decimal? AverageCharge { get; set; }
         public string? OtpMethod { get; set; }
+        public int ActiveHospitalId { get; set; }
+        public Guid ActiveTenantId { get; set; }
         public int IsSuccess { get; set; }
         public int Status { get; set; }
         public string ResponseMessage { get; set; }
