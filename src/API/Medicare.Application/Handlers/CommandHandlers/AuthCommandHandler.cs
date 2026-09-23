@@ -70,33 +70,26 @@ namespace Medicare.Application.Handlers.CommandHandlers
 
             var activeHospital = enrollments.FirstOrDefault(e => e.IsActive) ?? enrollments.FirstOrDefault();
 
+            var result = await _patientRepository.GetPatientInfoByUsername(username);
+
             if (activeHospital == null)
             {
                 return new AuthResultModel
                 {
+                    Status = 1,
                     IsSuccess = 1,
                     ResponseMessage = "Login successful. Please select a hospital.",
-                    UserId = creds.UserId,
-                    UserType = "Patient",
                     NeedsHospitalSelection = true,
-                    //AccessToken = GenerateLimitedToken(creds),
-                    //RefreshToken = _jwtTokenRepository.GenerateRefreshToken()
+                    UserId = result.UserId,
+                    RefId = result.PatientId,
+                    PatientId = result.PatientId,
+                    UserType = result.UserType,
+                    RoleName = result.RoleName,
+                    FullName = $"{result.FirstName} {result.MiddleName} {result.LastName}".Trim(),
+                    Email = result.Email,
+                    Username = result.Username,
                 };
             }
-
-            var result = await _patientRepository.GetPatientInfoByUsername(username);
-
-            var tokenModel = new JwtPatientClaimModel
-            {
-                UserId = result.UserId,
-                PatientId = result.PatientId,
-                Email = result.Email,
-                ActiveHospitalId = activeHospital.HospitalId,
-                ActiveTenantId = activeHospital.TenantId,
-                ActiveEnrollmentId = activeHospital.EnrollmentId,
-                PatientRefNo = activeHospital.PatientRefNo,
-                AllEnrollments = enrollments.ToList()
-            };
 
             return new AuthResultModel
             {

@@ -109,11 +109,11 @@ namespace Medicare.API.Controllers.V1
 
             JwtPatientClaimModel tokenModel = new JwtPatientClaimModel()
             {
-                UserId = Guid.Parse(userId),
+                UserId = Guid.Parse(User.FindFirst("UserId")!.Value),
                 RefId = int.Parse(User.FindFirst("RefId")!.Value),
                 UserType = User.FindFirst("UserType")!.Value,
-                Email = User.FindFirst("email")!.Value,
-                Username = User.FindFirst("unique_name")!.Value,
+                Email = User.FindFirst("Email")!.Value,
+                Username = User.FindFirst("Username")!.Value ?? "",
                 FullName = User.FindFirst("FullName")!.Value,
                 RoleName = User.FindFirst("UserType")!.Value,
 
@@ -158,8 +158,8 @@ namespace Medicare.API.Controllers.V1
                 UserId = Guid.Parse(userId),
                 RefId = int.Parse(User.FindFirst("RefId")!.Value),
                 UserType = User.FindFirst("UserType")!.Value,
-                Email = User.FindFirst("email")!.Value,
-                Username = User.FindFirst("unique_name")!.Value,
+                Email = User.FindFirst("Email")!.Value,
+                Username = User.FindFirst("Username")!.Value,
                 FullName = User.FindFirst("FullName")!.Value,
                 RoleName = User.FindFirst("UserType")!.Value,
 
