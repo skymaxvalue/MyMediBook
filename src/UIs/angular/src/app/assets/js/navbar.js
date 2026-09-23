@@ -188,7 +188,7 @@ function setupMobileMenu() {
 
 
 
-// ============ Select Hospital modal ============
+
 
 let pendingHospital = null;
 
