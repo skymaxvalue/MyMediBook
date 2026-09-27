@@ -25,6 +25,7 @@ namespace Medicare.API.Controllers.V1
         [Route("CreateRxOrder")]
         public async Task<IActionResult> CreateRxOrder(CreateRxOrderRequestModel model)
         {
+            model.HospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateRxOrderCommand(model));
             return HandleResponse(response);
@@ -62,6 +63,7 @@ namespace Medicare.API.Controllers.V1
         [Route("GetRxOrderByPatientProfileId")]
         public async Task<IActionResult> GetRxOrderByPatientProfileId(GetRxOrderRequestModel model)
         {
+            model.HospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             List<RxOrderDetailModel> response = new List<RxOrderDetailModel>();
             response = await _mediator.Send(new GetRxOrderByPatientProfileIdQuery(model));
             return HandleListResponse(response);

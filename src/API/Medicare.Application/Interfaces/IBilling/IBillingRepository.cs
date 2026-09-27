@@ -5,6 +5,6 @@ namespace Medicare.Application.Interfaces.IBilling
     public interface IBillingRepository
     {
         Task<BillingSummaryModel> GetBillByClaimIdAsync(int id);
-        Task<List<BillingSummaryModel>> GetBillingListByPatientIdAsync(int patientId);
+        Task<List<BillingSummaryModel>> GetBillingListByPatientIdAsync(int patientId, int hospitalId);
     }
 }

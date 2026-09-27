@@ -23,9 +23,9 @@ namespace Medicare.API.Controllers.V1
         [Route("GetDoctorList")]
         public async Task<IActionResult> GetDoctorList()
         {
-            int activeHospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
+            int hospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             List<DoctorCategoryModel> response = new List<DoctorCategoryModel>();
-            response = await _mediator.Send(new GetDoctorListByHospitalIdQuery(activeHospitalId));
+            response = await _mediator.Send(new GetDoctorListByHospitalIdQuery(hospitalId));
             return HandleListResponse(response);
         }
 
@@ -33,8 +33,9 @@ namespace Medicare.API.Controllers.V1
         [Route("GetDoctorSpecialityList")]
         public async Task<IActionResult> GetDoctorSpecialityList([FromQuery] string? doctorName,[FromQuery] string? departmentName)
         {
+            int hospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             List<DoctorSpecialityDataModel> response = new List<DoctorSpecialityDataModel>();
-            response = await _mediator.Send(new GetDoctorSpecialityListQuery(doctorName, departmentName));
+            response = await _mediator.Send(new GetDoctorSpecialityListQuery(doctorName, departmentName, hospitalId));
             return HandleListResponse(response);
         }
 

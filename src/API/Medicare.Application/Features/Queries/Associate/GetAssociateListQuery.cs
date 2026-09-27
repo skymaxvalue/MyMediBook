@@ -3,5 +3,5 @@ using Medicare.Application.Models.Associate;
 
 namespace Medicare.Application.Features.Queries.Associate
 {
-    public record GetAssociateListQuery() : IRequest<List<AssociateListModel>>;
+    public record GetAssociateListQuery(int hospitalId) : IRequest<List<AssociateListModel>>;
 }

@@ -19,14 +19,14 @@ namespace Medicare.DAL.Persistence.Repositories
             _context = context;
             _errorLog = errorLogRepository;
         }
-        public async Task<List<DoctorItemModel>> GetDoctorListAsync(int activeHospitalId)
+        public async Task<List<DoctorItemModel>> GetDoctorListAsync(int hospitalId)
         {
             string procName = "USP_GetDoctorList";
             List<DoctorItemModel> returnData = new List<DoctorItemModel>();
             try
             {
                 var param = new DynamicParameters();
-                param.Add("HospitalId", activeHospitalId);
+                param.Add("HospitalId", hospitalId);
                 
                 returnData = await _context.QueryStoredProcListAsync<DoctorItemModel>(procName, param);
             }
@@ -43,7 +43,7 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
-        public async Task<List<DoctorSpecialityDataModel>> GetDoctorSpecialityListAsync(string? doctorName, string? departmentName)
+        public async Task<List<DoctorSpecialityDataModel>> GetDoctorSpecialityListAsync(string? doctorName, string? departmentName, int hospitalId)
         {
             string procName = "USP_GetDoctorSpecialityList";
             List<DoctorSpecialityDataModel> returnData = new List<DoctorSpecialityDataModel>();
@@ -52,6 +52,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("DoctorName", doctorName);
                 param.Add("DepartmentName", departmentName);
+                param.Add("HospitalId", hospitalId);
 
                 returnData = await _context.QueryStoredProcListAsync<DoctorSpecialityDataModel>(procName, param);
             }

@@ -16,7 +16,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
 
         public async Task<List<DoctorSpecialityDataModel>> Handle(GetDoctorSpecialityListQuery request, CancellationToken cancellationToken)
         {
-            return await _doctorRepository.GetDoctorSpecialityListAsync(request.DoctorName, request.DepartmentName);
+            return await _doctorRepository.GetDoctorSpecialityListAsync(request.DoctorName, request.DepartmentName, request.hospitalId);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("PatientId", model.PatientId);
                 param.Add("ProfileId", model.ProfileId);
+                param.Add("HospitalId", model.HospitalId);
 
                 returnData = await _context.QueryStoredProcListAsync<RxOrderDetailModel>(procName, param);
             }
@@ -91,7 +92,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ProfileId", model.ProfileId);
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("PharmacyId", model.PharmacyId);
-
+                param.Add("HospitalId", model.HospitalId);
                 param.Add("MedicineOrder", JsonSerializer.Serialize(model.MedicineOrder));
 
                 returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
