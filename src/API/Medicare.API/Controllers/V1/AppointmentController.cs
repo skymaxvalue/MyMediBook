@@ -28,6 +28,7 @@ namespace Medicare.API.Controllers.V1
         [Route("CreateAppointment")]
         public async Task<IActionResult> CreateAppointment(AppointmentMasterModel model)
         {
+            model.PatientId = int.Parse(User.FindFirst("RefId")!.Value);
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateAppointmentCommand(model));
             return HandleResponse(response);
@@ -75,8 +76,9 @@ namespace Medicare.API.Controllers.V1
         public async Task<IActionResult> GetMyAppointmentListByPatientId()
         {
             int patientId = int.Parse(User.FindFirst("RefId")!.Value);
+            int hospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
             List<PatientAppointmentModel> response = new List<PatientAppointmentModel>();
-            response = await _mediator.Send(new GetMyAppointmentListByPatientIdQuery(patientId));
+            response = await _mediator.Send(new GetMyAppointmentListByPatientIdQuery(patientId, hospitalId));
             return HandleListResponse(response);
         }
 

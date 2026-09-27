@@ -5,6 +5,7 @@ namespace Medicare.Application.Features.Queries.Doctor
 {
     public record GetDoctorSpecialityListQuery(
         string? DoctorName,
-        string? DepartmentName
+        string? DepartmentName,
+        int hospitalId
     ) : IRequest<List<DoctorSpecialityDataModel>>;
 }

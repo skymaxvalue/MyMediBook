@@ -46,7 +46,7 @@ namespace Medicare.DAL.Persistence.Repositories
             _baseUrl = config["AppSettings:BaseUrl"] ?? string.Empty;
         }
 
-        public async Task<List<PatientAppointmentModel>> GetMyAppointmentListByPatientIdAsync(int patientId)
+        public async Task<List<PatientAppointmentModel>> GetMyAppointmentListByPatientIdAsync(int patientId, int hospitalId)
         {
             string procName = "USP_GetMyAppointmentListByPatientId";
             List<PatientAppointmentModel> returnData = new List<PatientAppointmentModel>();
@@ -54,6 +54,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("PatientId", patientId);
+                param.Add("HospitalId", hospitalId);
 
                 returnData = await _context.QueryStoredProcListAsync<PatientAppointmentModel>(procName, param);
             }

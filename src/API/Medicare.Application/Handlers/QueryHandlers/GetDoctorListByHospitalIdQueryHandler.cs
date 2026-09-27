@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<List<DoctorCategoryModel>> Handle(GetDoctorListByHospitalIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _doctorRepository.GetDoctorListAsync(request.activeHospitalId);
+            var result = await _doctorRepository.GetDoctorListAsync(request.hospitalId);
             var returnData = result
              .GroupBy(x => new
              {

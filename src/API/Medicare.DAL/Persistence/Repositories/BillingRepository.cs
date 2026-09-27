@@ -62,7 +62,7 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<List<BillingSummaryModel>> GetBillingListByPatientIdAsync(int patientId)
+        public async Task<List<BillingSummaryModel>> GetBillingListByPatientIdAsync(int patientId, int hospitalId)
         {
             string procName = "USP_GetBillingListByPatientId";
             List<BillingSummaryModel> returnData = new List<BillingSummaryModel>();
@@ -70,6 +70,7 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("PatientId", patientId);
+                param.Add("HospitalId", hospitalId);
 
                 returnData = await _context.QueryMultipleAsync(
                     procName,

@@ -14,7 +14,7 @@ namespace Medicare.Application.Handlers.QueryHandlers
         }
         public async Task<List<BillingSummaryModel>> Handle(GetBillingListByPatientIdQuery request, CancellationToken cancellationToken)
         {
-            return await _billingRepository.GetBillingListByPatientIdAsync(request.patientId);
+            return await _billingRepository.GetBillingListByPatientIdAsync(request.patientId, request.hospitalId);
         }
     }
 }

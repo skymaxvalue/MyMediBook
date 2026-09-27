@@ -1,7 +1,11 @@
-﻿namespace Medicare.Application.Models.Orders
+﻿using System.Text.Json.Serialization;
+
+namespace Medicare.Application.Models.Orders
 {
     public class CreateRxOrderRequestModel
     {
+        [JsonIgnore]
+        public int HospitalId { get; set; }
         public int PatientId { get; set; }
         public int ProfileId { get; set; }
         public int AssociateId { get; set; }

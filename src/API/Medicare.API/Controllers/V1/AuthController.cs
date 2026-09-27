@@ -1,9 +1,6 @@
 ﻿using MediatR;
-using Medicare.Application.Features.Commands.Associate;
 using Medicare.Application.Features.Commands.Authentication;
-using Medicare.Application.Features.Commands.Patient;
 using Medicare.Application.Interfaces.JwtToken;
-using Medicare.Application.Models.Associate;
 using Medicare.Application.Models.Authentication;
 using Medicare.Application.Models.CommonModels.ResponseModel;
 using Medicare.Application.Models.JwtTokens;
@@ -92,56 +89,6 @@ namespace Medicare.API.Controllers.V1
             await _refreshTokenRepository.SaveRefreshTokenAsync(refreshTokenData);
 
             return HandleLoginResponse(response, token, refreshToken);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("CreatePatientAccount")]
-        public async Task<IActionResult> CreatePatientAccount([FromBody] CreatePatientRequestModel model)
-        {
-            ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new CreatePatientCommand(model));
-            return HandleResponse(response);
-        }
-
-        [Authorize(Roles = "Receptionist")]
-        [HttpPost]
-        [Route("Receptionist/CreatePatientAccount")]
-        public async Task<IActionResult> CreateFrontOfficePatientAccount([FromBody] CreateFrontOfficePatientRequestModel model)
-        {
-            CreateFrontOfficePatientResponseModel response = new CreateFrontOfficePatientResponseModel();
-            response = await _mediator.Send(new CreateFrontOfficePatientCommand(model));
-            return HandleResponse(response);
-        }
-
-        [Authorize(Roles ="Admin")]
-        [HttpPost]
-        [Route("RegisterAssociate")]
-        public async Task<IActionResult> RegisterAssociate(CreateAssociateRequestModel model)
-        {
-            var tenantId = Guid.Parse(User.FindFirst("TenantId")!.Value);
-            model.TenantId = tenantId;
-            ResponseModel response = new ResponseModel();
-            response = await _mediator.Send(new CreateAssociateCommand(model));
-            return HandleResponse(response);
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("ResetAssociatePassword")]
-        public async Task<IActionResult> ResetAssociatePassword([FromBody] ResetAssociatePasswordModel model)
-        {
-            ResponseModel response = new ResponseModel();
-            if (string.IsNullOrEmpty(model.Token) || string.IsNullOrEmpty(model.Password))
-                return BadRequest(new ApiResponse<object>
-                {
-                    Data = null,
-                    StatusMessage = "Token and new password are required.",
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Result = 0
-                });
-            response = await _mediator.Send(new ResetPasswordCommand(model));
-            return HandleResponse(response);
         }
 
         [AllowAnonymous]
