@@ -19,7 +19,7 @@ export class LabResultService {
 
     GetMyLabResultsByPatientId(patientId: number) {
         return this.http.get(
-            `${environment.OpenIdConnect.apiUrl}${LabResult.GET_LAB_RESULT_BY_PATIENT_ID}${patientId}`
+            `${environment.OpenIdConnect.apiUrl}${LabResult.GET_LAB_RESULT_BY_PATIENT_ID}`
         );
     }
 }

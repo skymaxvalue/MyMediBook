@@ -36,7 +36,7 @@ export const requestOTPFailure = createAction(
 // Register Actions
 export const register = createAction(
     '[Auth] Register Patient',
-    props<{ patient: PatientRegister }>()
+    props<{ patient: PatientRegister, isFrontOffice: boolean }>()
 );
 
 export const registerPatientSuccess = createAction(

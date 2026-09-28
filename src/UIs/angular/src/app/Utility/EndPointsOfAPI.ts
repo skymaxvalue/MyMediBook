@@ -76,7 +76,8 @@ export const MessageEndPoints = {
 
 }
 export const AuthEndPoints = {
-    PATIENT_REGISTER: "Auth/CreatePatientAccount",
+    PATIENT_REGISTER: "PatientAuth/CreatePatientAccount",
+    PATIENT_REG_FROM_FRONT_OFFICE: "Receptionist/CreatePatientAccount",
     REQUEST_OTP: "Auth/RequestOtp",
     VERIFY_OTP: "Auth/VerifyForgotPasswordOtp",
     REFRESH_TOKEN: "Auth/RefreshToken",

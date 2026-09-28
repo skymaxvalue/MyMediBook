@@ -16,7 +16,7 @@ export class BillsService {
 
   GetMyBillsByPatientId(patientId: number) {
     return this.http.get(
-      `${environment.OpenIdConnect.apiUrl}${BillingAPiEndPoints.GET_ALL_BILL_BY_PATIENT_ID}${patientId}`
+      `${environment.OpenIdConnect.apiUrl}${BillingAPiEndPoints.GET_ALL_BILL_BY_PATIENT_ID}`
     );
   }
 }
