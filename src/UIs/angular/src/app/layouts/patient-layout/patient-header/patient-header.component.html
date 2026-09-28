@@ -1,10 +1,14 @@
 <div class="top-header">
+
+    <!-- LEFT -->
     <div class="left">
 
         <div class="logo">
+
             <img src="assets/images/skylogo2.png" alt="SkyMaxValue">
 
             <div class="logo-text">
+
                 <div class="company-name">
                     SkyMaxValue
                 </div>
@@ -12,60 +16,96 @@
                 <div class="company-subtitle">
                     Technology Solutions
                 </div>
+
             </div>
+
         </div>
 
         <p class="date">
             Date:
-            <span>{{ formattedDate }}</span>
+            <span>
+                {{ formattedDate }}
+            </span>
         </p>
 
-        <button class="mobile-menu-btn" (click)="toggleMenu()">
+        <!-- MOBILE MENU -->
+        <button type="button" class="mobile-menu-btn" (click)="toggleMenu()">
+
             {{ mobileMenuOpen ? '✕' : '☰' }}
+
         </button>
 
     </div>
+
+
+    <!-- =================================================
+         CENTER
+    ================================================== -->
 
     <div class="center">
 
         <div class="hospital">
 
-            <img class="hospital-icon" src="assets/images/hospital.png" alt="Hospital">
+            <img class="hospital-icon" src="/assets/images/hospital.png" alt="Hospital">
 
-            <span>
+            <span id="headerHospitalName">
+
                 {{ selectedHospitalName }}
+
             </span>
+
+            <span class="hospital-divider"></span>
+
+            <button type="button" class="switch-hospital-link" (click)="openHospitalModal()">
+
+                <img src="/assets/images/change-hospital-icon.png" alt="Switch Hospital">
+
+                Switch
+
+            </button>
 
         </div>
 
         <div class="title">
-            Patient Activity Center
+            PATIENT ACTIVITY CENTER
         </div>
 
     </div>
+
+
+    <!-- =================================================
+         RIGHT
+    ================================================== -->
 
     <div class="right">
 
-        <div class="user-box">
+        <div class="user-box" (click)="stop($event)">
 
             <div class="user-pill">
 
-                <img src="assets/images/user.png" class="user-avatar">
+                <img src="/assets/images/user.png" alt="User" class="user-avatar">
 
-                <span id="username">
-                    {{username}}
+                <span>
+                    {{ username }}
                 </span>
 
-                <button class="profile-toggle" (click)="toggleProfile($event)">
+                <button type="button" class="profile-toggle" (click)="toggleProfile($event)">
+
                     ▼
+
                 </button>
 
             </div>
 
+
+            <!-- PROFILE DROPDOWN -->
+
             <div class="dropdown" [class.show]="showProfile">
 
-                <button (click)="logout()">
+                <button type="button" (click)="logout()">
+
                     Logout
+
                 </button>
 
             </div>
@@ -73,15 +113,165 @@
         </div>
 
     </div>
+
 </div>
 
-<div class="navbar patient-navbar" [class.show]="mobileMenuOpen">
 
-    <a class="nav-item" *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }" (click)="mobileMenuOpen = false">
 
-        {{ item.label }}
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<div class="navbar" [class.show]="mobileMenuOpen">
+
+    <a *ngFor="let item of navItems" class="nav-item" [class.active]="activeTab === item.key" [routerLink]="item.route"
+        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="mobileMenuOpen = false">
+
+        <img *ngIf="item.icon" [src]="item.icon" [alt]="item.label">
+
+        <span>
+            {{ item.label }}
+        </span>
 
     </a>
+
+</div>
+
+
+
+<!-- =====================================================
+     HOSPITAL MODAL
+===================================================== -->
+
+<div id="hospitalModal" class="modal-overlay" [class.show]="hospitalModalOpen" (click)="closeHospitalModal()">
+
+
+    <div class="hospital-modal" (click)="stop($event)">
+
+
+        <!-- CLOSE -->
+
+        <button type="button" class="close-modal" (click)="closeHospitalModal()">
+
+            <img src="/assets/images/close-circle.png" alt="Close">
+
+        </button>
+
+
+        <!-- HEADER -->
+
+        <div class="hospital-modal-header">
+
+            <h2>
+                Select Hospital
+            </h2>
+
+            <p class="modal-subtitle">
+                Choose a hospital to view information
+                and manage appointments
+            </p>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="hospital-search-box">
+
+            <img src="/assets/images/search-icon.png" alt="Search">
+
+            <input type="text" [(ngModel)]="hospitalSearch" placeholder="Search hospital name, city, or location...">
+
+        </div>
+
+
+        <!-- HOSPITAL LIST -->
+
+        <div class="hospital-list" id="hospitalList">
+
+
+            <!-- HOSPITAL OPTIONS -->
+
+            <div *ngFor="let hospital of filteredHospitals" class="hospital-option" [class.selected]="
+                    pendingHospital?.hospitalName === hospital.hospitalName
+                " (click)="selectHospital(hospital)">
+
+
+                <!-- IMAGE -->
+
+                <img class="hospital-thumb" [src]="hospital.image" [alt]="hospital.hospitalName">
+
+
+                <!-- TEXT -->
+
+                <div class="hospital-option-text">
+
+                    <h4>
+                        {{ hospital.hospitalName }}
+                    </h4>
+
+                    <span class="hospital-option-location">
+
+                        <img src="assets/images/location-pin-icon.png" alt="Location">
+
+                        {{ hospital.location }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- CURRENT -->
+
+                <span *ngIf="isCurrentHospital(hospital)" class="current-badge">
+
+                    Current
+
+                </span>
+
+
+                <!-- RADIO -->
+
+                <span class="hospital-radio" [class.checked]="
+                        pendingHospital?.hospitalName ===
+                        hospital.hospitalName
+                    ">
+                </span>
+
+            </div>
+
+
+            <!-- NO RESULTS -->
+
+            <div *ngIf="filteredHospitals.length === 0" class="hospital-option no-results">
+
+                No hospitals match your search.
+
+            </div>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="hospital-modal-buttons">
+
+            <button type="button" class="keep-btn" (click)="closeHospitalModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button type="button" class="delete-btn hospital-switch-btn" [disabled]="!pendingHospital"
+                (click)="confirmSwitchHospital()">
+
+                Switch Hospital
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>

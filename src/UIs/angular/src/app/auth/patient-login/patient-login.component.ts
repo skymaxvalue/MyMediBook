@@ -53,12 +53,15 @@ export class PatientLoginComponent implements AfterViewInit, OnInit {
         take(1)
       )
       .subscribe((response: any) => {
-        localStorage.setItem("loginTime", Date.now().toString());
-        localStorage.setItem("token", response.tokenKey);
-        localStorage.setItem("refreshToken", response.refreshToken);
-        localStorage.setItem("user", JSON.stringify(response.data));
+        if (response) {
+          localStorage.setItem("loginTime", Date.now().toString());
+          localStorage.setItem("token", response.tokenKey);
+          localStorage.setItem("refreshToken", response.refreshToken);
+          localStorage.setItem("user", JSON.stringify(response.data));
 
-        this.router.navigate(["/patient/select-hospital"]);
+          this.router.navigate(["/patient/select-hospital"]);
+
+        }
       });
   }
 
@@ -116,37 +119,7 @@ export class PatientLoginComponent implements AfterViewInit, OnInit {
       this.loginForm.markAllAsTouched();
     }
 
-    // if (this.isShowAdminLogin) {
-    //   if (this.loginForm.valid) {
-    //     // Process login form value here
-    //     // if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
-    //     //   localStorage.setItem("token", "userToken");
-    //     //   this.router.navigate(["/dashboard"]);
-    //     // }
 
-    //     const patient =
-    //       this.store.dispatch(
-    //         AuthActions.login({
-    //           username: this.loginForm.value.username,
-    //           password: this.loginForm.value.password,
-    //           role: this.loginRole
-    //         })
-    //       );
-    //     // await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
-    //     //   console.log(patient, "----------")
-    //     //   if (patient) {
-    //     //     localStorage.setItem('loginTime', new Date().getTime().toString());
-    //     //     localStorage.setItem('token', patient.tokenKey)
-    //     //     localStorage.setItem('user', JSON.stringify(patient.data))
-
-    //     //     this.router.navigate(['/associate/dashboard']);
-    //     //   }
-    //     // });
-
-    //   } else {
-    //     this.loginForm.markAllAsTouched();
-    //   }
-    // }
   }
   get f() {
     return this.loginForm.controls;

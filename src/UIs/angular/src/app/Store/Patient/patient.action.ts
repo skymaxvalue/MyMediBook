@@ -110,3 +110,19 @@ export const getPatientListForReceptionistFailure = createAction(
     '[Patient receptionist] Data Failure',
     props<{ error: string }>()
 );
+
+export const getSwitchSelectedHospital = createAction(
+    '[Patient hospital change] Data List ',
+    props<{ hospitalId: any }>()
+
+);
+
+export const getSwitchSelectedHospitalSuccess = createAction(
+    '[Patient hospital change] Data Success',
+    props<{ hospitalDetailRes: any }>()
+);
+
+export const getSwitchSelectedHospitalFailure = createAction(
+    '[Patient hospital change] Data Failure',
+    props<{ error: string }>()
+);

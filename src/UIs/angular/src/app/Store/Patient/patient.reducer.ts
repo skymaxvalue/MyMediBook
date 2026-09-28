@@ -105,4 +105,21 @@ export const patientReducer = createReducer(
         error: action.error,
     })),
 
+    on(PatientActions.getSwitchSelectedHospital, (state) => ({
+        ...state,
+        isLoading: true
+    })),
+
+    on(PatientActions.getSwitchSelectedHospitalSuccess, (state, action) => ({
+        ...state,
+        isLoading: false,
+        hospitalDetailRes: action.hospitalDetailRes
+    })),
+
+    on(PatientActions.getSwitchSelectedHospitalFailure, (state, action) => ({
+        ...state,
+        isLoading: false,
+        error: action.error,
+    })),
+
 )

@@ -138,6 +138,24 @@ export class PatientEffects {
         )
     )
 
+    getChangeHospitalByPatient$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PatientAction.getSwitchSelectedHospital),
+            mergeMap((action) =>
+                this.patientService.getSwitchedHospital(action.hospitalId).pipe(
+                    map((response: any) =>
+                        PatientAction.getSwitchSelectedHospitalSuccess({ hospitalDetailRes: response })
+                    ),
+                    catchError((error) =>
+                        of(PatientAction.getSwitchSelectedHospitalFailure({ error: error.message || 'Login Failed' }))
+                    )
+
+                )
+            )
+
+        )
+    )
+
 
 
 

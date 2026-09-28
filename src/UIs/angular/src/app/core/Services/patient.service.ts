@@ -39,7 +39,7 @@ export class PatientService {
   getProfileListByPatientById(patientId: any): Observable<any> {
 
     return this.http.get<any>(
-      `${this.apiUrl}${PatientApiEndPoint.GET_PROFILE_BASED_ON_PATIENT}${patientId}`
+      `${this.apiUrl}${PatientApiEndPoint.GET_PROFILE_BASED_ON_PATIENT}`
     );
   }
 
@@ -68,6 +68,14 @@ export class PatientService {
 
     return this.http.get<any>(
       `${this.apiUrl}${PatientApiEndPoint.GET_PATIENT_LIST_FOR_RECEPTIONIST}${receptionistId}`
+    );
+  }
+  getSwitchedHospital(hospitalId: any): Observable<any> {
+
+    return this.http.post<any>(
+      `${this.apiUrl}${PatientApiEndPoint.SWITCH_HOSPITAL}`, {
+      hospitalId: hospitalId
+    }
     );
   }
 

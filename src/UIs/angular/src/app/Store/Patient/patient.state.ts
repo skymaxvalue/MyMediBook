@@ -11,7 +11,8 @@ export interface PatientState {
     patientProfileData: any;
     patientMedicalData: any[];
     searchPatientToCheck: any[];
-    patientList: any[]
+    patientList: any[];
+    hospitalDetailRes: any;
 
 }
 
@@ -26,5 +27,6 @@ export const initialAuthState: PatientState = {
     patientMedicalData: [],
     searchPatientToCheck: [],
     patientList: [],
+    hospitalDetailRes: null
 
 }

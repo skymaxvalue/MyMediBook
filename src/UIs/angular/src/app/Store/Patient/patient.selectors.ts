@@ -32,4 +32,9 @@ export const selectSearchLisOfPatient = createSelector(
 export const selectPatientListForReceptionist = createSelector(
     selectPatientState,
     state => state.patientList
+);
+
+export const selectHospitalChangeRes = createSelector(
+    selectPatientState,
+    state => state.hospitalDetailRes
 )
