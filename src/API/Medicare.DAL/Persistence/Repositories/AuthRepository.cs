@@ -290,6 +290,7 @@ namespace Medicare.DAL.Persistence.Repositories
             try
             {
                 var param = new DynamicParameters();
+                param.Add("AssociateId", model.AssociateId);
                 param.Add("FirstName", model.FirstName);
                 param.Add("MiddleName", model.MiddleName);
                 param.Add("LastName", model.LastName);

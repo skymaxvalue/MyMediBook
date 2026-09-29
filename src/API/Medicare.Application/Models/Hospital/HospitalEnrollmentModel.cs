@@ -16,9 +16,6 @@ namespace Medicare.Application.Models.Hospital
         public string PatientRefNo { get; set; } = string.Empty;
         public int HospitalId { get; set; }
         public Guid TenantId { get; set; }
-
-        // Populated separately — USP_EnrollPatientInHospital SP must return these
-        // or fetch them with a second call to USP_GetPatientEnrollments
         public List<PatientEnrollmentModel> Enrollments { get; set; } = new();
     }
 }

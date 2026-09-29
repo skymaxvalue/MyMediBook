@@ -23,6 +23,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Receptionist/CreatePatientAccount")]
         public async Task<IActionResult> CreateFrontOfficePatientAccount([FromBody] CreateFrontOfficePatientRequestModel model)
         {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             CreateFrontOfficePatientResponseModel response = new CreateFrontOfficePatientResponseModel();
             response = await _mediator.Send(new CreateFrontOfficePatientCommand(model));
             return HandleResponse(response);

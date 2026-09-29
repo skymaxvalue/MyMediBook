@@ -6,6 +6,8 @@ namespace Medicare.Application.Models.Appointment
     {
         [JsonIgnore]
         public int PatientId { get; set; }
+        [JsonIgnore]
+        public int EnrollmentId { get; set; }
         public int ProfileId { get; set; }
         public int AssociateId { get; set; }
         public int SlotId { get; set; }

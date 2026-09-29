@@ -131,7 +131,8 @@ namespace Medicare.DAL.Persistence.Repositories
                 if (model.RelationTypeId != null && model.RelationTypeId != 1)
                 {
                     var profileParam = new DynamicParameters();
-                    profileParam.Add("PatientId", model.PatientId);
+                    profileParam.Add("PatientId", model.PatientId); 
+                    profileParam.Add("EnrollmentId", model.EnrollmentId);
                     profileParam.Add("FirstName", model.FirstName);
                     profileParam.Add("LastName", model.LastName);
                     profileParam.Add("DateOfBirth", model.DateOfBirth);
