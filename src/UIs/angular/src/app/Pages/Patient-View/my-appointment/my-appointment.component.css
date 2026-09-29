@@ -185,6 +185,9 @@ h2{
 .dropdown {
     display: none;
 }
+.add_app{
+    margin-top: 30px;
+}
 
 .custom-select.open .dropdown {
     display: block;
@@ -642,6 +645,11 @@ th.active {
 
     width:220px;
 
+}
+.filter-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0F172A;
 }
 
 

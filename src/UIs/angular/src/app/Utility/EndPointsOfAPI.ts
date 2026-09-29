@@ -31,10 +31,11 @@ export const AppointmentApiEndPoint = {
 export const PatientApiEndPoint = {
     UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
     GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
-    GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId/",
+    GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId",
     GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
     SEARCH_PATIENT_REQUEST: "Patient/SearchPatient",
-    GET_PATIENT_LIST_FOR_RECEPTIONIST: "Patient/Receptionist/GetPatientListById/"
+    GET_PATIENT_LIST_FOR_RECEPTIONIST: "Patient/Receptionist/GetPatientListById/",
+    SWITCH_HOSPITAL: "Patient/SwitchHospital"
 }
 
 export const AssociateApiEndPoint = {
