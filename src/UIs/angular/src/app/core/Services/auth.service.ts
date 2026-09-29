@@ -72,13 +72,22 @@ export class AuthService {
 
   // Self Registration API
   registerPatient(
-    patient: PatientRegister
+    patient: PatientRegister, isFrontOffice: boolean
   ): Observable<any> {
 
-    return this.http.post<any>(
-      `${this.apiUrl}${AuthEndPoints.PATIENT_REGISTER}`,
-      patient
-    );
+    if (isFrontOffice) {
+      return this.http.post<any>(
+        `${this.apiUrl}${AuthEndPoints.PATIENT_REG_FROM_FRONT_OFFICE}`,
+        patient
+      );
+    } else {
+      return this.http.post<any>(
+        `${this.apiUrl}${AuthEndPoints.PATIENT_REGISTER}`,
+        patient
+      );
+
+    }
+
   }
 
   startRefreshTimer() {

@@ -29,7 +29,7 @@ export class AppoinmentService {
     return this.http.get(`${this.apiUrl}${MasterAPIEndPoints.GET_RELATIONSHIP_TYPE}`)
   }
   getMyAppoitmentsByPatientID(patientId: number) {
-    return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_MYAPPOINTMENTS_BY_PATIONT_ID}${patientId}`)
+    return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_MYAPPOINTMENTS_BY_PATIONT_ID}`)
   }
   cancelAppoitmentsByPatientID(patientId: number, appointmentId: number, associateRole: string, lastUpdatedBy: string, cancelReason: string) {
     return this.http.delete(`${this.apiUrl}${AppointmentApiEndPoint.CANCEL_MY_APPOINTMENT}`, {
@@ -40,7 +40,7 @@ export class AppoinmentService {
     return this.http.put(`${this.apiUrl}${AppointmentApiEndPoint.RESCHEULE_MY_APPOINTMENT}`, { patientId, appointmentId, associateId, slotId, visitPurpose, visitType, lastUpdatedBy, associateRole, rescheduleReason })
   }
   getAppointmentListByAssociateId(associateId: number) {
-    return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST}${associateId}`)
+    return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST}`)
   }
   getDashboardSummery(associateId: number, fromDate: string, toDate: string) {
     return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DASHBOARD_DATA}`, { associateId, fromDate, toDate })

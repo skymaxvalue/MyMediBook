@@ -102,7 +102,7 @@ export class AuthEffects {
         this.actions$.pipe(
             ofType(AuthActions.register),
             mergeMap((action) =>
-                this.authService.registerPatient(action.patient).pipe(
+                this.authService.registerPatient(action.patient, action.isFrontOffice).pipe(
                     map((response: any) =>
                         AuthActions.registerPatientSuccess({ patient: response })
                     ),

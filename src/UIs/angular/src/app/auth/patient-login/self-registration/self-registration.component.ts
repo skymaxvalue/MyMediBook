@@ -393,12 +393,12 @@ export class SelfRegistrationComponent implements OnInit {
     };
 
     if (this.url === "/profile-update") {
-      ((payload.patientId = this.user.data.patientId),
+      (
         this.store.dispatch(PatientAction.updatePatientDetailsById({ patient: payload })));
     } else {
       this.store.dispatch(
         AuthActions.register({
-          patient: payload,
+          patient: payload, isFrontOffice: false
         })
       );
     }
