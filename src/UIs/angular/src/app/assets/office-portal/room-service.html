@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Service</title>
+    <title>Room Reservation</title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/room-service.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -20,7 +20,7 @@
         <span class="separator">
             <img src="images/right-arrow-blue.png" alt="">
         </span>
-        <span class="active">Room Service Request</span>
+        <span class="active">Room Reservation</span>
     </section>
 
     <section class="rs-page-card">
@@ -33,12 +33,12 @@
         </div>
 
         <div>
-            <h2>Room Service Request</h2>
-            <p>Clinical & hospitality services · Complete all steps to submit</p>
+            <h2>Room Reservation</h2>
+            <p>Clinical & hospitality services · Complete all steps to reserve</p>
         </div>
     </div>
 
-    <span class="rs-request-id">RSQ-GU07BT</span>
+    <span class="rs-request-id">RSV-GU07BT</span>
 
 </div>
 
@@ -79,6 +79,8 @@
                     <img src="images/search-blue.png" alt="">
                     <h3>Select Patient Profile</h3>
                 </div>
+
+                <div id="patientSearchWrap">
 
                 <div class="rs-search-layout">
 
@@ -131,6 +133,27 @@
                 </div>
 
                 <div id="patientSearchResults" class="rs-search-results"></div>
+
+                </div>
+
+                <!-- Selected patient bar (shown after a patient is chosen) -->
+                <div id="selectedPatientBar" class="rs-selected-bar" style="display:none;">
+
+                    <div class="rs-selected-item">
+                        <img src="images/profile-solid-blue.png" alt="" class="rs-selected-icon">
+                        <strong id="selectedPatientName">Patient Name</strong>
+                    </div>
+
+                    <div class="rs-selected-item">
+                        <span id="selectedPatientPhone" class="rs-selected-phone">1234567890</span>
+                    </div>
+
+                    <button type="button" id="switchProfileBtn" class="btn-switch">
+                        <img src="images/switch-blue.png" alt="">
+                        Switch Profile
+                    </button>
+
+                </div>
 
                 <input type="hidden" id="rsPatientId">
 
@@ -254,106 +277,420 @@
            <!-- STEP 2 -->
 <section class="rs-step-panel" data-step="2">
 
-    <section class="rs-section">
+<section class="rs-section">
+    <div class="rs-section-header">
+      <img src="images/room-service.png" alt="">
+      <h3>Room Type Preference</h3>
+    </div>
+    <div class="room-grid">
+      <label class="room-card"><input type="radio" name="roomType" value="Standard" checked><img class="ico" src="images/ic-users-blue.png" data-ic="users" alt=""><h4>Standard</h4><p>Shared · 2 beds</p></label>
+      <label class="room-card"><input type="radio" name="roomType" value="Semi-private"><img class="ico" src="images/ic-users-blue.png" data-ic="users" alt=""><h4>Semi-private</h4><p>Shared · 1 partition</p></label>
+      <label class="room-card"><input type="radio" name="roomType" value="Private"><img class="ico" src="images/ic-user-blue.png" data-ic="user" alt=""><h4>Private</h4><p>Single occupancy</p></label>
+      <label class="room-card"><input type="radio" name="roomType" value="Suite"><img class="ico" src="images/ic-crown-blue.png" data-ic="crown" alt=""><h4>Suite</h4><p>VIP · lounge area</p></label>
+    </div>
+  </section>
 
-        <div class="rs-section-header">
-            <img src="images/room-service.png" alt="">
-            <h3>Room Type Preference</h3>
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img src="images/settings-icon.png" alt="">
+      <h3>Room Amenities Requested</h3>
+    </div>
+
+    <div class="amenity-info">
+      <img class="ico" src="images/ic-info-blue.png" data-ic="info" alt="">
+      <span>Amenities are pre-selected based on the selected room type
+        (<strong id="amenityRoomLabel">Standard Room</strong>). You can modify them if needed.</span>
+    </div>
+
+    <div class="amenity-grid">
+      <label class="amenity-chip"><input type="checkbox" value="Wi-Fi"><img class="ico" src="images/ic-wifi.png" data-ic="wifi" alt=""><span>Wi-Fi access</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="TV"><img class="ico" src="images/ic-tv.png" data-ic="tv" alt=""><span>Television</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="Recliner"><img class="ico" src="images/ic-chair.png" data-ic="chair" alt=""><span>Recliner / chair</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="Fridge"><img class="ico" src="images/ic-fridge.png" data-ic="fridge" alt=""><span>Mini-fridge</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="Phone"><img class="ico" src="images/ic-phone.png" data-ic="phone" alt=""><span>Bedside phone</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="Blinds"><img class="ico" src="images/ic-sun.png" data-ic="sun" alt=""><span>Blackout blinds</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="Lamp"><img class="ico" src="images/ic-lamp.png" data-ic="lamp" alt=""><span>Reading lamp</span></label>
+      <label class="amenity-chip"><input type="checkbox" value="Outlets"><img class="ico" src="images/ic-plug.png" data-ic="plug" alt=""><span>Extra outlets</span></label>
+      <div class="amenity-count" id="amenityCount">0 of 8 amenities selected</div>
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img src="images/cleaning-icon.png" alt="">
+      <h3>Housekeeping Schedule</h3>
+    </div>
+    <div class="rs-grid-2">
+      <div class="rs-field">
+        <label>Preferred cleaning time</label>
+        <select id="cleaningTime">
+          <option>Early morning (6–8 AM)</option>
+          <option>Morning (8–11 AM)</option>
+          <option>Afternoon (1–4 PM)</option>
+          <option>Evening (5–7 PM)</option>
+        </select>
+      </div>
+      <div class="rs-field">
+        <label>Frequency</label>
+        <select id="cleaningFrequency">
+          <option>Once daily</option>
+          <option>Twice daily</option>
+          <option>On request</option>
+        </select>
+      </div>
+    </div>
+    <div class="rs-field">
+      <label>Special housekeeping notes</label>
+      <textarea id="housekeepingNotes" maxlength="300"
+        placeholder="Allergies to cleaning products, preferred scents, do-not-disturb windows..."></textarea>
+      <div class="notes-count" id="notesCount">0/300</div>
+    </div>
+  </section>
+
+</section>
+<!-- STEP 3 -->
+<section class="rs-step-panel" data-step="3">
+
+<section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-utensils-blue.png" data-ic="utensils" alt="">
+      <h3>Dietary Preferences</h3>
+    </div>
+
+    <div class="diet-grid">
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Low sodium"><img class="ico" src="images/ic-salt.png" data-ic="salt" alt=""><span>Low sodium</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Diabetic"><img class="ico" src="images/ic-drop.png" data-ic="drop" alt=""><span>Diabetic</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Halal"><img class="ico" src="images/ic-moon.png" data-ic="moon" alt=""><span>Halal</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Vegetarian"><img class="ico" src="images/ic-leaf.png" data-ic="leaf" alt=""><span>Vegetarian</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Gluten free"><img class="ico" src="images/ic-wheat.png" data-ic="wheat" alt=""><span>Gluten free</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="NPO"><img class="ico" src="images/ic-npo.png" data-ic="npo" alt=""><span>NPO (Nil per os)</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Renal diet"><img class="ico" src="images/ic-kidney.png" data-ic="kidney" alt=""><span>Renal diet</span></label>
+      <label class="diet-chip"><input type="checkbox" name="dietType" value="Heart healthy"><img class="ico" src="images/ic-heart.png" data-ic="heart" alt=""><span>Heart healthy</span></label>
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-file-blue.png" data-ic="file" alt="">
+      <h3>Food Allergies / Restrictions</h3>
+    </div>
+    <div class="rs-field">
+      <textarea id="foodAllergies" maxlength="300" placeholder="Peanuts, shellfish, lactose..."></textarea>
+      <div class="notes-count" id="allergiesCount">0/300</div>
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-cloche-blue.png" data-ic="cloche" alt="">
+      <h3>Meal Selections</h3>
+    </div>
+
+    <div class="meal-grid">
+
+      <div class="meal-card">
+        <div class="meal-head">
+          <img class="ico" src="images/ic-sun-blue.png" data-ic="sun" alt="">
+          <div>
+            <h4>BREAKFAST</h4>
+            <p>(6:00 AM – 9:00 AM)</p>
+          </div>
         </div>
-
-        <div class="room-grid">
-
-            <label class="room-card">
-                <input type="radio" name="roomType" value="Standard" checked>
-                <img src="images/bed-icon.png" alt="">
-                <h4>Standard</h4>
-                <p>Shared · 2 beds</p>
-            </label>
-
-            <label class="room-card">
-                <input type="radio" name="roomType" value="Semi-private">
-                <img src="images/bed-icon.png" alt="">
-                <h4>Semi-private</h4>
-                <p>Shared · 1 partition</p>
-            </label>
-
-            <label class="room-card">
-                <input type="radio" name="roomType" value="Private">
-                <img src="images/bed-icon.png" alt="">
-                <h4>Private</h4>
-                <p>Single occupancy</p>
-            </label>
-
-            <label class="room-card">
-                <input type="radio" name="roomType" value="Suite">
-                <img src="images/sofa-icon.png" alt="">
-                <h4>Suite</h4>
-                <p>VIP · lounge area</p>
-            </label>
-
-        </div>
-
-    </section>
-
-    <section class="rs-section">
-
-        <div class="rs-section-header">
-            <img src="images/settings-icon.png" alt="">
-            <h3>Room Amenities Requested</h3>
-        </div>
-
-        <div class="amenity-grid">
-
-            <label><input type="checkbox" value="Wi-Fi"> Wi-Fi access</label>
-            <label><input type="checkbox" value="TV"> Television</label>
-            <label><input type="checkbox" value="Recliner"> Recliner / chair</label>
-            <label><input type="checkbox" value="Fridge"> Mini-fridge</label>
-            <label><input type="checkbox" value="Phone"> Bedside phone</label>
-            <label><input type="checkbox" value="Blinds"> Blackout blinds</label>
-            <label><input type="checkbox" value="Lamp"> Reading lamp</label>
-            <label><input type="checkbox" value="Outlets"> Extra outlets</label>
-
-        </div>
-
-    </section>
-
-    <section class="rs-section">
-
-        <div class="rs-section-header">
-            <img src="images/cleaning-icon.png" alt="">
-            <h3>Housekeeping Schedule</h3>
-        </div>
-
-        <div class="rs-grid-2">
-
-            <div class="rs-field">
-                <label>Preferred Cleaning Time</label>
-                <select id="cleaningTime">
-                    <option>Early morning (6–8 AM)</option>
-                    <option>Morning (8–11 AM)</option>
-                    <option>Afternoon (1–4 PM)</option>
-                    <option>Evening (5–7 PM)</option>
-                </select>
-            </div>
-
-            <div class="rs-field">
-                <label>Frequency</label>
-                <select id="cleaningFrequency">
-                    <option>Once daily</option>
-                    <option>Twice daily</option>
-                    <option>On request</option>
-                </select>
-            </div>
-
-        </div>
-
         <div class="rs-field">
-            <label>Special Housekeeping Notes</label>
-            <textarea id="housekeepingNotes" maxlength="500"
-                placeholder="Allergies to cleaning products, preferred scents, do-not-disturb windows..."></textarea>
+          <label>Main course</label>
+          <select id="breakfastMain">
+            <option>Scrambled Eggs</option>
+            <option>Oatmeal</option>
+            <option>Pancakes</option>
+            <option>Idli &amp; Sambar</option>
+            <option>Veg Omelette</option>
+          </select>
         </div>
+        <div class="rs-field">
+          <label>Side</label>
+          <select id="breakfastSide">
+            <option>Hash Browns</option>
+            <option>Fresh Fruit</option>
+            <option>Toast</option>
+            <option>Yogurt</option>
+          </select>
+        </div>
+        <div class="rs-field">
+          <label>Beverage</label>
+          <select id="breakfastBeverage">
+            <option>Orange Juice</option>
+            <option>Tea</option>
+            <option>Coffee</option>
+            <option>Milk</option>
+            <option>Water</option>
+          </select>
+        </div>
+      </div>
 
-    </section>
+      <div class="meal-card">
+        <div class="meal-head">
+          <img class="ico" src="images/ic-utensils-blue.png" data-ic="utensils" alt="">
+          <div>
+            <h4>LUNCH</h4>
+            <p>(12:00 PM – 2:00 PM)</p>
+          </div>
+        </div>
+        <div class="rs-field">
+          <label>Main course</label>
+          <select id="lunchMain">
+            <option>Grilled Chicken</option>
+            <option>Vegetable Pulao</option>
+            <option>Dal &amp; Roti</option>
+            <option>Paneer Curry</option>
+            <option>Fish Curry</option>
+          </select>
+        </div>
+        <div class="rs-field">
+          <label>Side</label>
+          <select id="lunchSide">
+            <option>Steamed Vegetables</option>
+            <option>Green Salad</option>
+            <option>Steamed Rice</option>
+            <option>Raita</option>
+          </select>
+        </div>
+        <div class="rs-field">
+          <label>Beverage</label>
+          <select id="lunchBeverage">
+            <option>Iced Tea</option>
+            <option>Buttermilk</option>
+            <option>Lemonade</option>
+            <option>Water</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-head">
+          <img class="ico" src="images/ic-moon-blue.png" data-ic="moon" alt="">
+          <div>
+            <h4>DINNER</h4>
+            <p>(6:00 PM – 8:00 PM)</p>
+          </div>
+        </div>
+        <div class="rs-field">
+          <label>Main course</label>
+          <select id="dinnerMain">
+            <option>Baked Salmon</option>
+            <option>Roast Chicken</option>
+            <option>Vegetable Stew</option>
+            <option>Dal Khichdi</option>
+            <option>Grilled Paneer</option>
+          </select>
+        </div>
+        <div class="rs-field">
+          <label>Side</label>
+          <select id="dinnerSide">
+            <option>Rice Pilaf</option>
+            <option>Mashed Potatoes</option>
+            <option>Sauteed Greens</option>
+            <option>Chapati</option>
+          </select>
+        </div>
+        <div class="rs-field">
+          <label>Beverage</label>
+          <select id="dinnerBeverage">
+            <option>Water</option>
+            <option>Herbal Tea</option>
+            <option>Warm Milk</option>
+            <option>Juice</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-file-blue.png" data-ic="file" alt="">
+      <h3>Meal Notes (Optional)</h3>
+    </div>
+    <div class="rs-field">
+      <textarea id="foodNotes" maxlength="300" placeholder="Please provide special meal requests, portion size, or additional instructions..."></textarea>
+      <div class="notes-count" id="foodNotesCount">0/300</div>
+    </div>
+  </section>
+
+</section>
+
+<!-- STEP 4 -->
+<section class="rs-step-panel" data-step="4">
+
+<section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-steth-blue.png" data-ic="steth" alt="">
+      <h3>Admission Services</h3>
+    </div>
+    <div class="svc-grid svc-grid-4" id="clinicalGrid">
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="IV check"><img class="ico" src="images/ic-iv.png" data-ic="iv" alt=""><span>IV check</span></label>
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="Vital signs"><img class="ico" src="images/ic-pulse.png" data-ic="pulse" alt=""><span>Vital signs</span></label>
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="Medication assistance"><img class="ico" src="images/ic-pill.png" data-ic="pill" alt=""><span>Medication assistance</span></label>
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="Mobility assistance"><img class="ico" src="images/ic-access.png" data-ic="access" alt=""><span>Mobility assistance</span></label>
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="Wound care"><img class="ico" src="images/ic-bandage.png" data-ic="bandage" alt=""><span>Wound care</span></label>
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="Respiratory therapy"><img class="ico" src="images/ic-lungs.png" data-ic="lungs" alt=""><span>Respiratory therapy</span></label>
+      <label class="diet-chip"><input type="checkbox" name="clinicalService" value="Other"><img class="ico" src="images/ic-file.png" data-ic="file" alt=""><span>Other (specify)</span></label>
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-cloche-blue.png" data-ic="cloche" alt="">
+      <h3>Hospitality Preferences</h3>
+    </div>
+    <div class="svc-grid svc-grid-3" id="hospitalityGrid">
+      <label class="diet-chip"><input type="checkbox" name="hospitalityService" value="Linen change"><img class="ico" src="images/ic-layers.png" data-ic="layers" alt=""><span>Linen change</span></label>
+      <label class="diet-chip"><input type="checkbox" name="hospitalityService" value="Bathing assistance"><img class="ico" src="images/ic-shower.png" data-ic="shower" alt=""><span>Bathing assistance</span></label>
+      <label class="diet-chip"><input type="checkbox" name="hospitalityService" value="Entertainment"><img class="ico" src="images/ic-monitor.png" data-ic="monitor" alt=""><span>Entertainment</span></label>
+      <label class="diet-chip"><input type="checkbox" name="hospitalityService" value="Chaplain visit"><img class="ico" src="images/ic-cross.png" data-ic="cross" alt=""><span>Chaplain visit</span></label>
+      <label class="diet-chip"><input type="checkbox" name="hospitalityService" value="Newspaper delivery"><img class="ico" src="images/ic-news.png" data-ic="news" alt=""><span>Newspaper delivery</span></label>
+      <label class="diet-chip"><input type="checkbox" name="hospitalityService" value="Family lounge access"><img class="ico" src="images/ic-users.png" data-ic="users" alt=""><span>Family lounge access</span></label>
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-flag-blue.png" data-ic="flag" alt="">
+      <h3>Admission Priority</h3>
+    </div>
+    <div class="svc-grid svc-grid-3">
+      <label class="diet-chip"><input type="radio" name="priorityLevel" value="Routine" checked><img class="ico" src="images/ic-clock.png" data-ic="clock" alt=""><span>Routine</span></label>
+      <label class="diet-chip"><input type="radio" name="priorityLevel" value="Urgent"><img class="ico" src="images/ic-warn.png" data-ic="warn" alt=""><span>Urgent</span></label>
+      <label class="diet-chip"><input type="radio" name="priorityLevel" value="Immediate"><img class="ico" src="images/ic-siren.png" data-ic="siren" alt=""><span>Immediate</span></label>
+    </div>
+  </section>
+
+  <section class="rs-section">
+    <div class="rs-section-header">
+      <img class="ico ico-blue" src="images/ic-file-blue.png" data-ic="file" alt="">
+      <h3>Additional Care Notes</h3>
+    </div>
+    <div class="rs-field">
+      <textarea id="careNotes" maxlength="300" placeholder="Any additional clinical or hospitality instructions..."></textarea>
+      <div class="notes-count" id="careNotesCount">0/300</div>
+    </div>
+  </section>
+
+  <section class="rs-section svc-summary">
+    <div class="svc-summary-title">
+      <img class="ico ico-blue" src="images/ic-chart-blue.png" data-ic="chart" alt="">
+      <h3>Services Summary</h3>
+    </div>
+    <div class="svc-summary-card">
+      <div class="svc-summary-row">
+        <img class="ico" src="images/ic-steth-blue.png" data-ic="steth" alt="">
+        <span>Clinical services selected</span>
+        <strong id="sumClinical">0</strong>
+      </div>
+      <div class="svc-summary-row">
+        <img class="ico" src="images/ic-cloche-blue.png" data-ic="cloche" alt="">
+        <span>Hospitality services selected</span>
+        <strong id="sumHospitality">0</strong>
+      </div>
+      <div class="svc-summary-row">
+        <img class="ico" src="images/ic-flag-blue.png" data-ic="flag" alt="">
+        <span>Priority level</span>
+        <strong id="sumPriority">Routine</strong>
+      </div>
+    </div>
+  </section>
+
+</section>
+
+<!-- STEP 5 -->
+<section class="rs-step-panel" data-step="5">
+
+<div class="rv-banner">
+    <img class="ico ico-blue" src="images/ic-clipboard-blue.png" data-ic="clipboard" alt="">
+    <div>
+      <h3>Review &amp; Confirm Reservation</h3>
+      <p>Please review all details below before confirming. You can go back to make changes if needed.</p>
+    </div>
+  </div>
+
+  <div class="rv-grid">
+
+    <div class="rv-card">
+      <div class="rv-head">
+        <div class="rv-title"><img class="ico" src="images/ic-user-blue.png" data-ic="user" alt=""><h3>Patient Information</h3></div>
+        <button type="button" class="rv-edit" data-goto="1"><img class="ico" src="images/ic-edit-blue.png" data-ic="edit" alt="">Edit</button>
+      </div>
+      <dl class="rv-list">
+        <dt>Name</dt><dd id="rvName">—</dd>
+        <dt>MRN</dt><dd id="rvMrn">—</dd>
+        <dt>Date of Birth</dt><dd id="rvDob">—</dd>
+        <dt>Insurance</dt><dd id="rvInsurance">—</dd>
+        <dt>Admission</dt><dd id="rvAdmission">—</dd>
+        <dt>Attending Physician</dt><dd id="rvPhysician">—</dd>
+      </dl>
+    </div>
+
+    <div class="rv-card">
+      <div class="rv-head">
+        <div class="rv-title"><img class="ico" src="images/ic-bed-blue.png" data-ic="bed" alt=""><h3>Room Information</h3></div>
+        <button type="button" class="rv-edit" data-goto="2"><img class="ico" src="images/ic-edit-blue.png" data-ic="edit" alt="">Edit</button>
+      </div>
+      <dl class="rv-list">
+        <dt>Room</dt><dd id="rvRoom">—</dd>
+        <dt>Bed</dt><dd id="rvBed">—</dd>
+        <dt>Ward</dt><dd id="rvWard">—</dd>
+        <dt>Floor</dt><dd id="rvFloor">—</dd>
+        <dt>Type</dt><dd id="rvRoomType">—</dd>
+        <dt>Amenities</dt><dd id="rvAmenities">—</dd>
+        <dt>Housekeeping</dt><dd id="rvHousekeeping">—</dd>
+      </dl>
+    </div>
+
+    <div class="rv-card">
+      <div class="rv-head">
+        <div class="rv-title"><img class="ico" src="images/ic-utensils-blue.png" data-ic="utensils" alt=""><h3>Meals Summary</h3></div>
+        <button type="button" class="rv-edit" data-goto="3"><img class="ico" src="images/ic-edit-blue.png" data-ic="edit" alt="">Edit</button>
+      </div>
+      <dl class="rv-list">
+        <dt>Dietary preferences</dt><dd id="rvDiet">—</dd>
+        <dt>Allergies / Restrictions</dt><dd id="rvAllergies">—</dd>
+        <dt>Breakfast</dt><dd id="rvBreakfast">—</dd>
+        <dt>Lunch</dt><dd id="rvLunch">—</dd>
+        <dt>Dinner</dt><dd id="rvDinner">—</dd>
+        <dt>Meal notes</dt><dd id="rvMealNotes">—</dd>
+      </dl>
+    </div>
+
+    <div class="rv-card">
+      <div class="rv-head">
+        <div class="rv-title"><img class="ico" src="images/ic-steth-blue.png" data-ic="steth" alt=""><h3>Services Summary</h3></div>
+        <button type="button" class="rv-edit" data-goto="4"><img class="ico" src="images/ic-edit-blue.png" data-ic="edit" alt="">Edit</button>
+      </div>
+      <div class="rv-services">
+        <h4>Clinical services</h4>
+        <ul id="rvClinical"></ul>
+        <h4>Hospitality services</h4>
+        <ul id="rvHospitality"></ul>
+        <dl class="rv-list rv-list-tight">
+          <dt>Priority level</dt><dd id="rvPriority">—</dd>
+          <dt>Additional notes</dt><dd id="rvCareNotes">—</dd>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rv-card rv-consent">
+    <div class="rv-head">
+      <div class="rv-title"><img class="ico" src="images/ic-file-blue.png" data-ic="file" alt=""><h3>Consent &amp; Authorization</h3></div>
+    </div>
+    <div class="rv-consent-body">
+      <label class="rv-check"><input type="checkbox" id="consentAccurate"><span>I confirm that all information provided is accurate.</span></label>
+      <label class="rv-check"><input type="checkbox" id="consentArrangements"><span>I consent to the requested room, meal, and service arrangements.</span></label>
+      <label class="rv-check"><input type="checkbox" id="consentAuthorize"><span>I authorize hospital staff to process this request.</span></label>
+    </div>
+  </div>
+
 
 </section>
 <!-- SECTION -->
@@ -368,7 +705,7 @@
 
         <button type="button" id="saveDraftBtn" class="btn-outline">
             <img src="images/save.png" alt="">
-            Save draft
+            Save Draft
         </button>
 
         <button type="button" id="backBtn" class="btn-outline" style="display:none;">
@@ -402,12 +739,41 @@
     <h3>Draft Saved</h3>
 
     <p>
-      Your Room Service Request has been saved successfully.
+      Your Room Reservation has been saved successfully.
       You can continue later from your drafts.
     </p>
 
     <button class="btn-primary modal-btn"
             onclick="closeModal('draftSavedModal')">
+      OK
+    </button>
+
+  </div>
+</div>
+
+<div id="submitModal" class="modal-overlay">
+  <div class="modal-card">
+
+    <div class="modal-success-icon">
+      <img src="images/icon-normal.png" alt="Success">
+    </div>
+
+    <h3>Room Reserved</h3>
+
+    <p>
+      Your room has been reserved for the patient.
+    </p>
+
+    <dl class="modal-details">
+      <dt>Reservation ID</dt><dd id="rvRequestId">—</dd>
+      <dt>Patient</dt><dd id="rvReservationPatient">—</dd>
+      <dt>Room / Bed</dt><dd id="rvReservationRoom">—</dd>
+      <dt>Reserved On</dt><dd id="rvSubmittedOn">—</dd>
+      <dt>Status</dt><dd id="rvStatus">—</dd>
+    </dl>
+
+    <button class="btn-primary modal-btn"
+            onclick="closeModal('submitModal')">
       OK
     </button>
 
