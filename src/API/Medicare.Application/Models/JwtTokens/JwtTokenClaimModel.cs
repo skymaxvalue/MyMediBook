@@ -25,7 +25,7 @@ namespace Medicare.Application.Models.JwtTokens
     public class JwtPatientClaimModel
     {
         public Guid UserId { get; set; }
-         public int RefId { get; set; }
+        public int RefId { get; set; }
         public string UserType { get; set; }
         public string Username { get; set; }
         public string FullName { get; set; }
