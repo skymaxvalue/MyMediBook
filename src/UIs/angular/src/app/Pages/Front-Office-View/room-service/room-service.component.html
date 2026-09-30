@@ -2,50 +2,45 @@
 
     <section class="rs-page-card">
 
+        <!-- ===================================================== -->
         <!-- HEADER -->
+        <!-- ===================================================== -->
 
         <div class="rs-page-header">
 
             <div class="rs-title-group">
 
                 <div class="rs-icon-circle">
-
-                    <img src="/assets/images/front-office/images/room-service.png" alt="">
-
+                    <img src="/assets/images/front-office/images/room-service.png" alt="Room Reservation">
                 </div>
 
                 <div>
-
-                    <h2>
-                        Room Service Request
-                    </h2>
+                    <h2>Room Reservation</h2>
 
                     <p>
-                        Clinical & hospitality services ·
+                        Clinical &amp; hospitality services ·
                         Complete all steps to submit
                     </p>
-
                 </div>
 
             </div>
 
             <span class="rs-request-id">
-                RSQ-GU07BT
+                RSV-GU07BT
             </span>
 
         </div>
 
 
+        <!-- ===================================================== -->
         <!-- STEPPER -->
+        <!-- ===================================================== -->
 
         <div class="rs-stepper">
 
-            @for (
-            step of [1,2,3,4,5];
-            track step
-            ) {
+            @for (step of [1, 2, 3, 4, 5]; track step) {
 
-            <div class="rs-step" [class.active]="currentStep === step">
+            <div class="rs-step" [class.active]="currentStep === step" [class.done]="currentStep > step">
 
                 <span>
                     {{ step < 10 ? '0' + step : step }} </span>
@@ -85,17 +80,23 @@
         </div>
 
 
+        <!-- ===================================================== -->
+        <!-- FORM -->
+        <!-- ===================================================== -->
+
         <form [formGroup]="roomServiceForm" (ngSubmit)="nextStep()">
 
-            <!-- ================================================= -->
-            <!-- STEP 1 -->
-            <!-- ================================================= -->
+
+            <!-- =================================================== -->
+            <!-- STEP 1 : PATIENT -->
+            <!-- =================================================== -->
 
             @if (currentStep === 1) {
 
             <section class="rs-step-panel active">
 
-                <!-- PATIENT SEARCH -->
+
+                <!-- ================= PATIENT SEARCH ================= -->
 
                 <section class="rs-section">
 
@@ -110,7 +111,12 @@
                     </div>
 
 
+                    @if (!selectedPatient) {
+
                     <div class="rs-search-layout" [formGroup]="patientSearchForm">
+
+
+                        <!-- LEFT SEARCH -->
 
                         <div class="rs-search-column">
 
@@ -145,14 +151,14 @@
                         </div>
 
 
+                        <!-- OR -->
+
                         <div class="rs-search-divider">
-
-                            <span>
-                                OR
-                            </span>
-
+                            <span>OR</span>
                         </div>
 
+
+                        <!-- MOBILE SEARCH -->
 
                         <div class="rs-search-column">
 
@@ -177,7 +183,9 @@
                             <div class="rs-search-actions">
 
                                 <button type="button" class="btn-outline-danger" (click)="clearSearch()">
+
                                     Clear
+
                                 </button>
 
 
@@ -219,18 +227,21 @@
 
                                 </div>
 
-
                                 <div>
 
                                     <div class="rs-result-name">
+
                                         {{ patient.firstName }}
                                         {{ patient.lastName }}
+
                                     </div>
 
                                     <div class="rs-result-meta">
+
                                         {{ patient.phone }}
                                         •
                                         {{ patient.mrn }}
+
                                     </div>
 
                                 </div>
@@ -239,7 +250,9 @@
 
 
                             <button type="button" class="btn-select" (click)="selectPatient(patient)">
+
                                 Select Patient
+
                             </button>
 
                         </div>
@@ -249,7 +262,9 @@
                         } @else {
 
                         <div class="rs-empty-result">
+
                             No Matching Record Found
+
                         </div>
 
                         }
@@ -258,10 +273,54 @@
 
                     }
 
+                    } @else {
+
+                    <!-- SELECTED PATIENT BAR -->
+
+                    <div class="rs-selected-bar">
+
+                        <div class="rs-selected-item">
+
+                            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt=""
+                                class="rs-selected-icon">
+
+                            <strong>
+
+                                {{ selectedPatient.firstName }}
+                                {{ selectedPatient.lastName }}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="rs-selected-item">
+
+                            <span class="rs-selected-phone">
+
+                                {{ selectedPatient.phone }}
+
+                            </span>
+
+                        </div>
+
+
+                        <button type="button" class="btn-switch" (click)="switchPatient()">
+
+                            <img src="/assets/images/front-office/images/switch-blue.png" alt="">
+
+                            Switch Profile
+
+                        </button>
+
+                    </div>
+
+                    }
+
                 </section>
 
 
-                <!-- PATIENT INFORMATION -->
+                <!-- ================= PATIENT INFORMATION ================= -->
 
                 <section class="rs-section">
 
@@ -381,7 +440,7 @@
                 </section>
 
 
-                <!-- ADMISSION -->
+                <!-- ================= ADMISSION & CONTACT ================= -->
 
                 <section class="rs-section">
 
@@ -390,7 +449,7 @@
                         <img src="/assets/images/front-office/images/phone-blue.png" alt="">
 
                         <h3>
-                            Admission & Contact
+                            Admission &amp; Contact
                         </h3>
 
                     </div>
@@ -423,7 +482,7 @@
                         <div class="rs-field">
 
                             <label>
-                                Patient Contact #
+                                Patient Contact Number
                             </label>
 
                             <input type="tel" formControlName="patientContact" placeholder="(000) 000-0000">
@@ -449,7 +508,7 @@
                         <div class="rs-field">
 
                             <label>
-                                Emergency Contact Phone
+                                Emergency Contact Number
                             </label>
 
                             <input type="tel" formControlName="emergencyPhone" placeholder="(000) 000-0000">
@@ -459,14 +518,28 @@
                     </div>
 
 
-                    <div class="rs-field">
+                    <div class="rs-grid-2">
 
-                        <label>
-                            Attending Physician
-                        </label>
+                        <div class="rs-field">
 
-                        <input type="text" formControlName="attendingPhysician"
-                            placeholder="Dr. Last, First — department">
+                            <label>
+                                Attending Physician
+                            </label>
+
+                            <input type="text" formControlName="attendingPhysician" placeholder="Dr. Name">
+
+                        </div>
+
+
+                        <div class="rs-field">
+
+                            <label>
+                                Attending Physician Department
+                            </label>
+
+                            <input type="text" formControlName="attendingPhysicianDepartment" placeholder="Department">
+
+                        </div>
 
                     </div>
 
@@ -477,13 +550,16 @@
             }
 
 
-            <!-- ================================================= -->
-            <!-- STEP 2 -->
-            <!-- ================================================= -->
+            <!-- =================================================== -->
+            <!-- STEP 2 : ROOM -->
+            <!-- =================================================== -->
 
             @if (currentStep === 2) {
 
             <section class="rs-step-panel active">
+
+
+                <!-- ROOM TYPE -->
 
                 <section class="rs-section">
 
@@ -506,13 +582,13 @@
                         ) {
 
                         <label class="room-card" [class.selected]="
-                                        roomServiceForm.get('roomType')?.value
-                                        === room.value
-                                    ">
+                    roomServiceForm.get('roomType')?.value === room.value
+                  ">
 
-                            <input type="radio" formControlName="roomType" [value]="room.value">
+                            <input type="radio" formControlName="roomType" [value]="room.value"
+                                (change)="onRoomTypeChange()">
 
-                            <img [src]="room.image" alt="">
+                            <img class="ico" [src]="room.image" [alt]="room.title">
 
                             <h4>
                                 {{ room.title }}
@@ -546,6 +622,28 @@
                     </div>
 
 
+                    <div class="amenity-info">
+
+                        <img class="ico" src="/assets/images/front-office/images/ic-info-blue.png" alt="">
+
+                        <span>
+
+                            Amenities are pre-selected based on the selected
+                            room type.
+
+                            <strong>(
+                                {{ roomServiceForm.get('roomType')?.value }} Room
+                                )
+                            </strong>
+
+
+                            You can modify them if needed.
+
+                        </span>
+
+                    </div>
+
+
                     <div class="amenity-grid">
 
                         @for (
@@ -553,23 +651,32 @@
                         track amenity.value
                         ) {
 
-                        <label>
+                        <label class="amenity-chip">
 
-                            <input type="checkbox" [checked]="
-                                            isAmenitySelected(
-                                                amenity.value
-                                            )
-                                        " (change)="
-                                            toggleAmenity(
-                                                amenity.value
-                                            )
-                                        ">
+                            <input type="checkbox" [checked]="isAmenitySelected(amenity.value)"
+                                (change)="toggleAmenity(amenity.value)">
+                            <img class="ico" [src]="amenity.image" [attr.data-ic]="amenity.data_Ic"
+                                [alt]="amenity.value">
 
-                            {{ amenity.label }}
+                            <span>
+                                {{ amenity.label }}
+                            </span>
 
                         </label>
 
                         }
+
+
+                        <div class="amenity-count">
+
+                            {{
+                            roomServiceForm.get('amenities')?.value?.length || 0
+                            }}
+
+                            of {{ amenities.length }}
+                            amenities selected
+
+                        </div>
 
                     </div>
 
@@ -655,8 +762,17 @@
                             Special Housekeeping Notes
                         </label>
 
-                        <textarea formControlName="housekeepingNotes" maxlength="500"
-                            placeholder="Allergies to cleaning products, preferred scents, do-not-disturb windows..."></textarea>
+                        <textarea formControlName="housekeepingNotes" maxlength="300"
+                            placeholder="Allergies to cleaning products, preferred scents, do-not-disturb windows...">
+              </textarea>
+
+                        <div class="notes-count">
+
+                            {{
+                            roomServiceForm.get('housekeepingNotes')?.value?.length || 0
+                            }}/300
+
+                        </div>
 
                     </div>
 
@@ -667,27 +783,383 @@
             }
 
 
-            <!-- ================================================= -->
-            <!-- STEP 3 -->
-            <!-- ================================================= -->
+            <!-- =================================================== -->
+            <!-- STEP 3 : MEALS -->
+            <!-- =================================================== -->
 
             @if (currentStep === 3) {
 
             <section class="rs-step-panel active">
 
+
+                <!-- DIETARY -->
+
                 <section class="rs-section">
 
                     <div class="rs-section-header">
 
+                        <img src="/assets/images/front-office/images/ic-utensils-blue.png" alt="">
+
                         <h3>
-                            Meal Preferences
+                            Dietary Preferences
                         </h3>
 
                     </div>
 
-                    <p>
-                        Step 3 content can be added here.
-                    </p>
+
+                    <div class="diet-grid">
+
+                        @for (
+                        diet of dietaryOptions;
+                        track diet.value
+                        ) {
+
+                        <label class="diet-chip">
+
+                            <input type="checkbox" [checked]="isDietSelected(diet.value)"
+                                (change)="toggleDiet(diet.value)">
+                            <img class="ico" [src]="diet.image" [attr.data-ic]="diet.data_Ic" [alt]="diet.value">
+
+                            <span>
+                                {{ diet.label }}
+                            </span>
+
+                        </label>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- ALLERGIES -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/ic-file-blue.png" alt="">
+
+                        <h3>
+                            Food Allergies / Restrictions
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-field">
+
+                        <textarea formControlName="foodAllergies" maxlength="300"
+                            placeholder="Peanuts, shellfish, lactose...">
+              </textarea>
+
+                        <div class="notes-count">
+
+                            {{
+                            roomServiceForm.get('foodAllergies')?.value?.length || 0
+                            }}/300
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MEALS -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/ic-cloche-blue.png" alt="">
+
+                        <h3>
+                            Meal Selections
+                        </h3>
+
+                    </div>
+
+
+                    <div class="meal-grid">
+
+
+                        <!-- BREAKFAST -->
+
+                        <div class="meal-card">
+
+                            <div class="meal-head">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-sun-blue.png" alt="">
+
+                                <div>
+
+                                    <h4>
+                                        BREAKFAST
+                                    </h4>
+
+                                    <p>
+                                        (6:00 AM – 9:00 AM)
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Main course
+                                </label>
+
+                                <select formControlName="breakfastMain">
+
+                                    <option>Scrambled Eggs</option>
+                                    <option>Oatmeal</option>
+                                    <option>Pancakes</option>
+                                    <option>Idli &amp; Sambar</option>
+                                    <option>Veg Omelette</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Side
+                                </label>
+
+                                <select formControlName="breakfastSide">
+
+                                    <option>Hash Browns</option>
+                                    <option>Fresh Fruit</option>
+                                    <option>Toast</option>
+                                    <option>Yogurt</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Beverage
+                                </label>
+
+                                <select formControlName="breakfastBeverage">
+
+                                    <option>Orange Juice</option>
+                                    <option>Tea</option>
+                                    <option>Coffee</option>
+                                    <option>Milk</option>
+                                    <option>Water</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LUNCH -->
+
+                        <div class="meal-card">
+
+                            <div class="meal-head">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-utensils-blue.png" alt="">
+
+                                <div>
+
+                                    <h4>
+                                        LUNCH
+                                    </h4>
+
+                                    <p>
+                                        (12:00 PM – 2:00 PM)
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Main course
+                                </label>
+
+                                <select formControlName="lunchMain">
+
+                                    <option>Grilled Chicken</option>
+                                    <option>Vegetable Pulao</option>
+                                    <option>Dal &amp; Roti</option>
+                                    <option>Paneer Curry</option>
+                                    <option>Fish Curry</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Side
+                                </label>
+
+                                <select formControlName="lunchSide">
+
+                                    <option>Steamed Vegetables</option>
+                                    <option>Green Salad</option>
+                                    <option>Steamed Rice</option>
+                                    <option>Raita</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Beverage
+                                </label>
+
+                                <select formControlName="lunchBeverage">
+
+                                    <option>Iced Tea</option>
+                                    <option>Buttermilk</option>
+                                    <option>Lemonade</option>
+                                    <option>Water</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DINNER -->
+
+                        <div class="meal-card">
+
+                            <div class="meal-head">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-moon-blue.png" alt="">
+
+                                <div>
+
+                                    <h4>
+                                        DINNER
+                                    </h4>
+
+                                    <p>
+                                        (6:00 PM – 8:00 PM)
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Main course
+                                </label>
+
+                                <select formControlName="dinnerMain">
+
+                                    <option>Baked Salmon</option>
+                                    <option>Roast Chicken</option>
+                                    <option>Vegetable Stew</option>
+                                    <option>Dal Khichdi</option>
+                                    <option>Grilled Paneer</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Side
+                                </label>
+
+                                <select formControlName="dinnerSide">
+
+                                    <option>Rice Pilaf</option>
+                                    <option>Mashed Potatoes</option>
+                                    <option>Sauteed Greens</option>
+                                    <option>Chapati</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="rs-field">
+
+                                <label>
+                                    Beverage
+                                </label>
+
+                                <select formControlName="dinnerBeverage">
+
+                                    <option>Water</option>
+                                    <option>Herbal Tea</option>
+                                    <option>Warm Milk</option>
+                                    <option>Juice</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MEAL NOTES -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/ic-file-blue.png" alt="">
+
+                        <h3>
+                            Meal Notes (Optional)
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-field">
+
+                        <textarea formControlName="foodNotes" maxlength="300"
+                            placeholder="Please provide special meal requests, portion size, or additional instructions...">
+              </textarea>
+
+                        <div class="notes-count">
+
+                            {{
+                            roomServiceForm.get('foodNotes')?.value?.length || 0
+                            }}/300
+
+                        </div>
+
+                    </div>
 
                 </section>
 
@@ -696,27 +1168,236 @@
             }
 
 
-            <!-- ================================================= -->
-            <!-- STEP 4 -->
-            <!-- ================================================= -->
+            <!-- =================================================== -->
+            <!-- STEP 4 : SERVICES -->
+            <!-- =================================================== -->
 
             @if (currentStep === 4) {
 
             <section class="rs-step-panel active">
 
+
+                <!-- CLINICAL SERVICES -->
+
                 <section class="rs-section">
 
                     <div class="rs-section-header">
 
+                        <img src="/assets/images/front-office/images/ic-steth-blue.png" alt="">
+
                         <h3>
-                            Services
+                            Admission Services
                         </h3>
 
                     </div>
 
-                    <p>
-                        Step 4 content can be added here.
-                    </p>
+
+                    <div class="svc-grid svc-grid-4">
+
+                        @for (
+                        service of clinicalServices;
+                        track service
+                        ) {
+
+                        <label class="diet-chip">
+
+                            <input type="checkbox" [checked]="isClinicalServiceSelected(service.value)"
+                                (change)="toggleClinicalService(service.value)">
+                            <img class="ico" [src]="service.image" [attr.data-ic]="service.data_Ic"
+                                [alt]="service.value">
+
+
+                            <span>
+                                {{ service.label }}
+                            </span>
+
+                        </label>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- HOSPITALITY -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/ic-cloche-blue.png" alt="">
+
+                        <h3>
+                            Hospitality Preferences
+                        </h3>
+
+                    </div>
+
+
+                    <div class="svc-grid svc-grid-3">
+
+                        @for (
+                        service of hospitalityServices;
+                        track service
+                        ) {
+
+                        <label class="diet-chip">
+
+                            <input type="checkbox" [checked]="isHospitalityServiceSelected(service.value)"
+                                (change)="toggleHospitalityService(service.value)">
+                            <img class="ico" [src]="service.image" [attr.data-ic]="service.data_Ic"
+                                [alt]="service.value">
+
+                            <span>
+                                {{ service.label }}
+                            </span>
+
+                        </label>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- PRIORITY -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/ic-flag-blue.png" alt="">
+
+                        <h3>
+                            Admission Priority
+                        </h3>
+
+                    </div>
+
+
+                    <div class="svc-grid svc-grid-3">
+
+                        @for (
+                        priority of priorityLevels;
+                        track priority
+                        ) {
+
+                        <label class="diet-chip">
+
+                            <input type="radio" formControlName="priorityLevel" [value]="priority.value">
+                            <img class="ico" [src]="priority.image" [attr.data-ic]="priority.data_Ic"
+                                [alt]="priority.value">
+                            <span>
+                                {{ priority.label }}
+                            </span>
+
+                        </label>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- CARE NOTES -->
+
+                <section class="rs-section">
+
+                    <div class="rs-section-header">
+
+                        <img src="/assets/images/front-office/images/ic-file-blue.png" alt="">
+
+                        <h3>
+                            Additional Care Notes
+                        </h3>
+
+                    </div>
+
+
+                    <div class="rs-field">
+
+                        <textarea formControlName="careNotes" maxlength="300"
+                            placeholder="Any additional clinical or hospitality instructions...">
+              </textarea>
+
+                        <div class="notes-count">
+
+                            {{
+                            roomServiceForm.get('careNotes')?.value?.length || 0
+                            }}/300
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SERVICE SUMMARY -->
+
+                <section class="rs-section svc-summary">
+
+                    <div class="svc-summary-title">
+
+                        <img class="ico" src="/assets/images/front-office/images/ic-chart-blue.png" alt="">
+
+                        <h3>
+                            Services Summary
+                        </h3>
+
+                    </div>
+
+
+                    <div class="svc-summary-card">
+
+                        <div class="svc-summary-row">
+
+                            <img class="ico" src="/assets/images/front-office/images/ic-steth-blue.png" alt="">
+
+                            <span>
+                                Clinical services selected
+                            </span>
+
+                            <strong>
+                                {{ selectedClinicalServices.length }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="svc-summary-row">
+
+                            <img class="ico" src="/assets/images/front-office/images/ic-cloche-blue.png" alt="">
+
+                            <span>
+                                Hospitality services selected
+                            </span>
+
+                            <strong>
+                                {{ selectedHospitalityServices.length }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="svc-summary-row">
+
+                            <img class="ico" src="/assets/images/front-office/images/ic-flag-blue.png" alt="">
+
+                            <span>
+                                Priority level
+                            </span>
+
+                            <strong>
+                                {{ roomServiceForm.get('priorityLevel')?.value || 'Routine' }}
+                            </strong>
+
+                        </div>
+
+                    </div>
 
                 </section>
 
@@ -725,54 +1406,525 @@
             }
 
 
-            <!-- ================================================= -->
-            <!-- STEP 5 -->
-            <!-- ================================================= -->
+            <!-- =================================================== -->
+            <!-- STEP 5 : REVIEW -->
+            <!-- =================================================== -->
 
             @if (currentStep === 5) {
 
             <section class="rs-step-panel active">
 
-                <section class="rs-section">
 
-                    <div class="rs-section-header">
+                <!-- REVIEW BANNER -->
+
+                <div class="rv-banner">
+
+                    <img class="ico" src="/assets/images/front-office/images/ic-clipboard-blue.png" alt="">
+
+                    <div>
 
                         <h3>
-                            Review Request
+                            Review &amp; Confirm Reservation
                         </h3>
 
-                    </div>
-
-                    <p>
-                        Review the complete room service request
-                        before submitting.
-                    </p>
-
-                    @if (selectedPatient) {
-
-                    <div class="review-box">
-
-                        <strong>
-                            Patient:
-                        </strong>
-
-                        {{ selectedPatient.firstName }}
-                        {{ selectedPatient.lastName }}
+                        <p>
+                            Please review all details below before confirming.
+                            You can go back to make changes if needed.
+                        </p>
 
                     </div>
 
-                    }
+                </div>
 
-                </section>
+
+                <div class="rv-grid">
+
+
+                    <!-- PATIENT -->
+
+                    <div class="rv-card">
+
+                        <div class="rv-head">
+
+                            <div class="rv-title">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-user-blue.png" alt="">
+
+                                <h3>
+                                    Patient Information
+                                </h3>
+
+                            </div>
+
+
+                            <button type="button" class="rv-edit" (click)="goToStep(1)">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-edit-blue.png" alt="">
+
+                                Edit
+
+                            </button>
+
+                        </div>
+
+
+                        <dl class="rv-list">
+
+                            <dt>Name</dt>
+
+                            <dd>
+
+                                {{ selectedPatient?.firstName || '—' }}
+                                {{ selectedPatient?.lastName || '' }}
+
+                            </dd>
+
+
+                            <dt>MRN</dt>
+
+                            <dd>
+                                {{ selectedPatient?.mrn || '—' }}
+                            </dd>
+
+
+                            <dt>Date of Birth</dt>
+
+                            <dd>
+                                {{ selectedPatient?.dob || '—' }}
+                            </dd>
+
+
+                            <dt>Insurance</dt>
+
+                            <dd>
+
+                                {{ selectedPatient?.insurance || '—' }}
+
+                                @if (selectedPatient?.memberId) {
+                                ({{ selectedPatient?.memberId }})
+                                }
+
+                            </dd>
+
+
+                            <dt>Admission</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('admissionDate')?.value || '—' }}
+
+                                @if (roomServiceForm.get('expectedDischarge')?.value) {
+
+                                to
+                                {{ roomServiceForm.get('expectedDischarge')?.value }}
+
+                                }
+
+                            </dd>
+
+
+                            <dt>Attending Physician</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('attendingPhysician')?.value || '—' }}
+
+                                @if (roomServiceForm.get('attendingPhysicianDepartment')?.value) {
+
+                                ,
+                                {{ roomServiceForm.get('attendingPhysicianDepartment')?.value }}
+
+                                }
+
+                            </dd>
+
+                        </dl>
+
+                    </div>
+
+
+                    <!-- ROOM -->
+
+                    <div class="rv-card">
+
+                        <div class="rv-head">
+
+                            <div class="rv-title">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-bed-blue.png" alt="">
+
+                                <h3>
+                                    Room Information
+                                </h3>
+
+                            </div>
+
+
+                            <button type="button" class="rv-edit" (click)="goToStep(2)">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-edit-blue.png" alt="">
+
+                                Edit
+
+                            </button>
+
+                        </div>
+
+
+                        <dl class="rv-list">
+
+                            <dt>Room</dt>
+                            <dd>402-B</dd>
+
+                            <dt>Bed</dt>
+                            <dd>B</dd>
+
+                            <dt>Ward</dt>
+                            <dd>Cardiology</dd>
+
+                            <dt>Floor</dt>
+                            <dd>4th Floor</dd>
+
+                            <dt>Type</dt>
+
+                            <dd>
+                                {{ roomServiceForm.get('roomType')?.value || '—' }}
+                            </dd>
+
+
+                            <dt>Amenities</dt>
+
+                            <dd>
+
+                                @if (
+                                roomServiceForm.get('amenities')?.value?.length
+                                ) {
+
+                                {{ roomServiceForm.get('amenities')?.value.join(', ') }}
+
+                                } @else {
+
+                                —
+
+                                }
+
+                            </dd>
+
+
+                            <dt>Housekeeping</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('cleaningTime')?.value || '—' }}
+
+                                @if (roomServiceForm.get('cleaningFrequency')?.value) {
+
+                                ,
+                                {{ roomServiceForm.get('cleaningFrequency')?.value }}
+
+                                }
+
+                            </dd>
+
+                        </dl>
+
+                    </div>
+
+
+                    <!-- MEALS -->
+
+                    <div class="rv-card">
+
+                        <div class="rv-head">
+
+                            <div class="rv-title">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-utensils-blue.png" alt="">
+
+                                <h3>
+                                    Meals Summary
+                                </h3>
+
+                            </div>
+
+
+                            <button type="button" class="rv-edit" (click)="goToStep(3)">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-edit-blue.png" alt="">
+
+                                Edit
+
+                            </button>
+
+                        </div>
+
+
+                        <dl class="rv-list">
+
+                            <dt>Dietary Preferences</dt>
+
+                            <dd>
+
+                                @if (selectedDietaryPreferences.length) {
+
+                                {{ selectedDietaryPreferences.join(', ') }}
+
+                                } @else {
+
+                                —
+
+                                }
+
+                            </dd>
+
+
+                            <dt>Allergies / Restrictions</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('foodAllergies')?.value || '—' }}
+
+                            </dd>
+
+
+                            <dt>Breakfast</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('breakfastMain')?.value || '—' }}
+                                /
+                                {{ roomServiceForm.get('breakfastSide')?.value || '—' }}
+                                /
+                                {{ roomServiceForm.get('breakfastBeverage')?.value || '—' }}
+
+                            </dd>
+
+
+                            <dt>Lunch</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('lunchMain')?.value || '—' }}
+                                /
+                                {{ roomServiceForm.get('lunchSide')?.value || '—' }}
+                                /
+                                {{ roomServiceForm.get('lunchBeverage')?.value || '—' }}
+
+                            </dd>
+
+
+                            <dt>Dinner</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('dinnerMain')?.value || '—' }}
+                                /
+                                {{ roomServiceForm.get('dinnerSide')?.value || '—' }}
+                                /
+                                {{ roomServiceForm.get('dinnerBeverage')?.value || '—' }}
+
+                            </dd>
+
+
+                            <dt>Meal Notes</dt>
+
+                            <dd>
+
+                                {{ roomServiceForm.get('foodNotes')?.value || '—' }}
+
+                            </dd>
+
+                        </dl>
+
+                    </div>
+
+
+                    <!-- SERVICES -->
+
+                    <div class="rv-card">
+
+                        <div class="rv-head">
+
+                            <div class="rv-title">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-steth-blue.png" alt="">
+
+                                <h3>
+                                    Services Summary
+                                </h3>
+
+                            </div>
+
+
+                            <button type="button" class="rv-edit" (click)="goToStep(4)">
+
+                                <img class="ico" src="/assets/images/front-office/images/ic-edit-blue.png" alt="">
+
+                                Edit
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="rv-services">
+
+                            <h4>
+                                Clinical services
+                            </h4>
+
+
+                            @if (selectedClinicalServices.length) {
+
+                            <ul>
+
+                                @for (
+                                service of selectedClinicalServices;
+                                track service
+                                ) {
+
+                                <li>
+                                    {{ service }}
+                                </li>
+
+                                }
+
+                            </ul>
+
+                            } @else {
+
+                            <p>
+                                None selected
+                            </p>
+
+                            }
+
+
+                            <h4>
+                                Hospitality services
+                            </h4>
+
+
+                            @if (selectedHospitalityServices.length) {
+
+                            <ul>
+
+                                @for (
+                                service of selectedHospitalityServices;
+                                track service
+                                ) {
+
+                                <li>
+                                    {{ service }}
+                                </li>
+
+                                }
+
+                            </ul>
+
+                            } @else {
+
+                            <p>
+                                None selected
+                            </p>
+
+                            }
+
+
+                            <dl class="rv-list rv-list-tight">
+
+                                <dt>
+                                    Priority level
+                                </dt>
+
+                                <dd>
+                                    {{ roomServiceForm.get('priorityLevel')?.value || '—' }}
+                                </dd>
+
+
+                                <dt>
+                                    Additional notes
+                                </dt>
+
+                                <dd>
+                                    {{ roomServiceForm.get('careNotes')?.value || '—' }}
+                                </dd>
+
+                            </dl>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONSENT -->
+
+                <div class="rv-card rv-consent">
+
+                    <div class="rv-head">
+
+                        <div class="rv-title">
+
+                            <img class="ico" src="/assets/images/front-office/images/ic-file-blue.png" alt="">
+
+                            <h3>
+                                Consent &amp; Authorization
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="rv-consent-body">
+
+                        <label class="rv-check">
+
+                            <input type="checkbox" formControlName="consentAccurate">
+
+                            <span>
+                                I confirm that all information provided is accurate.
+                            </span>
+
+                        </label>
+
+
+                        <label class="rv-check">
+
+                            <input type="checkbox" formControlName="consentArrangements">
+
+                            <span>
+                                I consent to the requested room, meal,
+                                and service arrangements.
+                            </span>
+
+                        </label>
+
+
+                        <label class="rv-check">
+
+                            <input type="checkbox" formControlName="consentAuthorize">
+
+                            <span>
+                                I authorize hospital staff to process this request.
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
 
             </section>
 
             }
 
 
-            <!-- ================================================= -->
+            <!-- =================================================== -->
             <!-- FOOTER -->
-            <!-- ================================================= -->
+            <!-- =================================================== -->
 
             <div class="rs-form-footer">
 
@@ -786,14 +1938,19 @@
 
                 <div class="rs-footer-actions">
 
+
+                    <!-- SAVE DRAFT -->
+
                     <button type="button" class="btn-outline" (click)="saveDraft()">
 
                         <img src="/assets/images/front-office/images/save.png" alt="">
 
-                        Save draft
+                        Save Draft
 
                     </button>
 
+
+                    <!-- BACK -->
 
                     @if (currentStep > 1) {
 
@@ -808,13 +1965,15 @@
                     }
 
 
+                    <!-- CONTINUE / SUBMIT -->
+
                     <button type="button" class="btn-primary" (click)="nextStep()">
 
                         @if (currentStep === totalSteps) {
 
-                        Submit
+                        Confirm Reservation
 
-                        <img src="/assets/images/front-office/images/check-white.png" alt="">
+                        <img src="/assets/images/front-office/images/send-white.png" alt="">
 
                         } @else {
 
@@ -837,9 +1996,9 @@
 </main>
 
 
-<!-- ===================================================== -->
-<!-- DRAFT MODAL -->
-<!-- ===================================================== -->
+<!-- ========================================================= -->
+<!-- DRAFT SAVED MODAL -->
+<!-- ========================================================= -->
 
 @if (showDraftModal) {
 
@@ -860,13 +2019,107 @@
 
 
         <p>
-            Your Room Service Request has been saved successfully.
+            Your Room Reservation has been saved successfully.
             You can continue later from your drafts.
         </p>
 
 
         <button type="button" class="btn-primary modal-btn" (click)="closeDraftModal()">
+
             OK
+
+        </button>
+
+    </div>
+
+</div>
+
+}
+
+
+<!-- ========================================================= -->
+<!-- RESERVATION SUCCESS MODAL -->
+<!-- ========================================================= -->
+
+@if (showSubmitModal) {
+
+<div class="modal-overlay show">
+
+    <div class="modal-card">
+
+        <div class="modal-success-icon">
+
+            <img src="/assets/images/front-office/images/icon-normal.png" alt="Success">
+
+        </div>
+
+
+        <h3>
+            Room Reserved
+        </h3>
+
+
+        <p>
+            Your room has been reserved for the patient.
+        </p>
+
+
+        <dl class="modal-details">
+
+            <dt>
+                Reservation ID
+            </dt>
+
+            <dd>
+                {{ submittedRequestId || '—' }}
+            </dd>
+
+
+            <dt>
+                Patient
+            </dt>
+
+            <dd>
+
+                {{ selectedPatient?.firstName || '' }}
+                {{ selectedPatient?.lastName || '' }}
+
+            </dd>
+
+
+            <dt>
+                Room / Bed
+            </dt>
+
+            <dd>
+                402-B / Bed B
+            </dd>
+
+
+            <dt>
+                Reserved On
+            </dt>
+
+            <dd>
+                {{ submittedAt || '—' }}
+            </dd>
+
+
+            <dt>
+                Status
+            </dt>
+
+            <dd>
+                Reserved
+            </dd>
+
+        </dl>
+
+
+        <button type="button" class="btn-primary modal-btn" (click)="closeSubmitModal()">
+
+            OK
+
         </button>
 
     </div>
