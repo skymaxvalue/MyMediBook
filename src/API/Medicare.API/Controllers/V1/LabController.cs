@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Medicare.Application.Features.Queries.Lab;
 using Medicare.Application.Features.Commands.LabResult;
 using Medicare.Application.Models.CommonModels.ResponseModel;
+using Medicare.Application.Features.Commands.Lab;
 
 namespace Medicare.API.Controllers.V1
 {
@@ -21,12 +22,32 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPost]
+        [Route("CreateLabOrder")]
+        public async Task<IActionResult> CreateLabOrder(LabOrderRequestModel model)
+        {
+            model.CreatedBy = int.Parse(User.FindFirst("RefId")!.Value);
+            model.HospitalId = int.Parse(User.FindFirst("ActiveHospitalId")!.Value);
+            ResponseModel response = new ResponseModel();
+            response = await _mediator.Send(new CreateLabOrderCommand(model));
+            return HandleResponse(response);
+        }
+
+        [HttpPost]
         [Route("CreateLabResult")]
         public async Task<IActionResult> CreateLabResult(LabResultModel model)
         {
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new CreateLabResultCommand(model));
             return HandleResponse(response);
+        }
+
+        [HttpGet]
+        [Route("GetLabTestComponents")]
+        public async Task<IActionResult> GetLabTestComponents()
+        {
+            List<LabTestCategoryModel> response = new List<LabTestCategoryModel>();
+            response = await _mediator.Send(new GetLabTestComponentsQuery());
+            return HandleListResponse(response);
         }
 
         [HttpGet]

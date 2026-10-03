@@ -43,6 +43,37 @@ namespace Medicare.DAL.Persistence.Repositories
             return returnData;
         }
 
+        public async Task<ResponseModel> CreateLabOrderAsync(LabOrderRequestModel model)
+        {
+            string procName = "USP_CreateLabOrder";
+            ResponseModel returnData = new ResponseModel();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("DoctorId", model.DoctorId);
+                param.Add("HospitalId", model.HospitalId);
+                param.Add("PatientId", model.PatientId);
+                param.Add("ProfileId", model.ProfileId); 
+                param.Add("TestList", model.TestList);
+                param.Add("Priority", model.Priority);
+                param.Add("Notes", model.Notes);
+                param.Add("CreatedBy", model.CreatedBy);
+
+                returnData = await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
         public async Task<LabResultSummaryModel> GetLabResultDetailByIdAsync(int id)
         {
             string procName = "USP_GetLabResultDetailById";
@@ -101,6 +132,27 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("ProfileId", profileId);
 
                 returnData = await _context.QueryStoredProcListAsync<LabResultSummaryModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<List<LabTestComponentsModelDto>> GetLabTestComponentsAsync()
+        {
+            string procName = "USP_GetLabTestsWithComponents";
+            List<LabTestComponentsModelDto> returnData = new List<LabTestComponentsModelDto>();
+            try
+            {
+                returnData = await _context.QueryStoredProcListAsync<LabTestComponentsModelDto>(procName);
             }
             catch (Exception ex)
             {
