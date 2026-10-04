@@ -3,7 +3,6 @@ using System.Data;
 using Medicare.Application.Interfaces.Dapper;
 using Microsoft.Extensions.Logging;
 using Medicare.Application.Models.CommonModels.ErrorLog;
-using Microsoft.Data.SqlClient;
 
 namespace Medicare.DAL.Persistence.Dapper
 {

@@ -71,7 +71,7 @@ namespace Medicare.API.Controllers.V1
         [Route("GetPatientProfileListById")]
         public async Task<IActionResult> GetPatientProfileListById()
         {
-            int enrollmentId = int.Parse(User.FindFirst("activeEnrollmentId")!.Value);
+            int enrollmentId = int.Parse(User.FindFirst("ActiveEnrollmentId")!.Value);
             List<PatientProfileModel> response = new List<PatientProfileModel>();
             response = await _mediator.Send(new GetPatientProfileListByIdQuery(enrollmentId));
             return HandleListResponse(response);
