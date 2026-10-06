@@ -1,4 +1,4 @@
-/* Physician Consultation stepper — keeps the existing Office Portal patient dataset pattern. */
+
 
 const PATIENTS_KEY = 'savedPatients_v5';
 
@@ -6,13 +6,12 @@ let allPatients = [];
 let selectedPatient = null;
 let currentStep = 1;
 
-/* Patient / account state (same model as the original booking page). */
+
 let currentPatientType = 'existing';
 let selectedAccountHolder = null;
 let isExistingAccount = false;
 let persistedNewPatientId = null;
 
-/* Responsible Party state machine + OTP */
 const RP_OTP_LENGTH = 4;
 let currentRpOtpChannel = 'phone';
 let currentResponsiblePartyState = 'hidden';
@@ -21,9 +20,6 @@ let pendingResponsiblePartyOtp = null;
 let rpOtpCountdownInterval = null;
 
 
-/* =========================================================
-   PATIENT DATA
-========================================================= */
 
 function seedPatients() {
     return [
@@ -174,11 +170,7 @@ function savePatients(list) {
 }
 
 
-/*
- * savedPatients_v5 is shared with the original booking page, so records may
- * be missing either the account fields (seeded by this page earlier) or the
- * contact fields (saved by the original page). Backfill without overwriting.
- */
+
 function migratePatients(list) {
     const seeds = Object.fromEntries(seedPatients().map(item => [item.id, item]));
     let changed = false;
@@ -239,9 +231,7 @@ function formatDob(value) {
 }
 
 
-/* =========================================================
-   DOM HELPERS
-========================================================= */
+
 
 function el(id) {
     return document.getElementById(id);
@@ -276,10 +266,7 @@ function setModal(id, open) {
 }
 
 
-/* =========================================================
-   CONSULTATION STATE
-   One central object feeds every step, Review, Draft and Confirm.
-========================================================= */
+
 
 const DRAFT_KEY = 'physicianConsultationDraft';
 const LATEST_KEY = 'latestPhysicianConsultation';
@@ -364,11 +351,7 @@ function patientAge(dob) {
     return age;
 }
 
-/*
- * The patient this consultation is for: the picked record for an Existing
- * Patient, or one assembled from the Patient step fields for a New Patient.
- * The step has a single Full Name field, so it is split on the last space.
- */
+
 function currentPatient() {
     if (currentPatientType !== 'new') {
         return selectedPatient;
@@ -393,7 +376,7 @@ function currentPatient() {
     };
 }
 
-/* Billing responsibility + account holder for the current patient. */
+
 function currentAccount() {
     const patient = currentPatient();
 
@@ -442,7 +425,6 @@ function currentAccount() {
     };
 }
 
-/* Pregnancy status is only asked for female patients of reproductive age. */
 function pregnancyApplies() {
     const patient = currentPatient();
     const age = patientAge(patient?.dob);
@@ -459,7 +441,6 @@ function stateFields() {
         );
 }
 
-/* DOM -> state */
 function syncState() {
     const c = consultation;
     const f = c.fields;
@@ -493,7 +474,7 @@ function syncState() {
     );
 }
 
-/* Synced, normalised copy used by Review, validation and Confirm. */
+
 function snapshot() {
     syncState();
 
@@ -531,7 +512,7 @@ function consentsComplete(c) {
         (!c.remote || c.consents.telemedicine);
 }
 
-/* State -> conditional parts of the UI */
+
 function refreshUi() {
     const c = snapshot();
 
@@ -551,7 +532,7 @@ function refreshUi() {
     }
 }
 
-/* state -> DOM (used when resuming a saved draft) */
+
 function renderState() {
     const c = consultation;
 
@@ -600,17 +581,17 @@ function restoreDraft() {
     try {
         const draft = JSON.parse(localStorage.getItem(DRAFT_KEY))?.consultation;
 
-        /* Ignore drafts saved in the older format. */
+     
         if (!draft?.fields) return;
 
-        /* Select the patient first: it refreshes state from the (still empty) form. */
+        
         const patient = allPatients.find(item => item.id === draft.patientId);
 
         if (patient) {
             setPatientFields(patient);
         }
 
-        /* renderState() re-syncs `consultation` from the DOM, so keep the saved values. */
+ 
         const saved = {
             patientType: draft.patientType,
             accountHolder: draft.accountHolder,
@@ -627,9 +608,6 @@ function restoreDraft() {
 }
 
 
-/* =========================================================
-   MEDICATION RECONCILIATION
-========================================================= */
 
 function renderMedications() {
     const list = el('medicationList');
@@ -695,7 +673,7 @@ function bindIntakeEvents() {
     const onChange = event => {
         const medField = event.target.closest('[data-med]');
 
-        /* Medication rows write straight into the central state. */
+
         if (medField) {
             const index = Number(medField.closest('.med-entry').dataset.index);
 
@@ -728,15 +706,11 @@ function bindIntakeEvents() {
 }
 
 
-/* =========================================================
-   SELECTED PATIENT
-========================================================= */
-
 function setPatientFields(patient) {
 
     if (!patient) return;
 
-    /* Picking a profile IS choosing an Existing Patient. */
+   
     if (currentPatientType !== 'existing') {
         applyPatientType('existing');
     }
@@ -837,11 +811,6 @@ function setPatientFields(patient) {
 }
 
 
-/* =========================================================
-   PATIENT TYPE  (Existing Patient / New Patient)
-========================================================= */
-
-/* Personal fields are typed by hand only for a New Patient. */
 function setPersonalFieldsLocked(locked) {
     ['firstName', 'phone', 'dateOfBirth', 'email'].forEach(id => {
         const node = el(id);
@@ -909,7 +878,7 @@ function applyPatientType(type, { clear = true } = {}) {
     refreshUi();
 }
 
-/* New Patient checks for step 1 (Existing Patients only need a selection). */
+
 function newPatientError(f) {
     if (!f.firstName) {
         return 'Please enter the patient\'s full name.';
@@ -950,7 +919,7 @@ function newPatientError(f) {
     return '';
 }
 
-/* Same record shape as the original booking page's new-patient save. */
+
 function buildNewPatientRecord() {
     const patient = currentPatient();
     const account = currentAccount();
@@ -990,7 +959,7 @@ function buildNewPatientRecord() {
     return record;
 }
 
-/* Re-applies a New Patient draft: type, billing choice and linked account. */
+
 function restorePatientAccountState(c) {
     if (c?.patientType !== 'new') return;
 
@@ -1050,20 +1019,6 @@ function initPatientType() {
 }
 
 
-/* =========================================================
-   RESPONSIBLE PARTY  (Account / Billing)
-
-   Exactly one visual state is shown at a time, and every change of
-   visibility goes through setResponsiblePartyState():
-
-     hidden    Existing Patient — whole section hidden.
-     self      New Patient, "The Patient" — question only.
-     search    New Patient, "Another Person" — search card.
-     found     Search matched — found card.
-     otp       Continue clicked — verification modals are open.
-     notFound  No match — warning card.
-     linked    Verified — account holder name + relationship.
-========================================================= */
 
 function setResponsiblePartyState(state) {
     const section = el('responsiblePartySection');
@@ -1096,7 +1051,7 @@ function setResponsiblePartyState(state) {
     if (relation) relation.disabled = state !== 'linked';
 }
 
-/* The billing question only applies to New Patients. */
+
 function updateAccountHolderUI(type) {
     const radios = document.querySelectorAll('input[name="accountHolder"]');
 
@@ -1135,7 +1090,7 @@ function updateAccountHolderDetailsVisibility(value) {
     setResponsiblePartyState(value === 'other' ? 'search' : 'self');
 }
 
-/* Account data comes from the patient dataset — records sharing an accountId. */
+
 function countLinkedPatients(accountId) {
     if (!accountId) return 1;
 
@@ -1160,7 +1115,6 @@ function getAccountHolder(accountId) {
     };
 }
 
-/* Mobile takes priority over Name + DOB when both are filled in. */
 function searchResponsibleParty() {
     const mobileInput = el('responsiblePartyMobile');
     const errorText = el('responsiblePartySearchError');
@@ -1223,8 +1177,6 @@ function renderFoundAccount(account) {
 }
 
 
-/* ---- OTP: four single-digit boxes ---- */
-
 function getSelectedRpOtpChannel() {
     return document.querySelector('input[name="rpOtpChannel"]:checked')?.value || 'phone';
 }
@@ -1254,7 +1206,6 @@ function setRpOtpError(hasError) {
     getRpOtpInputs().forEach(input => input.classList.toggle('rp-otp-error', hasError));
 }
 
-/* Type-to-advance, backspace-to-go-back and paste-to-fill. Wired once. */
 function setupRpOtpInputs() {
     const inputs = getRpOtpInputs();
 
@@ -1350,11 +1301,7 @@ function startRpOtpCountdown(seconds) {
     }, 1000);
 }
 
-/*
- * Demo only: there is no SMS / email gateway, so the code is generated
- * here and logged. Replace with a real send-OTP call in production —
- * verification only compares against pendingResponsiblePartyOtp.
- */
+
 function generateResponsiblePartyOtp(channel) {
     if (!lastFoundAccount) return;
 
@@ -1379,8 +1326,6 @@ function generateResponsiblePartyOtp(channel) {
 }
 
 
-/* ---- Found account -> channel modal -> OTP modal -> linked ---- */
-
 function continueWithExistingAccount() {
     if (!lastFoundAccount) return;
 
@@ -1398,7 +1343,7 @@ function openResponsiblePartyChannelModal() {
     setModal('responsiblePartyChannelModal', true);
 }
 
-/* Closing without continuing falls back to the Found card. */
+
 function closeResponsiblePartyChannelModal() {
     setModal('responsiblePartyChannelModal', false);
 
@@ -1414,7 +1359,7 @@ function proceedFromChannelSelection() {
 
     setModal('responsiblePartyChannelModal', false);
 
-    /* "None" needs no code — link straight away. */
+
     if (channel === 'none') {
         pendingResponsiblePartyOtp = null;
         linkResponsiblePartyAccount();
@@ -1456,7 +1401,6 @@ function closeResponsiblePartyOtpModal() {
     }
 }
 
-/* "Change" goes back to channel selection without losing the account. */
 function changeResponsiblePartyOtpChannel() {
     setModal('responsiblePartyOtpModal', false);
 
@@ -1511,7 +1455,6 @@ function verifyResponsiblePartyOTP() {
     linkResponsiblePartyAccount();
 }
 
-/* Links the new patient to the existing account — never a duplicate one. */
 function linkResponsiblePartyAccount() {
     selectedAccountHolder = lastFoundAccount;
     isExistingAccount = true;
@@ -1534,7 +1477,7 @@ function linkResponsiblePartyAccount() {
     refreshUi();
 }
 
-/* Data reset only; callers choose what to show next. */
+
 function resetResponsiblePartySearch() {
     ['responsiblePartyMobile', 'responsiblePartyName', 'responsiblePartyDob', 'accountHolderName', 'relationToPatient']
         .forEach(id => setValue(id, ''));
@@ -1569,7 +1512,6 @@ function searchResponsiblePartyAgain() {
     setResponsiblePartyState('search');
 }
 
-/* Wired once from initPatientType(). */
 function setupResponsiblePartySearch() {
     const on = (id, handler) => {
         el(id)?.addEventListener('click', event => {
@@ -1605,10 +1547,6 @@ function setupResponsiblePartySearch() {
     setupRpOtpInputs();
 }
 
-
-/* =========================================================
-   PATIENT SEARCH
-========================================================= */
 
 function renderSearchResults(list) {
 
@@ -1696,8 +1634,6 @@ function searchPatients(lastName, mobile, dob) {
     let list = [];
 
 
-    /* Mobile search */
-
     if (mobileQuery) {
 
         list = allPatients.filter(
@@ -1708,7 +1644,7 @@ function searchPatients(lastName, mobile, dob) {
 
     }
 
-    /* Last name + DOB search */
+
 
     else if (lastNameQuery || dob) {
 
@@ -1727,9 +1663,6 @@ function searchPatients(lastName, mobile, dob) {
 }
 
 
-/* =========================================================
-   PATIENT PROFILE MODAL
-========================================================= */
 
 function openPatientModal() {
 
@@ -1912,13 +1845,8 @@ function applyModalSearch() {
 }
 
 
-/* =========================================================
-   STEPPER
-========================================================= */
 
 function setStep(step, force = false) {
-
-    /* Navigation is free: validation runs only on Confirm Consultation. */
 
     currentStep =
         Math.max(
@@ -1927,7 +1855,6 @@ function setStep(step, force = false) {
         );
 
 
-    /* Panels */
 
     document
         .querySelectorAll(
@@ -1943,7 +1870,6 @@ function setStep(step, force = false) {
         });
 
 
-    /* Step navigation */
 
     document
         .querySelectorAll('.step-item')
@@ -1968,7 +1894,6 @@ function setStep(step, force = false) {
         });
 
 
-    /* Footer */
 
     const stepCounter =
         el('stepCounter');
@@ -2028,16 +1953,11 @@ function setStep(step, force = false) {
 }
 
 
-/* =========================================================
-   STEP VALIDATION
-========================================================= */
-
-/* Returns an error message for a step, or '' when the step is valid. */
 function stepError(step) {
     const c = snapshot();
     const f = c.fields;
 
-    /* STEP 1 — PATIENT */
+    
     if (step === 1) {
         if (currentPatientType === 'new') {
             const newError = newPatientError(f);
@@ -2058,7 +1978,7 @@ function stepError(step) {
         }
     }
 
-    /* STEP 2 — APPOINTMENT */
+
     if (step === 2) {
         const required = ['preferredDate', 'preferredTime', 'consultationMode', 'visitType', 'reasonForVisit'];
 
@@ -2067,7 +1987,7 @@ function stepError(step) {
         }
     }
 
-    /* STEP 3 — SYMPTOMS */
+
     if (step === 3) {
         if (!f.chiefComplaint) {
             return 'Please enter the chief complaint.';
@@ -2078,7 +1998,7 @@ function stepError(step) {
         }
     }
 
-    /* STEP 4 — HISTORY */
+ 
     if (step === 4) {
         if (!c.allergyStatus) {
             return 'Please select an allergy status.';
@@ -2120,7 +2040,7 @@ function stepError(step) {
         }
     }
 
-    /* STEP 5 — CONSENT */
+    
     if (step === 5 && !consentsComplete(c)) {
         return 'Please complete all required consent confirmations.';
     }
@@ -2128,13 +2048,7 @@ function stepError(step) {
     return '';
 }
 
-/* =========================================================
-   VALIDATION MODAL
-   One reusable, accessible modal that replaces the browser-native popup.
-   Usage: showValidationModal(message)
-          showValidationModal(message, { title, variant })
-   variant: 'info' (default) | 'success' | 'error'
-========================================================= */
+
 
 const VALIDATION_MODAL_ICONS = {
     info:
@@ -2154,7 +2068,7 @@ function ensureValidationModal() {
         return modal;
     }
 
-    /* Fallback: build the same markup if it is missing from the HTML. */
+   
     modal = document.createElement('div');
     modal.id = 'validationModal';
     modal.className = 'modal validation-modal-overlay';
@@ -2192,7 +2106,7 @@ function closeValidationModal() {
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
 
-    /* Return focus so the user can keep editing where they were. */
+    
     const target = validationModalReturnFocus;
     validationModalReturnFocus = null;
 
@@ -2207,7 +2121,7 @@ function showValidationModal(message, options = {}) {
     const dialog = modal.querySelector('.validation-modal');
     const okBtn = el('validationModalOkBtn');
 
-    /* Only ever one modal: a second call just updates the open one. */
+  
     if (!modal.classList.contains('open')) {
         validationModalReturnFocus = document.activeElement;
     }
@@ -2230,8 +2144,7 @@ function initValidationModal() {
 
     el('validationModalOkBtn').addEventListener('click', closeValidationModal);
 
-    /* Escape closes; Tab stays inside the dialog (capture so other
-       modals don't react to the same key press). */
+   
     document.addEventListener('keydown', event => {
         if (!isValidationModalOpen()) {
             return;
@@ -2259,10 +2172,6 @@ function validateStep(step) {
     return !message;
 }
 
-
-/* =========================================================
-   REVIEW SCREEN
-========================================================= */
 
 function fillReview(id, rows) {
     const list = el(id);
@@ -2308,7 +2217,7 @@ function updateReview() {
     if (account) {
         accountRows.push(['Billing Responsibility', account.responsibility === 'other' ? 'Another Person' : 'The Patient']);
 
-        /* Responsible Party details only apply when someone else manages the account. */
+       
         if (account.responsibility === 'other') {
             accountRows.push(
                 ['Responsible Party', account.holderName],
@@ -2424,16 +2333,14 @@ function updateReview() {
 }
 
 
-/* =========================================================
-   SAVE DRAFT
-========================================================= */
+
 
 function saveDraft() {
     syncState();
 
     try {
         localStorage.setItem(DRAFT_KEY, JSON.stringify({
-            /* Consent is never carried in a draft; it is given at confirmation. */
+        
             consultation: { ...consultation, consents: {} },
             savedAt: new Date().toISOString()
         }));
@@ -2445,9 +2352,7 @@ function saveDraft() {
 }
 
 
-/* =========================================================
-   CONFIRM CONSULTATION
-========================================================= */
+
 
 function newConsultationId(existing) {
     const day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -2461,7 +2366,7 @@ function newConsultationId(existing) {
 }
 
 function confirmConsultation() {
-    /* 1–2. Validate every step and the consent. */
+  
     for (let step = 1; step <= 5; step++) {
         const message = stepError(step);
 
@@ -2476,7 +2381,6 @@ function confirmConsultation() {
         }
     }
 
-    /* 3–5. Unique ID, complete record, status CONFIRMED. */
     let saved = [];
 
     try {
@@ -2487,7 +2391,7 @@ function confirmConsultation() {
 
     const id = consultation.id || newConsultationId(saved);
 
-    /* A New Patient becomes a saved patient record (never saved twice). */
+
     const storedNewPatient = allPatients.find(item => item.id === persistedNewPatientId);
     const newPatient = currentPatientType === 'new'
         ? (storedNewPatient || buildNewPatientRecord())
@@ -2527,7 +2431,7 @@ function confirmConsultation() {
     consultation.id = id;
     consultation.status = 'CONFIRMED';
 
-    /* 6–7. Existing success modal; stay on the page. */
+  
     const f = record.fields;
 
     el('successConsultationId').textContent = id;
@@ -2545,10 +2449,6 @@ function confirmConsultation() {
     setModal('successModal', true);
 }
 
-
-/* =========================================================
-   PAIN SCALE
-========================================================= */
 
 function initPain() {
 
@@ -2599,13 +2499,9 @@ function initPain() {
 }
 
 
-/* =========================================================
-   CHOICE CARDS
-========================================================= */
-
 function initChoiceCards() {
 
-    /* Specialty */
+  
 
     document
         .querySelectorAll(
@@ -2643,7 +2539,7 @@ function initChoiceCards() {
         });
 
 
-    /* Consultation Mode */
+
 
     document
         .querySelectorAll(
@@ -2681,7 +2577,7 @@ function initChoiceCards() {
         });
 
 
-    /* Urgency */
+
 
     document
         .querySelectorAll(
@@ -2720,9 +2616,7 @@ function initChoiceCards() {
 }
 
 
-/* =========================================================
-   TEXT COUNTERS
-========================================================= */
+
 
 function initCounters() {
 
@@ -2772,9 +2666,6 @@ function initCounters() {
 }
 
 
-/* =========================================================
-   INITIALIZATION
-========================================================= */
 
 document.addEventListener(
     'DOMContentLoaded',
@@ -2797,9 +2688,7 @@ document.addEventListener(
         restoreDraft();
 
 
-        /* -----------------------------------------
-           Appointment date/time from availability
-        ----------------------------------------- */
+     
 
         const selectedDate =
             localStorage.getItem(
@@ -2831,7 +2720,7 @@ document.addEventListener(
         }
 
 
-        /* Minimum appointment date */
+
 
         const preferredDate =
             el('preferredDate');
@@ -2850,9 +2739,7 @@ document.addEventListener(
         }
 
 
-        /* -----------------------------------------
-           Patient Selection
-        ----------------------------------------- */
+        
 
         el('patientSearchBtn')
             ?.addEventListener(
@@ -2913,9 +2800,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Patient Modal Search
-        ----------------------------------------- */
+
 
         el('patientSearchInput')
             ?.addEventListener(
@@ -2938,9 +2823,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Confirm Patient
-        ----------------------------------------- */
+      
 
         el('selectPatientConfirmBtn')
             ?.addEventListener(
@@ -2963,9 +2846,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Close Patient Modal
-        ----------------------------------------- */
+       
 
         [
             'closePatientModal',
@@ -2983,9 +2864,7 @@ document.addEventListener(
         });
 
 
-        /* -----------------------------------------
-           Save Draft
-        ----------------------------------------- */
+    
 
         el('saveDraftBtn')
             ?.addEventListener(
@@ -2994,9 +2873,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Back
-        ----------------------------------------- */
+      
 
         el('backBtn')
             ?.addEventListener(
@@ -3011,9 +2888,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Continue / Confirm
-        ----------------------------------------- */
+       
 
         el('continueBtn')
             ?.addEventListener(
@@ -3034,9 +2909,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Stepper Navigation
-        ----------------------------------------- */
+
 
         document
             .querySelectorAll(
@@ -3054,9 +2927,7 @@ document.addEventListener(
                             );
 
 
-                        /*
-                         * Allow jumping to any of the 5 steps.
-                         */
+                      
 
                         if (
                             target >= 1 &&
@@ -3073,9 +2944,6 @@ document.addEventListener(
             });
 
 
-        /* -----------------------------------------
-           Review Edit Buttons
-        ----------------------------------------- */
 
         document
             .querySelectorAll(
@@ -3098,9 +2966,7 @@ document.addEventListener(
             });
 
 
-        /* -----------------------------------------
-           Success Modal
-        ----------------------------------------- */
+      
 
         el('closeSuccessModal')
             ?.addEventListener(
@@ -3124,9 +2990,7 @@ document.addEventListener(
             );
 
 
-        /* -----------------------------------------
-           Start at Step 1
-        ----------------------------------------- */
+    
 
         setStep(
             1,

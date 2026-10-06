@@ -25,9 +25,7 @@ body {
     padding-bottom: 34px;
 }
 
-/* =========================================================
-   BREADCRUMB
-========================================================= */
+
 
 .breadcrumb {
     max-width: 1080px;
@@ -54,9 +52,7 @@ body {
     object-fit: contain;
 }
 
-/* =========================================================
-   MAIN CARD
-========================================================= */
+
 
 .consultation-card {
     width: 100%;
@@ -69,9 +65,7 @@ body {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
 }
 
-/* =========================================================
-   PAGE HEADER
-========================================================= */
+
 
 .consultation-header {
     display: flex;
@@ -127,9 +121,7 @@ body {
     padding: 7px 10px;
 }
 
-/* =========================================================
-   STEPPER
-========================================================= */
+
 
 .consultation-stepper {
     display: grid;
@@ -182,9 +174,7 @@ body {
     color: #2563eb;
 }
 
-/* =========================================================
-   STEP PANELS
-========================================================= */
+
 
 .consultation-step-panel {
     display: none;
@@ -194,9 +184,7 @@ body {
     display: block;
 }
 
-/* =========================================================
-   SECTIONS
-========================================================= */
+
 
 .consultation-section {
     border: 1px solid #dfe8f5;
@@ -241,9 +229,7 @@ body {
     line-height: 1.35;
 }
 
-/* =========================================================
-   FORM GRID
-========================================================= */
+
 
 .detail-grid {
     display: grid;
@@ -277,9 +263,7 @@ body {
     font-weight: 700;
 }
 
-/* =========================================================
-   FORM CONTROLS
-========================================================= */
+
 
 input,
 select,
@@ -335,9 +319,7 @@ select:disabled {
     color: #5d6b82;
 }
 
-/* =========================================================
-   INPUT ICON
-========================================================= */
+
 
 .input-with-icon {
     position: relative;
@@ -363,9 +345,7 @@ select:disabled {
     padding-left: 38px;
 }
 
-/* =========================================================
-   PATIENT SELECTION
-========================================================= */
+
 
 .patient-search-grid {
     display: grid;
@@ -422,9 +402,7 @@ select:disabled {
     gap: 10px;
 }
 
-/* =========================================================
-   BUTTONS
-========================================================= */
+
 
 .btn-primary,
 .btn-outline,
@@ -489,9 +467,7 @@ select:disabled {
     object-fit: contain;
 }
 
-/* =========================================================
-   SEARCH RESULTS
-========================================================= */
+
 
 .patient-search-results {
     margin-top: 10px;
@@ -545,9 +521,7 @@ select:disabled {
     padding: 8px 2px;
 }
 
-/* =========================================================
-   SELECTED PATIENT
-========================================================= */
+
 
 .selected-patient-bar {
     display: grid;
@@ -599,9 +573,7 @@ select:disabled {
     color: var(--hh-blue);
 }
 
-/* =========================================================
-   UPLOAD
-========================================================= */
+
 
 .upload-box {
     min-height: 46px;
@@ -642,9 +614,7 @@ select:disabled {
     font-size: 10px;
 }
 
-/* =========================================================
-   SPECIALTY
-========================================================= */
+
 
 .specialty-grid {
     display: grid;
@@ -697,9 +667,7 @@ select:disabled {
     margin-top: 12px;
 }
 
-/* =========================================================
-   CONSULTATION MODE
-========================================================= */
+
 
 .mode-grid {
     display: grid;
@@ -763,9 +731,7 @@ select:disabled {
     color: #1454dc;
 }
 
-/* =========================================================
-   SYMPTOMS
-========================================================= */
+
 
 .character-count {
     position: absolute;
@@ -828,9 +794,7 @@ select:disabled {
     color: #1454dc;
 }
 
-/* =========================================================
-   PAIN / URGENCY
-========================================================= */
+
 
 .split-panels {
     display: grid;
@@ -930,9 +894,7 @@ select:disabled {
     color: #1454dc;
 }
 
-/* =========================================================
-   HISTORY
-========================================================= */
+
 
 .history-check-grid {
     display: grid;
@@ -973,9 +935,6 @@ select:disabled {
     color: #1454dc;
 }
 
-/* =========================================================
-   REVIEW
-========================================================= */
 
 .review-banner {
     display: flex;
@@ -1083,9 +1042,7 @@ select:disabled {
     word-break: break-word;
 }
 
-/* =========================================================
-   CONSENT
-========================================================= */
+
 
 .consent-card {
     margin-top: 12px;
@@ -1113,9 +1070,7 @@ select:disabled {
     height: 16px;
 }
 
-/* =========================================================
-   FOOTER / STEP ACTIONS
-========================================================= */
+
 
 .step-footer {
     display: flex;
@@ -1142,9 +1097,7 @@ select:disabled {
     display: none !important;
 }
 
-/* =========================================================
-   MODALS
-========================================================= */
+
 
 .modal {
     display: none;
@@ -1299,9 +1252,7 @@ select:disabled {
     margin-top: 16px;
 }
 
-/* =========================================================
-   SUCCESS MODAL
-========================================================= */
+
 
 .success-modal {
     text-align: center;
@@ -1376,9 +1327,7 @@ select:disabled {
     margin: 0;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+
 
 @media (max-width: 900px) {
 
@@ -1508,11 +1457,7 @@ select:disabled {
         flex-wrap: wrap;
     }
 }
-/* =========================================================
-   INTAKE ADDITIONS
-   Reuses the existing tokens, borders, radii and red from
-   .btn-outline-danger; no new colours or component styles.
-========================================================= */
+
 
 .conditional[hidden] {
     display: none !important;
@@ -1530,7 +1475,7 @@ select:disabled {
     grid-template-columns: repeat(2, 1fr);
 }
 
-/* Medication reconciliation entries */
+
 .med-entry {
     border: 1px solid #dfe8f5;
     border-radius: 8px;
@@ -1547,7 +1492,6 @@ select:disabled {
     color: #1e3a8a;
 }
 
-/* Emergency / triage warning */
 .triage-alert {
     display: flex;
     flex-direction: column;
@@ -1575,12 +1519,12 @@ select:disabled {
     margin: 0 0 14px;
 }
 
-/* Multi-line review values (HPI, medications, ...) */
+
 .review-card dd.multiline {
     white-space: pre-line;
 }
 
-/* Confirm stays disabled until consent is complete */
+
 .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -1603,13 +1547,7 @@ select:disabled {
 }
 
 
-/* =========================================================
-   PATIENT TYPE + ACCOUNT / BILLING RESPONSIBILITY
-   Reuses the existing tokens, cards, buttons and search grid;
-   only what the Responsible Party flow needs is added here.
-========================================================= */
 
-/* display rules on these classes would otherwise beat [hidden] */
 #existingPatientSection[hidden],
 #responsiblePartySection[hidden],
 #accountHolderQuestion[hidden],
@@ -1741,7 +1679,6 @@ select:disabled {
     font-size: 12px;
 }
 
-/* Verification modals */
 
 .rp-modal {
     width: min(440px, 100%);
@@ -1896,9 +1833,7 @@ select:disabled {
 }
 
 
-/* =========================================================
-   VALIDATION MODAL
-========================================================= */
+
 
 .validation-modal-overlay {
     z-index: 10000;
