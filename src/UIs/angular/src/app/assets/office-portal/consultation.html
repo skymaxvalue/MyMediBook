@@ -1,0 +1,3455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Physician Consultation</title>
+
+    <!-- Common fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Existing application styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/consultation.css">
+
+    <!-- International phone input -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"
+    >
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <div id="navbar-container"></div>
+
+
+    <main class="dashboard-container">
+
+        <!-- =================================================
+             BREADCRUMB
+        ================================================== -->
+
+        <section class="breadcrumb">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <span class="separator">
+                <img
+                    src="images/right-arrow-blue.png"
+                    alt=""
+                >
+            </span>
+
+
+            <span class="active">
+                Physician Consultation
+            </span>
+
+        </section>
+
+
+        <!-- =================================================
+             MAIN CONSULTATION CARD
+        ================================================== -->
+
+        <section class="consultation-card">
+
+
+            <!-- =============================================
+                 PAGE HEADER
+            ============================================== -->
+
+            <header class="consultation-header">
+
+                <div class="consultation-title-group">
+
+                    <span class="page-icon-badge">
+
+                        <img
+                            src="images/patient-icon-blue.png"
+                            alt=""
+                        >
+
+                    </span>
+
+                    <div>
+
+                        <h1>
+                            Physician Consultation
+                        </h1>
+
+                        <p>
+                            Complete the patient and consultation details to book a physician appointment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =============================================
+                 STEPPER
+            ============================================== -->
+
+            <nav
+                class="consultation-stepper"
+                aria-label="Consultation steps"
+            >
+
+                <button
+                    type="button"
+                    class="step-item active"
+                    data-step-target="1"
+                >
+                    <span>01</span>
+                    <strong>Patient</strong>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="step-item"
+                    data-step-target="2"
+                >
+                    <span>02</span>
+                    <strong>Appointment</strong>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="step-item"
+                    data-step-target="3"
+                >
+                    <span>03</span>
+                    <strong>Symptoms</strong>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="step-item"
+                    data-step-target="4"
+                >
+                    <span>04</span>
+                    <strong>History</strong>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="step-item"
+                    data-step-target="5"
+                >
+                    <span>05</span>
+                    <strong>Review</strong>
+                </button>
+
+            </nav>
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <form id="bookingForm" novalidate>
+
+
+                <!-- =================================================
+                     STEP 01 — PATIENT
+                ================================================== -->
+
+                <div
+                    class="consultation-step-panel active"
+                    data-step="1"
+                >
+
+
+                    <!-- =============================================
+                         PATIENT TYPE
+                    ============================================== -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/patient-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Patient Type
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="history-check-grid two-up"
+                            role="radiogroup"
+                            aria-label="Patient type"
+                        >
+
+                            <label class="check-card">
+                                <input
+                                    type="radio"
+                                    name="patientType"
+                                    value="existing"
+                                    checked
+                                >
+                                Existing Patient
+                            </label>
+
+                            <label class="check-card">
+                                <input
+                                    type="radio"
+                                    name="patientType"
+                                    value="new"
+                                >
+                                New Patient
+                            </label>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         PATIENT SELECTION (Existing Patient only)
+                    ============================================== -->
+
+                    <section
+                        class="consultation-section"
+                        id="existingPatientSection"
+                    >
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/patient-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Select Patient Profile
+                            </h2>
+
+                        </div>
+
+
+                        <p class="section-helper">
+                            Search for an existing patient using their last name, date of birth, or mobile number.
+                        </p>
+
+
+                        <div class="patient-search-grid">
+
+
+                            <!-- LEFT — NAME + DOB -->
+
+                            <div class="patient-search-column">
+
+                                <div class="field-pair">
+
+                                    <label for="patientLastNameSearch">
+                                        Patient Last Name
+                                    </label>
+
+                                    <div class="input-with-icon">
+
+                                        <img
+                                            src="images/profile-outline.png"
+                                            alt=""
+                                        >
+
+                                        <input
+                                            type="text"
+                                            id="patientLastNameSearch"
+                                            placeholder="Enter last name"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="field-pair">
+
+                                    <label for="patientDobSearch">
+                                        Date of Birth
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        id="patientDobSearch"
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- OR -->
+
+                            <div class="search-or">
+
+                                <span>
+                                    OR
+                                </span>
+
+                            </div>
+
+
+                            <!-- RIGHT — MOBILE -->
+
+                            <div class="patient-search-column">
+
+                                <div class="field-pair">
+
+                                    <label for="patientMobileSearch">
+                                        Mobile Number
+                                    </label>
+
+                                    <div class="input-with-icon">
+
+                                        <img
+                                            src="images/mobile-icon-blue.png"
+                                            alt=""
+                                        >
+
+                                        <input
+                                            type="tel"
+                                            id="patientMobileSearch"
+                                            placeholder="Enter mobile number"
+                                            inputmode="numeric"
+                                            maxlength="10"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="search-actions">
+
+                                    <button
+                                        type="button"
+                                        class="btn-outline"
+                                        id="patientClearBtn"
+                                    >
+                                        Clear
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="btn-primary"
+                                        id="patientSearchBtn"
+                                    >
+                                        <img
+                                            src="images/search-white.png"
+                                            alt=""
+                                        >
+                                        Search
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEARCH RESULTS -->
+
+                        <div
+                            id="patientSearchResults"
+                            class="patient-search-results"
+                        ></div>
+
+
+                        <!-- SELECTED PATIENT -->
+
+                        <div
+                            id="selectedPatientBar"
+                            class="selected-patient-bar"
+                            hidden
+                        >
+
+                            <div class="selected-patient-main">
+
+                                <img
+                                    src="images/patient-icon-blue.png"
+                                    alt=""
+                                >
+
+                                <div>
+
+                                    <small>
+                                        Selected Patient
+                                    </small>
+
+                                    <strong id="selectedPatientName">
+                                        —
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="selected-patient-phone">
+
+                                <img
+                                    src="images/mobile-icon-blue.png"
+                                    alt=""
+                                >
+
+                                <div>
+
+                                    <small>
+                                        Mobile Number
+                                    </small>
+
+                                    <strong id="selectedPatientPhone">
+                                        —
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="btn-switch"
+                                id="switchProfileBtn"
+                            >
+                                Switch Profile
+                            </button>
+
+                        </div>
+
+
+                        <input
+                            type="hidden"
+                            id="selectedPatientId"
+                        >
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         PERSONAL INFORMATION
+                    ============================================== -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/profile-outline.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Personal Information
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="firstName">
+                                    Full Name <span class="req new-only" hidden>*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    readonly
+                                    placeholder="Patient full name"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="phone">
+                                    Phone Number <span class="req new-only" hidden>*</span>
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    inputmode="numeric"
+                                    maxlength="10"
+                                    readonly
+                                    placeholder="Patient phone number"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="dateOfBirth">
+                                    Date of Birth <span class="req new-only" hidden>*</span>
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="dateOfBirth"
+                                    readonly
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="gender">
+                                    Gender <span class="req new-only" hidden>*</span>
+                                </label>
+
+                                <select id="gender" disabled>
+
+                                    <option value="">
+                                        Select gender
+                                    </option>
+
+                                    <option value="Male">
+                                        Male
+                                    </option>
+
+                                    <option value="Female">
+                                        Female
+                                    </option>
+
+                                    <option value="Other">
+                                        Other
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="email">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    readonly
+                                    placeholder="Patient email"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="preferredLanguage">
+                                    Preferred Language
+                                </label>
+
+                                <select id="preferredLanguage">
+
+                                    <option value="">
+                                        Select language
+                                    </option>
+
+                                    <option>
+                                        English
+                                    </option>
+
+                                    <option>
+                                        Bengali
+                                    </option>
+
+                                    <option>
+                                        Hindi
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         ACCOUNT & BILLING RESPONSIBILITY
+                         (New Patient only — Existing Patients keep
+                          the account already on their record)
+                    ============================================== -->
+
+                    <section
+                        class="consultation-section"
+                        id="responsiblePartySection"
+                        hidden
+                    >
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/insurance-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Account &amp; Billing
+                            </h2>
+
+                        </div>
+
+
+                        <div class="field-pair" id="accountHolderQuestion" hidden>
+
+                            <label>
+                                Who will manage this patient's account and billing?
+                                <span class="req">*</span>
+                            </label>
+
+                            <div
+                                class="history-check-grid two-up"
+                                role="radiogroup"
+                                aria-label="Account and billing responsibility"
+                            >
+
+                                <label class="check-card">
+                                    <input
+                                        type="radio"
+                                        name="accountHolder"
+                                        value="self"
+                                        disabled
+                                    >
+                                    The Patient
+                                </label>
+
+                                <label class="check-card">
+                                    <input
+                                        type="radio"
+                                        name="accountHolder"
+                                        value="other"
+                                        disabled
+                                    >
+                                    Another Person
+                                </label>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEARCH -->
+
+                        <div class="rp-card" id="responsiblePartySearchCard" hidden>
+
+                            <h3 class="rp-card-title">Search Responsible Party</h3>
+
+                            <p class="rp-card-subtitle">
+                                Search using the account holder's registered mobile number,
+                                or the name and date of birth of a patient on the account.
+                            </p>
+
+                            <div class="patient-search-grid">
+
+                                <div class="patient-search-column">
+
+                                    <div class="field-pair">
+
+                                        <label for="responsiblePartyName">
+                                            Patient Full Name
+                                        </label>
+
+                                        <div class="input-with-icon">
+
+                                            <img
+                                                src="images/profile-outline.png"
+                                                alt=""
+                                            >
+
+                                            <input
+                                                type="text"
+                                                id="responsiblePartyName"
+                                                placeholder="Enter full name"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="field-pair">
+
+                                        <label for="responsiblePartyDob">
+                                            Date of Birth
+                                        </label>
+
+                                        <input
+                                            type="date"
+                                            id="responsiblePartyDob"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="search-or">
+                                    <span>OR</span>
+                                </div>
+
+
+                                <div class="patient-search-column">
+
+                                    <div class="field-pair">
+
+                                        <label for="responsiblePartyMobile">
+                                            Mobile Number
+                                        </label>
+
+                                        <div class="input-with-icon">
+
+                                            <img
+                                                src="images/mobile-icon-blue.png"
+                                                alt=""
+                                            >
+
+                                            <input
+                                                type="tel"
+                                                id="responsiblePartyMobile"
+                                                placeholder="Enter mobile number"
+                                                inputmode="numeric"
+                                                maxlength="10"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="search-actions">
+
+                                        <button
+                                            type="button"
+                                            class="btn-primary"
+                                            id="searchResponsiblePartyBtn"
+                                        >
+                                            <img
+                                                src="images/search-white.png"
+                                                alt=""
+                                            >
+                                            Search
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <p
+                                class="rp-search-error"
+                                id="responsiblePartySearchError"
+                                hidden
+                            >
+                                Enter a mobile number, or a full name (with optional date of birth), to search.
+                            </p>
+
+                        </div>
+
+
+                        <!-- FOUND -->
+
+                        <div class="rp-card" id="responsiblePartyFoundCard" hidden>
+
+                            <p class="rp-card-title rp-found-title">
+                                &#9989; Responsible Party Found
+                            </p>
+
+                            <div
+                                class="saved-info-card"
+                                id="responsiblePartyFoundContent"
+                            ></div>
+
+                            <div class="rp-card-actions">
+
+                                <button
+                                    type="button"
+                                    class="btn-outline"
+                                    id="searchAgainFoundBtn"
+                                >
+                                    Search Again
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn-primary"
+                                    id="continueWithAccountBtn"
+                                >
+                                    Continue
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- NOT FOUND -->
+
+                        <div class="rp-card" id="responsiblePartyNotFoundCard" hidden>
+
+                            <p class="rp-card-title rp-warning-title">
+                                &#9888; No Responsible Party Found
+                            </p>
+
+                            <p class="rp-card-subtitle">
+                                No account exists for this search.
+                            </p>
+
+                            <div class="rp-card-actions">
+
+                                <button
+                                    type="button"
+                                    class="btn-outline"
+                                    id="searchAgainNotFoundBtn"
+                                >
+                                    Search Again
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LINKED ACCOUNT HOLDER -->
+
+                        <div
+                            class="detail-grid two-col section-gap"
+                            id="accountHolderFields"
+                            hidden
+                        >
+
+                            <div class="field-pair">
+
+                                <label for="accountHolderName">
+                                    Account Holder Name
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="accountHolderName"
+                                    placeholder="Account holder name"
+                                    readonly
+                                    disabled
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="relationToPatient">
+                                    Relationship to Patient
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select id="relationToPatient" disabled>
+                                    <option value="">Select relation</option>
+                                    <option>Father</option>
+                                    <option>Mother</option>
+                                    <option>Spouse</option>
+                                    <option>Son</option>
+                                    <option>Daughter</option>
+                                    <option>Guardian</option>
+                                    <option>Other</option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="linkedAccountBadge"
+                            class="success-badge"
+                            hidden
+                        ></div>
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         ADDRESS
+                    ============================================== -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/location-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Address Information
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair full-width">
+
+                                <label for="address">
+                                    Address
+                                </label>
+
+                                <textarea
+                                    id="address"
+                                    placeholder="Enter patient address"
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="city">
+                                    City
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="city"
+                                    placeholder="Enter city"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="state">
+                                    State
+                                </label>
+
+                                <select id="state">
+
+                                    <option value="">
+                                        Select state
+                                    </option>
+
+                                    <option>
+                                        West Bengal
+                                    </option>
+
+                                    <option>
+                                        Maharashtra
+                                    </option>
+
+                                    <option>
+                                        Karnataka
+                                    </option>
+
+                                    <option>
+                                        Delhi
+                                    </option>
+
+                                    <option>
+                                        Tamil Nadu
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="pinCode">
+                                    PIN Code
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="pinCode"
+                                    placeholder="Enter PIN code"
+                                    maxlength="6"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         INSURANCE
+                    ============================================== -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/insurance-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Insurance & Billing
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="provider">
+                                    Insurance Provider
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="provider"
+                                    placeholder="Enter insurance provider"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="policy">
+                                    Member ID / Policy Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="policy"
+                                    placeholder="Enter policy number"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="coverageType">
+                                    Coverage Type
+                                </label>
+
+                                <select id="coverageType">
+
+                                    <option value="">
+                                        Select coverage
+                                    </option>
+
+                                    <option>
+                                        Individual
+                                    </option>
+
+                                    <option>
+                                        Family
+                                    </option>
+
+                                    <option>
+                                        Employer
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label>
+                                    Insurance Card
+                                </label>
+
+                                <label class="upload-box">
+
+                                    <input
+                                        type="file"
+                                        id="insuranceCard"
+                                        accept="image/*,.pdf"
+                                    >
+
+                                    <img
+                                        src="images/upload-blue.png"
+                                        alt=""
+                                    >
+
+                                    Upload Insurance Card
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         EMERGENCY CONTACT
+                    ============================================== -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/profile-outline.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Emergency Contact
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="emergencyName">
+                                    Contact Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="emergencyName"
+                                    placeholder="Enter contact name"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="emergencyRelation">
+                                    Relationship
+                                </label>
+
+                                <select id="emergencyRelation">
+
+                                    <option value="">
+                                        Select relationship
+                                    </option>
+
+                                    <option>
+                                        Spouse
+                                    </option>
+
+                                    <option>
+                                        Parent
+                                    </option>
+
+                                    <option>
+                                        Child
+                                    </option>
+
+                                    <option>
+                                        Sibling
+                                    </option>
+
+                                    <option>
+                                        Guardian
+                                    </option>
+
+                                    <option>
+                                        Other
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="emergencyPhone">
+                                    Phone
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="emergencyPhone"
+                                    placeholder="Enter phone number"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="emergencyAlternatePhone">
+                                    Alternate Phone
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="emergencyAlternatePhone"
+                                    placeholder="Enter alternate number"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- =============================================
+                    COMMUNICATION PREFERENCES
+                    ============================================== -->
+                    <section class="consultation-section">
+                        <div class="section-header">
+                            <img src="images/mobile-icon-blue.png" alt="">
+                            <h2>Communication Preferences</h2>
+                        </div>
+                        <div class="detail-grid two-col">
+                            <div class="field-pair">
+                        <label for="contactMethod">Preferred Contact Method <span class="req">*</span></label>
+                        <select id="contactMethod"><option value="">Select method</option><option>Phone</option><option>SMS</option><option>Email</option><option>WhatsApp</option></select>
+                    </div>
+                            <div class="field-pair">
+                        <label for="appointmentReminder">Appointment Reminder <span class="req">*</span></label>
+                        <select id="appointmentReminder"><option value="">Select</option><option>Yes</option><option>No</option></select>
+                    </div>
+                        </div>
+                    </section>
+
+                    <!-- =============================================
+                    PREFERRED PHARMACY
+                    ============================================== -->
+                    <section class="consultation-section">
+                        <div class="section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h2>Preferred Pharmacy (Optional)</h2>
+                        </div>
+                        <div class="detail-grid two-col">
+                            <div class="field-pair">
+                        <label for="pharmacyName">Pharmacy Name</label>
+                        <input type="text" id="pharmacyName" placeholder="Enter pharmacy name">
+                    </div>
+                            <div class="field-pair">
+                        <label for="pharmacyPhone">Phone</label>
+                        <input type="tel" id="pharmacyPhone" placeholder="Enter pharmacy phone">
+                    </div>
+                            <div class="field-pair full-width">
+                        <label for="pharmacyAddress">Address</label>
+                        <input type="text" id="pharmacyAddress" placeholder="Enter pharmacy address">
+                    </div>
+                        </div>
+                    </section>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STEP 02 — APPOINTMENT
+                ================================================== -->
+
+                <div
+                    class="consultation-step-panel"
+                    data-step="2"
+                >
+
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/calendar-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Appointment Details
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="preferredDate">
+                                    Preferred Date
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="preferredDate"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="preferredTime">
+                                    Preferred Time
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select
+                                    id="preferredTime"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select time
+                                    </option>
+
+                                    <option>
+                                        09:00 AM
+                                    </option>
+
+                                    <option>
+                                        09:30 AM
+                                    </option>
+
+                                    <option>
+                                        10:00 AM
+                                    </option>
+
+                                    <option>
+                                        10:30 AM
+                                    </option>
+
+                                    <option>
+                                        11:00 AM
+                                    </option>
+
+                                    <option>
+                                        11:30 AM
+                                    </option>
+
+                                    <option>
+                                        12:00 PM
+                                    </option>
+
+                                    <option>
+                                        02:00 PM
+                                    </option>
+
+                                    <option>
+                                        02:30 PM
+                                    </option>
+
+                                    <option>
+                                        03:00 PM
+                                    </option>
+
+                                    <option>
+                                        03:30 PM
+                                    </option>
+
+                                    <option>
+                                        04:00 PM
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="consultationMode">
+                                    Consultation Mode
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select
+                                    id="consultationMode"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select mode
+                                    </option>
+
+                                    <option>
+                                        In Person
+                                    </option>
+
+                                    <option>
+                                        Video Consultation
+                                    </option>
+
+                                    <option>
+                                        Telephonic
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="visitType">
+                                    Visit Type
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select
+                                    id="visitType"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select visit type
+                                    </option>
+
+                                    <option>
+                                        Consultation
+                                    </option>
+
+                                    <option>
+                                        Follow-up
+                                    </option>
+
+                                    <option>
+                                        Second Opinion
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="reasonForVisit">
+                                    Reason for Visit
+                                    <span class="req">*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="reasonForVisit"
+                                    placeholder="Enter reason for consultation"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="referredBy">
+                                    Referred By
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="referredBy"
+                                    placeholder="Doctor / hospital / self"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/doctor-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Specialty & Physician
+                            </h2>
+
+                        </div>
+
+
+                        <div class="field-pair">
+
+                            <label>
+                                Medical Specialty
+                            </label>
+
+                        </div>
+
+
+                        <div
+                            class="specialty-grid"
+                            id="specialtyGrid"
+                        >
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Cardiology"
+                            >
+                                <span>♡</span>
+                                Cardiology
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Neurology"
+                            >
+                                <span>◉</span>
+                                Neurology
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Orthopedics"
+                            >
+                                <span>✚</span>
+                                Orthopedics
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Pulmonology"
+                            >
+                                <span>◌</span>
+                                Pulmonology
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Ophthalmology"
+                            >
+                                <span>◉</span>
+                                Ophthalmology
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Endocrinology"
+                            >
+                                <span>+</span>
+                                Endocrinology
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Surgery"
+                            >
+                                <span>✚</span>
+                                Surgery
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Psychiatry"
+                            >
+                                <span>○</span>
+                                Psychiatry
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Nephrology"
+                            >
+                                <span>♢</span>
+                                Nephrology
+                            </button>
+
+                            <button
+                                type="button"
+                                class="choice-card"
+                                data-value="Oncology"
+                            >
+                                <span>+</span>
+                                Oncology
+                            </button>
+
+                        </div>
+
+
+                        <input
+                            type="hidden"
+                            id="medicalSpecialty"
+                        >
+
+
+                        <div
+                            class="detail-grid two-col specialty-fields"
+                        >
+
+                            <div class="field-pair">
+
+                                <label for="preferredPhysician">
+                                    Preferred Physician
+                                </label>
+
+                                <select id="preferredPhysician">
+
+                                    <option value="">
+                                        Select physician
+                                    </option>
+
+                                    <option>
+                                        Dr. Kumar
+                                    </option>
+
+                                    <option>
+                                        Dr. Kumaravel
+                                    </option>
+
+                                    <option>
+                                        Dr. Sharma
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="referralSource">
+                                    Referral Source
+                                </label>
+
+                                <select id="referralSource">
+
+                                    <option value="">
+                                        Select source
+                                    </option>
+
+                                    <option>
+                                        Self
+                                    </option>
+
+                                    <option>
+                                        Physician Referral
+                                    </option>
+
+                                    <option>
+                                        Hospital Referral
+                                    </option>
+
+                                    <option>
+                                        Family / Friend
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/note-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Additional Notes
+                            </h2>
+
+                        </div>
+
+
+                        <div class="field-pair">
+
+                            <label for="appointmentNotes">
+                                Notes
+                            </label>
+
+                            <textarea
+                                id="appointmentNotes"
+                                placeholder="Any specific requirements, reason for visit, or special instructions..."
+                            ></textarea>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STEP 03 — SYMPTOMS
+                ================================================== -->
+
+                <div
+                    class="consultation-step-panel"
+                    data-step="3"
+                >
+
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/note-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Chief Complaint
+                            </h2>
+
+                        </div>
+
+
+                        <div class="field-pair">
+
+                            <label for="chiefComplaint">
+                                Main Concern
+                                <span class="req">*</span>
+                            </label>
+
+                            <textarea
+                                id="chiefComplaint"
+                                maxlength="500"
+                                placeholder="Describe your main concern in your own words — when it started, how it affects you, and anything else the doctor should know."
+                            ></textarea>
+
+                            <span
+                                class="character-count"
+                                id="chiefComplaintCount"
+                            >
+                                0/500
+                            </span>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/calendar-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Duration & Onset
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="symptomDuration">
+                                    Duration of Symptoms
+                                    <span class="req">*</span>
+                                </label>
+
+                                <select id="symptomDuration">
+
+                                    <option value="">
+                                        Select duration
+                                    </option>
+
+                                    <option>
+                                        Less than 1 day
+                                    </option>
+
+                                    <option>
+                                        1–3 days
+                                    </option>
+
+                                    <option>
+                                        4–7 days
+                                    </option>
+
+                                    <option>
+                                        1–2 weeks
+                                    </option>
+
+                                    <option>
+                                        2–4 weeks
+                                    </option>
+
+                                    <option>
+                                        1–3 months
+                                    </option>
+
+                                    <option>
+                                        More than 3 months
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="symptomOnset">
+                                    When Did It Start?
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="symptomOnset"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- HISTORY OF PRESENT ILLNESS -->
+                    <section class="consultation-section">
+                        <div class="section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h2>History of Present Illness</h2>
+                        </div>
+                        <div class="detail-grid two-col">
+                            <div class="field-pair">
+                        <label for="hpiLocation">Location</label>
+                        <input type="text" id="hpiLocation" placeholder="e.g. Left side of chest">
+                    </div>
+                            <div class="field-pair">
+                        <label for="hpiQuality">Character / Quality</label>
+                        <input type="text" id="hpiQuality" placeholder="e.g. Sharp, dull, burning">
+                    </div>
+                            <div class="field-pair">
+                        <label for="hpiSeverity">Severity</label>
+                        <select id="hpiSeverity"><option value="">Select severity</option><option>Mild</option><option>Moderate</option><option>Severe</option></select>
+                    </div>
+                            <div class="field-pair">
+                        <label for="hpiPattern">Constant / Intermittent</label>
+                        <select id="hpiPattern"><option value="">Select</option><option>Constant</option><option>Intermittent</option></select>
+                    </div>
+                            <div class="field-pair">
+                        <label for="hpiAggravating">Aggravating Factors</label>
+                        <input type="text" id="hpiAggravating" placeholder="e.g. Exertion, lying down">
+                    </div>
+                            <div class="field-pair">
+                        <label for="hpiRelieving">Relieving Factors</label>
+                        <input type="text" id="hpiRelieving" placeholder="e.g. Rest, medication">
+                    </div>
+                            <div class="field-pair">
+                        <label for="hpiProgression">Progression</label>
+                        <select id="hpiProgression"><option value="">Select progression</option><option>Improving</option><option>Worsening</option><option>Unchanged</option><option>Fluctuating</option></select>
+                    </div>
+                        </div>
+                    </section>
+
+
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/medical-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Associated Symptoms
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="symptom-grid"
+                            id="symptomGrid"
+                        >
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Chest pain"
+                                >
+                                <span>♡</span>
+                                Chest pain
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Shortness of breath"
+                                >
+                                Shortness of breath
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Palpitations"
+                                >
+                                Palpitations
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Dizziness"
+                                >
+                                Dizziness
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Fatigue"
+                                >
+                                Fatigue
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Nausea"
+                                >
+                                Nausea
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Vomiting"
+                                >
+                                Vomiting
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Headache"
+                                >
+                                Headache
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Fever"
+                                >
+                                Fever
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Chills"
+                                >
+                                Chills
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Swelling"
+                                >
+                                Swelling
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Joint pain"
+                                >
+                                Joint pain
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Numbness / tingling"
+                                >
+                                Numbness / tingling
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Vision changes"
+                                >
+                                Vision changes
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Weight loss"
+                                >
+                                Weight loss
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Appetite changes"
+                                >
+                                Appetite changes
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Sleep disturbance"
+                                >
+                                Sleep disturbance
+                            </label>
+
+
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    value="Anxiety / low mood"
+                                >
+                                Anxiety / low mood
+                            </label>
+
+                        </div>
+
+
+                        <div class="field-pair other-symptoms-field">
+
+                            <label for="otherSymptoms">
+                                Other Symptoms
+                            </label>
+
+                            <textarea
+                                id="otherSymptoms"
+                                maxlength="300"
+                                placeholder="Describe any other symptoms..."
+                            ></textarea>
+
+                            <span
+                                class="character-count"
+                                id="otherSymptomsCount"
+                            >
+                                0/300
+                            </span>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <section class="consultation-section">
+
+                        <div class="split-panels">
+
+
+                            <!-- PAIN -->
+
+                            <div class="consultation-section compact-panel">
+
+                                <div class="section-header">
+
+                                    <img
+                                        src="images/medical-icon-blue.png"
+                                        alt=""
+                                    >
+
+                                    <h2>
+                                        Pain Level
+                                    </h2>
+
+                                </div>
+
+
+                                <div
+                                    class="pain-scale"
+                                    id="painScale"
+                                ></div>
+
+
+                                <div class="pain-labels">
+
+                                    <span>
+                                        No pain
+                                    </span>
+
+                                    <span>
+                                        Worst pain
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- URGENCY -->
+
+                            <div class="consultation-section compact-panel">
+
+                                <div class="section-header">
+
+                                    <img
+                                        src="images/alert-blue.png"
+                                        alt=""
+                                    >
+
+                                    <h2>
+                                        Urgency
+                                    </h2>
+
+                                </div>
+
+
+                                <div
+                                    class="urgency-grid"
+                                    id="urgencyGrid"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="urgency-card selected"
+                                        data-value="Routine"
+                                    >
+                                        <strong>
+                                            Routine
+                                        </strong>
+                                        <small>
+                                            Standard
+                                        </small>
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="urgency-card"
+                                        data-value="Soon"
+                                    >
+                                        <strong>
+                                            Soon
+                                        </strong>
+                                        <small>
+                                            Within days
+                                        </small>
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="urgency-card"
+                                        data-value="Urgent"
+                                    >
+                                        <strong>
+                                            Urgent
+                                        </strong>
+                                        <small>
+                                            Prompt care
+                                        </small>
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="urgency-card"
+                                        data-value="Emergency"
+                                    >
+                                        <strong>
+                                            Emergency
+                                        </strong>
+                                        <small>
+                                            Immediate
+                                        </small>
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="triage-alert conditional" role="alert" hidden></div>
+
+                    </section>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STEP 04 — HISTORY
+                ================================================== -->
+
+                <div
+                    class="consultation-step-panel"
+                    data-step="4"
+                >
+
+
+                    <!-- MEDICAL HISTORY -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/medical-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Medical History
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="existingConditions">
+                                    Existing Conditions
+                                </label>
+
+                                <textarea
+                                    id="existingConditions"
+                                    placeholder="List existing medical conditions..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="previousDiagnoses">
+                                    Previous Diagnoses
+                                </label>
+
+                                <textarea
+                                    id="previousDiagnoses"
+                                    placeholder="List previous diagnoses..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="field-pair full-width">
+
+                                <label for="chronicIllnesses">
+                                    Chronic Illnesses
+                                </label>
+
+                                <textarea
+                                    id="chronicIllnesses"
+                                    placeholder="List any chronic illnesses..."
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- SURGICAL HISTORY -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/medical-icon-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Surgical History
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="previousSurgeries">
+                                    Previous Surgeries
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="previousSurgeries"
+                                    placeholder="Enter previous surgeries"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="surgicalProcedure">
+                                    Procedure
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="surgicalProcedure"
+                                    placeholder="Enter procedure"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="surgeryDate">
+                                    Approx. Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="surgeryDate"
+                                >
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="surgeryNotes">
+                                    Notes
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="surgeryNotes"
+                                    placeholder="Additional notes"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- ALLERGIES -->
+
+                    <!-- ALLERGIES -->
+                    <section class="consultation-section">
+                        <div class="section-header">
+                            <img src="images/alert-blue.png" alt="">
+                            <h2>Allergies</h2>
+                        </div>
+                        <div class="field-pair">
+                            <label>Allergy Status <span class="req">*</span></label>
+                        </div>
+                        <div class="history-check-grid two-up">
+                            <label class="check-card"><input type="radio" name="allergyStatus" value="No Known Allergies">No Known Allergies</label>
+                            <label class="check-card"><input type="radio" name="allergyStatus" value="Allergies Present">Allergies Present</label>
+                        </div>
+                        <div class="detail-grid two-col section-gap conditional" id="allergyDetails" hidden>
+                            <div class="field-pair">
+                        <label for="drugAllergies">Drug Allergies</label>
+                        <textarea id="drugAllergies" placeholder="List drug allergies..."></textarea>
+                    </div>
+                            <div class="field-pair">
+                        <label for="foodAllergies">Food Allergies</label>
+                        <textarea id="foodAllergies" placeholder="List food allergies..."></textarea>
+                    </div>
+                            <div class="field-pair">
+                        <label for="otherAllergies">Other Allergies</label>
+                        <textarea id="otherAllergies" placeholder="List other allergies..."></textarea>
+                    </div>
+                            <div class="field-pair">
+                        <label for="allergyReaction">Reaction / Notes</label>
+                        <textarea id="allergyReaction" placeholder="Describe the reaction and any notes..."></textarea>
+                    </div>
+                        </div>
+                    </section>
+
+
+
+                    <!-- MEDICATIONS -->
+
+                    <!-- MEDICATION RECONCILIATION -->
+                    <section class="consultation-section">
+                        <div class="section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h2>Current Medications</h2>
+                        </div>
+                        <div class="history-check-grid two-up">
+                            <label class="check-card"><input type="checkbox" id="noMedications">No Current Medications</label>
+                        </div>
+                        <div id="medicationBlock" class="section-gap conditional">
+                            <div id="medicationList"></div>
+                            <button type="button" class="btn-outline" id="addMedicationBtn">+ Add Another Medication</button>
+                        </div>
+                    </section>
+
+                    <!-- VITALS & SCREENING -->
+                    <section class="consultation-section">
+                        <div class="section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h2>Vitals &amp; Screening</h2>
+                        </div>
+                        <p class="section-helper">Vitals &mdash; enter any you know; the rest can be recorded at the visit.</p>
+                        <div class="detail-grid four-col">
+                            <div class="field-pair">
+                        <label for="vitalBp">Blood Pressure (mmHg)</label>
+                        <input type="text" id="vitalBp" placeholder="120/80" inputmode="numeric" maxlength="7">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalHr">Heart Rate (bpm)</label>
+                        <input type="number" id="vitalHr" placeholder="e.g. 72" min="20" max="250" step="any" inputmode="decimal">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalTemp">Temperature (&deg;C)</label>
+                        <input type="number" id="vitalTemp" placeholder="e.g. 36.8" min="30" max="45" step="any" inputmode="decimal">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalRr">Respiratory Rate (/min)</label>
+                        <input type="number" id="vitalRr" placeholder="e.g. 16" min="4" max="80" step="any" inputmode="decimal">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalSpo2">SpO2 (%)</label>
+                        <input type="number" id="vitalSpo2" placeholder="e.g. 98" min="50" max="100" step="any" inputmode="decimal">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalHeight">Height (cm)</label>
+                        <input type="number" id="vitalHeight" placeholder="e.g. 170" min="30" max="250" step="any" inputmode="decimal">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalWeight">Weight (kg)</label>
+                        <input type="number" id="vitalWeight" placeholder="e.g. 65" min="1" max="500" step="any" inputmode="decimal">
+                    </div>
+                            <div class="field-pair">
+                        <label for="vitalBmi">BMI (kg/m&sup2;)</label>
+                        <input type="text" id="vitalBmi" placeholder="Auto-calculated" readonly>
+                    </div>
+                        </div>
+                        <p class="section-helper section-gap">Screening</p>
+                        <div class="detail-grid four-col">
+                            <div class="field-pair">
+                        <label for="redFlags">Emergency Symptoms / Red Flags</label>
+                        <select id="redFlags"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                    </div>
+                            <div class="field-pair">
+                        <label for="fallRisk">Fall Risk</label>
+                        <select id="fallRisk"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                    </div>
+                            <div class="field-pair">
+                        <label for="mobilityAssist">Mobility Assistance Required</label>
+                        <select id="mobilityAssist"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                    </div>
+                            <div class="field-pair">
+                        <label for="interpreterRequired">Interpreter Required</label>
+                        <select id="interpreterRequired"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                    </div>
+                            <div class="field-pair conditional" id="pregnancyField" hidden>
+                                <label for="pregnancyStatus">Pregnancy Status</label>
+                                <select id="pregnancyStatus"><option value="">Select</option><option>Not pregnant</option><option>Pregnant</option><option>Unsure</option></select>
+                            </div>
+                        </div>
+                        <div class="triage-alert conditional" role="alert" hidden></div>
+                    </section>
+
+
+
+                    <!-- FAMILY HISTORY -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/profile-outline.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Family History
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="history-check-grid"
+                        >
+
+                            <label class="check-card">
+
+                                <input
+                                    type="checkbox"
+                                    name="familyHistory"
+                                    value="Heart disease"
+                                >
+
+                                Heart disease
+
+                            </label>
+
+
+                            <label class="check-card">
+
+                                <input
+                                    type="checkbox"
+                                    name="familyHistory"
+                                    value="Diabetes"
+                                >
+
+                                Diabetes
+
+                            </label>
+
+
+                            <label class="check-card">
+
+                                <input
+                                    type="checkbox"
+                                    name="familyHistory"
+                                    value="Hypertension"
+                                >
+
+                                Hypertension
+
+                            </label>
+
+
+                            <label class="check-card">
+
+                                <input
+                                    type="checkbox"
+                                    name="familyHistory"
+                                    value="Cancer"
+                                >
+
+                                Cancer
+
+                            </label>
+
+
+                            <label class="check-card">
+
+                                <input
+                                    type="checkbox"
+                                    name="familyHistory"
+                                    value="Other"
+                                >
+
+                                Other
+
+                            </label>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- LIFESTYLE -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/profile-outline.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Lifestyle
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <div class="field-pair">
+
+                                <label for="smoking">
+                                    Smoking
+                                </label>
+
+                                <select id="smoking">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option>
+                                        Never
+                                    </option>
+
+                                    <option>
+                                        Former smoker
+                                    </option>
+
+                                    <option>
+                                        Current smoker
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="alcohol">
+                                    Alcohol
+                                </label>
+
+                                <select id="alcohol">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option>
+                                        Never
+                                    </option>
+
+                                    <option>
+                                        Occasionally
+                                    </option>
+
+                                    <option>
+                                        Regularly
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="exercise">
+                                    Exercise
+                                </label>
+
+                                <select id="exercise">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option>
+                                        Rarely
+                                    </option>
+
+                                    <option>
+                                        1–2 days/week
+                                    </option>
+
+                                    <option>
+                                        3–5 days/week
+                                    </option>
+
+                                    <option>
+                                        Daily
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field-pair">
+
+                                <label for="lifestyleNotes">
+                                    Other Lifestyle Notes
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="lifestyleNotes"
+                                    placeholder="Additional lifestyle information"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- DOCUMENTS -->
+
+                    <section class="consultation-section">
+
+                        <div class="section-header">
+
+                            <img
+                                src="images/upload-blue.png"
+                                alt=""
+                            >
+
+                            <h2>
+                                Documents
+                            </h2>
+
+                        </div>
+
+
+                        <div class="detail-grid two-col">
+
+                            <label class="upload-box">
+
+                                <input
+                                    type="file"
+                                    id="labReports"
+                                    multiple
+                                >
+
+                                <img
+                                    src="images/upload-blue.png"
+                                    alt=""
+                                >
+
+                                Lab Reports
+
+                                <small>
+                                    Optional
+                                </small>
+
+                            </label>
+
+
+                            <label class="upload-box">
+
+                                <input
+                                    type="file"
+                                    id="medicalReports"
+                                    multiple
+                                >
+
+                                <img
+                                    src="images/upload-blue.png"
+                                    alt=""
+                                >
+
+                                Previous Medical Reports
+
+                                <small>
+                                    Optional
+                                </small>
+
+                            </label>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     STEP 05 — REVIEW
+                ================================================== -->
+
+                <div
+                    class="consultation-step-panel"
+                    data-step="5"
+                >
+
+
+                    <div class="review-banner">
+
+                        <img
+                            src="images/check-blue.png"
+                            alt=""
+                        >
+
+                        <div>
+
+                            <h2>
+                                Review Consultation
+                            </h2>
+
+                            <p>
+                                Review the information below before confirming the consultation.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="triage-alert conditional" role="alert" hidden></div>
+
+                    <div class="review-grid">
+                        <section class="review-card">
+                            <div class="review-card-head">
+                                <h3>Patient Information</h3>
+                                <button type="button" class="review-edit" data-goto="1">Edit</button>
+                            </div>
+                            <dl id="reviewPatient"></dl>
+                        </section>
+                        <section class="review-card">
+                            <div class="review-card-head">
+                                <h3>Appointment Information</h3>
+                                <button type="button" class="review-edit" data-goto="2">Edit</button>
+                            </div>
+                            <dl id="reviewAppointment"></dl>
+                        </section>
+                        <section class="review-card">
+                            <div class="review-card-head">
+                                <h3>Symptoms Summary</h3>
+                                <button type="button" class="review-edit" data-goto="3">Edit</button>
+                            </div>
+                            <dl id="reviewSymptomsCard"></dl>
+                        </section>
+                        <section class="review-card">
+                            <div class="review-card-head">
+                                <h3>Medical History Summary</h3>
+                                <button type="button" class="review-edit" data-goto="4">Edit</button>
+                            </div>
+                            <dl id="reviewHistory"></dl>
+                        </section>
+                        <section class="review-card">
+                            <div class="review-card-head">
+                                <h3>Vitals &amp; Screening</h3>
+                                <button type="button" class="review-edit" data-goto="4">Edit</button>
+                            </div>
+                            <dl id="reviewVitals"></dl>
+                        </section>
+                        <section class="review-card">
+                            <div class="review-card-head">
+                                <h3>Other Information</h3>
+                                <button type="button" class="review-edit" data-goto="1">Edit</button>
+                            </div>
+                            <dl id="reviewOther"></dl>
+                        </section>
+                    </div>
+
+                    <!-- CONSENT -->
+                    <section class="consent-card">
+                        <div class="section-header">
+                            <img src="images/check-blue.png" alt="">
+                            <h2>Consent &amp; Authorization</h2>
+                        </div>
+                        <div class="consent-body">
+                            <label>
+                                <input type="checkbox" id="consentAccurate">
+                                <span><strong>Information Accuracy:</strong> I confirm that the information provided is accurate and complete to the best of my knowledge.</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="consentConsultation">
+                                <span><strong>Consultation / Treatment Consent:</strong> I consent to this physician consultation and to the assessment and treatment the physician considers appropriate.</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="consentPrivacy">
+                                <span><strong>Data Processing / Privacy Consent:</strong> I consent to the collection, use and storage of my personal and health information for this consultation, in line with the privacy policy.</span>
+                            </label>
+                            <label class="conditional" id="telemedicineConsentRow" hidden>
+                                <input type="checkbox" id="consentTelemedicine">
+                                <span><strong>Telemedicine Consent:</strong> I consent to receiving this consultation by video or telephone. I understand it has limitations compared with an in-person examination, that technical problems can occur, and that I may be advised to attend in person.</span>
+                            </label>
+                        </div>
+                    </section>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     FOOTER ACTIONS
+                ================================================== -->
+
+                <footer class="step-footer">
+
+                    <div>
+
+                        <span
+                            class="step-count"
+                            id="stepCounter"
+                        >
+                            Step 1 of 5
+                        </span>
+
+                    </div>
+
+
+                    <div class="footer-actions">
+
+                        <button
+                            type="button"
+                            class="btn-outline"
+                            id="saveDraftBtn"
+                        >
+                            Save Draft
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-outline"
+                            id="backBtn"
+                            hidden
+                        >
+                            Back
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-primary"
+                            id="continueBtn"
+                        >
+                            Continue
+
+                            <img
+                                src="images/arrow-right.png"
+                                alt=""
+                            >
+
+                        </button>
+
+                    </div>
+
+                </footer>
+
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================================================
+         EXISTING PATIENT MODAL
+    ========================================================== -->
+
+    <div
+        id="selectPatientModal"
+        class="modal"
+        aria-hidden="true"
+    >
+
+        <div class="modal-content patient-picker-modal">
+
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closePatientModal"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+
+            <div class="modal-heading">
+
+                <span class="page-icon-badge">
+
+                    <img
+                        src="images/patient-icon-blue.png"
+                        alt=""
+                    >
+
+                </span>
+
+                <div>
+
+                    <h2>
+                        Select Existing Patient
+                    </h2>
+
+                    <p>
+                        Search and select the correct patient profile.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-search-row">
+
+                <input
+                    type="text"
+                    id="patientSearchInput"
+                    placeholder="Search by full name"
+                >
+
+
+                <input
+                    type="date"
+                    id="patientDobFilter"
+                >
+
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="modalPatientSearchBtn"
+                >
+
+                    <img
+                        src="images/search-white.png"
+                        alt=""
+                    >
+
+                    Search
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="patient-list"
+                id="patientList"
+            ></div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-outline"
+                    id="cancelPatientModal"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="selectPatientConfirmBtn"
+                    disabled
+                >
+                    Select Patient
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         RESPONSIBLE PARTY — OTP CHANNEL
+    ========================================================== -->
+
+    <div
+        id="responsiblePartyChannelModal"
+        class="modal"
+        aria-hidden="true"
+    >
+        <div class="modal-content rp-modal">
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closeRpChannelModal"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+            <div class="modal-heading">
+
+                <span class="page-icon-badge">
+                    <img
+                        src="images/patient-icon-blue.png"
+                        alt=""
+                    >
+                </span>
+
+                <div>
+                    <h2>
+                        Verify Responsible Party
+                    </h2>
+                    <p>
+                        Choose how the account holder should receive their verification code.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="field-pair">
+
+                <label>
+                    Send OTP Via
+                    <span class="req">*</span>
+                </label>
+
+                <div class="history-check-grid rp-channel-grid">
+
+                    <label class="check-card">
+                        <input type="radio" name="rpOtpChannel" value="phone" checked>
+                        Phone
+                    </label>
+
+                    <label class="check-card">
+                        <input type="radio" name="rpOtpChannel" value="email">
+                        Email
+                    </label>
+
+                    <label class="check-card">
+                        <input type="radio" name="rpOtpChannel" value="none">
+                        None
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-outline"
+                    id="cancelRpChannelModal"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="continueRpChannelBtn"
+                >
+                    Continue
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         RESPONSIBLE PARTY — OTP ENTRY
+    ========================================================== -->
+
+    <div
+        id="responsiblePartyOtpModal"
+        class="modal"
+        aria-hidden="true"
+    >
+        <div class="modal-content rp-modal">
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closeRpOtpModal"
+                aria-label="Close"
+            >
+                ×
+            </button>
+
+            <div class="modal-heading">
+
+                <span class="page-icon-badge">
+                    <img
+                        src="images/patient-icon-blue.png"
+                        alt=""
+                    >
+                </span>
+
+                <div>
+                    <h2>
+                        Enter Verification Code
+                    </h2>
+                </div>
+
+            </div>
+
+            <div class="rp-otp-hint-row">
+
+                <p
+                    class="rp-modal-hint"
+                    id="responsiblePartyOtpHint"
+                >
+                    An OTP has been sent to the registered mobile number.
+                </p>
+
+                <button
+                    type="button"
+                    class="rp-otp-link"
+                    id="changeRpOtpChannelBtn"
+                >
+                    Change
+                </button>
+
+            </div>
+
+            <div class="field-pair">
+
+                <label>
+                    Enter OTP
+                    <span class="req">*</span>
+                </label>
+
+                <div class="rp-otp-group" id="responsiblePartyOtpGroup">
+                    <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="OTP digit 1">
+                    <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+                    <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+                    <input type="text" class="rp-otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+                </div>
+
+                <div class="rp-otp-meta">
+
+                    <span class="rp-otp-timer" id="responsiblePartyOtpTimerWrap">
+                        Expires in <strong id="responsiblePartyOtpTimer">01:00</strong>
+                    </span>
+
+                    <button
+                        type="button"
+                        class="rp-otp-link"
+                        id="resendResponsiblePartyOtpBtn"
+                    >
+                        Resend OTP
+                    </button>
+
+                </div>
+
+            </div>
+
+            <p
+                class="otp-error-text"
+                id="responsiblePartyOtpError"
+                hidden
+            >
+                Incorrect OTP. Please try again.
+            </p>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-outline"
+                    id="cancelRpOtpModal"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="verifyResponsiblePartyOtpBtn"
+                >
+                    Verify OTP
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- =========================================================
+         SUCCESS MODAL
+    ========================================================== -->
+
+    <div
+        id="successModal"
+        class="modal"
+        aria-hidden="true"
+    >
+
+        <div class="modal-content success-modal">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <h2>
+                Consultation Confirmed
+            </h2>
+
+
+            <p id="successMessage">
+                The physician consultation has been successfully confirmed.
+            </p>
+
+
+            <dl class="confirmation-details">
+                <dt>Consultation ID</dt><dd id="successConsultationId">&mdash;</dd>
+                <dt>Patient</dt><dd id="successPatient">&mdash;</dd>
+                <dt>Physician</dt><dd id="successPhysician">&mdash;</dd>
+                <dt>Specialty</dt><dd id="successSpecialty">&mdash;</dd>
+                <dt>Date &amp; Time</dt><dd id="successDateTime">&mdash;</dd>
+                <dt>Consultation Mode</dt><dd id="successMode">&mdash;</dd>
+                <dt>Status</dt><dd id="successStatus">&mdash;</dd>
+            </dl>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-outline"
+                    id="closeSuccessModal"
+                >
+                    Close
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="viewConsultationBtn"
+                >
+                    View Consultation
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         VALIDATION MODAL (reusable; replaces native alert)
+    ========================================================== -->
+
+    <div
+        id="validationModal"
+        class="modal validation-modal-overlay"
+        aria-hidden="true"
+    >
+        <div
+            class="modal-content validation-modal is-info"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="validationModalTitle"
+            aria-describedby="validationModalMessage"
+        >
+            <div class="validation-modal-header">
+                <span class="validation-modal-icon" id="validationModalIcon"></span>
+                <h2 id="validationModalTitle">Please Review</h2>
+            </div>
+
+            <p class="validation-modal-message" id="validationModalMessage"></p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-primary" id="validationModalOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- =========================================================
+         SCRIPTS
+    ========================================================== -->
+
+    <script src="js/navbar.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+
+    <script src="js/consultation.js"></script>
+
+</body>
+
+</html>
