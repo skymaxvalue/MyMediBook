@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Claim Details</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/claims.css">
+    <link rel="stylesheet" href="css/claim-details.css">
+</head>
+
+<body>
+
+    <div id="navbar-container"></div>
+
+    <main class="dashboard-container cl-page" id="main">
+
+        <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+            <a href="dashboard.html">Dashboard</a>
+            <span>/</span>
+            <a href="claims-list.html">Claims</a>
+            <span>/</span>
+            <span id="crumbCurrent">Claim Details</span>
+        </nav>
+
+        <div class="cl-notice" role="status">
+            <span>This is a demo claims environment. No real insurance data is being processed.</span>
+        </div>
+
+        <header class="cl-pagehead">
+
+            <div class="cl-pagehead__main">
+
+                <div class="cl-pagehead__icon">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+
+                <div>
+                    <h1 id="claimTitle">Claim Details</h1>
+                    <p>Review claim information, financial details, and workflow status.</p>
+                </div>
+
+                <div id="claimStatus"></div>
+
+            </div>
+
+            <div class="cl-pagehead__actions">
+                <a href="claims-list.html" class="cl-btn cl-btn--secondary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    All Claims
+                </a>
+            </div>
+
+        </header>
+
+        <section id="detailsBody" aria-live="polite">
+
+            <div class="cl-state">
+                <div class="cl-spinner"></div>
+                <div class="cl-state__title">Loading claim…</div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/claims-demo-data.js"></script>
+    <script src="js/claims-data.js"></script>
+    <script src="js/claims-ui.js"></script>
+    <script src="js/claim-details.js"></script>
+
+</body>
+
+</html>

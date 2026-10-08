@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/claims.css">
+    <link rel="stylesheet" href="css/claim-details.css">
+    <link rel="stylesheet" href="css/new-claim.css">
+    <title>New Claim | Front Office</title>
+</head>
+
+<body>
+    <div id="navbar-container"></div>
+
+    <main class="dashboard-container cl-page" id="main">
+
+        <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+            <ol>
+                <li><a href="dashboard.html" data-route="dashboard">Dashboard</a></li>
+                <li><a href="claims-dashboard.html" data-route="claims">Claims</a></li>
+                <li aria-current="page">New Claim</li>
+            </ol>
+        </nav>
+
+        <div id="clDemoNotice" hidden></div>
+
+        <section class="cl-card cl-card--pad cl-new-claim-card">
+
+            <div class="cl-new-claim-title">
+                <span class="cl-new-claim-title__icon" aria-hidden="true">
+                    <img src="images/billing.png" alt="">
+                </span>
+
+                <div>
+                    <h1>New Claim</h1>
+                    <p>Enter the claim details. New claims are submitted with status Pending.</p>
+                </div>
+            </div>
+
+            <form id="clForm" class="cl-form" novalidate>
+
+                <p id="clFormError" class="cl-form__error" role="alert" tabindex="-1" hidden></p>
+
+                <section class="cl-form-section">
+
+                    <div class="cl-form-section__head">
+                        <span class="cl-form-section__icon" aria-hidden="true">
+                            <img src="images/patient-icon-blue.png" alt="">
+                        </span>
+
+                        <div>
+                            <h2>Patient Information</h2>
+                            <p>Enter the patient and service details for this claim.</p>
+                        </div>
+                    </div>
+
+                    <div class="cl-form__grid">
+
+                        <div class="cl-formfield">
+                            <label for="fPatientName">
+                                Patient name <span class="cl-req" aria-hidden="true">*</span>
+                            </label>
+
+                            <input
+                                id="fPatientName"
+                                name="patientName"
+                                type="text"
+                                autocomplete="off"
+                                required
+                                placeholder="Enter patient name"
+                                aria-describedby="ePatientName"
+                            >
+
+                            <span class="cl-form__err" id="ePatientName"></span>
+                        </div>
+
+                        <div class="cl-formfield">
+                            <label for="fPatientId">
+                                Patient ID (UHID) <span class="cl-req" aria-hidden="true">*</span>
+                            </label>
+
+                            <input
+                                id="fPatientId"
+                                name="patientId"
+                                type="text"
+                                autocomplete="off"
+                                required
+                                placeholder="e.g. HH24567"
+                                aria-describedby="ePatientId"
+                            >
+
+                            <span class="cl-form__err" id="ePatientId"></span>
+                        </div>
+
+                        <div class="cl-formfield">
+                            <label for="fServiceDate">
+                                Service date <span class="cl-req" aria-hidden="true">*</span>
+                            </label>
+
+                        <input
+                            id="fServiceDate"
+                            name="serviceDate"
+                            type="date"
+                            required
+                            max=""
+                            aria-describedby="eServiceDate"
+                        >
+
+                            <span class="cl-form__err" id="eServiceDate"></span>
+                        </div>
+
+                        <div class="cl-formfield">
+                            <label for="fAmount">
+                                Claim amount <span class="cl-req" aria-hidden="true">*</span>
+                            </label>
+
+                            <input
+                                id="fAmount"
+                                name="amount"
+                                type="number"
+                                inputmode="decimal"
+                                min="0.01"
+                                step="0.01"
+                                required
+                                placeholder="Enter claim amount"
+                                aria-describedby="eAmount"
+                            >
+
+                            <span class="cl-form__err" id="eAmount"></span>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="cl-form-section">
+
+                    <div class="cl-form-section__head">
+                        <span class="cl-form-section__icon" aria-hidden="true">
+                            <img src="images/insurance-icon-blue.png" alt="">
+                        </span>
+
+                        <div>
+                            <h2>Insurance Information</h2>
+                            <p>Enter the payer and policy information used for processing.</p>
+                        </div>
+                    </div>
+
+                    <div class="cl-form__grid">
+
+                        <div class="cl-formfield">
+                            <label for="fPayer">
+                                Payer / Insurance <span class="cl-req" aria-hidden="true">*</span>
+                            </label>
+
+                            <input
+                                id="fPayer"
+                                name="payer"
+                                type="text"
+                                list="clPayerList"
+                                autocomplete="off"
+                                required
+                                placeholder="Select insurance provider"
+                                aria-describedby="ePayer"
+                            >
+
+                            <datalist id="clPayerList"></datalist>
+
+                            <span class="cl-form__err" id="ePayer"></span>
+                        </div>
+
+                        <div class="cl-formfield">
+                            <label for="fPolicyId">
+                                Policy / Member ID <span class="cl-req" aria-hidden="true">*</span>
+                            </label>
+
+                            <input
+                                id="fPolicyId"
+                                name="policyId"
+                                type="text"
+                                autocomplete="off"
+                                required
+                                placeholder="Enter policy or member ID"
+                                aria-describedby="ePolicyId"
+                            >
+
+                            <span class="cl-form__err" id="ePolicyId"></span>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="cl-form-section">
+
+                    <div class="cl-form-section__head">
+                        <span class="cl-form-section__icon" aria-hidden="true">
+                            <img src="images/note-blue.png" alt="">
+                        </span>
+
+                        <div>
+                            <h2>Additional Information</h2>
+                            <p>Add any relevant notes for claim processing.</p>
+                        </div>
+                    </div>
+
+                    <div class="cl-formfield">
+                        <label for="fNotes">Notes (optional)</label>
+
+                        <textarea
+                            id="fNotes"
+                            name="notes"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Enter additional notes (optional)…"
+                        ></textarea>
+
+                        <span class="cl-form__hint">
+                            Do not enter card numbers or other payment credentials.
+                        </span>
+                    </div>
+
+                </section>
+
+                <div class="cl-form__actions">
+                    <button type="submit" class="cl-btn cl-btn--primary" id="clSubmit">
+                        Submit Claim
+                    </button>
+
+                    <a
+                        class="cl-btn cl-btn--ghost"
+                        href="claims-dashboard.html"
+                        data-route="claims"
+                    >
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/claims-demo-data.js"></script>
+    <script src="js/claims-data.js"></script>
+    <script src="js/claims-ui.js"></script>
+    <script src="js/new-claim.js"></script>
+</body>
+
+</html>
