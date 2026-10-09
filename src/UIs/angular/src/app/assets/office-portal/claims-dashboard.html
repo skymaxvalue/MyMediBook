@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claims | Front Office</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/claims.css">
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="dashboard-container cl-page" id="main">
+    <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li aria-current="page">Claims</li>
+      </ol>
+    </nav>
+
+ 
+    <header class="cl-pagehead">
+      <div class="cl-pagehead__main">
+        <span class="cl-pagehead__icon" aria-hidden="true"><img src="images/claims.png" alt="" width="28" height="28"></span>
+        <div>
+          <h1>Claims</h1>
+          <p>Review, track, and manage insurance claims.</p>
+        </div>
+      </div>
+      <div class="cl-pagehead__actions">
+        <a class="cl-btn cl-btn--primary" href="new-claim.html" data-route="newClaim">+ New Claim</a>
+      </div>
+    </header>
+
+    <section class="cl-kpis" aria-label="Claims summary">
+  <article class="cl-kpi cl-kpi--blue">
+  <span class="cl-kpi__icon" aria-hidden="true">
+    <img src="images/billing.png" alt="">
+  </span>
+  <span class="cl-kpi__body">
+    <span class="cl-kpi__label">Total Claims</span>
+    <strong class="cl-kpi__value" id="kpiTotal">—</strong>
+    <span class="cl-kpi__sub" id="kpiTotalSub">Loading…</span>
+  </span>
+</article>
+
+<article class="cl-kpi cl-kpi--amber">
+  <span class="cl-kpi__icon" aria-hidden="true">
+    <img src="images/priority-stat-amber.png" alt="">
+  </span>
+  <span class="cl-kpi__body">
+    <span class="cl-kpi__label">Pending</span>
+    <strong class="cl-kpi__value" id="kpiPending">—</strong>
+    <span class="cl-kpi__sub" id="kpiPendingSub">Loading…</span>
+  </span>
+</article>
+
+<article class="cl-kpi cl-kpi--green">
+  <span class="cl-kpi__icon" aria-hidden="true">
+    <img src="images/status-normal.png" alt="">
+  </span>
+  <span class="cl-kpi__body">
+    <span class="cl-kpi__label">Approved</span>
+    <strong class="cl-kpi__value" id="kpiApproved">—</strong>
+    <span class="cl-kpi__sub" id="kpiApprovedSub">Loading…</span>
+  </span>
+</article>
+
+<article class="cl-kpi cl-kpi--red">
+  <span class="cl-kpi__icon" aria-hidden="true">
+    <img src="images/status-denied.png" alt="">
+  </span>
+  <span class="cl-kpi__body">
+    <span class="cl-kpi__label">Denied</span>
+    <strong class="cl-kpi__value" id="kpiDenied">—</strong>
+    <span class="cl-kpi__sub" id="kpiDeniedSub">Loading…</span>
+  </span>
+</article>
+
+<article class="cl-kpi cl-kpi--purple">
+  <span class="cl-kpi__icon" aria-hidden="true">
+    <img src="images/alert-blue.png" alt="">
+  </span>
+  <span class="cl-kpi__body">
+    <span class="cl-kpi__label">Needs Action</span>
+    <strong class="cl-kpi__value" id="kpiAction">—</strong>
+    <span class="cl-kpi__sub" id="kpiActionSub">Loading…</span>
+  </span>
+</article>
+
+<div class="cl-state cl-kpis__error" id="kpiError" hidden>
+  <div class="cl-state__title">Claims summary could not be loaded.</div>
+  <div class="cl-state__text" id="kpiErrorMsg"></div>
+  <button type="button" class="cl-btn cl-btn--ghost" id="kpiRetry">Try again</button>
+</div>
+    </section>
+
+    <section class="cl-card" id="attentionCard">
+      <div class="cl-card__head">
+        <div>
+          <h2>Claims Records</h2>
+          <p class="cl-caption" data-live aria-live="polite"></p>
+        </div>
+        <a class="cl-viewall" href="claims-list.html" data-route="list">View All Claims →</a>
+      </div>
+      <div class="cl-toolbar">
+        <label class="cl-field cl-field--search"><span class="cl-search-icon" aria-hidden="true">⌕</span><span class="cl-sr">Search claims</span><input type="search" data-search placeholder="Search by Claim ID, patient name, or insurance…"></label>
+        <label class="cl-field"><span class="cl-sr">Status</span><select data-status aria-label="Filter by status"></select></label>
+        <label class="cl-field"><span class="cl-sr">Payer</span><select data-payer aria-label="Filter by payer"></select></label>
+        <div class="cl-daterange">
+    <div class="cl-field cl-date-field">
+        <span class="cl-filter-label">From Date</span>
+        <input type="date" data-from max="">
+    </div>
+
+    <span class="cl-daterange__sep">–</span>
+
+    <div class="cl-field cl-date-field">
+        <span class="cl-filter-label">To Date</span>
+        <input type="date" data-to max="">
+    </div>
+</div>
+        <button type="button" class="cl-btn cl-btn--ghost" data-clear>Clear Filters</button>
+      </div>
+      <div class="cl-table-region">
+        <div class="cl-table-wrap" data-table>
+          <table class="cl-table">
+            <thead><tr>
+              <th data-key="id"><button class="cl-sort" type="button">Claim ID <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="patientName"><button class="cl-sort" type="button">Patient Name <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="payer"><button class="cl-sort" type="button">Payer / Insurance <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="serviceDate"><button class="cl-sort" type="button">Service Date <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="amount" class="cl-num"><button class="cl-sort" type="button">Claim Amount <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="submittedDate"><button class="cl-sort" type="button">Submitted Date <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="status"><button class="cl-sort" type="button">Status <span class="cl-sort__ind">↕</span></button></th>
+              <th data-key="lastUpdated"><button class="cl-sort" type="button">Last Updated <span class="cl-sort__ind">↕</span></button></th>
+              <th class="cl-actions-col">Actions</th>
+            </tr></thead>
+            <tbody data-rows></tbody>
+          </table>
+          <div class="cl-state" data-state hidden></div>
+        </div>
+      </div>
+      <div class="cl-table-foot"><span class="cl-showing" data-info>Loading claims…</span><div class="cl-pagination" data-pager aria-label="Claims pagination"></div></div>
+    </section>
+
+    <section class="cl-analytics" aria-label="Claims analytics">
+      <section class="cl-card cl-card--pad cl-trend">
+        <div class="cl-card__head cl-card__head--flush"><div><h2>Claims Trend</h2><p class="cl-caption">Submitted claims by status.</p></div><label class="cl-field--compact"><span class="cl-sr">Trend range</span><select id="trendRange"><option value="6">Last 6 months</option><option value="3">Last 3 months</option><option value="12">Last 12 months</option></select></label></div>
+        <div id="trendBody" class="cl-center"><div class="cl-spinner" aria-label="Loading chart"></div></div>
+      </section>
+      <section class="cl-card cl-card--pad">
+        <div class="cl-card__head cl-card__head--flush"><div><h2>Claims by Status</h2><p class="cl-caption" id="scopeNote"></p></div></div>
+        <div id="statusBody" class="cl-donut"><div class="cl-spinner" aria-label="Loading chart"></div></div>
+      </section>
+      <section class="cl-card cl-card--pad">
+        <div class="cl-card__head cl-card__head--flush"><div><h2>Top Payers by Claim Volume</h2><p class="cl-caption">Current filtered claim volume.</p></div></div>
+        <div id="payerBody"><div class="cl-spinner" aria-label="Loading payer data"></div></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+  <script src="js/navbar.js"></script>
+  <script src="js/footer.js"></script>
+  <script src="js/claims-demo-data.js"></script>
+  <script src="js/claims-data.js"></script>
+  <script src="js/claims-ui.js"></script>
+  <script src="js/claims.js"></script>
+</body>
+</html>

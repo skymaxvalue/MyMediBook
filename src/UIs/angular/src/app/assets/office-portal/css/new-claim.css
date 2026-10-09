@@ -1,0 +1,263 @@
+.cl-new-claim-card {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px;
+    border-radius: 16px;
+}
+
+.cl-new-claim-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.cl-new-claim-title__icon {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    display: grid;
+    place-items: center;
+    background: #EAF2FF;
+    border-radius: 16px;
+}
+
+.cl-new-claim-title__icon img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.cl-new-claim-title h1 {
+    margin: 0;
+    color: var(--cl-ink, #183C75);
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.cl-new-claim-title p {
+    margin: 5px 0 0;
+    color: var(--cl-muted, #6B7280);
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.cl-form {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    display: grid;
+    gap: 22px;
+}
+
+.cl-form-section {
+    display: grid;
+    gap: 16px;
+}
+
+.cl-form-section__head {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #EEF5FF;
+    border: 1px solid #DCE8F8;
+    border-radius: 10px;
+}
+
+.cl-form-section__icon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: grid;
+    place-items: center;
+}
+
+.cl-form-section__icon img {
+    width: 21px;
+    height: 21px;
+    object-fit: contain;
+}
+
+.cl-form-section__head > div {
+    min-width: 0;
+}
+
+.cl-form-section__head h2 {
+    margin: 0;
+    color: var(--cl-ink, #183C75);
+    font-size: 15px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.cl-form-section__head p {
+    margin: 3px 0 0;
+    color: var(--cl-muted, #6B7280);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.cl-form__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+    row-gap: 20px;
+}
+
+.cl-formfield {
+    width: 100%;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+}
+
+.cl-formfield label {
+    color: var(--cl-ink, #183C75);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.cl-formfield input,
+.cl-formfield textarea {
+    width: 100%;
+    border: 1px solid #D5DEEB;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #1F2937;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.cl-formfield input {
+    min-height: 46px;
+    padding: 0 12px 0 42px;
+}
+
+.cl-formfield textarea {
+    min-height: 92px;
+    padding: 12px 14px 12px 42px;
+    resize: vertical;
+}
+
+.cl-formfield input:focus,
+.cl-formfield textarea:focus {
+    border-color: var(--cl-blue, #2457E5);
+    box-shadow: 0 0 0 3px rgba(36, 87, 229, .10);
+    outline: none;
+}
+
+.cl-formfield input::placeholder,
+.cl-formfield textarea::placeholder {
+    color: #8A97AB;
+}
+
+#fPatientName {
+    background: #fff url("../images/patient-icon-blue.png") no-repeat 13px center / 19px 19px;
+}
+
+#fPatientId {
+    background: #fff url("../images/id-card.png") no-repeat 13px center / 19px 19px;
+}
+
+#fServiceDate {
+    background: #fff url("../images/calendar-blue.png") no-repeat 13px center / 19px 19px;
+}
+
+#fAmount {
+    background: #fff url("../images/card.png") no-repeat 13px center / 19px 19px;
+}
+
+#fPayer {
+    background: #fff url("../images/insurance-icon-blue.png") no-repeat 13px center / 19px 19px;
+}
+
+#fPolicyId {
+    background: #fff url("../images/id-card.png") no-repeat 13px center / 19px 19px;
+}
+
+#fNotes {
+    background: #fff url("../images/note-blue.png") no-repeat 13px 13px / 19px 19px;
+}
+
+.cl-form__hint {
+    color: var(--cl-muted, #6B7280);
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.cl-form__actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--cl-line, #E6ECF5);
+    padding-top: 20px;
+    margin-top: 0;
+}
+
+.cl-form__actions .cl-btn {
+    min-width: 118px;
+}
+
+.cl-form__actions #clSubmit::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background: url("../images/send-white.png") center / contain no-repeat;
+}
+
+.cl-form__actions .cl-btn--ghost {
+    background: #fff;
+}
+
+@media (max-width: 1020px) {
+    .cl-new-claim-card {
+        max-width: calc(100% - 32px);
+    }
+}
+
+@media (max-width: 900px) {
+    .cl-form__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .cl-new-claim-card {
+        max-width: calc(100% - 24px);
+        padding: 20px 16px;
+    }
+
+    .cl-new-claim-title {
+        gap: 12px;
+    }
+
+    .cl-new-claim-title__icon {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+    }
+
+    .cl-new-claim-title h1 {
+        font-size: 26px;
+    }
+
+    .cl-form-section__head {
+        min-height: 54px;
+    }
+
+    .cl-form__actions {
+        justify-content: stretch;
+    }
+
+    .cl-form__actions .cl-btn {
+        flex: 1;
+    }
+}
