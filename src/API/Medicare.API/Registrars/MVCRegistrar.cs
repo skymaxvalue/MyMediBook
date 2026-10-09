@@ -16,6 +16,7 @@ using Medicare.Application.Interfaces.INotificationRepository;
 using Medicare.Application.Interfaces.IOrders;
 using Medicare.Application.Interfaces.IOrganization;
 using Medicare.Application.Interfaces.IPatient;
+using Medicare.Application.Interfaces.IRoomMangement;
 using Medicare.Application.Interfaces.ISecurityQuestionsRepository;
 using Medicare.Application.Interfaces.JwtToken;
 using Medicare.Application.Interfaces.Master;
@@ -79,6 +80,7 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IClaimRepostitory, ClaimRepository>();
             builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
             builder.Services.AddScoped<IOrganizationRepository, OrganisationRepository>();
+            builder.Services.AddScoped<IRoomMangementRepository, RoomMangementRepository>();
 
             // ✅ Services
             builder.Services.AddSignalR();
