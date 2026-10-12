@@ -182,7 +182,7 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
-        public async Task<List<SearchPatientResponseModel>> SearchPatientAsync(SearchPatientRequestModel model)
+        public async Task<List<SearchPatientResponseModel>> SearchPatientInAppointmentsAsync(SearchPatientRequestModel model)
         {
             string procName = "USP_SearchPatientInAppointments";
             List<SearchPatientResponseModel> returnData = new List<SearchPatientResponseModel>();

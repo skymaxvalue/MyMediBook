@@ -20,7 +20,7 @@ import {
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import { first } from "rxjs";
 import { getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
-import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selcetors";
+import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selectors";
 import { TabServiceService } from "src/app/core/Services/tab-service.service";
 import { RouterOutlet } from "@angular/router";
 

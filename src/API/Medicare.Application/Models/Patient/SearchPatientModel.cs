@@ -1,6 +1,4 @@
-﻿using Medicare.Application.Models.Appointment;
-
-namespace Medicare.Application.Models.Patient
+﻿namespace Medicare.Application.Models.Patient
 {
     public class SearchPatientRequestModel
     {

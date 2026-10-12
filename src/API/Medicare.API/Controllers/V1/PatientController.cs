@@ -87,11 +87,11 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPost]
-        [Route("SearchPatient")]
+        [Route("SearchPatientInAppointments")]
         public async Task<IActionResult> SearchPatient(SearchPatientRequestModel model)
         {
             List<SearchPatientResponseModel> response = new List<SearchPatientResponseModel>();
-            response = await _mediator.Send(new SearchPatientCommand(model));
+            response = await _mediator.Send(new SearchPatientInAppointmentsCommand(model));
             return HandleListResponse(response);
         }
 

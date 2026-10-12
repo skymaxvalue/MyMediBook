@@ -80,7 +80,7 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                         .then(m => m.CheckDocAvailableComponent)
             },
             {
-                path: 'patient-checkin',
+                path: 'patient-check-in',
                 component: PatientCheckInComponent
             },
             {

@@ -22,7 +22,7 @@ import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.s
 import {
   selectCreateAppointmentRes,
   selectRescheduledAppointment,
-} from "src/app/Store/Appointments/appointment.selcetors";
+} from "src/app/Store/Appointments/appointment.selectors";
 import { take } from "rxjs";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 import {
@@ -210,7 +210,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
         isHighlighted:
           this.updatesheduledpatient &&
           this.formatInputDate(d) ===
-            this.formatInputDate(new Date(this.updatesheduledpatient.appointmentDate)),
+          this.formatInputDate(new Date(this.updatesheduledpatient.appointmentDate)),
       });
     }
   }

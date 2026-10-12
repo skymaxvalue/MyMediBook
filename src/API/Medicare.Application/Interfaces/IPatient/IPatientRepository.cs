@@ -13,7 +13,7 @@ namespace Medicare.Application.Interfaces.IPatient
         Task<List<PatientProfileModel>> GetPatientProfileListByIdAsync(int patientId);
         Task<List<PatientListResponseModel>> GetPatientListByReceptionsistIdAsync(int receptionistId);
         Task<PatientProfileModel> GetPatientProfileByProfileIdAsync(int profileId);
-        Task<List<SearchPatientResponseModel>> SearchPatientAsync(SearchPatientRequestModel model);
+        Task<List<SearchPatientResponseModel>> SearchPatientInAppointmentsAsync(SearchPatientRequestModel model);
         Task<List<PatientEnrollmentModel>> GetEnrollmentsAsync(Guid userId);
         Task<EnrollPatientResponse> EnrollPatientInHospital(int hospitalId, string userId);
         Task<SwitchHospitalResponse> SwitchHospitalAsync(int hospitalId, string userId);

@@ -1,0 +1,20 @@
+﻿using MediatR;
+using Medicare.Application.Features.Commands.Patient;
+using Medicare.Application.Interfaces.IPatient;
+using Medicare.Application.Models.Patient;
+
+namespace Medicare.Application.Handlers.CommandHandlers
+{
+    public class SearchPatientInAppointmentsCommandHandler : IRequestHandler<SearchPatientInAppointmentsCommand, List<SearchPatientResponseModel>>
+    {
+        private readonly IPatientRepository _patientRepository;
+        public SearchPatientInAppointmentsCommandHandler(IPatientRepository patientRepository)
+        {
+            _patientRepository = patientRepository;
+        }
+        public async Task<List<SearchPatientResponseModel>> Handle(SearchPatientInAppointmentsCommand request, CancellationToken cancellationToken)
+        {
+            return await _patientRepository.SearchPatientInAppointmentsAsync(request.model);
+        }
+    }
+}

@@ -6,20 +6,13 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
 } from "@angular/core";
-
 import { FormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
-import {
-  getAppointmentListByRiceptionist,
-  getDashboardData,
-  getDashboardDataByDoctor,
-  getDashboardDataByReceptionist,
-} from "src/app/Store/Appointments/appointment.actions";
-import { selectDashboardDataSummery } from "src/app/Store/Appointments/appointment.selcetors";
-import { JsonPipe } from "@angular/common";
+import * as AppointmentActions from "src/app/Store/Appointments/appointment.actions";
+import * as AppointmentSelector from "src/app/Store/Appointments/appointment.selectors";
 
 interface DashboardStat {
   title: string;
@@ -113,7 +106,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private store: Store<AppState>
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUser();
@@ -122,9 +115,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.updateTime();
     this.startClock();
 
-    this.store.select(selectDashboardDataSummery).subscribe((res: any) => {
-      console.log("Dashboard API Response:", res);
-
+    this.store.select(AppointmentSelector.selectDashboardSummary).subscribe((res: any) => {
       const data = res?.data;
 
       // Ignore empty / invalid response
@@ -236,29 +227,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.store.dispatch(
-      getDashboardData({
+      AppointmentActions.getDashboardSummary({
         associateId: this.user?.refId,
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
       })
     );
 
+    // this.store.dispatch(
+    //   getAppointmentListByRiceptionist({
+    //     associateId: this.user?.refId,
+    //     fromDate: fromDate.toISOString(),
+    //     toDate: toDate.toISOString(),
+    //   })
+    // );
+
     this.store.dispatch(
-      getAppointmentListByRiceptionist({
+      AppointmentActions.getFrontOfficeRecentPatientQueueList({
         associateId: this.user?.refId,
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
       })
     );
     this.store.dispatch(
-      getDashboardDataByReceptionist({
-        associateId: this.user?.refId,
-        fromDate: fromDate.toISOString(),
-        toDate: toDate.toISOString(),
-      })
-    );
-    this.store.dispatch(
-      getDashboardDataByDoctor({
+      AppointmentActions.getDoctorRecentPatientList({
         associateId: this.user?.refId,
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
@@ -267,13 +259,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.http.get<DashboardData>("/assets/data-json/data.json").subscribe({
       next: (data) => {
-        console.log("Static Dashboard JSON:", data);
-
         this.dashboardData = data;
-
         this.updateStatValues();
       },
-
       error: (error) => {
         console.error("Dashboard JSON loading failed:", error);
       },

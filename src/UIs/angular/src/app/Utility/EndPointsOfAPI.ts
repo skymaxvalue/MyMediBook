@@ -7,9 +7,9 @@ export const APIEndpoints = {
     GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
     GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
     GET_ROLES: "Role/GetRoleList",
-    GET_DASHBOARD_DATA: "Dashboard/Receptionist/GetDashboardSummary",
-    GET_DASHBOARD_DATA_FOR_DOCTOR: "Dashboard/Receptionist/GetRecentPatientList",
-    GET_DASHBOARD_DATA_FOR_RECEPTIONIST: "Dashboard/Receptionist/GetPatientQueueList",
+    GET_DASHBOARD_SUMMARY: "Dashboard/Receptionist/GetDashboardSummary",
+    GET_DOCTOR_RECENT_PATIENT_LIST: "Dashboard/Receptionist/GetRecentPatientList",
+    GET_FRONTOFFICE_RECENT_PATIENTS_QUEUE_LIST: "Dashboard/Receptionist/GetPatientQueueList",
     APPOINTMENT_STATUS_KEY: "Master/GetStatusKeyList",
 
 
@@ -25,7 +25,8 @@ export const AppointmentApiEndPoint = {
     GET_AVAILABLE_APPOINTMENTS: "Appointment/GetAvailableAppointments",
     GET_MYAPPOINTMENTS_BY_PATIONT_ID: "Appointment/Patient/GetMyAppointmentList/",
     GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST: "Appointment/Doctor/GetMyAppointmentList/",
-    GET_APOINTMENT_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentList",
+    GET_APPOINTMENT_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentList",
+    GET_APPOINTMENT_CHECK_IN_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentCheckInList",
     GET_APPOINTMENT_STATUS: "Master/GetStatusKeyList"
 }
 export const PatientApiEndPoint = {
@@ -33,7 +34,7 @@ export const PatientApiEndPoint = {
     GET_PROFILE_BASED_ON_PATIENT: "Patient/GetPatientProfileListById/",
     GET_PROFILE_BASED_ON_PROFILEID: "Patient/GetPatientProfileByProfileId",
     GET_PATIENT_PROFILE_BY_ID: "Patient/GetPatientById/",
-    SEARCH_PATIENT_REQUEST: "Patient/SearchPatient",
+    SEARCH_PATIENT_REQUEST: "Patient/SearchPatientInAppointments",
     GET_PATIENT_LIST_FOR_RECEPTIONIST: "Patient/Receptionist/GetPatientListById/",
     SWITCH_HOSPITAL: "Patient/SwitchHospital"
 }

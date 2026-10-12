@@ -28,7 +28,7 @@ import {
   selectAgeType,
   selectAppointmentStatusList,
   selectRelationShipType,
-} from "src/app/Store/Appointments/appointment.selcetors";
+} from "src/app/Store/Appointments/appointment.selectors";
 import { requestOTP } from "src/app/Store/Auth/auth.actions";
 import { selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";
 import {
