@@ -226,52 +226,143 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
   Future<void> _onCancel(Appointment apt) async {
     if (apt.appointmentId == 0) return;
 
-    final confirmed = await showDialog<bool>(
+    final reasonController = TextEditingController();
+
+    // Use a bottom sheet — it's natively keyboard-aware and never overflows.
+    final confirmed = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Cancel Appointment',
-            style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.textDark)),
-        content: const Text(
-          'Are you sure you want to cancel this appointment? This action cannot be undone.',
-          style: TextStyle(color: AppColors.textGrey),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('No, Keep It', style: TextStyle(color: AppColors.textGrey)),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(ctx).scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Yes, Cancel', style: TextStyle(color: Colors.white)),
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40, height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                const Text(
+                  'Cancel Appointment',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textDark,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Are you sure you want to cancel this appointment?\nThis action cannot be undone.',
+                  style: TextStyle(color: AppColors.textGrey, fontSize: 14, height: 1.4),
+                ),
+                const SizedBox(height: 18),
+                TextField(
+                  controller: reasonController,
+                  maxLines: 2,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText: 'Reason for cancellation (optional)',
+                    hintStyle: const TextStyle(color: AppColors.textGrey, fontSize: 13),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: const BorderSide(color: AppColors.textGrey),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: const Text('No, Keep It',
+                            style: TextStyle(color: AppColors.textGrey)),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: const Text('Yes, Cancel',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
 
+    final cancelReason = reasonController.text.trim();
+    reasonController.dispose();
+
     if (confirmed != true || !mounted) return;
+
+    // ── Capture navigator BEFORE the async gap so pop() always closes
+    // exactly the dialog we are about to open (no route confusion).
+    final nav = Navigator.of(context);
 
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      builder: (_) => const Center(
+          child: CircularProgressIndicator(color: AppColors.primary)),
     );
 
     final patientId = ApiService.currentPatient?['patientId'] as int? ?? 0;
     final result = await ApiService.cancelAppointmentById(
       appointmentId: apt.appointmentId,
       patientId: patientId,
+      cancelReason: cancelReason,
     );
 
+    // Close the loading dialog using the captured navigator reference.
+    if (nav.canPop()) nav.pop();
+
     if (!mounted) return;
-    Navigator.pop(context); // close loading
 
     final success = result['success'] == true;
-    final message = result['message'] as String? ?? (success ? 'Appointment cancelled.' : 'Cancellation failed.');
+    final message = result['message'] as String? ??
+        (success ? 'Appointment cancelled.' : 'Cancellation failed.');
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
       backgroundColor: success ? AppColors.completedGreen : Colors.redAccent,
@@ -280,8 +371,13 @@ class _AppointmentsTabState extends State<AppointmentsTab> {
     ));
 
     if (success && mounted) {
-      await Future.delayed(const Duration(milliseconds: 600));
-      setState(() { _loading = true; _error = null; });
+      // Optimistically remove the cancelled appointment from the list first —
+      // this gives instant visual feedback without a full loading rebuild.
+      setState(() {
+        _all?.removeWhere((a) => a.appointmentId == apt.appointmentId);
+        _applyFiltersAndSort();
+      });
+      // Then silently refresh from the server in the background.
       _load();
     }
   }
