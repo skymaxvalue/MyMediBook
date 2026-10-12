@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow-Up Visit</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/room-service.css">
+    <link rel="stylesheet" href="css/followup-visits.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="navbar-container" data-active-tab="appointment"></div>
+
+<main class="dashboard-container">
+
+    <section class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+        <span class="separator">
+            <img src="images/right-arrow-blue.png" alt="">
+        </span>
+        
+        <span class="active">Follow-Up Visit</span>
+    </section>
+
+    <section class="rs-page-card fu-page">
+
+        <div class="rs-page-header fu-header">
+
+            <div class="rs-title-group">
+                <div class="rs-icon-circle">
+                    <img src="images/calendar-blue.png" alt="">
+                </div>
+
+                <div>
+                    <h2>Follow-Up Visit</h2>
+                    <p>Continuing care from the previous appointment · Complete all steps to submit</p>
+                </div>
+            </div>
+
+            <span class="rs-request-id" id="fuBadge">New visit</span>
+
+        </div>
+
+        <div class="fu-summary" aria-label="Previous visit summary">
+            <div class="fu-tile">
+                <img src="images/calendar2.png" alt="">
+                <div><small>Last Visit</small><strong id="sumLastVisit">—</strong></div>
+            </div>
+            <div class="fu-tile">
+                <img src="images/doctor-icon-blue.png" alt="">
+                <div><small>Provider</small><strong id="sumProvider">—</strong></div>
+            </div>
+            <div class="fu-tile">
+                <img src="images/ic-file-blue.png" alt="">
+                <div><small>Diagnosis</small><strong id="sumDiagnosis">—</strong></div>
+            </div>
+            <div class="fu-tile">
+                <img src="images/ic-pulse-blue.png" alt="">
+                <div><small>Status</small><strong id="sumStatus">—</strong></div>
+            </div>
+        </div>
+
+        <nav class="rs-stepper fu-stepper" id="fuStepper" aria-label="Follow-up visit steps">
+            <button type="button" class="rs-step active" data-step="1"><span>01</span><strong>Patient</strong></button>
+            <button type="button" class="rs-step" data-step="2"><span>02</span><strong>Progress</strong></button>
+            <button type="button" class="rs-step" data-step="3"><span>03</span><strong>Medications</strong></button>
+            <button type="button" class="rs-step" data-step="4"><span>04</span><strong>Vitals</strong></button>
+            <button type="button" class="rs-step" data-step="5"><span>05</span><strong>Next Visit</strong></button>
+            <button type="button" class="rs-step" data-step="6"><span>06</span><strong>Review</strong></button>
+        </nav>
+
+        <form id="fuForm" novalidate>
+
+            <div class="fu-alert" id="fuAlert" role="alert" aria-live="assertive">
+                <strong id="fuAlertTitle"></strong>
+                <ul id="fuAlertList"></ul>
+            </div>
+
+            <fieldset class="fu-fieldset" id="fuPanels">
+
+                <section class="rs-step-panel active" data-step="1">
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/patient-icon-blue.png" alt="">
+                            <h3>Patient Confirmation</h3>
+                        </div>
+
+                        <div class="rs-grid-2">
+                            <div class="rs-field" data-field="fullName">
+                                <label for="fuFullName">Full Name *</label>
+                                <input id="fuFullName" name="fullName" type="text" list="fuPatientList" autocomplete="off" maxlength="120" placeholder="Confirm legal name" required>
+                                <datalist id="fuPatientList"></datalist>
+                            </div>
+                            <div class="rs-field" data-field="dob">
+                                <label for="fuDob">Date of Birth *</label>
+                                <input id="fuDob" name="dob" type="date" required>
+                            </div>
+                        </div>
+
+                        <div class="rs-grid-3">
+                            <div class="rs-field" data-field="mrn">
+                                <label for="fuMrn">Medical Record Number (MRN) *</label>
+                                <input id="fuMrn" name="mrn" type="text" maxlength="20" placeholder="MRN-000000" required>
+                            </div>
+                            <div class="rs-field" data-field="phone">
+                                <label for="fuPhone">Phone Number *</label>
+                                <input id="fuPhone" name="phone" type="tel" maxlength="20" placeholder="(000) 000-0000" required>
+                            </div>
+                            <div class="rs-field" data-field="contactMethod">
+                                <label for="fuContact">Preferred Contact Method *</label>
+                                <select id="fuContact" name="contactMethod" required>
+                                    <option value="">Select method</option>
+                                    <option>Phone call</option>
+                                    <option>Text message</option>
+                                    <option>Email</option>
+                                    <option>Patient portal</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="fu-group" data-field="patientConfirmed">
+                            <label class="rv-check">
+                                <input type="checkbox" name="patientConfirmed">
+                                <span>I confirmed these patient details with the patient *</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/calendar-blue.png" alt="">
+                            <h3>Visit Details</h3>
+                        </div>
+
+                        <div class="rs-grid-3">
+                            <div class="rs-field" data-field="visitDate">
+                                <label for="fuVisitDate">Visit Date *</label>
+                                <input id="fuVisitDate" name="visitDate" type="date" required>
+                            </div>
+                            <div class="rs-field" data-field="visitType">
+                                <label for="fuVisitType">Visit Type *</label>
+                                <select id="fuVisitType" name="visitType" required>
+                                    <option value="">Select type</option>
+                                    <option>In-person</option>
+                                    <option>Video call</option>
+                                    <option>Phone call</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="companion">
+                                <label for="fuCompanion">Accompanying Person</label>
+                                <input id="fuCompanion" name="companion" type="text" maxlength="120" placeholder="Name and relation (optional)">
+                            </div>
+                        </div>
+
+                        <div class="rs-grid-2">
+                            <div class="rs-field" data-field="referrer">
+                                <label for="fuReferrer">Referring Provider</label>
+                                <input id="fuReferrer" name="referrer" type="text" maxlength="120" placeholder="Leave blank if unchanged">
+                            </div>
+                            <div class="rs-field" data-field="insurance">
+                                <label for="fuInsurance">Insurance</label>
+                                <input id="fuInsurance" name="insurance" type="text" maxlength="120" placeholder="Leave blank if unchanged">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-file-blue.png" alt="">
+                            <h3>Since Last Visit</h3>
+                        </div>
+
+                        <div class="rs-field fu-spaced" data-field="sinceEvents">
+                            <label for="fuSince">Hospitalizations or emergency visits since the last appointment *</label>
+                            <select id="fuSince" name="sinceEvents" required>
+                                <option value="">Select an option</option>
+                                <option>None</option>
+                                <option>Hospitalization</option>
+                                <option>Emergency visit</option>
+                                <option>Hospitalization and emergency visit</option>
+                            </select>
+                        </div>
+
+                        <div class="rs-field" data-field="newEvents">
+                            <label for="fuNewEvents">New diagnoses or major health events</label>
+                            <textarea id="fuNewEvents" name="newEvents" maxlength="500" placeholder="Describe new conditions, procedures, or significant changes since the last visit"></textarea>
+                        </div>
+                    </section>
+
+                </section>
+
+                <section class="rs-step-panel" data-step="2">
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-file-blue.png" alt="">
+                            <h3>Current Condition</h3>
+                        </div>
+                        <div class="rs-field" data-field="condition">
+                            <label for="fuCondition">How has the patient been since the last visit? *</label>
+                            <textarea id="fuCondition" name="condition" maxlength="500" placeholder="Describe overall health, improvements, or concerns" required></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-pulse-blue.png" alt="">
+                            <h3>Symptom Update</h3>
+                        </div>
+
+                        <fieldset class="fu-group" data-field="symptoms">
+                            <legend class="fu-legend">Select all that apply *</legend>
+                            <div class="fu-chip-grid">
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="No Symptoms"><span>No Symptoms</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Chest Pain"><span>Chest Pain</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Shortness of Breath"><span>Shortness of Breath</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Palpitations"><span>Palpitations</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Dizziness"><span>Dizziness</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Fatigue"><span>Fatigue</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Headache"><span>Headache</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Swelling"><span>Swelling</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Nausea"><span>Nausea</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Vomiting"><span>Vomiting</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Joint Pain"><span>Joint Pain</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Numbness / Tingling"><span>Numbness / Tingling</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Vision Changes"><span>Vision Changes</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Weight Changes"><span>Weight Changes</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Appetite Changes"><span>Appetite Changes</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Sleep Disturbance"><span>Sleep Disturbance</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Anxiety / Low Mood"><span>Anxiety / Low Mood</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="symptoms" value="Other"><span>Other</span></label>
+                            </div>
+                        </fieldset>
+
+                        <div class="rs-field" data-field="symptomOther" hidden>
+                            <label for="fuSymptomOther">Other symptoms (not listed) *</label>
+                            <input id="fuSymptomOther" name="symptomOther" type="text" maxlength="300" placeholder="Describe any other symptoms">
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-pulse-blue.png" alt="">
+                            <h3>Symptom Improvement</h3>
+                        </div>
+                        <fieldset class="fu-group" data-field="improvement">
+                            <legend class="fu-legend">Overall condition compared with the last visit *</legend>
+                            <div class="fu-chip-grid">
+                                <label class="diet-chip"><input type="radio" name="improvement" value="Much Better"><span>Much Better</span></label>
+                                <label class="diet-chip"><input type="radio" name="improvement" value="Somewhat Better"><span>Somewhat Better</span></label>
+                                <label class="diet-chip"><input type="radio" name="improvement" value="No Change"><span>No Change</span></label>
+                                <label class="diet-chip"><input type="radio" name="improvement" value="Somewhat Worse"><span>Somewhat Worse</span></label>
+                                <label class="diet-chip"><input type="radio" name="improvement" value="Much Worse"><span>Much Worse</span></label>
+                            </div>
+                        </fieldset>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-badge-blue.png" alt="">
+                            <h3>Treatment Adherence</h3>
+                        </div>
+                        <fieldset class="fu-group" data-field="treatAdherence">
+                            <legend class="fu-legend">Has the patient been following the treatment plan? *</legend>
+                            <div class="fu-chip-grid fu-chip-grid-sm">
+                                <label class="diet-chip"><input type="radio" name="treatAdherence" value="Yes"><span>Yes</span></label>
+                                <label class="diet-chip"><input type="radio" name="treatAdherence" value="No"><span>No</span></label>
+                            </div>
+                        </fieldset>
+                        <div class="rs-field" data-field="treatAdherenceNote" hidden>
+                            <label for="fuTreatNote">Please specify missed doses, side effects, cost issues, or other concerns *</label>
+                            <textarea id="fuTreatNote" name="treatAdherenceNote" maxlength="300" placeholder="e.g. missed doses, side effects, or other reasons"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-file-blue.png" alt="">
+                            <h3>Additional Notes</h3>
+                        </div>
+                        <div class="rs-field" data-field="notesProgress">
+                            <label for="fuNotesProgress">Optional</label>
+                            <textarea id="fuNotesProgress" name="notesProgress" maxlength="500" placeholder="Any other updates the patient wants to share with the provider"></textarea>
+                        </div>
+                    </section>
+
+                </section>
+
+                <section class="rs-step-panel" data-step="3">
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h3>Current Medications</h3>
+                            <button type="button" class="fu-add-btn" data-add="med">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                Add Medication
+                            </button>
+                        </div>
+                        <div class="fu-table-wrap">
+                            <table class="fu-table">
+                                <caption class="fu-sr">Current medications</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Medication</th>
+                                        <th scope="col">Dose</th>
+                                        <th scope="col">Frequency</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" class="fu-actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fuMedBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="fu-group" data-field="meds">
+                            <label class="rv-check">
+                                <input type="checkbox" name="noMedications">
+                                <span>The patient is not taking any medications</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-file-blue.png" alt="">
+                            <h3>Medication Changes Since Last Visit</h3>
+                        </div>
+                        <fieldset class="fu-group" data-field="medChanges">
+                            <legend class="fu-legend">Select all that apply *</legend>
+                            <div class="fu-chip-grid">
+                                <label class="diet-chip"><input type="checkbox" name="medChanges" value="No Changes"><span>No Changes</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="medChanges" value="Started New Medication"><span>Started New Medication</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="medChanges" value="Stopped a Medication"><span>Stopped a Medication</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="medChanges" value="Dose Changed"><span>Dose Changed</span></label>
+                                <label class="diet-chip"><input type="checkbox" name="medChanges" value="Frequency Changed"><span>Frequency Changed</span></label>
+                            </div>
+                        </fieldset>
+                        <div class="rs-field" data-field="medChangeDetails" hidden>
+                            <label for="fuMedChange">Describe the changes, side effects, or concerns *</label>
+                            <textarea id="fuMedChange" name="medChangeDetails" maxlength="500" placeholder="e.g. new medications, stopped medications, dose adjustments, side effects"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-badge-blue.png" alt="">
+                            <h3>Medication Adherence</h3>
+                        </div>
+                        <fieldset class="fu-group" data-field="medAdherence">
+                            <legend class="fu-legend">How well has the patient followed the prescribed medication plan? *</legend>
+                            <div class="fu-chip-grid fu-chip-grid-sm">
+                                <label class="diet-chip"><input type="radio" name="medAdherence" value="Yes"><span>Yes</span></label>
+                                <label class="diet-chip"><input type="radio" name="medAdherence" value="Mostly"><span>Mostly</span></label>
+                                <label class="diet-chip"><input type="radio" name="medAdherence" value="No"><span>No</span></label>
+                            </div>
+                        </fieldset>
+                        <div class="rs-field" data-field="medAdherenceNote" hidden>
+                            <label for="fuMedAdherenceNote">Please tell us more *</label>
+                            <textarea id="fuMedAdherenceNote" name="medAdherenceNote" maxlength="300" placeholder="e.g. missed doses, side effects, cost issues"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h3>Refills and Concerns</h3>
+                        </div>
+                        <fieldset class="fu-group" data-field="refills">
+                            <legend class="fu-legend">Does the patient need refills or have medication concerns? *</legend>
+                            <div class="fu-chip-grid fu-chip-grid-sm">
+                                <label class="diet-chip"><input type="radio" name="refills" value="No Refills Needed"><span>No Refills Needed</span></label>
+                                <label class="diet-chip"><input type="radio" name="refills" value="Refill Needed"><span>Refill Needed</span></label>
+                                <label class="diet-chip"><input type="radio" name="refills" value="Unsure"><span>Unsure</span></label>
+                            </div>
+                        </fieldset>
+                        <div class="rs-field" data-field="refillNotes">
+                            <label for="fuRefillNotes">Additional notes (optional)</label>
+                            <textarea id="fuRefillNotes" name="refillNotes" maxlength="300" placeholder="e.g. refill request, pharmacy change, insurance issues"></textarea>
+                        </div>
+                    </section>
+
+                </section>
+
+                <section class="rs-step-panel" data-step="4">
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-heart-blue.png" alt="">
+                            <h3>Vitals</h3>
+                        </div>
+
+                        <div class="fu-grid-4">
+                            <div class="rs-field" data-field="bp">
+                                <label for="fuSys">Blood Pressure (mmHg)</label>
+                                <div class="fu-inline">
+                                    <input id="fuSys" name="bpSys" type="number" inputmode="numeric" step="1" placeholder="Systolic" aria-label="Systolic pressure in mmHg">
+                                    <span aria-hidden="true">/</span>
+                                    <input id="fuDia" name="bpDia" type="number" inputmode="numeric" step="1" placeholder="Diastolic" aria-label="Diastolic pressure in mmHg">
+                                </div>
+                            </div>
+                            <div class="rs-field" data-field="heartRate">
+                                <label for="fuHr">Heart Rate (bpm)</label>
+                                <input id="fuHr" name="heartRate" type="number" inputmode="numeric" step="1" placeholder="e.g. 72">
+                            </div>
+                            <div class="rs-field" data-field="temp">
+                                <label for="fuTemp">Temperature</label>
+                                <div class="fu-inline">
+                                    <input id="fuTemp" name="temp" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 98.6">
+                                    <select id="fuTempUnit" name="tempUnit" aria-label="Temperature unit">
+                                        <option value="F">°F</option>
+                                        <option value="C">°C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="rs-field" data-field="respRate">
+                                <label for="fuRr">Respiratory Rate (/min)</label>
+                                <input id="fuRr" name="respRate" type="number" inputmode="numeric" step="1" placeholder="e.g. 16">
+                            </div>
+                            <div class="rs-field" data-field="height">
+                                <label for="fuHeight">Height (cm)</label>
+                                <input id="fuHeight" name="height" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 170">
+                            </div>
+                            <div class="rs-field" data-field="weight">
+                                <label for="fuWeight">Weight (kg)</label>
+                                <input id="fuWeight" name="weight" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 72">
+                            </div>
+                            <div class="rs-field">
+                                <label for="fuBmi">BMI (kg/m², auto)</label>
+                                <input id="fuBmi" type="text" readonly placeholder="—" aria-live="polite">
+                            </div>
+                            <div class="rs-field" data-field="spo2">
+                                <label for="fuSpo2">Oxygen Saturation (%)</label>
+                                <input id="fuSpo2" name="spo2" type="number" inputmode="numeric" step="1" placeholder="e.g. 98">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-steth-blue.png" alt="">
+                            <h3>Physical Examination</h3>
+                        </div>
+
+                        <div class="fu-grid-4">
+                            <div class="rs-field" data-field="examGeneral">
+                                <label for="fuExamGeneral">General Appearance</label>
+                                <select id="fuExamGeneral" name="examGeneral">
+                                    <option value="">Not recorded</option>
+                                    <option>Normal</option>
+                                    <option>Abnormal</option>
+                                    <option>Not examined</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="examCardio">
+                                <label for="fuExamCardio">Cardiovascular Findings</label>
+                                <select id="fuExamCardio" name="examCardio">
+                                    <option value="">Not recorded</option>
+                                    <option>Normal</option>
+                                    <option>Abnormal</option>
+                                    <option>Not examined</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="examResp">
+                                <label for="fuExamResp">Respiratory Findings</label>
+                                <select id="fuExamResp" name="examResp">
+                                    <option value="">Not recorded</option>
+                                    <option>Normal</option>
+                                    <option>Abnormal</option>
+                                    <option>Not examined</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="examAbdo">
+                                <label for="fuExamAbdo">Abdominal Findings</label>
+                                <select id="fuExamAbdo" name="examAbdo">
+                                    <option value="">Not recorded</option>
+                                    <option>Normal</option>
+                                    <option>Abnormal</option>
+                                    <option>Not examined</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="rs-field" data-field="examOther">
+                            <label for="fuExamOther">Other Examination Findings</label>
+                            <textarea id="fuExamOther" name="examOther" maxlength="500" placeholder="Enter additional examination findings"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/lab.png" alt="">
+                            <h3>Lab Tests and Imaging</h3>
+                            <button type="button" class="fu-add-btn" data-add="lab">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                Add Test / Imaging
+                            </button>
+                        </div>
+                        <div class="fu-table-wrap">
+                            <table class="fu-table">
+                                <caption class="fu-sr">Lab tests and imaging</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Test / Imaging</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Result</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" class="fu-actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fuLabBody"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/medicine-icon.png" alt="">
+                            <h3>Treatments Given</h3>
+                        </div>
+                        <div class="rs-field" data-field="treatments">
+                            <label for="fuTreatments">Treatments performed or administered during this visit</label>
+                            <textarea id="fuTreatments" name="treatments" maxlength="500" placeholder="e.g. medication adjustments, injections, procedures"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/calendar-blue.png" alt="">
+                            <h3>Plan for Next Visit</h3>
+                        </div>
+
+                        <div class="rs-grid-2">
+                            <div class="rs-field" data-field="planInterval">
+                                <label for="fuPlanInterval4">Follow-Up Interval</label>
+                                <select id="fuPlanInterval4" name="planInterval">
+                                    <option value="">Select interval</option>
+                                    <option value="w1">1 week</option>
+                                    <option value="w2">2 weeks</option>
+                                    <option value="m1">1 month</option>
+                                    <option value="m3">3 months</option>
+                                    <option value="m6">6 months</option>
+                                    <option value="m12">12 months</option>
+                                    <option value="asneeded">As needed</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="planDate">
+                                <label for="fuPlanDate4">Next Visit Date</label>
+                                <input id="fuPlanDate4" name="planDate" type="date">
+                            </div>
+                        </div>
+
+                        <div class="rs-field" data-field="planNotes">
+                            <label for="fuPlanNotes">Recommendations or Plan</label>
+                            <textarea id="fuPlanNotes" name="planNotes" maxlength="500" placeholder="e.g. lifestyle changes, additional tests, specialist referral"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-file-blue.png" alt="">
+                            <h3>Additional Notes</h3>
+                        </div>
+                        <div class="rs-field" data-field="notesVitals">
+                            <label for="fuNotesVitals">Optional</label>
+                            <textarea id="fuNotesVitals" name="notesVitals" maxlength="500" placeholder="Any other notes or observations from this visit"></textarea>
+                        </div>
+                    </section>
+
+                </section>
+
+                <section class="rs-step-panel" data-step="5">
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/calendar-blue.png" alt="">
+                            <h3>Follow-Up Plan</h3>
+                        </div>
+
+                        <div class="fu-grid-4">
+                            <div class="rs-field" data-field="planInterval">
+                                <label for="fuPlanInterval5">Follow-Up Interval *</label>
+                                <select id="fuPlanInterval5" name="planInterval" required>
+                                    <option value="">Select interval</option>
+                                    <option value="w1">1 week</option>
+                                    <option value="w2">2 weeks</option>
+                                    <option value="m1">1 month</option>
+                                    <option value="m3">3 months</option>
+                                    <option value="m6">6 months</option>
+                                    <option value="m12">12 months</option>
+                                    <option value="asneeded">As needed</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="planDate">
+                                <label for="fuPlanDate5">Next Visit Date *</label>
+                                <input id="fuPlanDate5" name="planDate" type="date">
+                            </div>
+                            <div class="rs-field" data-field="prefTime">
+                                <label for="fuPrefTime">Preferred Time</label>
+                                <select id="fuPrefTime" name="prefTime">
+                                    <option value="">No preference</option>
+                                    <option>Morning</option>
+                                    <option>Afternoon</option>
+                                    <option>Evening</option>
+                                </select>
+                            </div>
+                            <div class="rs-field" data-field="nextVisitType">
+                                <label for="fuNextType">Visit Type *</label>
+                                <select id="fuNextType" name="nextVisitType" required>
+                                    <option value="">Select type</option>
+                                    <option>In-person</option>
+                                    <option>Video call</option>
+                                    <option>Phone call</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="fu-grid-2-wide">
+                            <div class="rs-field" data-field="nextPhysician">
+                                <label for="fuNextPhysician">Preferred Physician</label>
+                                <input id="fuNextPhysician" name="nextPhysician" type="text" maxlength="120" placeholder="Optional">
+                            </div>
+                            <div class="rs-field" data-field="nextReason">
+                                <label for="fuNextReason">Reason for Next Visit *</label>
+                                <input id="fuNextReason" name="nextReason" type="text" maxlength="200" placeholder="e.g. follow-up on blood pressure, review test results" required>
+                            </div>
+                        </div>
+
+                        <div class="amenity-info">
+                            <span>Choosing an interval fills in the next visit date from the visit date. Adjust the date if needed.</span>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-clipboard-blue.png" alt="">
+                            <h3>Tests and Assessments</h3>
+                            <button type="button" class="fu-add-btn" data-add="plan">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                Add Test / Assessment
+                            </button>
+                        </div>
+                        <div class="fu-table-wrap">
+                            <table class="fu-table">
+                                <caption class="fu-sr">Tests and assessments for the next visit</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Test / Assessment</th>
+                                        <th scope="col">Reason</th>
+                                        <th scope="col">Expected Date</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" class="fu-actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fuPlanBody"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-badge-blue.png" alt="">
+                            <h3>Lifestyle and Care Recommendations</h3>
+                        </div>
+                        <fieldset class="fu-group" data-field="lifestyle">
+                            <legend class="fu-legend">Select the recommendations the clinician has given</legend>
+                            <div class="fu-rec-grid">
+                                <label class="diet-chip fu-rec"><input type="checkbox" name="lifestyle" value="Continue Regular Exercise"><span class="fu-rec-text"><strong>Continue Regular Exercise</strong><small>Keep up regular physical activity</small></span></label>
+                                <label class="diet-chip fu-rec"><input type="checkbox" name="lifestyle" value="Take Medications as Prescribed"><span class="fu-rec-text"><strong>Take Medications as Prescribed</strong><small>Follow the prescribed schedule</small></span></label>
+                                <label class="diet-chip fu-rec"><input type="checkbox" name="lifestyle" value="Maintain a Healthy Diet"><span class="fu-rec-text"><strong>Maintain a Healthy Diet</strong><small>Follow the dietary guidance given</small></span></label>
+                                <label class="diet-chip fu-rec"><input type="checkbox" name="lifestyle" value="Maintain a Healthy Weight"><span class="fu-rec-text"><strong>Maintain a Healthy Weight</strong><small>Work toward the weight goal agreed</small></span></label>
+                                <label class="diet-chip fu-rec"><input type="checkbox" name="lifestyle" value="Avoid Tobacco Use"><span class="fu-rec-text"><strong>Avoid Tobacco Use</strong><small>Do not smoke or use tobacco products</small></span></label>
+                                <label class="diet-chip fu-rec"><input type="checkbox" name="lifestyle" value="Limit Alcohol Consumption"><span class="fu-rec-text"><strong>Limit Alcohol Consumption</strong><small>Stay within the limits advised</small></span></label>
+                            </div>
+                        </fieldset>
+                    </section>
+
+                    <section class="rs-section">
+                        <div class="rs-section-header">
+                            <img src="images/ic-file-blue.png" alt="">
+                            <h3>Additional Instructions</h3>
+                        </div>
+                        <div class="rs-field" data-field="nextInstructions">
+                            <label for="fuNextInstructions">Instructions before the next visit (optional)</label>
+                            <textarea id="fuNextInstructions" name="nextInstructions" maxlength="500" placeholder="e.g. bring previous reports, monitor blood pressure at home, contact the clinic if symptoms worsen"></textarea>
+                        </div>
+                    </section>
+
+                </section>
+
+                <section class="rs-step-panel" data-step="6">
+
+                    <div class="rv-banner">
+                        <img class="ico ico-blue" src="images/ic-clipboard-blue.png" alt="">
+                        <div>
+                            <h3>Review Follow-Up Visit</h3>
+                            <p>Check each section before submitting. Use Edit to change an answer; everything you entered is kept.</p>
+                        </div>
+                    </div>
+
+                    <div class="rv-grid" id="fuReviewGrid"></div>
+
+                    <div class="rv-card rv-consent" data-field="consent">
+                        <div class="rv-head">
+                            <div class="rv-title"><img class="ico" src="images/ic-file-blue.png" alt=""><h3>Confirmation</h3></div>
+                        </div>
+                        <div class="rv-consent-body">
+                            <label class="rv-check"><input type="checkbox" name="consentAccurate"><span>I confirm that the information entered is accurate.</span></label>
+                            <label class="rv-check"><input type="checkbox" name="consentSubmit"><span>I authorize submitting this follow-up visit record.</span></label>
+                        </div>
+                    </div>
+
+                </section>
+
+            </fieldset>
+
+            <div class="rs-form-footer">
+
+                <div class="rs-step-count" id="stepCounter">Step 1 of 6</div>
+
+                <div class="rs-footer-actions">
+
+                    <button type="button" id="saveDraftBtn" class="btn-outline">
+                        <img src="images/save.png" alt="">
+                        Save Draft
+                    </button>
+
+                    <button type="button" id="backBtn" class="btn-outline" style="display:none;">
+                        <img src="images/arrow-left.png" alt="">
+                        Back
+                    </button>
+
+                    <button type="button" id="continueBtn" class="btn-primary">
+                        Continue
+                        <img src="images/arrow-right.png" alt="">
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+<div id="draftSavedModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="draftSavedTitle">
+    <div class="modal-card">
+        <div class="modal-success-icon">
+            <img src="images/icon-normal.png" alt="">
+        </div>
+        <h3 id="draftSavedTitle">Draft Saved</h3>
+        <p>Your follow-up visit draft is saved in this browser. It has not been sent to a server.</p>
+        <button type="button" class="btn-primary modal-btn" data-close>OK</button>
+    </div>
+</div>
+
+<div id="submitModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="submitTitle">
+    <div class="modal-card">
+        <div class="modal-success-icon">
+            <img src="images/icon-normal.png" alt="">
+        </div>
+        <h3 id="submitTitle">Follow-Up Visit Submitted</h3>
+        <p>The record is stored in this browser only. No server record was created.</p>
+        <dl class="modal-details">
+            <dt>Reference</dt><dd id="fuSubRef">—</dd>
+            <dt>Patient</dt><dd id="fuSubPatient">—</dd>
+            <dt>Visit Date</dt><dd id="fuSubVisit">—</dd>
+            <dt>Next Visit</dt><dd id="fuSubNext">—</dd>
+            <dt>Submitted On</dt><dd id="fuSubOn">—</dd>
+            <dt>Status</dt><dd id="fuSubStatus">—</dd>
+        </dl>
+        <button type="button" class="btn-primary modal-btn" data-close>OK</button>
+    </div>
+</div>
+
+<div id="fuDialog" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="fuDialogTitle">
+    <form class="modal-card fu-modal-card" id="fuDialogForm" novalidate>
+        <h3 id="fuDialogTitle"></h3>
+        <div id="fuDialogBody"></div>
+        <div class="fu-dialog-actions" id="fuDialogActions"></div>
+    </form>
+</div>
+
+<div id="footer-container"></div>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/followup-visits.js"></script>
+
+</body>
+</html>

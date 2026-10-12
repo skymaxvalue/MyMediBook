@@ -1,0 +1,274 @@
+/* Room Master + Add/Edit Room. Builds on claims.css (cl-*) and room-service.css (rs-*). */
+[hidden] { display: none !important; }
+
+/* ---------- shared buttons / modal ---------- */
+.rm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; border-radius: 10px; border: 1px solid transparent;
+  font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: .2s;
+}
+.rm-btn--primary { background: var(--cl-blue, #2457E5); color: #fff; }
+.rm-btn--primary:hover { background: var(--cl-blue-dark, #1C47BE); }
+.rm-btn--ghost { background: #fff; color: var(--cl-ink, #183C75); border-color: #D5DEEB; }
+.rm-btn--ghost:hover { background: #F4F8FE; }
+.rm-btn--danger { background: #DC2626; color: #fff; }
+.rm-btn--danger:hover { background: #B91C1C; }
+.rm-btn--icon { width: 48px; padding: 0; }
+.rm-btn:focus-visible, .rm-act:focus-visible, .rm-link:focus-visible, .rs-step:focus-visible,
+.rm-check input:focus-visible, .rm-wizard .btn-outline:focus-visible, .rm-wizard .btn-primary:focus-visible {
+  outline: 3px solid #2457E5; outline-offset: 2px;
+}
+
+.rm-modal {
+  position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
+  padding: 16px; background: rgba(15, 23, 42, .4);
+}
+.rm-modal__card {
+  width: 100%; max-width: 420px; max-height: 90vh; overflow: auto; background: #fff; border-radius: 16px;
+  padding: 26px 26px 20px; box-shadow: 0 20px 50px rgba(15, 23, 42, .2);
+}
+.rm-modal__card--wide { max-width: 620px; }
+.rm-modal__card h3 { margin: 0 0 8px; font-size: 20px; color: #183C75; }
+.rm-modal__card p { margin: 0 0 18px; font-size: 14px; line-height: 1.55; color: #64748B; }
+.rm-modal__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+.rm-notice {
+  display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 10px 16px;
+  border-radius: 10px; font-size: 14px; font-weight: 600;
+}
+.rm-notice--ok { background: #ECFDF3; border: 1px solid #A7E3BE; color: #14653A; }
+.rm-notice--info { background: #EEF5FF; border: 1px solid #CFE0FA; color: #183C75; }
+.rm-notice a, .rm-link { color: #2457E5; font-weight: 700; text-decoration: underline; background: none; border: 0; padding: 0; font: inherit; font-weight: 700; cursor: pointer; }
+.rm-wizard .rm-notice { margin-bottom: 18px; }
+
+/* ---------- Room Master list ---------- */
+.rm-card .cl-card__head { align-items: center; }
+.rm-filters {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1.7fr auto auto; gap: 14px; align-items: end;
+  padding: 16px 24px; border-top: 1px solid var(--cl-line, #E6ECF5);
+}
+.rm-filter { display: grid; gap: 6px; min-width: 0; }
+.rm-filter label { font-size: 13px; font-weight: 600; color: #183C75; }
+.rm-filter select, .rm-filter input {
+  width: 100%; height: 46px; padding: 0 14px; border: 1px solid #D5DEEB; border-radius: 10px;
+  background-color: #fff; font: inherit; font-size: 14px; color: #1F2937;
+}
+.rm-filter select {
+  appearance: none; -webkit-appearance: none; padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23183C75' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+.rm-filters .rm-btn { height: 46px; }
+
+.rm-table .cl-num { text-align: right; }
+.rm-status { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.rm-status i { width: 11px; height: 11px; border-radius: 50%; background: #9CA3AF; flex: 0 0 11px; }
+.rm-status--available i { background: #16A34A; }
+.rm-status--occupied i { background: #DC2626; }
+.rm-status--cleaning i { background: #F59E0B; }
+.rm-status--maintenance i { background: #9CA3AF; }
+.rm-status--reserved i { background: #2457E5; }
+.rm-status--reserved { color: #2457E5; }
+.rm-status--inactive i { background: #CBD5E1; }
+.rm-status--inactive { color: #64748B; }
+
+.rm-actions { text-align: center; white-space: nowrap; }
+.rm-act {
+  width: 36px; height: 36px; display: inline-grid; place-items: center; border: 0; border-radius: 8px;
+  background: transparent; color: #183C75; cursor: pointer;
+}
+.rm-act:hover { background: #EEF5FF; }
+.rm-act--danger { color: #DC2626; }
+.rm-act--danger:hover { background: #FEECEC; }
+.rm-empty { text-align: center; padding: 36px 16px !important; color: #64748B; line-height: 1.6; }
+
+.rm-dl { display: grid; grid-template-columns: 38% 1fr; gap: 8px 14px; margin: 0; font-size: 14px; }
+.rm-dl dt { color: #6B7280; font-weight: 600; }
+.rm-dl dd { margin: 0; font-weight: 600; color: #1F2937; overflow-wrap: anywhere; }
+
+/* ---------- Wizard ---------- */
+.rm-wizard .rs-page-header h2 { color: #183C75; }
+.rm-req { color: #B91C1C; font-weight: 700; }
+.rm-lbl { font-size: 12px; font-weight: 600; color: #344054; }
+.rm-hint { font-size: 12.5px; color: #64748B; }
+.rm-hint--block { display: block; margin: -6px 0 16px; }
+.rm-gap { margin-top: 18px; }
+.rm-err { display: block; min-height: 0; color: #A61B1B; font-size: 13px; font-weight: 600; }
+.rm-err:empty { display: none; }
+.rm-wizard [aria-invalid="true"] { border-color: #B91C1C !important; background-color: #FFF9F9; }
+.rm-form-error {
+  background: #FDECEC; border: 1px solid #F5C2C2; color: #8B1717; border-radius: 10px;
+  padding: 10px 14px; font-weight: 600; margin: 4px 0 0;
+}
+
+.rm-wizard .rs-step { border: 0; border-right: 1px solid var(--border, #E6ECF5); font: inherit; cursor: pointer; }
+.rm-wizard .rs-step:last-child { border-right: 0; }
+.rm-wizard .rs-step.done span { color: #16A34A; }
+.rm-wizard .rs-step.done span::after { content: " ✓"; }
+
+.rm-type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.rm-card-beds { font-weight: 700; color: #1E3A8A; }
+
+.rm-radios, .rm-checks { display: flex; flex-wrap: wrap; gap: 10px 22px; min-height: 46px; align-items: center; }
+.rm-checks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 0; gap: 12px 20px; }
+.rm-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #1F2937; cursor: pointer; }
+.rm-check input { width: 18px; height: 18px; margin: 0; accent-color: #2457E5; flex: 0 0 18px; }
+.rm-switch { min-height: 46px; }
+
+.rm-table-scroll { overflow-x: auto; margin-top: 18px; border: 1px solid #D9E3F4; border-radius: 10px; }
+.rm-bedtable { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 14px; }
+.rm-bedtable th { background: #F2F6FD; color: #1E3A8A; text-align: left; padding: 10px 12px; font-size: 13px; }
+.rm-bedtable td { padding: 8px 12px; border-top: 1px solid #EDF2FA; }
+.rm-bedtable input, .rm-bedtable select {
+  width: 100%; height: 38px; padding: 0 10px; border: 1px solid #D6E2F3; border-radius: 8px; font: inherit; font-size: 14px; background: #fff;
+}
+.rm-bedtable input[readonly] { background: #F8FBFF; color: #64748B; }
+.rm-wizard .rs-form-footer { flex-wrap: wrap; gap: 14px; }
+.rm-wizard .rs-footer-actions { flex-wrap: wrap; justify-content: flex-end; }
+
+@media (max-width: 1020px) {
+  .rm-filters { grid-template-columns: 1fr 1fr 1fr; }
+  .rm-filter--search { grid-column: 1 / -1; }
+  .rm-type-grid { grid-template-columns: repeat(2, 1fr); }
+  .rm-checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .rm-filters { grid-template-columns: 1fr 1fr; padding: 14px 16px; }
+  .rm-filter { grid-column: 1 / -1; }
+  .rm-wizard.rs-page-card { padding: 20px 16px; }
+  .rm-wizard .rs-stepper { display: flex; overflow-x: auto; }
+  .rm-wizard .rs-step { flex: 0 0 150px; }
+  .rm-wizard .rs-grid-2, .rm-wizard .rs-grid-3 { grid-template-columns: 1fr; gap: 16px; }
+  .rm-type-grid, .rm-checks { grid-template-columns: 1fr; }
+  .rm-wizard .rs-form-footer { flex-direction: column; align-items: stretch; }
+  .rm-wizard .rs-footer-actions .btn-outline, .rm-wizard .rs-footer-actions .btn-primary { flex: 1 1 140px; }
+  .rm-dl { grid-template-columns: 1fr; gap: 2px; }
+}
+
+
+/* Room Master table spacing override */
+.rm-card > .cl-table-wrap {
+    margin: 0 20px;
+    width: auto;
+    overflow-x: auto;
+    border: 1px solid var(--cl-line, #E6ECF5);
+    border-radius: 12px;
+}
+
+/* Separate the table columns */
+.rm-table {
+    width: 100%;
+    min-width: 900px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+/* Header spacing */
+.rm-card .rm-table thead th {
+    height: 42px;
+    padding: 10px 16px;
+    line-height: 20px;
+    white-space: nowrap;
+    vertical-align: middle;
+    background: #F3F7FC;
+    border-bottom: 1px solid var(--cl-line, #E6ECF5);
+}
+
+/* Body cell spacing */
+.rm-card .rm-table tbody td {
+    height: 58px;
+    padding: 14px 16px;
+    line-height: 22px;
+    vertical-align: middle;
+    border-bottom: 1px solid #EDF2F8;
+}
+
+/* Balanced column widths */
+.rm-table th:nth-child(1),
+.rm-table td:nth-child(1) {
+    width: 10%;
+}
+
+.rm-table th:nth-child(2),
+.rm-table td:nth-child(2) {
+    width: 22%;
+}
+
+.rm-table th:nth-child(3),
+.rm-table td:nth-child(3) {
+    width: 14%;
+}
+
+.rm-table th:nth-child(4),
+.rm-table td:nth-child(4) {
+    width: 20%;
+}
+
+.rm-table th:nth-child(5),
+.rm-table td:nth-child(5) {
+    width: 8%;
+}
+
+/* Keep Beds and Status visually separate */
+.rm-card .rm-table th:nth-child(5),
+.rm-card .rm-table td:nth-child(5) {
+    padding-right: 24px;
+    text-align: right;
+}
+
+.rm-card .rm-table th:nth-child(6),
+.rm-card .rm-table td:nth-child(6) {
+    padding-left: 24px;
+    width: 16%;
+}
+
+/* Align action icons consistently */
+.rm-card .rm-table th:last-child,
+.rm-card .rm-table td:last-child {
+    width: 10%;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.rm-table .rm-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Keep the footer aligned with the inset table */
+.rm-card .cl-table-foot {
+    padding: 14px 24px 18px;
+}
+
+/* Responsive spacing */
+@media (max-width: 760px) {
+    .rm-card > .cl-table-wrap {
+        margin: 0 12px;
+    }
+
+    .rm-card .rm-table thead th {
+        padding: 10px 12px;
+    }
+
+    .rm-card .rm-table tbody td {
+        padding: 12px;
+    }
+
+    .rm-card .rm-table th:nth-child(5),
+    .rm-card .rm-table td:nth-child(5) {
+        padding-right: 16px;
+    }
+
+    .rm-card .rm-table th:nth-child(6),
+    .rm-card .rm-table td:nth-child(6) {
+        padding-left: 16px;
+    }
+
+    .rm-card .cl-table-foot {
+        padding: 14px 16px;
+    }
+}

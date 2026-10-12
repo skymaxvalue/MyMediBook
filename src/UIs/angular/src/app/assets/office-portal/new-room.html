@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Room | Front Office</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/claims.css">
+ 
+  <link rel="stylesheet" href="css/room-master.css">
+  <link rel="stylesheet" href="css/new-room.css">
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <main class="dashboard-container cl-page" id="main">
+    <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        
+        <li><a href="room-master.html">Room Master</a></li>
+        <li aria-current="page" id="crumbCurrent">Add New Room</li>
+      </ol>
+    </nav>
+
+    <section class="rs-page-card rm-wizard">
+      <div class="rs-page-header">
+        <div class="rs-title-group">
+          <div class="rs-icon-circle"><img src="images/ic-bed-blue.png" alt=""></div>
+          <div>
+            <h2 id="pageTitle">Add New Room</h2>
+            <p>Configure room information, capacity, amenities and operational settings.</p>
+          </div>
+        </div>
+        <span class="rs-request-id" id="roomIdBadge" hidden></span>
+      </div>
+
+      <div id="draftNotice" class="rm-notice rm-notice--info" role="status" hidden>
+        <span>A saved draft was restored.</span> <button type="button" class="rm-link" id="discardDraft">Discard draft</button>
+      </div>
+
+      <div class="rs-stepper" role="group" aria-label="Room setup steps">
+        <button type="button" class="rs-step active"><span>01</span><strong>General</strong></button>
+        <button type="button" class="rs-step"><span>02</span><strong>Room Configuration</strong></button>
+        <button type="button" class="rs-step"><span>03</span><strong>Bed Configuration</strong></button>
+        <button type="button" class="rs-step"><span>04</span><strong>Clinical Attributes</strong></button>
+        <button type="button" class="rs-step"><span>05</span><strong>Tariff &amp; Billing</strong></button>
+      </div>
+
+      <form id="roomForm" novalidate>
+
+        <!-- STEP 1 -->
+        <section class="rs-step-panel active" data-step="1">
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/ic-file-blue.png" alt=""><h3>Room Information</h3></div>
+            <div class="rs-grid-2">
+              <div class="rs-field"><label for="f-roomNo">Room Number <b class="rm-req">*</b></label><input id="f-roomNo" name="roomNo" placeholder="e.g. 301" autocomplete="off"></div>
+              <div class="rs-field"><label for="f-roomName">Room Name <b class="rm-req">*</b></label><input id="f-roomName" name="roomName" placeholder="e.g. Standard 301" autocomplete="off"></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-facility">Facility <b class="rm-req">*</b></label><select id="f-facility" name="facility" data-opts="facility"></select></div>
+              <div class="rs-field"><label for="f-building">Building <b class="rm-req">*</b></label><select id="f-building" name="building" data-opts="building" data-ph="Select building"></select></div>
+              <div class="rs-field"><label for="f-floor">Floor <b class="rm-req">*</b></label><select id="f-floor" name="floor" data-opts="floor" data-ph="Select floor"></select></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-ward">Ward <b class="rm-req">*</b></label><select id="f-ward" name="ward" data-opts="ward" data-ph="Select ward"></select></div>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/ic-bed-blue.png" alt=""><h3>Room Type <b class="rm-req">*</b></h3></div>
+            <div class="rm-type-grid" id="typeGrid" role="radiogroup" aria-label="Room type"></div>
+            <span class="rm-err" data-err="roomType" role="alert"></span>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/settings-icon.png" alt=""><h3>Room Status &amp; Access</h3></div>
+            <div class="rs-grid-2">
+              <div class="rs-field"><label for="f-recordStatus">Room Status <b class="rm-req">*</b></label><select id="f-recordStatus" name="recordStatus" data-opts="recordStatus"></select></div>
+              <div class="rs-field"><label for="f-genderRestriction">Gender Restriction</label><select id="f-genderRestriction" name="genderRestriction" data-opts="genderRestriction" data-sync></select></div>
+            </div>
+            <div class="rs-field">
+              <label for="f-description">Description (optional)</label>
+              <textarea id="f-description" name="description" maxlength="500" placeholder="e.g. Standard 4-bed shared room with essential amenities for general patients."></textarea>
+              <div class="notes-count" id="descCount">0/500</div>
+            </div>
+          </section>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="rs-step-panel" data-step="2">
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/settings-icon.png" alt=""><h3>Room Configuration</h3></div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-building2">Building <b class="rm-req">*</b></label><select id="f-building2" name="building" data-opts="building" data-ph="Select building" data-sync></select></div>
+              <div class="rs-field"><label for="f-floor2">Floor <b class="rm-req">*</b></label><select id="f-floor2" name="floor" data-opts="floor" data-ph="Select floor" data-sync></select></div>
+              <div class="rs-field"><label for="f-ward2">Ward <b class="rm-req">*</b></label><select id="f-ward2" name="ward" data-opts="ward" data-ph="Select ward" data-sync></select></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-layout">Room Layout <b class="rm-req">*</b></label><select id="f-layout" name="layout" data-opts="layout"></select></div>
+              <div class="rs-field"><label for="f-roomSize">Room Size (sq. ft.)</label><input id="f-roomSize" name="roomSize" type="number" min="1" step="any" inputmode="decimal" placeholder="e.g. 220"></div>
+              <div class="rs-field"><label for="f-doors">Number of Doors <b class="rm-req">*</b></label><input id="f-doors" name="doors" type="number" min="1" step="1" inputmode="numeric"></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-orientation">Room Orientation</label><select id="f-orientation" name="orientation" data-opts="orientation" data-ph="Not specified"></select></div>
+              <div class="rs-field"><label for="f-windowView">Window View</label><select id="f-windowView" name="windowView" data-opts="windowView" data-ph="Not specified"></select></div>
+              <div class="rs-field"><span class="rm-lbl">Attached Bathroom</span><div class="rm-radios" role="radiogroup" data-radios="attachedBathroom" data-values="Yes,No"></div></div>
+            </div>
+          </section>
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/ic-clipboard-blue.png" alt=""><h3>Room Facilities</h3></div>
+            <div class="rm-checks" data-checks="facilities"></div>
+          </section>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="rs-step-panel" data-step="3">
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/ic-bed-blue.png" alt=""><h3>Bed Configuration</h3></div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-totalBeds">Total Beds <b class="rm-req">*</b></label><input id="f-totalBeds" name="totalBeds" type="number" step="1" inputmode="numeric"><span class="rm-hint" id="bedRange"></span></div>
+              <div class="rs-field"><label for="f-bedType">Default Bed Type <b class="rm-req">*</b></label><select id="f-bedType" name="bedType" data-opts="bedType"></select></div>
+              <div class="rs-field"><label for="f-bedPrefix">Bed Prefix <b class="rm-req">*</b></label><input id="f-bedPrefix" name="bedPrefix" maxlength="6" placeholder="e.g. B"></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-startFrom">Numbering Start From <b class="rm-req">*</b></label><input id="f-startFrom" name="startFrom" type="number" min="1" step="1" inputmode="numeric"></div>
+              <div class="rs-field"><span class="rm-lbl">Auto-generate Bed Numbers</span><label class="rm-check rm-switch"><input type="checkbox" name="autoNumber" data-bool><span>Generate from room number and prefix</span></label></div>
+            </div>
+            <div class="rm-table-scroll">
+              <table class="rm-bedtable">
+                <caption class="cl-sr">Beds in this room</caption>
+                <thead><tr><th scope="col">#</th><th scope="col">Bed Number</th><th scope="col">Bed Type</th><th scope="col">Status</th><th scope="col">Remarks</th><th scope="col">Actions</th></tr></thead>
+                <tbody id="bedRows"></tbody>
+              </table>
+            </div>
+            <span class="rm-err" data-err="bedTable" role="alert"></span>
+          </section>
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/settings-icon.png" alt=""><h3>Bed Amenities (optional)</h3></div>
+            <div class="rm-checks" data-checks="bedAmenities"></div>
+            <div class="rs-field" id="otherAmenityWrap" hidden><label for="f-bedAmenityOther">Other amenity</label><input id="f-bedAmenityOther" name="bedAmenityOther" maxlength="80" placeholder="Specify"></div>
+          </section>
+        </section>
+
+        <!-- STEP 4 -->
+        <section class="rs-step-panel" data-step="4">
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/ic-steth-blue.png" alt=""><h3>Clinical Attributes</h3></div>
+            <p class="rm-hint rm-hint--block">These are operational settings maintained by the Front Office. They do not represent clinical certification or verification of the room.</p>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-genderRestriction2">Gender Restriction</label><select id="f-genderRestriction2" name="genderRestriction" data-opts="genderRestriction" data-sync></select></div>
+              <div class="rs-field"><label for="f-patientCategory">Patient Suitability</label><select id="f-patientCategory" name="patientCategory" data-opts="patientCategory"></select></div>
+              <div class="rs-field"><label for="f-infection">Infection-control Requirement</label><select id="f-infection" name="infection" data-opts="infection"></select></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><span class="rm-lbl">Isolation Room</span><div class="rm-radios" role="radiogroup" data-radios="isolation" data-values="Yes,No"></div></div>
+              <div class="rs-field"><span class="rm-lbl">Negative Pressure <small>(isolation rooms only)</small></span><div class="rm-radios" role="radiogroup" data-radios="negativePressure" data-values="Yes,No"></div></div>
+              <div class="rs-field"><label for="f-oxygen">Oxygen Availability</label><select id="f-oxygen" name="oxygen" data-opts="oxygen"></select></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-emergencyEquipment">Emergency Equipment</label><select id="f-emergencyEquipment" name="emergencyEquipment" data-opts="emergencyEquipment"></select></div>
+            </div>
+            <div class="rs-field"><span class="rm-lbl">Accessibility Features</span><div class="rm-checks" data-checks="accessibility"></div></div>
+            <div class="rs-field rm-gap">
+              <label for="f-clinicalNotes">Clinical Notes (optional)</label>
+              <textarea id="f-clinicalNotes" name="clinicalNotes" maxlength="500" placeholder="Room-level clinical or safety notes…"></textarea>
+            </div>
+          </section>
+        </section>
+
+        <!-- STEP 5 -->
+        <section class="rs-step-panel" data-step="5">
+          <section class="rs-section">
+            <div class="rs-section-header"><img src="images/card.png" alt=""><h3>Tariff &amp; Billing</h3></div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-billingCategory">Billing Category <b class="rm-req">*</b></label><select id="f-billingCategory" name="billingCategory" data-opts="billingCategory"></select></div>
+              <div class="rs-field"><label for="f-dailyCharge">Daily Room Charge (₹) <b class="rm-req">*</b></label><input id="f-dailyCharge" name="dailyCharge" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"><span class="rm-hint" id="chargeFmt"></span></div>
+              <div class="rs-field"><label for="f-currency">Currency</label><input id="f-currency" value="INR (₹)" readonly></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-ratePlan">Applicable Tariff / Rate Plan <b class="rm-req">*</b></label><select id="f-ratePlan" name="ratePlan" data-opts="ratePlan"></select></div>
+              <div class="rs-field"><label for="f-effectiveFrom">Effective From <b class="rm-req">*</b></label><input id="f-effectiveFrom" name="effectiveFrom" type="date"></div>
+              <div class="rs-field"><label for="f-effectiveTo">Effective To (if applicable)</label><input id="f-effectiveTo" name="effectiveTo" type="date"></div>
+            </div>
+            <div class="rs-grid-3">
+              <div class="rs-field"><label for="f-additionalCharges">Additional Charges (₹, optional)</label><input id="f-additionalCharges" name="additionalCharges" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></div>
+            </div>
+            <div class="rs-field">
+              <label for="f-billingNotes">Billing Notes (optional)</label>
+              <textarea id="f-billingNotes" name="billingNotes" maxlength="500" placeholder="Any billing remarks for this room…"></textarea>
+            </div>
+          </section>
+        </section>
+
+        <p class="rm-form-error" id="stepError" role="alert" tabindex="-1" hidden>Please correct the highlighted fields to continue.</p>
+
+        <div class="rs-form-footer">
+          <div class="rs-step-count" id="stepCounter">Step 1 of 5</div>
+          <div class="rs-footer-actions">
+            <button type="button" id="cancelBtn" class="btn-outline">Cancel</button>
+            <button type="button" id="backBtn" class="btn-outline"><img src="images/arrow-left.png" alt="">Back</button>
+            <button type="button" id="draftBtn" class="btn-outline"><img src="images/save.png" alt="">Save as Draft</button>
+            <button type="button" id="continueBtn" class="btn-primary">Continue<img src="images/arrow-right.png" alt=""></button>
+            <button type="button" id="saveBtn" class="btn-primary" style="display:none">Save Room</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+  <script src="js/navbar.js"></script>
+  <script src="js/footer.js"></script>
+  <script src="js/room-data.js"></script>
+  <script src="js/new-room.js"></script>
+</body>
+</html>
