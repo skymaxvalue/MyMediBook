@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../services/api_service.dart';
+// Hospital type is defined inside api_service.dart and is used by the switch dialog.
 import 'appointments_tab.dart';
 import 'specialities_tab.dart';
 import 'medicine_orders_tab.dart';
@@ -41,6 +42,95 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
+
+  // Initialized directly so it's always set before build() is ever called.
+  Hospital _currentHospital = ApiService.currentHospital;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const AppointmentsTab(),
+      const SpecialitiesTab(),
+      const MedicineOrdersTab(),
+      const LabResultsTab(),
+      const BillingTab(),
+      const MessagesTab(),
+    ];
+    // Fetch real org list to populate hospital logo in the header
+    _syncHospitalLogo();
+    // Wire up auto-logout: navigate to LoginScreen when the JWT expires
+    ApiService.onTokenExpired = _handleTokenExpired;
+  }
+
+  @override
+  void dispose() {
+    // Clear the callback to avoid calling setState after dispose
+    if (ApiService.onTokenExpired == _handleTokenExpired) {
+      ApiService.onTokenExpired = null;
+    }
+    super.dispose();
+  }
+
+  void _handleTokenExpired() {
+    if (!mounted) return;
+    ApiService.clearSession();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (r) => false,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Your session has expired. Please log in again.'),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  /// Fetches the organisation list and enriches [_currentHospital] with its
+  /// logo image URL. Never changes which hospital is active.
+  Future<void> _syncHospitalLogo() async {
+    try {
+      final hospitals = await ApiService.fetchHospitals();
+      if (!mounted || hospitals.isEmpty) return;
+
+      // Match by real ID (set correctly from login's activeHospitalId)
+      final activeId = ApiService.currentHospital.id;
+      Hospital? matched;
+      for (final h in hospitals) {
+        if (h.id == activeId) {
+          matched = h;
+          break;
+        }
+      }
+
+      if (matched == null) return; // Don't override if no match
+
+      // Only enrich: preserve the same id/name, just add the imageUrl
+      final enriched = Hospital(
+        id:        matched.id,
+        name:      ApiService.currentHospital.name.isNotEmpty
+                       ? ApiService.currentHospital.name
+                       : matched.name,
+        location:  matched.location,
+        imageUrl:  matched.imageUrl,
+        logoPath:  matched.logoPath,
+      );
+      ApiService.currentHospital = enriched;
+      if (mounted) setState(() => _currentHospital = enriched);
+    } catch (_) {
+      // Ignore: header will fall back to hospital.png
+    }
+  }
+
+
+  void _onHospitalSwitch(Hospital h) {
+    setState(() => _currentHospital = h);
+  }
 
   // ── helpers ──────────────────────────────────────────────────────────────
   String _formattedDate() {
@@ -89,21 +179,12 @@ class _HomeScreenState extends State<HomeScreen>
     return '$fi$li'.isNotEmpty ? '$fi$li' : 'U';
   }
 
-  Widget _buildContent() {
-    switch (_selectedIndex) {
-      case 0: return const AppointmentsTab();
-      case 1: return const SpecialitiesTab();
-      case 2: return const MedicineOrdersTab();
-      case 3: return const LabResultsTab();
-      case 4: return const BillingTab();
-      case 5: return const MessagesTab();
-      default:
-        if (_selectedIndex < _navTabs.length) {
-          return _PlaceholderContent(tab: _navTabs[_selectedIndex]);
-        }
-        return const SizedBox.shrink();
-    }
-  }
+  // Pre-built and cached — never recreated on setState, which would cause
+  // Duplicate GlobalKeys when a dialog/sheet route is still open over the old instance.
+  late final List<Widget> _pages;
+
+  Widget _buildContent() => _pages[_selectedIndex.clamp(0, _pages.length - 1)];
+
 
   // ── Profile bottom sheet ─────────────────────────────────────────────────
   void _showProfileSheet() {
@@ -130,6 +211,18 @@ class _HomeScreenState extends State<HomeScreen>
   // ── Navigate to Messages tab on notification icon tap ────────────────────
   void _goToMessages() {
     setState(() => _selectedIndex = 5);
+  }
+
+  // ── Hospital switch dialog ───────────────────────────────────────────────
+  void _showHospitalSwitchDialog() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black54,
+      builder: (_) => _HospitalSwitchDialog(
+        currentHospitalId: _currentHospital.id,
+        onSwitch: _onHospitalSwitch,
+      ),
+    );
   }
 
   // ── Settings bottom sheet ────────────────────────────────────────────────
@@ -202,8 +295,8 @@ class _HomeScreenState extends State<HomeScreen>
               // SkyMaxValue logo image
               Image.asset(
                 'assets/images/skylogo2.png',
-                width: 26,
-                height: 26,
+                width: 22,
+                height: 22,
                 fit: BoxFit.contain,
               ),
               const SizedBox(width: 7),
@@ -215,13 +308,13 @@ class _HomeScreenState extends State<HomeScreen>
                     const Text('SkyMaxValue',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10.5,
+                            fontSize: 9.5,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0.2)),
                     Text('Technology Solutions',
                         style: TextStyle(
                             color: Colors.white.withOpacity(0.6),
-                            fontSize: 8.5)),
+                            fontSize: 7.5)),
                   ],
                 ),
               ),
@@ -252,49 +345,89 @@ class _HomeScreenState extends State<HomeScreen>
 
           SizedBox(height: (h * 0.06).clamp(4.0, 10.0)),
 
-          // ── Row 2: Hospital name  |  hospital logo ──────────────────
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'HEALTH HEAVEN',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: hFont,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.3,
-                        height: 1.1,
+              // ── Row 2: Hospital logo + name  |  Switch button ───────────
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Hospital logo image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: _currentHospital.imageUrl.isNotEmpty
+                        ? Image.network(
+                            _currentHospital.imageUrl,
+                            width: 36,
+                            height: 36,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Image.asset(
+                              'assets/images/hospital.png',
+                              width: 36,
+                              height: 36,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.asset(
+                            'assets/images/hospital.png',
+                            width: 36,
+                            height: 36,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _currentHospital.name.toUpperCase(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: (hFont - 1.5).clamp(11.0, 18.5),
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.3,
+                            height: 1.15,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Switch button
+                  GestureDetector(
+                    onTap: _showHospitalSwitchDialog,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                            color: Colors.white.withOpacity(0.4), width: 1),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.sync_rounded,
+                              color: Colors.white, size: 13),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Switch',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      'MEDICAL CENTER',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: hFont,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.3,
-                        height: 1.1,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // Hospital logo image
-              Image.asset(
-                'assets/images/hospital2.png',
-                width: (h * 0.38).clamp(28.0, 46.0),
-                height: (h * 0.38).clamp(28.0, 46.0),
-                fit: BoxFit.contain,
-              ),
-            ],
-          ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 
@@ -946,6 +1079,607 @@ class _PlaceholderContent extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Hospital Switch Dialog
+// ─────────────────────────────────────────────────────────────────────────────
+class _HospitalSwitchDialog extends StatefulWidget {
+  final String currentHospitalId;
+  final void Function(Hospital) onSwitch;
+
+  const _HospitalSwitchDialog({
+    required this.currentHospitalId,
+    required this.onSwitch,
+  });
+
+  @override
+  State<_HospitalSwitchDialog> createState() => _HospitalSwitchDialogState();
+}
+
+class _HospitalSwitchDialogState extends State<_HospitalSwitchDialog> {
+  List<Hospital> _all = [];
+  List<Hospital> _filtered = [];
+  String _query = '';
+  String _selectedId = '';
+  bool _loading = true;   // initial fetch
+  bool _switching = false;
+  final TextEditingController _searchCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedId = widget.currentHospitalId;
+    _fetchHospitals();
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchHospitals() async {
+    final list = await ApiService.fetchHospitals();
+    if (!mounted) return;
+    setState(() {
+      _all      = list;
+      _filtered = list;
+      _loading  = false;
+    });
+  }
+
+  void _onSearch(String q) {
+    setState(() {
+      _query    = q.toLowerCase();
+      _filtered = _query.isEmpty
+          ? _all
+          : _all
+              .where((h) =>
+                  h.name.toLowerCase().contains(_query) ||
+                  h.location.toLowerCase().contains(_query))
+              .toList();
+    });
+  }
+
+  Future<void> _doSwitch() async {
+    final hospital = _all.firstWhere((h) => h.id == _selectedId,
+        orElse: () => _all.first);
+    if (hospital.id == widget.currentHospitalId) {
+      Navigator.pop(context);
+      return;
+    }
+    setState(() => _switching = true);
+    final result = await ApiService.switchHospital(hospital);
+    if (!mounted) return;
+
+    // ── Not enrolled → offer to enroll ─────────────────────────────────────
+    if (result['notEnrolled'] == true) {
+      setState(() => _switching = false);
+      final enroll = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEEF2FF),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.info_outline,
+                    color: Color(0xFF2B59D2), size: 20),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text('Not Enrolled',
+                    style: TextStyle(
+                        fontSize: 17, fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
+          content: RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                  fontSize: 13.5, color: Color(0xFF374151), height: 1.5),
+              children: [
+                const TextSpan(
+                    text: 'You are not enrolled in '),
+                TextSpan(
+                    text: hospital.name,
+                    style: const TextStyle(fontWeight: FontWeight.w700)),
+                const TextSpan(
+                    text: '.\n\nWould you like to enroll and switch to this hospital?'),
+              ],
+            ),
+          ),
+          // ── Inline button row (same line, no wrapping) ──────────────────
+          actionsPadding: EdgeInsets.zero,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+              child: Row(
+                children: [
+                  // Keep Current – green filled
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF16A34A),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        elevation: 0,
+                      ),
+                      child: const Text('Keep Current',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13)),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  // Enroll & Switch – blue filled
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2B59D2),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        elevation: 0,
+                      ),
+                      child: const Text('Enroll & Switch',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
+      if (enroll != true || !mounted) return;
+
+      // Enroll then switch
+      setState(() => _switching = true);
+      final enrollResult =
+          await ApiService.enrollAndSwitchHospital(hospital);
+      if (!mounted) return;
+      setState(() => _switching = false);
+
+      if (enrollResult['success'] == true) {
+        widget.onSwitch(hospital);
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Enrolled in & switched to ${hospital.name}'),
+            backgroundColor: const Color(0xFF2B59D2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(enrollResult['message'] as String? ??
+                'Enrollment failed. Please try again.'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+      return;
+    }
+
+    // ── Normal result handling ───────────────────────────────────────────────
+    setState(() => _switching = false);
+    if (result['success'] == true) {
+      widget.onSwitch(hospital);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Switched to ${hospital.name}'),
+          backgroundColor: const Color(0xFF2B59D2),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] as String? ??
+              'Switch failed. Please try again.'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.18),
+              blurRadius: 40,
+              spreadRadius: 0,
+              offset: const Offset(0, 12),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ─ Header ────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 22, 16, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Select Hospital',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF1A1D2E),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Choose a hospital to view information and manage appointments',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF6B7280),
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      width: 32, height: 32,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEF4444),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close,
+                          color: Colors.white, size: 17),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ─ Search bar ──────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: _searchCtrl,
+                onChanged: _onSearch,
+                decoration: InputDecoration(
+                  hintText: 'Search hospital name, city, or location...',
+                  hintStyle: const TextStyle(
+                      fontSize: 13, color: Color(0xFF9CA3AF)),
+                  prefixIcon: const Icon(Icons.search,
+                      color: Color(0xFF9CA3AF), size: 20),
+                  filled: true,
+                  fillColor: const Color(0xFFF9FAFB),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide:
+                        const BorderSide(color: Color(0xFF2B59D2), width: 1.5),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // ─ Hospital list ─────────────────────────────────────────
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.42,
+              ),
+              child: _loading
+                  ? const Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF2B59D2),
+                          strokeWidth: 2.5,
+                        ),
+                      ),
+                    )
+                  : _filtered.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.all(32),
+                          child: Center(
+                            child: Text('No hospitals found',
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xFF9CA3AF))),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          itemCount: _filtered.length,
+                          itemBuilder: (_, i) {
+                            final h        = _filtered[i];
+                            final selected = h.id == _selectedId;
+                            final isCurrent =
+                                h.id == widget.currentHospitalId;
+                            return GestureDetector(
+                              onTap: () =>
+                                  setState(() => _selectedId = h.id),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: selected
+                                      ? const Color(0xFFEEF2FF)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: selected
+                                        ? const Color(0xFF2B59D2)
+                                            .withOpacity(0.35)
+                                        : const Color(0xFFF3F4F6),
+                                    width: selected ? 1.5 : 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    // Hospital thumbnail
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: h.imageUrl.isNotEmpty
+                                          ? Image.network(
+                                              h.imageUrl,
+                                              width: 54,
+                                              height: 54,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) =>
+                                                  _HospitalPlaceholderIcon(),
+                                            )
+                                          : _HospitalPlaceholderIcon(),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            h.name,
+                                            style: TextStyle(
+                                              fontSize: 13.5,
+                                              fontWeight: FontWeight.w700,
+                                              color: selected
+                                                  ? const Color(0xFF1A1D2E)
+                                                  : const Color(0xFF1A1D2E),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 3),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                  Icons.location_on_outlined,
+                                                  size: 12,
+                                                  color: Color(0xFF9CA3AF)),
+                                              const SizedBox(width: 3),
+                                              Flexible(
+                                                child: Text(
+                                                  h.location,
+                                                  style: const TextStyle(
+                                                      fontSize: 11.5,
+                                                      color:
+                                                          Color(0xFF6B7280)),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        if (isCurrent)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  const Color(0xFF2B59D2),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: const Text(
+                                              'Current',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        if (isCurrent)
+                                          const SizedBox(height: 4),
+                                        // Radio circle
+                                        Container(
+                                          width: 22,
+                                          height: 22,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: selected
+                                                  ? const Color(0xFF2B59D2)
+                                                  : const Color(0xFFD1D5DB),
+                                              width: 2,
+                                            ),
+                                            color: selected
+                                                ? const Color(0xFF2B59D2)
+                                                : Colors.white,
+                                          ),
+                                          child: selected
+                                              ? const Icon(
+                                                  Icons.check,
+                                                  size: 13,
+                                                  color: Colors.white,
+                                                )
+                                              : null,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ─ Action buttons ────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+              child: Row(
+                children: [
+                  // Cancel
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed:
+                          _switching ? null : () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 14),
+                        side: const BorderSide(
+                            color: Color(0xFFE5E7EB), width: 1.5),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Switch Hospital
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton(
+                      onPressed: _switching || _loading ? null : _doSwitch,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2B59D2),
+                        disabledBackgroundColor:
+                            const Color(0xFF2B59D2).withOpacity(0.5),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
+                        elevation: 0,
+                      ),
+                      child: _switching
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              'Switch Hospital',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Placeholder icon shown when network image fails or is empty
+class _HospitalPlaceholderIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 54,
+      height: 54,
+      color: const Color(0xFFEEF2FF),
+      child: const Icon(Icons.local_hospital,
+          color: Color(0xFF2B59D2), size: 26),
     );
   }
 }

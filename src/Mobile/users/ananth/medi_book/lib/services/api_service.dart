@@ -14,6 +14,28 @@ import '../models/saved_card.dart';
 import '../models/saved_insurance.dart';
 import '../models/rx_order.dart';
 
+class SavedFinancialData {
+  final List<SavedCard> cards;
+  final List<SavedInsurance> insurances;
+  const SavedFinancialData(this.cards, this.insurances);
+}
+
+// ── Hospital model ────────────────────────────────────────────────────────────
+class Hospital {
+  final String id;
+  final String name;
+  final String location;
+  final String imageUrl;   // network URL or empty
+  final String logoPath;   // raw path from API (e.g. /logos/sunrise.png)
+
+  const Hospital({
+    required this.id,
+    required this.name,
+    required this.location,
+    this.imageUrl = '',
+    this.logoPath = '',
+  });
+}
 class ApiService {
   static const String baseUrl = 'http://skymedibook.runasp.net/api';
 
@@ -30,6 +52,13 @@ class ApiService {
   /// read patientId, profileId, firstName, lastName, etc.
   static Map<String, dynamic>? currentPatient;
 
+  // ── current hospital (default: first in the list) ─────────────────────────
+  static Hospital currentHospital = const Hospital(
+    id: 'H001',
+    name: 'Health Haven Medical Center',
+    location: 'Main Campus, Kolkata',
+  );
+
   /// The auth token returned as `tokenKey` in the login response.
   /// Injected as `Authorization: Bearer <token>` on every authenticated call.
   static String? _authToken;
@@ -42,10 +71,187 @@ class ApiService {
 
   /// Clears the session (call on logout).
   static void clearSession() {
-    currentPatient = null;
-    _authToken     = null;
-    _refreshToken  = null;
+    currentPatient  = null;
+    _authToken      = null;
+    _refreshToken   = null;
+    currentHospital = const Hospital(
+      id: 'H001',
+      name: 'Health Haven Medical Center',
+      location: 'Main Campus, Kolkata',
+    );
   }
+
+  // ── Real: fetch organisation / hospital list ──────────────────────────────
+  /// GET /api/v1/Organisation/GetOrganisationList
+  static Future<List<Hospital>> fetchHospitals() async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/v1/Organisation/GetOrganisationList'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final data = body['data'] as List<dynamic>? ?? [];
+        return data.map((item) {
+          final map      = item as Map<String, dynamic>;
+          final id       = (map['hospitalId'] ?? 0).toString();
+          final name     = map['hospitalName'] as String? ?? '';
+          final city     = map['cityName']    as String? ?? '';
+          final state    = map['stateName']   as String? ?? '';
+          final location = [city, state]
+              .where((s) => s.isNotEmpty)
+              .join(', ');
+          final logoPath = map['logoPath'] as String? ?? '';
+          // Build a full URL from logoPath if it starts with '/'
+          final imageUrl = logoPath.isNotEmpty
+              ? (logoPath.startsWith('http')
+                  ? logoPath
+                  : 'http://skymedibook.runasp.net$logoPath')
+              : '';
+          return Hospital(
+            id:       id,
+            name:     name,
+            location: location,
+            imageUrl: imageUrl,
+            logoPath: logoPath,
+          );
+        }).toList();
+      }
+      debugPrint('fetchHospitals: non-200 status ${response.statusCode}');
+    } catch (e) {
+      debugPrint('fetchHospitals error: $e');
+    }
+    // Fallback: return empty list — the dialog will show "No hospitals found"
+    return [];
+  }
+
+  // ── POST /api/v1/Patient/SwitchHospital ──────────────────────────────────
+  /// Calls the real switch-hospital endpoint.
+  /// On success: updates [_authToken] with the new JWT and sets [currentHospital].
+  /// Returns:
+  ///   {'success': true}                     – switched OK
+  ///   {'success': false, 'notEnrolled': true} – patient not enrolled → offer enroll
+  ///   {'success': false, 'message': '…'}    – other error
+  static Future<Map<String, dynamic>> switchHospital(Hospital hospital) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/v1/Patient/SwitchHospital'),
+            headers: _authJsonHeaders,
+            body: jsonEncode({'hospitalId': int.tryParse(hospital.id) ?? 0}),
+          )
+          .timeout(const Duration(seconds: 20));
+
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 200 && decoded['result'] == 1) {
+        // Update auth token so all subsequent calls use the new JWT
+        final newToken = decoded['tokenKey'] as String?;
+        if (newToken != null && newToken.isNotEmpty) {
+          _authToken = newToken;
+          _refreshToken = decoded['refreshToken'] as String?;
+          // Re-parse expiry from new token
+          _scheduleTokenExpiry(newToken);
+        }
+        currentHospital = hospital;
+        debugPrint('switchHospital OK → ${hospital.name}');
+        return {'success': true, 'message': 'Switched to ${hospital.name}'};
+      }
+
+      // 400 "Not enrolled in an active hospital."
+      final msg = decoded['statusMessage'] as String? ?? '';
+      if (response.statusCode == 400 &&
+          msg.toLowerCase().contains('not enrolled')) {
+        return {'success': false, 'notEnrolled': true, 'message': msg};
+      }
+
+      return {
+        'success': false,
+        'message': msg.isNotEmpty ? msg : 'Switch failed (${response.statusCode})',
+      };
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // ── POST /api/v1/Patient/EnrollPatientInHospital ─────────────────────────
+  /// Enrolls the patient in [hospital], then immediately switches to it.
+  /// Returns {'success': true} or {'success': false, 'message': '…'}.
+  static Future<Map<String, dynamic>> enrollAndSwitchHospital(
+      Hospital hospital) async {
+    try {
+      // Step 1: enroll
+      final enrollResp = await http
+          .post(
+            Uri.parse('$baseUrl/v1/Patient/EnrollPatientInHospital'),
+            headers: _authJsonHeaders,
+            body: jsonEncode({'hospitalId': int.tryParse(hospital.id) ?? 0}),
+          )
+          .timeout(const Duration(seconds: 20));
+
+      final enrollDecoded =
+          jsonDecode(enrollResp.body) as Map<String, dynamic>;
+
+      if (enrollResp.statusCode != 200 &&
+          enrollResp.statusCode != 201 &&
+          enrollDecoded['result'] != 1) {
+        final msg = enrollDecoded['statusMessage'] as String? ??
+            'Enrollment failed (${enrollResp.statusCode})';
+        return {'success': false, 'message': msg};
+      }
+
+      debugPrint('enrollPatient OK → ${hospital.name}');
+
+      // Step 2: switch after successful enrollment
+      return await switchHospital(hospital);
+    } catch (e) {
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
+
+  // ── Token expiry auto-logout ───────────────────────────────────────────────
+  /// Callback invoked when the JWT expires. Set this from the UI layer
+  /// (e.g., HomeScreen) so the app can navigate to the login screen.
+  static void Function()? onTokenExpired;
+
+  static void _scheduleTokenExpiry(String token) {
+    try {
+      // JWT is three base64url parts separated by '.'
+      final parts = token.split('.');
+      if (parts.length != 3) return;
+      // Pad the payload to a multiple of 4
+      var payload = parts[1];
+      payload += '=' * ((4 - payload.length % 4) % 4);
+      final decoded = jsonDecode(
+          utf8.decode(base64Url.decode(payload))) as Map<String, dynamic>;
+      final exp = decoded['exp'];
+      if (exp == null) return;
+      final expiry = DateTime.fromMillisecondsSinceEpoch(
+          (exp as int) * 1000, isUtc: true);
+      final now = DateTime.now().toUtc();
+      final diff = expiry.difference(now);
+      if (diff.isNegative) {
+        // Already expired – logout immediately
+        onTokenExpired?.call();
+        return;
+      }
+      debugPrint('Token expires in ${diff.inMinutes}m – scheduling auto-logout');
+      Future.delayed(diff, () {
+        debugPrint('Token expired – triggering auto-logout');
+        onTokenExpired?.call();
+      });
+    } catch (e) {
+      debugPrint('_scheduleTokenExpiry error: $e');
+    }
+  }
+
+  /// Call this once after login with the received token to arm the auto-logout.
+  static void armTokenExpiry(String token) => _scheduleTokenExpiry(token);
+
+
 
   /// Headers for authenticated GET requests.
   static Map<String, String> get _authHeaders => {
@@ -190,7 +396,7 @@ class ApiService {
     try {
       final response = await http
           .get(
-            Uri.parse('$baseUrl/v1/Patient/GetPatientProfileListById/$patientId'),
+            Uri.parse('$baseUrl/v1/Patient/GetPatientProfileListById'),
             headers: _authHeaders,
           )
           .timeout(const Duration(seconds: 30));
@@ -244,41 +450,41 @@ class ApiService {
   /// profile returned by GetPatientProfileListById **in parallel**, then
   /// extracting paymentData blocks that have a non-empty cardNumber.
   /// One card entry is produced per unique profileId that has card data.
-  static Future<List<SavedCard>> fetchSavedCards() async {
-    // ── MOCK (kept for reference) ────────────────────────────────────────────
-    // await Future.delayed(const Duration(milliseconds: 400));
-    // return List.unmodifiable(_savedCards);
-    // ────────────────────────────────────────────────────────────────────────
-    final profiles = await fetchPatientProfiles();
-    if (profiles.isEmpty) return [];
+  // static Future<List<SavedCard>> fetchSavedCards() async {
+  //   // ── MOCK (kept for reference) ────────────────────────────────────────────
+  //   // await Future.delayed(const Duration(milliseconds: 400));
+  //   // return List.unmodifiable(_savedCards);
+  //   // ────────────────────────────────────────────────────────────────────────
+  //   final profiles = await fetchPatientProfiles();
+  //   if (profiles.isEmpty) return [];
 
-    // Fetch all profile details in parallel for speed
-    final validProfiles = profiles.where((p) => p.profileId != 0).toList();
-    final details = await Future.wait(
-      validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
-    );
+  //   // Fetch all profile details in parallel for speed
+  //   final validProfiles = profiles.where((p) => p.profileId != 0).toList();
+  //   final details = await Future.wait(
+  //     validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
+  //   );
 
-    final cards   = <SavedCard>[];
-    final seenIds = <int>{}; // deduplicate by profileId
+  //   final cards   = <SavedCard>[];
+  //   final seenIds = <int>{}; // deduplicate by profileId
 
-    for (var i = 0; i < validProfiles.length; i++) {
-      final detail = details[i];
-      if (detail == null) continue;
+  //   for (var i = 0; i < validProfiles.length; i++) {
+  //     final detail = details[i];
+  //     if (detail == null) continue;
 
-      final pay = detail['paymentData'] as Map<String, dynamic>?;
-      if (pay == null) continue;
-      final cardNumber = pay['cardNumber'] as String?;
-      if (cardNumber == null || cardNumber.isEmpty) continue;
+  //     final pay = detail['paymentData'] as Map<String, dynamic>?;
+  //     if (pay == null) continue;
+  //     final cardNumber = pay['cardNumber'] as String?;
+  //     if (cardNumber == null || cardNumber.isEmpty) continue;
 
-      final profileId = validProfiles[i].profileId;
-      if (!seenIds.contains(profileId)) {
-        seenIds.add(profileId);
-        cards.add(SavedCard.fromProfileApiJson(profileId, pay));
-      }
-    }
-    debugPrint('fetchSavedCards: found ${cards.length} card(s) from profiles');
-    return List.unmodifiable(cards);
-  }
+  //     final profileId = validProfiles[i].profileId;
+  //     if (!seenIds.contains(profileId)) {
+  //       seenIds.add(profileId);
+  //       cards.add(SavedCard.fromProfileApiJson(profileId, pay));
+  //     }
+  //   }
+  //   debugPrint('fetchSavedCards: found ${cards.length} card(s) from profiles');
+  //   return List.unmodifiable(cards);
+  // }
 
   // ── MOCK saveNewCard (kept for reference) ─────────────────────────────
   // static Future<Map<String, dynamic>> saveNewCard(SavedCard card) async {
@@ -314,46 +520,129 @@ class ApiService {
   /// One insurance entry is produced per unique profileId that has insurance data.
   ///
   /// Real endpoint used: GET /api/v1/Patient/GetPatientProfileByProfileId/{id}
-  static Future<List<SavedInsurance>> fetchSavedInsurances() async {
-    // ── MOCK (kept for reference) ────────────────────────────────────────────
-    // await Future.delayed(const Duration(milliseconds: 400));
-    // return List.unmodifiable(_savedInsurances);
-    // ────────────────────────────────────────────────────────────────────────
-    final profiles = await fetchPatientProfiles();
-    if (profiles.isEmpty) return [];
+  // static Future<List<SavedInsurance>> fetchSavedInsurances() async {
+  //   // ── MOCK (kept for reference) ────────────────────────────────────────────
+  //   // await Future.delayed(const Duration(milliseconds: 400));
+  //   // return List.unmodifiable(_savedInsurances);
+  //   // ────────────────────────────────────────────────────────────────────────
+  //   final profiles = await fetchPatientProfiles();
+  //   if (profiles.isEmpty) return [];
 
-    // Fetch all profile details in parallel for speed
-    final validProfiles = profiles.where((p) => p.profileId != 0).toList();
-    final details = await Future.wait(
-      validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
-    );
+  //   // Fetch all profile details in parallel for speed
+  //   final validProfiles = profiles.where((p) => p.profileId != 0).toList();
+  //   final details = await Future.wait(
+  //     validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
+  //   );
 
-    final insurances = <SavedInsurance>[];
-    final seenIds    = <int>{}; // deduplicate by profileId
+  //   final insurances = <SavedInsurance>[];
+  //   final seenIds    = <int>{}; // deduplicate by profileId
 
-    for (var i = 0; i < validProfiles.length; i++) {
-      final detail = details[i];
-      if (detail == null) continue;
+  //   for (var i = 0; i < validProfiles.length; i++) {
+  //     final detail = details[i];
+  //     if (detail == null) continue;
 
-      // insurance flag == 1 means this profile has insurance data
-      final hasInsurance = (detail['insurance'] as int? ?? 0) == 1;
-      if (!hasInsurance) continue;
+  //     // insurance flag == 1 means this profile has insurance data
+  //     final hasInsurance = (detail['insurance'] as int? ?? 0) == 1;
+  //     if (!hasInsurance) continue;
 
-      final ins = detail['insuranceData'] as Map<String, dynamic>?;
-      if (ins == null) continue;
-      final provider = ins['provider'] as String?;
-      if (provider == null || provider.isEmpty) continue;
+  //     final ins = detail['insuranceData'] as Map<String, dynamic>?;
+  //     if (ins == null) continue;
+  //     final provider = ins['provider'] as String?;
+  //     if (provider == null || provider.isEmpty) continue;
 
-      final profileId = validProfiles[i].profileId;
-      if (!seenIds.contains(profileId)) {
-        seenIds.add(profileId);
+  //     final profileId = validProfiles[i].profileId;
+  //     if (!seenIds.contains(profileId)) {
+  //       seenIds.add(profileId);
+  //       insurances.add(SavedInsurance.fromProfileApiJson(profileId, ins));
+  //     }
+  //   }
+  //   debugPrint(
+  //       'fetchSavedInsurances: found ${insurances.length} insurance(s) from profiles');
+  //   return List.unmodifiable(insurances);
+  // }
+
+// ── Combined fetch: cards + insurance in ONE pass over all profiles ────────
+//
+// Calls GetPatientProfileListById once to get all profileIds for the
+// logged-in patient, then GetPatientProfileByProfileId for each profile
+// IN PARALLEL, and extracts unique cards + unique insurance records.
+
+
+static Future<SavedFinancialData> fetchSavedCardsAndInsurance() async {
+  final profiles = await fetchPatientProfiles();
+  if (profiles.isEmpty) return const SavedFinancialData([], []);
+
+  final validProfiles = profiles.where((p) => p.profileId != 0).toList();
+
+  // Fetch every profile's full detail in parallel
+  final details = await Future.wait(
+    validProfiles.map((p) => fetchPatientProfileByProfileId(p.profileId)),
+  );
+
+  final cards = <SavedCard>[];
+  final insurances = <SavedInsurance>[];
+
+  // Dedup by CONTENT — the same card/policy can appear under multiple profiles.
+  final seenCardKeys = <String>{};
+  final seenInsuranceKeys = <String>{};
+
+  for (var i = 0; i < validProfiles.length; i++) {
+    final detail = details[i];
+    if (detail == null) continue;
+    final profileId = validProfiles[i].profileId;
+
+    // ── cards (paymentData is now a List) ──────────────────────────────────
+    final rawPayment = detail['paymentData'];
+    final payList = rawPayment is List
+        ? rawPayment.cast<Map<String, dynamic>>()
+        : (rawPayment is Map<String, dynamic> ? [rawPayment] : <Map<String, dynamic>>[]);
+
+    for (final pay in payList) {
+      final cardNumber = pay['cardNumber'] as String? ?? '';
+      if (cardNumber.isEmpty) continue;
+      final expiry = pay['expiry'] as String? ?? '';
+      final cardKey = '$cardNumber|$expiry';
+      if (seenCardKeys.add(cardKey)) {
+        cards.add(SavedCard.fromProfileApiJson(profileId, pay));
+      }
+    }
+
+    // ── insurances (insuranceData is now a List) ───────────────────────────
+    final rawInsurance = detail['insuranceData'];
+    final insList = rawInsurance is List
+        ? rawInsurance.cast<Map<String, dynamic>>()
+        : (rawInsurance is Map<String, dynamic> ? [rawInsurance] : <Map<String, dynamic>>[]);
+
+    for (final ins in insList) {
+      final provider = ins['provider'] as String? ?? '';
+      final policy   = ins['policy']   as String? ?? '';
+      if (provider.isEmpty && policy.isEmpty) continue;
+      final insKey = '$provider|$policy|${ins['groupId'] ?? ''}';
+      if (seenInsuranceKeys.add(insKey)) {
         insurances.add(SavedInsurance.fromProfileApiJson(profileId, ins));
       }
     }
-    debugPrint(
-        'fetchSavedInsurances: found ${insurances.length} insurance(s) from profiles');
-    return List.unmodifiable(insurances);
   }
+
+  debugPrint(
+      'fetchSavedCardsAndInsurance: ${cards.length} card(s), ${insurances.length} insurance(s) from ${validProfiles.length} profile(s)');
+
+  return SavedFinancialData(
+    List.unmodifiable(cards),
+    List.unmodifiable(insurances),
+  );
+}
+
+// ── Thin wrappers if you still want them called separately ─────────────────
+static Future<List<SavedCard>> fetchSavedCards() async =>
+    (await fetchSavedCardsAndInsurance()).cards;
+
+static Future<List<SavedInsurance>> fetchSavedInsurances() async =>
+    (await fetchSavedCardsAndInsurance()).insurances;
+
+
+
+
 
 
   // ── MOCK saveNewInsurance (kept for reference) ───────────────────────────
@@ -440,6 +729,79 @@ class ApiService {
       {'ageTypeId': 1, 'ageTypeName': 'Days'},
       {'ageTypeId': 2, 'ageTypeName': 'Months'},
       {'ageTypeId': 3, 'ageTypeName': 'Years'},
+    ];
+  }
+
+  /// GET /api/v1/Master/GetStatusKeyList
+  static Future<List<Map<String, dynamic>>> fetchStatusKeyList() async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/v1/Master/GetStatusKeyList'),
+            headers: _authHeaders,
+          )
+          .timeout(const Duration(seconds: 15));
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        if (decoded['result'] == 1 || decoded['statusCode'] == 200) {
+          final List data = decoded['data'] as List? ?? [];
+          return data.cast<Map<String, dynamic>>();
+        }
+      }
+    } catch (e) {
+      debugPrint('fetchStatusKeyList error: $e');
+    }
+    return [];
+  }
+
+  /// Fetches statuses for category 'VisitPurpose' from GetStatusKeyList,
+  /// with live-API fallback.
+  static Future<List<Map<String, dynamic>>> fetchVisitPurposes() async {
+    try {
+      final list = await fetchStatusKeyList();
+      final category = list.firstWhere(
+        (c) => (c['category'] as String?)?.toLowerCase() == 'visitpurpose',
+        orElse: () => <String, dynamic>{},
+      );
+      final rawStatuses = category['statuses'] as List?;
+      if (rawStatuses != null && rawStatuses.isNotEmpty) {
+        return rawStatuses.cast<Map<String, dynamic>>();
+      }
+    } catch (_) {}
+    // Fallback matching GET /api/v1/Master/GetStatusKeyList
+    return [
+      {'statusId': 27, 'statusKey': 'Consultation', 'statusValue': 'Consultation'},
+      {'statusId': 28, 'statusKey': 'Follow Up', 'statusValue': 'Follow Up'},
+      {'statusId': 29, 'statusKey': 'Routine Check Up', 'statusValue': 'Routine Check Up'},
+      {'statusId': 30, 'statusKey': 'Emergency', 'statusValue': 'Emergency'},
+      {'statusId': 31, 'statusKey': 'Referral', 'statusValue': 'Referral'},
+      {'statusId': 32, 'statusKey': 'Lab / Diagnostics', 'statusValue': 'Lab / Diagnostics'},
+      {'statusId': 33, 'statusKey': 'Procedure', 'statusValue': 'Procedure'},
+      {'statusId': 34, 'statusKey': 'Vaccination', 'statusValue': 'Vaccination'},
+      {'statusId': 35, 'statusKey': 'Prescription Renewal', 'statusValue': 'Prescription Renewal'},
+    ];
+  }
+
+  /// Fetches statuses for category 'VisitType' from GetStatusKeyList,
+  /// with live-API fallback.
+  static Future<List<Map<String, dynamic>>> fetchVisitTypes() async {
+    try {
+      final list = await fetchStatusKeyList();
+      final category = list.firstWhere(
+        (c) => (c['category'] as String?)?.toLowerCase() == 'visittype',
+        orElse: () => <String, dynamic>{},
+      );
+      final rawStatuses = category['statuses'] as List?;
+      if (rawStatuses != null && rawStatuses.isNotEmpty) {
+        return rawStatuses.cast<Map<String, dynamic>>();
+      }
+    } catch (_) {}
+    // Fallback matching GET /api/v1/Master/GetStatusKeyList
+    return [
+      {'statusId': 23, 'statusKey': 'In Person', 'statusValue': 'In Person'},
+      {'statusId': 24, 'statusKey': 'Walk In', 'statusValue': 'Walk In'},
+      {'statusId': 25, 'statusKey': 'Virtual', 'statusValue': 'Virtual'},
+      {'statusId': 26, 'statusKey': 'Home Visit', 'statusValue': 'Home Visit'},
     ];
   }
 
@@ -538,6 +900,9 @@ class ApiService {
         // Store token immediately so the next authenticated call works
         _authToken    = decoded['tokenKey']    as String?;
         _refreshToken = decoded['refreshToken'] as String?;
+        // Arm the auto-logout timer based on token expiry
+        if (_authToken != null) _scheduleTokenExpiry(_authToken!);
+
 
         // ── Fetch full patient profile using patientId ─────────────────────
         // This call uses the auth token we just stored above.
@@ -558,9 +923,50 @@ class ApiService {
             ..['username']  = rawData['username'] ?? username;
         }
 
+        // ── Set active hospital from login response ────────────────────────
+        // The login response contains the correct activeHospitalId and
+        // activeEnrollmentId. Use these to prime currentHospital so that
+        // all subsequent calls (doctor list, bookings) use the right context.
+        final activeHospitalId =
+            (rawData['activeHospitalId'] as num?)?.toInt() ?? 0;
+        final activeEnrollmentId =
+            (rawData['activeEnrollmentId'] as num?)?.toInt() ?? 0;
+        final enrollments =
+            rawData['enrollments'] as List<dynamic>? ?? [];
+
+        // Find the active hospital name from the enrollments list
+        String activeHospitalName = '';
+        for (final e in enrollments) {
+          final map = e as Map<String, dynamic>;
+          if ((map['hospitalId'] as int?) == activeHospitalId) {
+            activeHospitalName = map['hospitalName'] as String? ?? '';
+            break;
+          }
+        }
+
+        if (activeHospitalId > 0) {
+          currentHospital = Hospital(
+            id:       activeHospitalId.toString(),
+            name:     activeHospitalName.isNotEmpty
+                          ? activeHospitalName
+                          : 'Hospital $activeHospitalId',
+            location: '',
+          );
+        }
+
+        // Store enrollment info on currentPatient for use during booking
+        if (currentPatient != null) {
+          currentPatient!['activeHospitalId']   = activeHospitalId;
+          currentPatient!['activeEnrollmentId'] = activeEnrollmentId;
+          currentPatient!['enrollments']        = enrollments;
+        }
+
         debugPrint('=== SESSION: patientId=${currentPatient?['patientId']}  '
             'profileId=${currentPatient?['profileId']}  '
+            'activeHospitalId=$activeHospitalId  '
+            'activeEnrollmentId=$activeEnrollmentId  '
             'token=${_authToken != null ? "present" : "missing"} ===');
+
 
         return {
           'success': true,
@@ -582,29 +988,30 @@ class ApiService {
     }
   }
 
-  // ── GET /api/v1/Patient/GetPatientById/{id} ────────────────────────────────
-  /// Fetches the complete patient record. Returns null on failure.
-  /// The `data` object from this endpoint has the correct patientId, profileId,
-  /// firstName, lastName, dateOfBirth, gender, phoneNumber, addressLine1/2, etc.
-  static Future<Map<String, dynamic>?> fetchPatientById(int patientId) async {
-    if (patientId == 0) return null;
+  // ── GET /api/v1/Patient/GetPatientById ───────────────────────────────────────
+  /// Fetches the logged-in patient's own record (JWT-based, no path param).
+  /// Returns null on failure.
+  static Future<Map<String, dynamic>?> fetchPatientById([int? patientId]) async {
     try {
+      // Endpoint takes no path param – the server reads patientId from the JWT.
       final response = await http
           .get(
-            Uri.parse('$baseUrl/v1/Patient/GetPatientById/$patientId'),
+            Uri.parse('$baseUrl/v1/Patient/GetPatientById'),
             headers: _authHeaders,
           )
           .timeout(const Duration(seconds: 20));
 
-      debugPrint('fetchPatientById($patientId) status: ${response.statusCode}');
+      debugPrint('fetchPatientById status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body) as Map<String, dynamic>;
         if (decoded['result'] == 1 || decoded['statusCode'] == 200) {
           final data = decoded['data'] as Map<String, dynamic>?;
           if (data != null) {
-            debugPrint('fetchPatientById: patientId=${data['patientId']}  '
-                'profileId=${data['profileId']}  name=${data['firstName']} ${data['lastName']}');
+            debugPrint('fetchPatientById OK: '
+                'patientId=${data['patientId']}  '
+                'profileId=${data['profileId']}  '
+                'name=${data['firstName']} ${data['lastName']}');
             return data;
           }
         }
@@ -614,6 +1021,64 @@ class ApiService {
     }
     return null;
   }
+
+  // ── Fetch self patient for booking auto-fill ──────────────────────────────
+  /// Returns a normalised map suitable for pre-filling the booking form.
+  /// Fields: firstName, lastName, dateOfBirth (dd/MM/yyyy), age,
+  ///         gender, contactNumber, emailAddress, address.
+  static Future<Map<String, String>> fetchSelfPatient() async {
+    final data = await fetchPatientById();
+    if (data == null) return mockSelfProfile; // graceful fallback
+
+    // Update cached currentPatient so other screens stay in sync
+    currentPatient = Map<String, dynamic>.from(currentPatient ?? {})..addAll(data);
+
+    // Convert ISO dateOfBirth to dd/MM/yyyy
+    String dob = '';
+    try {
+      final raw = data['dateOfBirth'] as String? ?? '';
+      if (raw.isNotEmpty) {
+        final dt = DateTime.parse(raw);
+        dob = '${dt.day.toString().padLeft(2, '0')}/'
+            '${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+      }
+    } catch (_) {}
+
+    // Compute age from DOB
+    String age = '';
+    try {
+      final raw = data['dateOfBirth'] as String? ?? '';
+      if (raw.isNotEmpty) {
+        final dt  = DateTime.parse(raw);
+        final now = DateTime.now();
+        final diff = now.year - dt.year -
+            ((now.month < dt.month ||
+                    (now.month == dt.month && now.day < dt.day))
+                ? 1
+                : 0);
+        age = diff.toString();
+      }
+    } catch (_) {}
+
+    final addr = [
+      data['addressLine1'] as String? ?? '',
+      data['addressLine2'] as String? ?? '',
+    ].where((s) => s.isNotEmpty).join(', ');
+
+    return {
+      'firstName':     data['firstName']   as String? ?? '',
+      'lastName':      data['lastName']    as String? ?? '',
+      'dateOfBirth':   dob,
+      'age':           age,
+      'ageUnit':       'years',
+      'gender':        data['gender']      as String? ?? '',
+      'contactNumber': data['phoneNumber'] as String? ?? '',
+      'emailAddress':  data['email']       as String? ?? '',
+      'address':       addr,
+      'username':      data['username']    as String? ?? '',
+    };
+  }
+
 
   // ── helper: split fullName into first / last ──────────────────────────────
   static String _splitFirst(String fullName) {
@@ -879,7 +1344,7 @@ class ApiService {
 
       final response = await http
           .post(
-            Uri.parse('$baseUrl/v1/Patient/CreatePatientDetails'),
+            Uri.parse('$baseUrl/v1/Auth/CreatePatientAccount'),
             headers: {
               'Content-Type': 'application/json',
               'Accept':       'application/json',
@@ -955,7 +1420,7 @@ class ApiService {
     try {
       final response = await http
           .get(
-            Uri.parse('$baseUrl/v1/Appointment/Patient/GetMyAppointmentList/$patientId'),
+            Uri.parse('$baseUrl/v1/Appointment/Patient/GetMyAppointmentList'),
             headers: _authHeaders,
           )
           .timeout(const Duration(seconds: 30));
@@ -1084,25 +1549,40 @@ class ApiService {
     }
   }
 
-  /// DELETE /api/v1/Appointment/CancelAppointmentById?appointmentId=&patientId=
+  /// DELETE /api/v1/Appointment/CancelAppointmentById
+  ///
+  /// Sends a JSON body: { appointmentId, patientId, cancelReason,
+  /// lastUpdatedBy, associateRole: "Patient" }
   static Future<Map<String, dynamic>> cancelAppointmentById({
     required int appointmentId,
     required int patientId,
+    String cancelReason = '',
   }) async {
+    final lastUpdatedBy =
+        ApiService.currentPatient?['username'] as String? ?? '';
     try {
-      final uri = Uri.parse('$baseUrl/v1/Appointment/CancelAppointmentById')
-          .replace(queryParameters: {
-        'appointmentId': appointmentId.toString(),
-        'patientId':     patientId.toString(),
+      final body = jsonEncode({
+        'appointmentId': appointmentId,
+        'patientId':     patientId,
+        'cancelReason':  cancelReason,
+        'lastUpdatedBy': lastUpdatedBy,
+        'associateRole': 'Patient',
       });
 
       debugPrint('========== CANCEL APPOINTMENT REQUEST ==========');
-      debugPrint(uri.toString());
+      debugPrint(body);
       debugPrint('================================================');
 
-      final response = await http
-          .delete(uri, headers: _authHeaders)
-          .timeout(const Duration(seconds: 30));
+      final request = http.Request(
+        'DELETE',
+        Uri.parse('$baseUrl/v1/Appointment/CancelAppointmentById'),
+      )
+        ..headers.addAll(_authJsonHeaders)
+        ..body = body;
+
+      final streamedResponse =
+          await request.send().timeout(const Duration(seconds: 30));
+      final response = await http.Response.fromStream(streamedResponse);
 
       debugPrint('========== CANCEL APPOINTMENT RESPONSE ==========');
       debugPrint('Status: ${response.statusCode}');
@@ -1535,6 +2015,19 @@ class ApiService {
     final rawRelatonTypeId = bookingData['relatonTypeId'] as int? ?? 0;
     final relatonTypeId = rawRelatonTypeId > 0 ? rawRelatonTypeId : 1;
 
+    // ── visitPurpose & visitType: statusId integers from GetStatusKeyList ─────
+    final rawVisitPurpose = bookingData['visitPurpose'];
+    final parsedVisitPurpose = rawVisitPurpose is int
+        ? rawVisitPurpose
+        : (int.tryParse(rawVisitPurpose?.toString() ?? '') ?? 0);
+    final int visitPurpose = parsedVisitPurpose > 0 ? parsedVisitPurpose : 27; // Default: Consultation (27)
+
+    final rawVisitType = bookingData['visitType'];
+    final parsedVisitType = rawVisitType is int
+        ? rawVisitType
+        : (int.tryParse(rawVisitType?.toString() ?? '') ?? 0);
+    final int visitType = parsedVisitType > 0 ? parsedVisitType : 23; // Default: In Person (23)
+
     final requestBody = <String, dynamic>{
       'patientId':       patientId,
       'profileId':       profileId,
@@ -1549,11 +2042,11 @@ class ApiService {
       'email':           bookingData['emailAddress']  ?? '',
       'gender':          bookingData['gender']        ?? '',
       'phone':           contact,
-      'relatonTypeId':   relatonTypeId,
+      'relationTypeId':   relatonTypeId,
       'appointmentDate': apptDateIso,
       'timeSlot':        bookingData['time']          ?? '',
-      'visitPurpose':    bookingData['visitPurpose']  ?? '',
-      'visitType':       bookingData['visitType']     ?? '',
+      'visitPurposeId':    visitPurpose,
+      'visitTypeId':       visitType,
       'otpMethod':       bookingData['otpChannel']    ?? 'mobile',
       'insurance':       hasInsurance,
       'insuranceData':   insuranceData,
@@ -1673,7 +2166,7 @@ class ApiService {
     debugPrint('===== GET Lab Results By PatientId ($patientId) =====');
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/v1/Lab/GetLabResultsByPatientId/$patientId'),
+        Uri.parse('$baseUrl/v1/Lab/GetLabResultsByPatientId'),
         headers: _authHeaders,
       );
       debugPrint('Status: ${response.statusCode}');
@@ -1918,7 +2411,7 @@ class ApiService {
     try {
       final response = await http
           .get(
-            Uri.parse('$baseUrl/v1/Billing/GetBillingListByPatientId/$patientId'),
+            Uri.parse('$baseUrl/v1/Billing/GetBillingListByPatientId'),
             headers: _authHeaders,
           )
           .timeout(const Duration(seconds: 30));

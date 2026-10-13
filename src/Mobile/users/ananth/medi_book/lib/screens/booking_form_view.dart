@@ -47,7 +47,6 @@ class _BookingFormViewState extends State<BookingFormView> {
   final _ageCtrl       = TextEditingController();
   final _contactCtrl   = TextEditingController();
   final _emailCtrl     = TextEditingController();
-  final _visitPurposeCtrl   = TextEditingController();
   final _insProviderCtrl    = TextEditingController();
   final _insPolicyCtrl      = TextEditingController();
   final _insGroupCtrl       = TextEditingController();
@@ -63,6 +62,7 @@ class _BookingFormViewState extends State<BookingFormView> {
   // patient-selector state
   _PatientMode _patientMode     = _PatientMode.self;
   bool _loadingPatients         = true;
+  bool _selfLoading             = false;  // true while fetching self data from API
   List<SavedPatient> _savedPatients = [];
   SavedPatient? _selectedExisting;
 
@@ -75,6 +75,15 @@ class _BookingFormViewState extends State<BookingFormView> {
   int? _ageTypeId;                        // selected age type ID (e.g. 3 = Years)
   List<Map<String, dynamic>> _ageTypes = [];
   bool _loadingAgeTypes = true;
+
+  // visit purpose & visit type from API (GetStatusKeyList)
+  int?                       _selectedVisitPurposeId;
+  List<Map<String, dynamic>> _visitPurposes = [];
+  bool                       _loadingVisitPurposes = true;
+
+  int?                       _selectedVisitTypeId;
+  List<Map<String, dynamic>> _visitTypes = [];
+  bool                       _loadingVisitTypes = true;
 
   // ── card / payment state ───────────────────────────────────────────────────────
   bool _loadingCards          = false;
@@ -93,7 +102,6 @@ class _BookingFormViewState extends State<BookingFormView> {
   // rest of form state
   String? _gender;
   bool    _hasInsurance      = false;
-  String  _visitType         = '';
   String  _otpChannel        = 'mobile';
   bool    _submitting        = false;
 
@@ -101,10 +109,6 @@ class _BookingFormViewState extends State<BookingFormView> {
   Map<String, dynamic>? _bookingResponse;
 
   final List<String> _genderOptions = ['Male', 'Female', 'Other'];
-  final List<String> _visitTypes = [
-    'Consultation', 'Follow-up', 'Emergency', 'Routine Check-up',
-    'Lab / Diagnostics', 'Other',
-  ];
 
   @override
   void initState() {
@@ -114,6 +118,8 @@ class _BookingFormViewState extends State<BookingFormView> {
     _loadSavedInsurances();
     _loadRelationTypes();
     _loadAgeTypes();
+    _loadVisitPurposes();
+    _loadVisitTypes();
   }
 
   // ── loaders ────────────────────────────────────────────────────────────────
@@ -132,7 +138,6 @@ class _BookingFormViewState extends State<BookingFormView> {
     final result = await ApiService.fetchSavedCards();
     if (!mounted) return;
     setState(() {
-      // List.from() ensures the local list is mutable so .add() works later
       _savedCards   = List.from(result);
       _loadingCards = false;
       if (_savedCards.isNotEmpty) {
@@ -147,16 +152,130 @@ class _BookingFormViewState extends State<BookingFormView> {
     final result = await ApiService.fetchSavedInsurances();
     if (!mounted) return;
     setState(() {
-      // List.from() ensures the local list is mutable so .add() works later
       _savedInsurances   = List.from(result);
       _loadingInsurances = false;
       if (_savedInsurances.isNotEmpty) {
         _useExistingInsurance = true;
         _selectedInsurance    = _savedInsurances.first;
-        // Pre-fill the text controllers with the first saved insurance
         _fillInsuranceFromSaved(_savedInsurances.first);
       }
     });
+  }
+
+  // ── Card edit / delete (mock) ──────────────────────────────────────────────
+  Future<void> _onEditCard(SavedCard card) async {
+    final holderCtrl  = TextEditingController(text: card.holderName);
+    final numberCtrl  = TextEditingController(text: card.cardNumber);
+    final expiryCtrl  = TextEditingController(text: card.expiry);
+    final saved = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _EditCardSheet(
+        holderCtrl: holderCtrl,
+        numberCtrl: numberCtrl,
+        expiryCtrl: expiryCtrl,
+      ),
+    );
+    if (saved == true && mounted) {
+      // Mock: update locally
+      final updated = SavedCard(
+        id:         card.id,
+        holderName: holderCtrl.text.trim(),
+        cardNumber: numberCtrl.text.replaceAll(' ', ''),
+        expiry:     expiryCtrl.text.trim(),
+        cvv:        card.cvv,
+        cardType:   card.cardType,
+      );
+      setState(() {
+        final idx = _savedCards.indexWhere((c) => c.id == card.id);
+        if (idx != -1) {
+          _savedCards[idx] = updated;
+          if (_selectedCard?.id == card.id) _selectedCard = updated;
+        }
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Card updated (mock)'),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
+    holderCtrl.dispose(); numberCtrl.dispose(); expiryCtrl.dispose();
+  }
+
+  void _onDeleteCard(SavedCard card) {
+    setState(() {
+      _savedCards.removeWhere((c) => c.id == card.id);
+      if (_selectedCard?.id == card.id) {
+        _selectedCard = _savedCards.isNotEmpty ? _savedCards.first : null;
+      }
+      if (_savedCards.isEmpty) _useExistingCard = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Card removed (mock)'),
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
+  // ── Insurance edit / delete (mock) ────────────────────────────────────────
+  Future<void> _onEditInsurance(SavedInsurance ins) async {
+    final providerCtrl   = TextEditingController(text: ins.providerName);
+    final policyCtrl     = TextEditingController(text: ins.policyId);
+    final groupCtrl      = TextEditingController(text: ins.groupId);
+    final holderNameCtrl = TextEditingController(text: ins.primaryHolderName);
+    final holderAddrCtrl = TextEditingController(text: ins.primaryHolderAddress);
+    final saved = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _EditInsuranceSheet(
+        providerCtrl:   providerCtrl,
+        policyCtrl:     policyCtrl,
+        groupCtrl:      groupCtrl,
+        holderNameCtrl: holderNameCtrl,
+        holderAddrCtrl: holderAddrCtrl,
+      ),
+    );
+    if (saved == true && mounted) {
+      final updated = SavedInsurance(
+        id:                   ins.id,
+        providerName:         providerCtrl.text.trim(),
+        policyId:             policyCtrl.text.trim(),
+        groupId:              groupCtrl.text.trim(),
+        primaryHolderName:    holderNameCtrl.text.trim(),
+        primaryHolderAddress: holderAddrCtrl.text.trim(),
+      );
+      setState(() {
+        final idx = _savedInsurances.indexWhere((i) => i.id == ins.id);
+        if (idx != -1) {
+          _savedInsurances[idx] = updated;
+          if (_selectedInsurance?.id == ins.id) _selectedInsurance = updated;
+        }
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Insurance updated (mock)'),
+          behavior: SnackBarBehavior.floating,
+        ));
+      }
+    }
+    providerCtrl.dispose(); policyCtrl.dispose(); groupCtrl.dispose();
+    holderNameCtrl.dispose(); holderAddrCtrl.dispose();
+  }
+
+  void _onDeleteInsurance(SavedInsurance ins) {
+    setState(() {
+      _savedInsurances.removeWhere((i) => i.id == ins.id);
+      if (_selectedInsurance?.id == ins.id) {
+        _selectedInsurance = _savedInsurances.isNotEmpty ? _savedInsurances.first : null;
+      }
+      if (_savedInsurances.isEmpty) _useExistingInsurance = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Insurance removed (mock)'),
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 
   Future<void> _loadRelationTypes() async {
@@ -196,12 +315,42 @@ class _BookingFormViewState extends State<BookingFormView> {
     });
   }
 
+  Future<void> _loadVisitPurposes() async {
+    final result = await ApiService.fetchVisitPurposes();
+    if (!mounted) return;
+    setState(() {
+      final seen = <int>{};
+      _visitPurposes = result
+          .where((p) => seen.add(p['statusId'] as int))
+          .toList();
+      _loadingVisitPurposes = false;
+      if (_selectedVisitPurposeId == null && _visitPurposes.isNotEmpty) {
+        _selectedVisitPurposeId = _visitPurposes.first['statusId'] as int;
+      }
+    });
+  }
+
+  Future<void> _loadVisitTypes() async {
+    final result = await ApiService.fetchVisitTypes();
+    if (!mounted) return;
+    setState(() {
+      final seen = <int>{};
+      _visitTypes = result
+          .where((t) => seen.add(t['statusId'] as int))
+          .toList();
+      _loadingVisitTypes = false;
+      if (_selectedVisitTypeId == null && _visitTypes.isNotEmpty) {
+        _selectedVisitTypeId = _visitTypes.first['statusId'] as int;
+      }
+    });
+  }
+
   // ── patient mode helpers ───────────────────────────────────────────────────
-  void _applyPatientMode(_PatientMode mode) {
+  Future<void> _applyPatientMode(_PatientMode mode) async {
     setState(() => _patientMode = mode);
     switch (mode) {
       case _PatientMode.self:
-        _fillSelf();
+        await _fillSelf();
         break;
       case _PatientMode.existing:
         if (_selectedExisting != null) _fillFromSaved(_selectedExisting!);
@@ -212,21 +361,29 @@ class _BookingFormViewState extends State<BookingFormView> {
     }
   }
 
-  void _fillSelf() {
-    final self = ApiService.mockSelfProfile;
-    _firstNameCtrl.text = self['firstName']     ?? '';
-    _lastNameCtrl.text  = self['lastName']      ?? '';
-    _dobCtrl.text       = self['dateOfBirth']   ?? '';
-    _ageCtrl.text       = self['age']           ?? '';
-    _contactCtrl.text   = self['contactNumber'] ?? '';
-    _emailCtrl.text     = self['emailAddress']  ?? '';
-    // Sanitize gender: only use value if it matches one of the dropdown options
-    final rawGender = self['gender'] as String?;
-    setState(() {
-      _gender = (rawGender != null && _genderOptions.contains(rawGender))
-          ? rawGender
-          : null;
-    });
+  Future<void> _fillSelf() async {
+    // Show loading state in the form fields
+    if (mounted) setState(() => _selfLoading = true);
+    try {
+      // Fetch real patient data from GET /api/v1/Patient/GetPatientById
+      final self = await ApiService.fetchSelfPatient();
+      if (!mounted) return;
+      _firstNameCtrl.text = self['firstName']     ?? '';
+      _lastNameCtrl.text  = self['lastName']      ?? '';
+      _dobCtrl.text       = self['dateOfBirth']   ?? '';
+      _ageCtrl.text       = self['age']           ?? '';
+      _contactCtrl.text   = self['contactNumber'] ?? '';
+      _emailCtrl.text     = self['emailAddress']  ?? '';
+      final rawGender = self['gender'];
+      setState(() {
+        _selfLoading = false;
+        _gender = (rawGender != null && _genderOptions.contains(rawGender))
+            ? rawGender
+            : null;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _selfLoading = false);
+    }
   }
 
   void _fillFromSaved(SavedPatient p) {
@@ -273,7 +430,7 @@ class _BookingFormViewState extends State<BookingFormView> {
   void dispose() {
     for (final c in [
       _firstNameCtrl, _lastNameCtrl, _dobCtrl, _ageCtrl,
-      _contactCtrl, _emailCtrl, _visitPurposeCtrl,
+      _contactCtrl, _emailCtrl,
       _insProviderCtrl, _insPolicyCtrl, _insGroupCtrl,
       _insHolderNameCtrl, _insHolderAddrCtrl,
       _cardHolderNameCtrl, _cardNumberCtrl, _cardExpiryCtrl, _cardCvvCtrl,
@@ -312,7 +469,12 @@ class _BookingFormViewState extends State<BookingFormView> {
     _cardCvvCtrl.clear();
     setState(() {
       _hasInsurance      = false;
-      _visitType         = '';
+      _selectedVisitPurposeId = _visitPurposes.isNotEmpty
+          ? _visitPurposes.first['statusId'] as int
+          : null;
+      _selectedVisitTypeId = _visitTypes.isNotEmpty
+          ? _visitTypes.first['statusId'] as int
+          : null;
       _otpChannel        = 'mobile';
       _newPatientRelationTypeId = null;
       _selectedCard      = _savedCards.isNotEmpty ? _savedCards.first : null;
@@ -418,8 +580,8 @@ class _BookingFormViewState extends State<BookingFormView> {
       'insurancePrimaryHolderAddress': _insHolderAddrCtrl.text.trim(),
       'contactNumber':   _contactCtrl.text.trim(),
       'emailAddress':    _emailCtrl.text.trim(),
-      'visitPurpose':    _visitPurposeCtrl.text.trim(),
-      'visitType':       _visitType,
+      'visitPurpose':    _selectedVisitPurposeId ?? 27,
+      'visitType':       _selectedVisitTypeId ?? 23,
       'otpChannel':      _otpChannel,
       'profileId': _patientMode == _PatientMode.self
           ? ApiService.currentProfileId
@@ -609,6 +771,22 @@ class _BookingFormViewState extends State<BookingFormView> {
                       ],
 
                       // ── personal fields ────────────────────────────────────
+                      if (_selfLoading)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
+                            children: const [
+                              SizedBox(
+                                width: 16, height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                              SizedBox(width: 8),
+                              Text('Fetching your details…',
+                                  style: TextStyle(fontSize: 12,
+                                      color: AppColors.textLight)),
+                            ],
+                          ),
+                        ),
                       _FormLabel('First Name'),
                       _FormField(
                         controller: _firstNameCtrl,
@@ -739,7 +917,7 @@ class _BookingFormViewState extends State<BookingFormView> {
                         ),
                       ]),
 
-                      // ── insurance details (new _InsuranceCard widget) ──────
+                      // ── insurance details ──────────────────────────────────
                       if (_hasInsurance) ...[
                         const SizedBox(height: 10),
                         _InsuranceCard(
@@ -763,6 +941,8 @@ class _BookingFormViewState extends State<BookingFormView> {
                           }),
                           onSaveNewInsuranceChanged: (v) =>
                               setState(() => _saveNewInsurance = v),
+                          onEditInsurance:   _onEditInsurance,
+                          onDeleteInsurance: _onDeleteInsurance,
                         ),
                       ],
 
@@ -785,6 +965,8 @@ class _BookingFormViewState extends State<BookingFormView> {
                               setState(() => _selectedCard = card),
                           onSaveNewCardChanged: (v) =>
                               setState(() => _saveNewCard = v),
+                          onEditCard:   _onEditCard,
+                          onDeleteCard: _onDeleteCard,
                         ),
                       ],
 
@@ -811,31 +993,49 @@ class _BookingFormViewState extends State<BookingFormView> {
                       ),
                       const SizedBox(height: 12),
                       _FormLabel('Dr. Visit Purpose'),
-                      TextFormField(
-                        controller: _visitPurposeCtrl,
-                        maxLines: 3,
-                        style:
-                            const TextStyle(fontSize: 13, color: AppColors.textDark),
-                        decoration: _inputDeco(
-                            hint:
-                                'Enter visit purpose/details, you may include symptoms'),
+                      DropdownButtonFormField<int>(
+                        value: _selectedVisitPurposeId,
+                        hint: const Text('Choose visit purpose',
+                            style: TextStyle(
+                                fontSize: 12, color: AppColors.textLight)),
+                        decoration: _dropdownDeco(),
+                        items: _visitPurposes
+                            .map((p) => DropdownMenuItem<int>(
+                                  value: p['statusId'] as int,
+                                  child: Text(
+                                    (p['statusValue'] ?? p['statusKey'] ?? '').toString(),
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: (v) =>
+                            setState(() => _selectedVisitPurposeId = v),
+                        validator: (v) =>
+                            v == null ? 'Please select a visit purpose' : null,
+                        style: const TextStyle(
+                            fontSize: 13, color: AppColors.textDark),
                       ),
                       const SizedBox(height: 12),
                       _FormLabel('Type Of Visit'),
-                      DropdownButtonFormField<String>(
-                        value: _visitType.isEmpty ? null : _visitType,
+                      DropdownButtonFormField<int>(
+                        value: _selectedVisitTypeId,
                         hint: const Text('Choose visit type',
                             style: TextStyle(
                                 fontSize: 12, color: AppColors.textLight)),
                         decoration: _dropdownDeco(),
                         items: _visitTypes
-                            .map((t) => DropdownMenuItem(
-                                  value: t,
-                                  child: Text(t,
-                                      style: const TextStyle(fontSize: 13)),
+                            .map((t) => DropdownMenuItem<int>(
+                                  value: t['statusId'] as int,
+                                  child: Text(
+                                    (t['statusValue'] ?? t['statusKey'] ?? '').toString(),
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
                                 ))
                             .toList(),
-                        onChanged: (v) => setState(() => _visitType = v ?? ''),
+                        onChanged: (v) =>
+                            setState(() => _selectedVisitTypeId = v),
+                        validator: (v) =>
+                            v == null ? 'Please select a visit type' : null,
                         style: const TextStyle(
                             fontSize: 13, color: AppColors.textDark),
                       ),
@@ -983,6 +1183,8 @@ class _InsuranceCard extends StatelessWidget {
   final void Function(bool) onToggleMode;
   final void Function(SavedInsurance) onInsuranceSelected;
   final void Function(bool) onSaveNewInsuranceChanged;
+  final void Function(SavedInsurance) onEditInsurance;
+  final void Function(SavedInsurance) onDeleteInsurance;
 
   const _InsuranceCard({
     required this.savedInsurances,
@@ -998,6 +1200,8 @@ class _InsuranceCard extends StatelessWidget {
     required this.onToggleMode,
     required this.onInsuranceSelected,
     required this.onSaveNewInsuranceChanged,
+    required this.onEditInsurance,
+    required this.onDeleteInsurance,
   });
 
   @override
@@ -1118,7 +1322,10 @@ class _InsuranceCard extends StatelessWidget {
                   ...savedInsurances.map((ins) => _SavedInsuranceTile(
                         insurance: ins,
                         selected: selectedInsurance == ins,
+                        canDelete: savedInsurances.length > 1,
                         onTap: () => onInsuranceSelected(ins),
+                        onEdit: () => onEditInsurance(ins),
+                        onDelete: () => onDeleteInsurance(ins),
                       )),
                 ],
               ),
@@ -1206,12 +1413,18 @@ class _InsuranceCard extends StatelessWidget {
 class _SavedInsuranceTile extends StatelessWidget {
   final SavedInsurance insurance;
   final bool selected;
+  final bool canDelete;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const _SavedInsuranceTile({
     required this.insurance,
     required this.selected,
+    required this.canDelete,
     required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -1221,7 +1434,7 @@ class _SavedInsuranceTile extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: selected
               ? AppColors.primary.withOpacity(0.07)
@@ -1261,8 +1474,25 @@ class _SavedInsuranceTile extends StatelessWidget {
               ],
             ),
           ),
+          // ── action icons ──────────────────────────────────────────────────
           if (selected)
             const Icon(Icons.check_circle, size: 18, color: AppColors.primary),
+          const SizedBox(width: 4),
+          _TileIconBtn(
+            icon: Icons.edit_outlined,
+            color: AppColors.primary,
+            tooltip: 'Edit insurance',
+            onTap: onEdit,
+          ),
+          if (canDelete) ...[
+            const SizedBox(width: 2),
+            _TileIconBtn(
+              icon: Icons.delete_outline,
+              color: Colors.redAccent,
+              tooltip: 'Remove insurance',
+              onTap: onDelete,
+            ),
+          ],
         ]),
       ),
     );
@@ -1286,6 +1516,8 @@ class _PaymentCard extends StatelessWidget {
   final void Function(bool) onToggleMode;
   final void Function(SavedCard) onCardSelected;
   final void Function(bool) onSaveNewCardChanged;
+  final void Function(SavedCard) onEditCard;
+  final void Function(SavedCard) onDeleteCard;
 
   const _PaymentCard({
     required this.savedCards,
@@ -1300,6 +1532,8 @@ class _PaymentCard extends StatelessWidget {
     required this.onToggleMode,
     required this.onCardSelected,
     required this.onSaveNewCardChanged,
+    required this.onEditCard,
+    required this.onDeleteCard,
   });
 
   @override
@@ -1445,7 +1679,10 @@ class _PaymentCard extends StatelessWidget {
                   ...savedCards.map((card) => _SavedCardTile(
                         card: card,
                         selected: selectedCard == card,
+                        canDelete: savedCards.length > 1,
                         onTap: () => onCardSelected(card),
+                        onEdit: () => onEditCard(card),
+                        onDelete: () => onDeleteCard(card),
                       )),
                 ],
               ),
@@ -1625,6 +1862,246 @@ class _PaymentCard extends StatelessWidget {
       );
 }
 
+// ── small icon button used inside tile rows ────────────────────────────────────
+class _TileIconBtn extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String tooltip;
+  final VoidCallback onTap;
+  const _TileIconBtn({
+    required this.icon,
+    required this.color,
+    required this.tooltip,
+    required this.onTap,
+  });
+  @override
+  Widget build(BuildContext context) => Tooltip(
+        message: tooltip,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Icon(icon, size: 17, color: color),
+          ),
+        ),
+      );
+}
+
+// ── edit card bottom sheet ─────────────────────────────────────────────────────
+class _EditCardSheet extends StatelessWidget {
+  final TextEditingController holderCtrl;
+  final TextEditingController numberCtrl;
+  final TextEditingController expiryCtrl;
+  const _EditCardSheet({
+    required this.holderCtrl,
+    required this.numberCtrl,
+    required this.expiryCtrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('Edit Card',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.textDark)),
+            const SizedBox(height: 14),
+            _SmallLabel('Card Holder Name'),
+            _CardField(controller: holderCtrl, hint: 'Name on card'),
+            const SizedBox(height: 10),
+            _SmallLabel('Card Number'),
+            TextFormField(
+              controller: numberCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                _CardNumberFormatter(),
+              ],
+              maxLength: 19,
+              style: const TextStyle(fontSize: 13, color: AppColors.textDark, letterSpacing: 2),
+              decoration: InputDecoration(
+                hintText: '0000  0000  0000  0000',
+                hintStyle: const TextStyle(fontSize: 12, color: AppColors.textLight),
+                counterText: '',
+                filled: true, fillColor: AppColors.cardBg,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.divider)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.divider)),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.primary)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _SmallLabel('Expiry Date'),
+            TextFormField(
+              controller: expiryCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                _ExpiryFormatter(),
+              ],
+              maxLength: 5,
+              style: const TextStyle(fontSize: 13, color: AppColors.textDark),
+              decoration: InputDecoration(
+                hintText: 'MM/YY',
+                hintStyle: const TextStyle(fontSize: 12, color: AppColors.textLight),
+                counterText: '',
+                filled: true, fillColor: AppColors.cardBg,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.divider)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.divider)),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: AppColors.primary)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(children: [
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: const BorderSide(color: AppColors.textGrey),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel', style: TextStyle(color: AppColors.textGrey)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Save', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── edit insurance bottom sheet ────────────────────────────────────────────────
+class _EditInsuranceSheet extends StatelessWidget {
+  final TextEditingController providerCtrl;
+  final TextEditingController policyCtrl;
+  final TextEditingController groupCtrl;
+  final TextEditingController holderNameCtrl;
+  final TextEditingController holderAddrCtrl;
+  const _EditInsuranceSheet({
+    required this.providerCtrl,
+    required this.policyCtrl,
+    required this.groupCtrl,
+    required this.holderNameCtrl,
+    required this.holderAddrCtrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40, height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text('Edit Insurance',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.textDark)),
+              const SizedBox(height: 14),
+              _SmallLabel('Provider Name'),
+              _CardField(controller: providerCtrl, hint: 'e.g. Star Health Insurance'),
+              const SizedBox(height: 10),
+              _SmallLabel('Policy ID'),
+              _CardField(controller: policyCtrl, hint: 'Enter policy ID'),
+              const SizedBox(height: 10),
+              _SmallLabel('Group ID'),
+              _CardField(controller: groupCtrl, hint: 'Enter group ID'),
+              const SizedBox(height: 10),
+              _SmallLabel('Primary Holder Name'),
+              _CardField(controller: holderNameCtrl, hint: 'Name of primary holder'),
+              const SizedBox(height: 10),
+              _SmallLabel('Primary Holder Address'),
+              _CardField(controller: holderAddrCtrl, hint: 'Primary holder address'),
+              const SizedBox(height: 20),
+              Row(children: [
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: AppColors.textGrey),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Cancel', style: TextStyle(color: AppColors.textGrey)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Save', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ]),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ── card-mode tab (Saved / New) ────────────────────────────────────────────────
 class _CardModeTab extends StatelessWidget {
   final IconData icon;
@@ -1686,12 +2163,18 @@ class _CardModeTab extends StatelessWidget {
 class _SavedCardTile extends StatelessWidget {
   final SavedCard card;
   final bool selected;
+  final bool canDelete;
   final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const _SavedCardTile({
     required this.card,
     required this.selected,
+    required this.canDelete,
     required this.onTap,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -1701,7 +2184,7 @@ class _SavedCardTile extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: selected
               ? AppColors.primary.withOpacity(0.07)
@@ -1715,8 +2198,7 @@ class _SavedCardTile extends StatelessWidget {
         child: Row(children: [
           // card-type badge
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(5),
@@ -1746,9 +2228,27 @@ class _SavedCardTile extends StatelessWidget {
               ],
             ),
           ),
+          // ── action icons ──────────────────────────────────────────────────
           if (selected)
-            const Icon(Icons.check_circle,
-                size: 18, color: AppColors.primary),
+            const Icon(Icons.check_circle, size: 18, color: AppColors.primary),
+          const SizedBox(width: 4),
+          // Edit button — always shown
+          _TileIconBtn(
+            icon: Icons.edit_outlined,
+            color: AppColors.primary,
+            tooltip: 'Edit card',
+            onTap: onEdit,
+          ),
+          // Delete button — only when more than 1 card exists
+          if (canDelete) ...[
+            const SizedBox(width: 2),
+            _TileIconBtn(
+              icon: Icons.delete_outline,
+              color: Colors.redAccent,
+              tooltip: 'Remove card',
+              onTap: onDelete,
+            ),
+          ],
         ]),
       ),
     );
@@ -1847,16 +2347,27 @@ class _ExpiryFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
-    if (text.length == 2 && !text.contains('/') && oldValue.text.length == 1) {
-      text = '$text/';
+    // Strip everything that is not a digit
+    final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Cap at 4 digits (MM + YY)
+    final capped = digits.length > 4 ? digits.substring(0, 4) : digits;
+
+    // Rebuild as MM/YY
+    String formatted;
+    if (capped.length <= 2) {
+      formatted = capped;
+    } else {
+      formatted = '${capped.substring(0, 2)}/${capped.substring(2)}';
     }
-    return newValue.copyWith(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }
+
 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  Existing widgets (unchanged from original)
