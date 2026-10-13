@@ -131,6 +131,16 @@ namespace Medicare.API.Controllers.V1
         }
 
         [HttpPost]
+        [Route("Receptionist/GetAppointmentCheckInList")]
+        public async Task<IActionResult> GetAppointmentCheckedInList(DataRequestModel model)
+        {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
+            List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
+            response = await _mediator.Send(new GetAppointmentCheckInListQuery(model));
+            return HandleListResponse(response);
+        }
+
+        [HttpPost]
         [Route("Receptionist/UpdateCheckedInStatus")]
         public async Task<IActionResult> UpdateCheckedInStatus(UpdateCheckedInStatusRequestModel model)
         {

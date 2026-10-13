@@ -105,49 +105,51 @@ export const getAppointmentListByAssociateIdFailure = createAction(
     '[Appointments by associate list] get  Failure',
     props<{ error: string }>()
 );
-export const getDashboardData = createAction(
-    '[Dashboard Data] get ',
-    props<{ associateId: number, fromDate: string, toDate: string }>()
 
+export const getDashboardSummary = createAction(
+    '[Dashboard] Get Dashboard Summary',
+    props<{ associateId: number, fromDate: string, toDate: string }>()
 );
 
-export const getDashboardDataSuccess = createAction(
-    '[Dashboard Data] get  Success',
+export const getDashboardSummarySuccess = createAction(
+    '[Dashboard] Get Dashboard Summary Success',
     props<{ Appointments: any }>()
 );
 
-export const getDashboardDataFailure = createAction(
-    '[Dashboard Data] get  Failure',
+export const getDashboardSummaryFailure = createAction(
+    '[Dashboard] Get Dashboard Summary Failure',
     props<{ error: string }>()
 );
-export const getDashboardDataByReceptionist = createAction(
-    '[Dashboard Receptionist Data] get ',
+
+export const getFrontOfficeRecentPatientQueueList = createAction(
+    '[Dashboard] Get Front Office Recent Patient Queue List',
     props<{ associateId: number, fromDate: string, toDate: string }>()
 
 );
 
-export const getDashboardDataByReceptionistSuccess = createAction(
-    '[Dashboard Receptionist Data] get  Success',
+export const getFrontOfficeRecentPatientQueueListSuccess = createAction(
+    '[Dashboard] Get Front Office Recent Patient Queue List Success',
     props<{ Appointments: any }>()
 );
 
-export const getDashboardDataByReceptionistFailure = createAction(
-    '[Dashboard Receptionist Data] get  Failure',
+export const getFrontOfficeRecentPatientQueueListFailure = createAction(
+    '[Dashboard] Get Front Office Recent Patient Queue List Failure',
     props<{ error: string }>()
 );
-export const getDashboardDataByDoctor = createAction(
-    '[Dashboard Doctor Data] get ',
+
+export const getDoctorRecentPatientList = createAction(
+    '[Dashboard] Get Doctor Recent Patient List',
     props<{ associateId: number, fromDate: string, toDate: string }>()
 
 );
 
-export const getDashboardDataByDoctorSuccess = createAction(
-    '[Dashboard Doctor Data] get  Success',
+export const getDoctorRecentPatientListSuccess = createAction(
+    '[Dashboard] Get Doctor Recent Patient List Success',
     props<{ Appointments: any }>()
 );
 
-export const getDashboardDataByDoctorFailure = createAction(
-    '[Dashboard Doctor Data] get  Failure',
+export const getDoctorRecentPatientListFailure = createAction(
+    '[Dashboard] Get Doctor Recent Patient List Failure',
     props<{ error: string }>()
 );
 
@@ -166,6 +168,38 @@ export const getAppointmentListByRiceptionistFailure = createAction(
     '[Dashboard Appointment Data] get  Failure',
     props<{ error: string }>()
 );
+
+export const getAppointmentCheckInListByRiceptionist = createAction(
+    '[Dashboard Appointment Data] get ',
+    props<{ fromDate: string, toDate: string }>()
+
+);
+
+export const getAppointmentCheckInListByRiceptionistSuccess = createAction(
+    '[Dashboard Appointment Data] get  Success',
+    props<{ Appointments: any }>()
+);
+
+export const getAppointmentCheckInListByRiceptionistFailure = createAction(
+    '[Dashboard Appointment Data] get  Failure',
+    props<{ error: string }>()
+);
+
+export const searchCheckInPatient = createAction(
+  '[Appointment] Search Check-In Patient',
+  props<{
+    fullName: string;
+    dateOfBirth: string;
+  }>()
+);
+
+export const filterCheckInByDoctor = createAction(
+  '[Appointment] Filter Check-In By Doctor',
+  props<{
+    doctorName: string;
+  }>()
+);
+
 
 export const getAppointmentStatusList = createAction(
     '[Dashboard Appointment-status Data] get ',

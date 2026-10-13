@@ -208,21 +208,21 @@ export class AppointmentEffects {
 
     getDashboardSummary$ = createEffect(() =>
         this.actions$.pipe(
-            ofType(AppointmentActions.getDashboardData),
+            ofType(AppointmentActions.getDashboardSummary),
 
             mergeMap((action) =>
                 this.appointmentService
-                    .getDashboardSummery(action.associateId, action.fromDate, action.toDate)
+                    .getDashboardSummary(action.associateId, action.fromDate, action.toDate)
                     .pipe(
                         map((response: any) =>
-                            AppointmentActions.getDashboardDataSuccess({
+                            AppointmentActions.getDashboardSummarySuccess({
                                 Appointments: response
                             })
                         ),
 
                         catchError((error) =>
                             of(
-                                AppointmentActions.getDashboardDataFailure({
+                                AppointmentActions.getDashboardSummaryFailure({
                                     error:
                                         error?.message ||
                                         'Getting Relation Data Failed'
@@ -235,21 +235,21 @@ export class AppointmentEffects {
     );
     getDashboardDataForReceptionist$ = createEffect(() =>
         this.actions$.pipe(
-            ofType(AppointmentActions.getDashboardDataByReceptionist),
+            ofType(AppointmentActions.getFrontOfficeRecentPatientQueueList),
 
             mergeMap((action) =>
                 this.appointmentService
-                    .getDashboardSummeryForReceptionist(action.associateId, action.fromDate, action.toDate)
+                    .getFrontOfficeRecentPatientQueueList(action.associateId, action.fromDate, action.toDate)
                     .pipe(
                         map((response: any) =>
-                            AppointmentActions.getDashboardDataByReceptionistSuccess({
+                            AppointmentActions.getFrontOfficeRecentPatientQueueListSuccess({
                                 Appointments: response
                             })
                         ),
 
                         catchError((error) =>
                             of(
-                                AppointmentActions.getDashboardDataByReceptionistFailure({
+                                AppointmentActions.getFrontOfficeRecentPatientQueueListFailure({
                                     error:
                                         error?.message ||
                                         'Getting Relation Data Failed'
@@ -263,21 +263,21 @@ export class AppointmentEffects {
 
     getDashboardDataForDoctor$ = createEffect(() =>
         this.actions$.pipe(
-            ofType(AppointmentActions.getDashboardDataByDoctor),
+            ofType(AppointmentActions.getDoctorRecentPatientList),
 
             mergeMap((action) =>
                 this.appointmentService
-                    .getDashboardSummeryForDoctor(action.associateId, action.fromDate, action.toDate)
+                    .getDoctorRecentPatientList(action.associateId, action.fromDate, action.toDate)
                     .pipe(
                         map((response: any) =>
-                            AppointmentActions.getDashboardDataByDoctorSuccess({
+                            AppointmentActions.getDoctorRecentPatientListSuccess({
                                 Appointments: response
                             })
                         ),
 
                         catchError((error) =>
                             of(
-                                AppointmentActions.getDashboardDataByDoctorFailure({
+                                AppointmentActions.getDoctorRecentPatientListFailure({
                                     error:
                                         error?.message ||
                                         'Getting Relation Data Failed'
@@ -306,6 +306,34 @@ export class AppointmentEffects {
                         catchError((error) =>
                             of(
                                 AppointmentActions.getAppointmentListByRiceptionistFailure({
+                                    error:
+                                        error?.message ||
+                                        'Getting Relation Data Failed'
+                                })
+                            )
+                        )
+                    )
+            )
+        )
+    );
+
+    getAppointmentCheckInListByReceptionist$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(AppointmentActions.getAppointmentCheckInListByRiceptionist),
+
+            mergeMap((action) =>
+                this.appointmentService
+                    .getAppointmentCheckinListForReceptionist(action.fromDate, action.toDate)
+                    .pipe(
+                        map((response: any) =>
+                            AppointmentActions.getAppointmentCheckInListByRiceptionistSuccess({
+                                Appointments: response
+                            })
+                        ),
+
+                        catchError((error) =>
+                            of(
+                                AppointmentActions.getAppointmentCheckInListByRiceptionistFailure({
                                     error:
                                         error?.message ||
                                         'Getting Relation Data Failed'

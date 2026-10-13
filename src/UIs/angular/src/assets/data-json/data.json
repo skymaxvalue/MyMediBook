@@ -45,7 +45,7 @@
       "description": "Check-in existing patient",
       "icon": "checkin2.png",
       "color": "green",
-      "route": "patient-checkin"
+      "route": "patient-check-in"
     },
     {
       "title": "Book Appointment",

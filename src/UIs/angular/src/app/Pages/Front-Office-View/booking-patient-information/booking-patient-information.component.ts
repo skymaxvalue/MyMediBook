@@ -20,7 +20,7 @@ import {
 import { getCities, getCountries, getStates, requestOTP } from "src/app/Store/Auth/auth.actions";
 import { getPatientListForReceptionist } from "src/app/Store/Patient/patient.action";
 import { HttpClient } from "@angular/common/http";
-import { selectAppointmentStatusList } from "src/app/Store/Appointments/appointment.selcetors";
+import { selectAppointmentStatusList } from "src/app/Store/Appointments/appointment.selectors";
 import { selectPatientListForReceptionist } from "src/app/Store/Patient/patient.selectors";
 import { filter, take } from "rxjs/operators";
 

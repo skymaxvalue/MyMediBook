@@ -21,7 +21,7 @@ import {
 import {
   selectCanceledAppointment,
   selectMyAppointmentList,
-} from "src/app/Store/Appointments/appointment.selcetors";
+} from "src/app/Store/Appointments/appointment.selectors";
 import { TabServiceService } from "src/app/core/Services/tab-service.service";
 import { HostListener } from "@angular/core";
 import { cancelRules, rescheduleRules } from "src/app/Utility/EndPointsOfAPI";
@@ -91,7 +91,7 @@ export class MyAppointmentComponent implements OnInit {
     private store: Store<AppState>,
     private tabService: TabServiceService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.store.dispatch(getMyAppointments({ patientId: this.user.refId }));
@@ -449,7 +449,7 @@ export class MyAppointmentComponent implements OnInit {
       } else {
         modalData.confirmText = `Your appointment is scheduled for   <strong>${formattedDate}</strong> at
   <strong>${appointment.slotStartTime}</strong>,
- , which is now less than 24 hours away. You can still cancel, but please note that last-minute cancellations may affect availability for other patients. 
+ , which is now less than 24 hours away. You can still cancel, but please note that last-minute cancellations may affect availability for other patients.
   <br><br>
   <strong>Would you like to continue with cancellation?</strong> `;
         modalData.confirmButton = "Yes, Cancel Appointment";

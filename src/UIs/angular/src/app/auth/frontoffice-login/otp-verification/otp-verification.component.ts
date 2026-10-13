@@ -208,7 +208,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.countdown = setInterval(() => {
       this.time--;
 
-      console.log("Timer:", this.time);
+      // console.log("Timer:", this.time);
 
       this.updateTimerText();
 

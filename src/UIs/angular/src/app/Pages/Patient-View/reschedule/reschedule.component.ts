@@ -6,7 +6,7 @@ import { Store } from "@ngrx/store";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 import { AppState } from "src/app/Store/app.state";
 import { rescheduleMyAppointment } from "src/app/Store/Appointments/appointment.actions";
-import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selcetors";
+import { selectRescheduledAppointment } from "src/app/Store/Appointments/appointment.selectors";
 import { getTimeSloteByDoctorID } from "src/app/Store/Doctor/doctor.action";
 import { selectGetTimeSlotOfDoctor } from "src/app/Store/Doctor/doctor.selectors";
 
@@ -45,7 +45,7 @@ export class RescheduleComponent implements OnInit {
     private router: Router,
     private store: Store<AppState>,
     private toast: ToastService
-  ) {}
+  ) { }
 
   ngOnInit() {
     const navigation = this.router.currentNavigation();
