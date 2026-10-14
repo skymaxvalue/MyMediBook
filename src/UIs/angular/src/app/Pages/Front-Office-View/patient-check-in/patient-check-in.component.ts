@@ -1,8 +1,16 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ElementRef,
+  HostListener,
+  ViewChild,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { map, Subject, takeUntil } from "rxjs";
 import { AppState } from "src/app/Store/app.state";
 import * as AppointmentActions from "src/app/Store/Appointments/appointment.actions";
 import * as AppointmentSelectors from "src/app/Store/Appointments/appointment.selectors";
@@ -49,6 +57,9 @@ export class PatientCheckInComponent implements OnInit {
 
   appointments: any[] = [];
 
+  private destroy$ = new Subject<void>();
+  @ViewChild("doctorWrapper") doctorWrapper!: ElementRef<HTMLElement>;
+
   constructor(
     private router: Router,
     private store: Store<AppState>
@@ -57,20 +68,36 @@ export class PatientCheckInComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getCheckInAppointmentList();
+    this.subscribePatientCheckInList();
     this.store.select(DoctorSelector.selectDoctorSpecialities).subscribe((res: any) => {
       if (res) {
         this.doctors = res.flatMap((speciality: any) => speciality.doctors);
       }
     });
-    this.subscribePatientCheckInList();
   }
 
   subscribePatientCheckInList(): void {
     this.store
       .select(AppointmentSelectors.selectFilteredCheckInAppointments)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((appointments) => {
-        this.appointments = appointments ?? [];
+        this.appointments = Array.isArray(appointments) ? appointments : [];
       });
+  }
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent): void {
+    if (
+      this.showDoctorDropdown &&
+      !this.doctorWrapper?.nativeElement.contains(event.target as Node)
+    ) {
+      this.closeDoctorDropdown();
+    }
+  }
+
+  @HostListener("document:keydown.escape")
+  onEscape(): void {
+    this.closeDoctorDropdown();
   }
 
   getCheckInAppointmentList() {
@@ -121,24 +148,6 @@ export class PatientCheckInComponent implements OnInit {
       this.showSuccessModal = false;
     }
   }
-  // get filteredDoctors(): string[] {
-
-  //   const search = this.doctorName
-  //     .trim()
-  //     .toLowerCase();
-
-  //   if (!search) {
-  //     return this.doctors;
-  //   }
-
-  //   return this.doctors.filter(doctor =>
-  //     doctor.toLowerCase().includes(search)
-  //   );
-  // }
-
-  // openDoctorDropdown(): void {
-  //   this.doctorDropdownOpen = true;
-  // }
 
   selectDoctor(doctor: any, event: MouseEvent): void {
     event.stopPropagation();
@@ -217,64 +226,54 @@ export class PatientCheckInComponent implements OnInit {
     this.selectedAppointment = { ...appointment };
   }
 
-  handleCheckIn(): void {
-    if (!this.selectedAppointment) {
-      return;
+  openCheckInDialog(): void {
+    if (this.selectedAppointment) {
+      this.store.dispatch(
+        AppointmentActions.openPatientCheckInDialog({ appointment: this.selectedAppointment })
+      );
     }
-
-    this.showConfirmModal = true;
   }
 
-  confirmCheckIn(): void {
-    if (!this.selectedAppointment) {
-      return;
-    }
+  // confirmCheckIn(): void {
+  //   if (this.selectedAppointment) {
+  //     AppointmentActions.openPatientCheckInDialog()
+  //   }
 
-    this.selectedAppointment.checkedIn = true;
-    console.log("Check-in confirmed for:", this.selectedAppointment);
+  //   this.selectedAppointment.checkedIn = true;
+  //   console.log("Check-in confirmed for:", this.selectedAppointment);
 
-    const checkInData = {
-      patientId: this.selectedAppointment.id,
+  // //   const checkInData = {
+  //     patientId: this.selectedAppointment.id,
 
-      patientName: this.selectedAppointment.fullName,
+  //     patientName: this.selectedAppointment.fullName,
 
-      uhid: this.selectedAppointment.uhid,
+  //     uhid: this.selectedAppointment.uhid,
 
-      doctor: this.selectedAppointment.doctor
-        ? this.selectedAppointment?.doctor
-        : this.selectedDoctor.name,
+  //     doctor: this.selectedAppointment.doctorProfile.name
+  //       ? this.selectedAppointment?.doctorProfile.name
+  //       : this.selectedDoctor.name,
 
-      department: this.selectedAppointment.department
-        ? this.selectedAppointment.department
-        : this.selectedDoctor.department,
+  //     department: this.selectedAppointment.department
+  //       ? this.selectedAppointment.department
+  //       : this.selectedDoctor.department,
 
-      room: this.selectedAppointment.room ? this.selectedAppointment.room : 2,
+  //     room: this.selectedAppointment.room ? this.selectedAppointment.room : 2,
 
-      appointmentTime: this.selectedAppointment.appointmentTime,
+  //     appointmentTime: this.selectedAppointment.appointmentTime,
 
-      checkInTime: this.getCurrentTime(),
+  //     checkInTime: this.getCurrentTime(),
 
-      checkInDate: this.getCurrentDate(),
-    };
+  //     checkInDate: this.getCurrentDate(),
+  //   };
 
-    localStorage.setItem("currentCheckIn", JSON.stringify(checkInData));
+  //   localStorage.setItem("currentCheckIn", JSON.stringify(checkInData));
 
-    this.showConfirmModal = false;
+  //   this.showConfirmModal = false;
 
-    this.showSuccessModal = true;
-  }
+  //   this.showSuccessModal = true;
+  // }
 
-  viewQueue(): void {
-    if (!this.selectedAppointment) {
-      return;
-    }
 
-    this.router.navigate(["/front-office/doctor-queue"], {
-      queryParams: {
-        doctor: this.selectedAppointment.doctor,
-      },
-    });
-  }
 
   done(): void {
     this.showSuccessModal = false;
@@ -304,5 +303,10 @@ export class PatientCheckInComponent implements OnInit {
 
   trackById(index: number, appointment: any): number {
     return appointment.id;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

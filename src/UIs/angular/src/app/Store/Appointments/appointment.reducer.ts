@@ -230,6 +230,22 @@ export const appointmentReducer = createReducer(
     },
   })),
 
+  on(AppointmentActions.confirmPatientCheckIn, (state, { appointmentId }) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
+  on(AppointmentActions.confirmPatientCheckInSuccess, (state, { response }) => ({
+    ...state,
+    isLoading: false,
+    error: null,
+  })),
+  on(AppointmentActions.confirmPatientCheckInFailure, (state, { error }) => ({
+    ...state,
+    isLoading: false,
+    error,
+  })),
+
   on(AppointmentActions.getAppointmentStatusList, (state) => ({
     ...state,
     isLoading: true,
@@ -246,5 +262,11 @@ export const appointmentReducer = createReducer(
     ...state,
     isLoading: false,
     error: action.error,
+  })),
+
+  on(AppointmentActions.redirectToAppointmentCheckIns, (state, { doctorId }) => ({
+    ...state,
+    selectedDoctorId: doctorId,
+    isLoading: false,
   }))
 );

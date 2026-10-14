@@ -8,7 +8,7 @@ import { Store } from "@ngrx/store";
 import { loadDoctorSpecialities } from "src/app/Store/Doctor/doctor.action";
 import { selectDoctorSpecialities } from "src/app/Store/Doctor/doctor.selectors";
 import { AsyncPipe } from "@angular/common";
-import { DoctorSpeciality } from "src/app/core/Models/DoctorAndSpeciality-Model";
+import { DoctorSpeciality } from "src/app/core/Models/doctor-detail.model";
 import { AppState } from "src/app/Store/app.state";
 import { MessagesComponent } from "../messages/messages.component";
 import { LabResultComponent } from "../lab-result/lab-result.component";

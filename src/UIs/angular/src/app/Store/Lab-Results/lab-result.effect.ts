@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as LabResultAction from './lab-result.actions';
-import { AppoinmentService } from '../../core/Services/appoinment.service';
 import { catchError, map, mergeMap, of } from 'rxjs';
 import { LabResultService } from 'src/app/core/Services/lab-result.service';
 

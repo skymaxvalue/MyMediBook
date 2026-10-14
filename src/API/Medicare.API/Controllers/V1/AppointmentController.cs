@@ -144,7 +144,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Receptionist/UpdateCheckedInStatus")]
         public async Task<IActionResult> UpdateCheckedInStatus(UpdateCheckedInStatusRequestModel model)
         {
-            ResponseModel response = new ResponseModel();
+            AppointmentDetailModel response = new AppointmentDetailModel();
             response = await _mediator.Send(new UpdateCheckedInStatusCommand(model));
             return HandleResponse(response);
         }

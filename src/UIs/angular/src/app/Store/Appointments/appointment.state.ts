@@ -1,4 +1,4 @@
-import { AppointmentBooking } from "../../core/Models/Appointment-Model";
+import { AppointmentRequestModel } from "../../core/Models/appointment.model";
 export interface CheckInSearch {
   fullName: string;
   dateOfBirth: string;
@@ -6,7 +6,7 @@ export interface CheckInSearch {
 }
 
 export interface AppointmentState {
-  appointment: AppointmentBooking | null;
+  appointment: AppointmentRequestModel | null;
   ageType: any[];
   isLoading: boolean;
   error: string | null;
@@ -20,6 +20,8 @@ export interface AppointmentState {
   statusList: any;
   checkInAppointments: any[];
   checkInSearch: CheckInSearch;
+  selectedAppointmentId: number;
+  selectedDoctorId: number;
 }
 
 export const initialAppointmentState: AppointmentState = {
@@ -41,4 +43,6 @@ export const initialAppointmentState: AppointmentState = {
     dateOfBirth: "",
     doctorName: "",
   },
+  selectedAppointmentId: 0,
+  selectedDoctorId: 0,
 };

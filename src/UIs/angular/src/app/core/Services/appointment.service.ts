@@ -1,23 +1,24 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { map, Observable } from "rxjs";
-import { AppointmentBooking } from "../Models/Appointment-Model";
 import { environment } from "src/environments/environment";
 import {
   APIEndpoints,
   AppointmentApiEndPoint,
   MasterAPIEndPoints,
 } from "../../Utility/EndPointsOfAPI";
+import { UpdateAppointmentCheckInRequestModel } from "../Models/update-appointment.model";
+import { AppointmentRequestModel } from "../Models/appointment.model";
 
 @Injectable({
   providedIn: "root",
 })
-export class AppoinmentService {
+export class AppointmentService {
   private apiUrl = environment.OpenIdConnect.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  createAppointment(appointment: AppointmentBooking): Observable<any> {
+  createAppointment(appointment: AppointmentRequestModel): Observable<any> {
     return this.http.post(
       `${this.apiUrl}${AppointmentApiEndPoint.CREATE_APPOINTMENT}`,
       appointment
@@ -131,5 +132,18 @@ export class AppoinmentService {
 
   getAppointmentStatusList() {
     return this.http.get(`${this.apiUrl}${AppointmentApiEndPoint.GET_APPOINTMENT_STATUS}`);
+  }
+
+  updateCheckInStatus(payload: UpdateAppointmentCheckInRequestModel) {
+    return this.http
+      .post<any>(
+        `${this.apiUrl}${AppointmentApiEndPoint.UPDATE_APPOINTMENT_CHECK_IN_STATUS}`,
+        payload
+      )
+      .pipe(
+        map((resp) => {
+          return resp?.data;
+        })
+      );
   }
 }

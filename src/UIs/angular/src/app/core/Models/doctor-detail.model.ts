@@ -13,3 +13,17 @@ export interface DoctorSpecialityResponse {
     result: number;
     tokenKey: string | null;
 }
+
+export interface DoctorProfileModel {
+  associateId: number;
+  name: string;
+  degree: string;
+  image: string;
+  department: string;
+  designationName: string;
+  fromTime: string;
+  toTime: string;
+  fromDate: string;
+  toDate: string;
+  availableWeekDays: string[];
+}

@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { AppointmentState } from "./appointment.state";
+import { AppointmentDetailModel } from "../../core/Models/appointment-detail.model";
 
 export const selectAppointmentState = createFeatureSelector<AppointmentState>("appointment");
 
@@ -49,7 +50,7 @@ export const selectAppointmentListForReceptionist = createSelector(
 );
 export const selectPatientCheckInListForReceptionist = createSelector(
   selectAppointmentState,
-  (state) => state.Appointments
+  (state) => state.checkInAppointments ?? []
 );
 export const selectAppointmentStatusList = createSelector(
   selectAppointmentState,
@@ -68,7 +69,7 @@ export const selectFilteredCheckInAppointments = createSelector(
     const doctorName = (search?.doctorName ?? "").trim().toLowerCase();
     const dob = (search?.dateOfBirth ?? "").slice(0, 10);
 
-    return (appointments ?? []).filter((appointment: any) => {
+    return (appointments ?? []).filter((appointment: AppointmentDetailModel) => {
       const matchesName =
         !patientName || (appointment.patientName ?? "").toLowerCase().includes(patientName);
 

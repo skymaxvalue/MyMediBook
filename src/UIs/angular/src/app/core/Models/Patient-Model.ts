@@ -1,4 +1,4 @@
-import { InsuranceData, PaymentData } from "./Appointment-Model";
+import { InsuranceData, PaymentData } from "./appointment.model";
 
 export interface PatientRegister {
     patientId?: number;

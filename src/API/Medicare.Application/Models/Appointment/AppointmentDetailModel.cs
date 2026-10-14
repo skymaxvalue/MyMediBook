@@ -26,6 +26,7 @@ namespace Medicare.Application.Models.Appointment
         public string CreatedDate{ get; set; }
         public bool? Insurance { get; set; }
         public bool? IsCheckedIn { get; set; }
+        public DateTime? CheckedInAt { get; set; }
         public DoctorProfileModel DoctorProfile { get; set; } = null;
         public InsuranceData InsuranceData { get; set; } = null;
         public PaymentData PaymentData { get; set; } = null;
@@ -54,6 +55,8 @@ namespace Medicare.Application.Models.Appointment
         public string VisitType { get; set; }
         public string OtpMethod { get; set; }
         public string CreatedDate { get; set; }
+        public bool IsCheckedIn { get; set; }
+        public DateTime CheckedInAt { get; set; }
         public int AssociateId { get; set; }
         public string Name { get; set; }
         public string Degree { get; set; }
