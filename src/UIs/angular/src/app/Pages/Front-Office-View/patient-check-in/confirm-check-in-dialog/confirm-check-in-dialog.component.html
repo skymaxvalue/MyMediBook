@@ -1,0 +1,29 @@
+<div class="modal-content">
+  <button type="button" class="modal-close" (click)="cancel()">&times;</button>
+  <h2>Confirm Check-In</h2>
+  <p class="modal-description">Please review the details below before checking in the patient.</p>
+
+  <div class="details-box">
+    <div class="detail-row">
+      <span>Patient Name</span><span>{{ data.appointment.patientName }}</span>
+    </div>
+    <div class="detail-row">
+      <span>UHID</span><span>{{ data.appointment.profileId }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Doctor</span><span>{{ data.appointment.doctorProfile.name || "N/A" }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Appointment Time</span
+      ><span>{{ data.appointment.slotStartTime }} - {{ data.appointment.slotEndTime }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Room Number</span><span>{{ data.appointment.room || "N/A" }}</span>
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="secondary-btn" (click)="cancel()">Cancel</button>
+    <button type="button" class="primary-btn" (click)="confirmCheckIn()">Confirm Check-In</button>
+  </div>
+</div>

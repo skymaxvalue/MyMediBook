@@ -1,0 +1,31 @@
+<div class="modal-content success-modal">
+  <div class="success-icon">✓</div>
+  <h2>Patient Checked In Successfully!</h2>
+  <p class="modal-description">The patient has been checked in for the appointment.</p>
+
+  <div class="details-box">
+    <div class="detail-row">
+      <span>Patient Name</span><span>{{ data.patientName }}</span>
+    </div>
+    <div class="detail-row">
+      <span>UHID</span><span>{{ data.profileId }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Doctor</span><span>{{ data.doctorProfile.name || "N/A" }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Appointment Time</span><span>{{ data.slotStartTime }}-{{ data.slotEndTime }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Room Number</span><span>{{ data.room || "N/A" }}</span>
+    </div>
+    <div class="detail-row">
+      <span>Check-In Time</span><span>{{ data.CheckedInAt }}</span>
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="secondary-btn" (click)="viewQueue()">View Queue</button>
+    <button type="button" class="primary-btn" (click)="done()">Done</button>
+  </div>
+</div>

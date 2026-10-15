@@ -874,7 +874,7 @@ position:absolute;
     transform:translateY(-55%);
     font-size:20px;
     color:#647A9C;
-    pointer-events:none;
+    /* pointer-events:none; */
 }
 
 .doctor-dropdown{

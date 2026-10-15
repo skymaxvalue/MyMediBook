@@ -27,6 +27,7 @@ export const AppointmentApiEndPoint = {
     GET_APPOINTMENT_LIST_BY_ASSOCIATE_LIST: "Appointment/Doctor/GetMyAppointmentList/",
     GET_APPOINTMENT_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentList",
     GET_APPOINTMENT_CHECK_IN_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentCheckInList",
+    UPDATE_APPOINTMENT_CHECK_IN_STATUS: "Appointment/Receptionist/UpdateCheckedInStatus",
     GET_APPOINTMENT_STATUS: "Master/GetStatusKeyList"
 }
 export const PatientApiEndPoint = {
