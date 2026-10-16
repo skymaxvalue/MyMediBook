@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/payment.css">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<svg class="pay-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h4.5v-6h4v6h4.5V10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 20 20"><path d="M4 10.5l3.5 3.5L16 5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v5.5M12 16.2v.3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.6v.3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M6.5 15h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 9.5v.1M18 14.5v.1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="13" width="4" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="17" y="13" width="4" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 19c0 1.5-2 2.5-5 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.8M12 16.8v.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<div id="navbar-container" data-active-tab="billing"></div>
+
+<main class="dashboard-container" id="main">
+
+    <section class="breadcrumb">
+        <a href="dashboard.html">Dashboard</a>
+      
+        <span class="separator"><img src="images/right-arrow-blue.png" alt=""></span>
+        <span class="active" aria-current="page">Payment</span>
+    </section>
+
+    <section class="pay-page-card" aria-labelledby="payTitle">
+
+        <div class="pay-page-header">
+            <div class="pay-title-group">
+                <div class="pay-icon-circle"><img src="images/card.png" alt=""></div>
+                <div>
+                    <h2 id="payTitle">Service Invoice - Payment</h2>
+                    <p id="paySubtitle">Search and select a patient to process payment.</p>
+                </div>
+            </div>
+            <span class="pay-step-badge" id="payStepBadge">Step 1 of 4</span>
+        </div>
+
+        <nav aria-label="Payment progress">
+            <ol class="pay-stepper" id="payStepper">
+                <li class="pay-step" data-step="1"><button type="button" class="pay-step__btn" data-goto="1"><span class="pay-step__dot" aria-hidden="true"><span class="pay-step__num">1</span><svg class="pay-step__check"><use href="#i-check"/></svg></span><span class="pay-step__label">Select Patient</span></button></li>
+                <li class="pay-step" data-step="2"><button type="button" class="pay-step__btn" data-goto="2"><span class="pay-step__dot" aria-hidden="true"><span class="pay-step__num">2</span><svg class="pay-step__check"><use href="#i-check"/></svg></span><span class="pay-step__label">Payment</span></button></li>
+                <li class="pay-step" data-step="3"><button type="button" class="pay-step__btn" data-goto="3"><span class="pay-step__dot" aria-hidden="true"><span class="pay-step__num">3</span><svg class="pay-step__check"><use href="#i-check"/></svg></span><span class="pay-step__label">Invoice Summary</span></button></li>
+                <li class="pay-step" data-step="4"><button type="button" class="pay-step__btn" data-goto="4"><span class="pay-step__dot" aria-hidden="true"><span class="pay-step__num">4</span><svg class="pay-step__check"><use href="#i-check"/></svg><svg class="pay-step__alert"><use href="#i-close"/></svg></span><span class="pay-step__label">Confirmation</span></button></li>
+            </ol>
+        </nav>
+
+        <p class="pay-sr-only" id="payLive" role="status" aria-live="polite"></p>
+
+        <section class="pay-panel" data-panel="1" tabindex="-1" aria-labelledby="payPanel1Title">
+            <h3 class="pay-sr-only" id="payPanel1Title">Step 1: Select patient and payment record</h3>
+
+            <section class="pay-section">
+                <div class="pay-section__header">
+                    <img src="images/search-blue.png" alt="">
+                    <div>
+                        <h3>Find Patient</h3>
+                        <p>Search by last name and date of birth, or by mobile number.</p>
+                    </div>
+                </div>
+
+                <div class="pay-search-layout">
+                    <div class="pay-search-left">
+                        <div class="pay-field">
+                            <label for="patientLastNameSearch">Patient Last Name</label>
+                            <div class="pay-search-input">
+                                <img src="images/profile-outline.png" alt="">
+                                <input id="patientLastNameSearch" type="text" placeholder="Enter last name" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="patientSearchResults" aria-expanded="false">
+                            </div>
+                        </div>
+                        <div class="pay-field">
+                            <label for="patientDobSearch">Date of Birth</label>
+                            <input id="patientDobSearch" class="pay-input" type="date">
+                        </div>
+                    </div>
+
+                    <div class="pay-search-divider"><span>OR</span></div>
+
+                    <div class="pay-search-right">
+                        <div class="pay-field">
+                            <label for="patientMobileSearch">Mobile Number</label>
+                            <div class="pay-search-input">
+                                <img src="images/phone-blue.png" alt="">
+                                <input id="patientMobileSearch" type="tel" placeholder="Enter mobile number" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="patientSearchResults" aria-expanded="false">
+                            </div>
+                        </div>
+                        <div class="pay-search-actions">
+                            <button type="button" id="patientClearBtn" class="pay-btn pay-btn--danger-outline">Clear</button>
+                            <button type="button" id="patientSearchBtn" class="pay-btn pay-btn--primary pay-search-btn">
+                                <img src="images/search-white.png" alt="" class="pay-btn__img">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="patientSearchResults" class="pay-search-results" role="listbox" aria-label="Matching patients"></div>
+
+                <div class="pay-selected" id="paySelectedPatient" hidden>
+                    <span class="pay-selected__avatar" aria-hidden="true"><img src="images/patient-icon-blue.png" alt=""></span>
+                    <div class="pay-selected__info">
+                        <strong id="paySelectedName"></strong>
+                        <span id="paySelectedMeta"></span>
+                    </div>
+                    <span class="pay-pill pay-pill--selected">Patient selected</span>
+                </div>
+            </section>
+
+            <section class="pay-section">
+                <div class="pay-section__header">
+                    <svg class="pay-section__svg" aria-hidden="true"><use href="#i-doc"/></svg>
+                    <div>
+                        <h3>Payment Records</h3>
+                        <p id="payRecordsHint">Select a patient to view and process payment.</p>
+                    </div>
+                </div>
+
+                <div class="pay-table-wrap">
+                    <table class="pay-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="pay-col-radio"><span class="pay-sr-only">Select</span></th>
+                                <th scope="col">Patient Name</th>
+                                <th scope="col">DOB</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">Phone Number</th>
+                                <th scope="col">Consulting Doctor</th>
+                                <th scope="col">Fee</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payRecordsBody"></tbody>
+                    </table>
+                </div>
+                <p class="pay-field-error" id="payRecordError" role="alert" hidden></p>
+                <p class="pay-demo-note">Payment records are demonstration data for this frontend prototype and are stored only in this browser.</p>
+            </section>
+
+            <div class="pay-actions">
+                <button type="button" class="pay-btn pay-btn--secondary" id="payCancel1"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-close"/></svg>Cancel</button>
+                <button type="button" class="pay-btn pay-btn--primary" id="payContinue1" disabled>Continue<svg class="pay-btn__svg" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+            </div>
+        </section>
+
+        <section class="pay-panel" data-panel="2" tabindex="-1" aria-labelledby="payPanel2Title" hidden>
+            <h3 class="pay-sr-only" id="payPanel2Title">Step 2: Payment details</h3>
+
+            <section class="pay-section">
+                <div class="pay-section__header">
+                    <img src="images/profile-outline.png" alt="">
+                    <div><h3>Patient &amp; Visit Details</h3></div>
+                </div>
+                <dl class="pay-summary">
+                    <div class="pay-summary__item"><dt>Patient Name</dt><dd id="sumName"></dd></div>
+                    <div class="pay-summary__item"><dt>Date of Birth</dt><dd id="sumDob"></dd></div>
+                    <div class="pay-summary__item"><dt>Phone Number</dt><dd id="sumPhone"></dd></div>
+                    <div class="pay-summary__item"><dt>Address</dt><dd id="sumAddress"></dd></div>
+                    <div class="pay-summary__item pay-summary__item--wide"><dt>Consulting Doctor</dt><dd id="sumDoctor"></dd></div>
+                    <div class="pay-summary__item pay-summary__item--wide"><dt>Fee Type</dt><dd id="sumFeeType"></dd></div>
+                    <div class="pay-summary__fee"><dt>Consultation Fee</dt><dd id="sumFee"></dd></div>
+                </dl>
+            </section>
+
+            <section class="pay-section">
+                <div class="pay-section__header">
+                    <img src="images/card.png" alt="">
+                    <div><h3 id="payMethodTitle">Payment Method</h3></div>
+                </div>
+                <div class="pay-method-group" role="radiogroup" aria-labelledby="payMethodTitle">
+                    <label class="pay-method is-selected" id="payMethodCardLabel">
+                        <input type="radio" name="payMethod" value="card" checked>
+                        <span class="pay-method__dot" aria-hidden="true"></span>
+                        <span class="pay-method__icon" aria-hidden="true"><svg><use href="#i-card"/></svg></span>
+                        <span class="pay-method__text"><strong>Card Payment</strong><span>Debit / Credit Card, Wallets</span></span>
+                    </label>
+                    <label class="pay-method" id="payMethodCashLabel">
+                        <input type="radio" name="payMethod" value="cash">
+                        <span class="pay-method__dot" aria-hidden="true"></span>
+                        <span class="pay-method__icon" aria-hidden="true"><svg><use href="#i-cash"/></svg></span>
+                        <span class="pay-method__text"><strong>Cash Payment</strong><span>Accept cash at front desk</span></span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="pay-section" id="payCardSection">
+                <div class="pay-section__header">
+                    <img src="images/card.png" alt="">
+                    <div><h3 id="payProviderTitle">Card Payment Details</h3></div>
+                </div>
+
+                <div class="pay-provider-group" role="radiogroup" aria-label="Payment provider">
+                    <label class="pay-provider is-selected"><input type="radio" name="payProvider" value="card" checked><svg aria-hidden="true"><use href="#i-card"/></svg>Card</label>
+                    <label class="pay-provider"><input type="radio" name="payProvider" value="paypal">PayPal</label>
+                    <label class="pay-provider"><input type="radio" name="payProvider" value="venmo">Venmo</label>
+                    <label class="pay-provider"><input type="radio" name="payProvider" value="gpay">Google Pay</label>
+                </div>
+
+                <div class="pay-card-form" id="payCardForm" novalidate>
+                    <div class="pay-grid pay-grid--card">
+                        <div class="pay-field pay-field--number">
+                            <label for="cardNumber">Card Number</label>
+                            <div class="pay-input-icon">
+                                <input class="pay-input" id="cardNumber" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456" maxlength="23" aria-describedby="cardNumberError">
+                                <span class="pay-brand" id="cardBrand" aria-hidden="true"><svg><use href="#i-card"/></svg></span>
+                            </div>
+                            <p class="pay-field-error" id="cardNumberError" hidden></p>
+                        </div>
+                        <div class="pay-field">
+                            <label for="cardExpiry">Expiry Date</label>
+                            <input class="pay-input" id="cardExpiry" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" maxlength="7" aria-describedby="cardExpiryError">
+                            <p class="pay-field-error" id="cardExpiryError" hidden></p>
+                        </div>
+                        <div class="pay-field">
+                            <label for="cardCvv">CVV</label>
+                            <input class="pay-input" id="cardCvv" type="password" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" aria-describedby="cardCvvHint cardCvvError">
+                            <p class="pay-hint" id="cardCvvHint">3 digits (4 for American Express)</p>
+                            <p class="pay-field-error" id="cardCvvError" hidden></p>
+                        </div>
+                    </div>
+
+                    <div class="pay-grid pay-grid--card pay-grid--second">
+                        <div class="pay-field pay-field--number">
+                            <label for="cardName">Cardholder Name</label>
+                            <input class="pay-input" id="cardName" type="text" autocomplete="cc-name" placeholder="Name on card" aria-describedby="cardNameError">
+                            <p class="pay-field-error" id="cardNameError" hidden></p>
+                        </div>
+                    </div>
+
+                    <div class="pay-grid pay-grid--card pay-grid--second">
+                        <div class="pay-field pay-field--number">
+                            <label for="cardCountry">Country</label>
+                            <select class="pay-input pay-select" id="cardCountry" autocomplete="country-name" aria-describedby="cardCountryError">
+                                <option value="">Select country</option>
+                                <option value="US" selected>United States</option>
+                                <option value="IN">India</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="SG">Singapore</option>
+                                <option value="AE">United Arab Emirates</option>
+                            </select>
+                            <p class="pay-field-error" id="cardCountryError" hidden></p>
+                        </div>
+                        <div class="pay-field pay-field--span2">
+                            <label for="cardZip" id="cardZipLabel">ZIP Code</label>
+                            <input class="pay-input" id="cardZip" type="text" autocomplete="postal-code" placeholder="ZIP Code" maxlength="10" aria-describedby="cardZipError">
+                            <p class="pay-field-error" id="cardZipError" hidden></p>
+                        </div>
+                    </div>
+
+                    <p class="pay-info-line" id="payCardClearedNote" hidden><svg aria-hidden="true"><use href="#i-info"/></svg>For security, the card number, expiry date and CVV were cleared. Enter them again to continue.</p>
+                    <p class="pay-info-line"><svg aria-hidden="true"><use href="#i-info"/></svg>Prototype: no real charge is made. Test card 4242 4242 4242 4242 succeeds; 4000 0000 0000 0002 is declined. Use any future expiry and any 3-digit CVV.</p>
+                </div>
+
+                <div class="pay-wallet-note" id="payWalletNote" hidden>
+                    <svg aria-hidden="true"><use href="#i-info"/></svg>
+                    <p id="payWalletText"></p>
+                </div>
+            </section>
+
+            <section class="pay-section" id="payCashSection" hidden>
+                <div class="pay-section__header">
+                    <svg class="pay-section__svg" aria-hidden="true"><use href="#i-cash"/></svg>
+                    <div><h3>Cash Payment</h3></div>
+                </div>
+                <div class="pay-cash">
+                    <div class="pay-cash__amount">
+                        <span>Amount due</span>
+                        <strong id="cashAmount"></strong>
+                    </div>
+                    <label class="pay-check">
+                        <input type="checkbox" id="cashConfirm" aria-describedby="cashConfirmError">
+                        <span id="cashConfirmText"></span>
+                    </label>
+                    <p class="pay-field-error" id="cashConfirmError" hidden></p>
+                    <p class="pay-info-line"><svg aria-hidden="true"><use href="#i-info"/></svg>Prototype: confirming here records the cash hand-over on this screen only. Cash is treated as received only when you confirm it.</p>
+                </div>
+            </section>
+
+            <div class="pay-actions pay-actions--split">
+                <button type="button" class="pay-btn pay-btn--secondary" id="payBack2"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-arrow-left"/></svg>Back</button>
+                <div class="pay-actions__group">
+                    <button type="button" class="pay-btn pay-btn--neutral" id="payCancel2">Cancel</button>
+                    <button type="button" class="pay-btn pay-btn--primary pay-btn--wide" id="payContinue2">Continue to Invoice Summary<svg class="pay-btn__svg" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="pay-panel" data-panel="3" tabindex="-1" aria-labelledby="payPanel3Title" hidden>
+            <h3 class="pay-sr-only" id="payPanel3Title">Step 3: Invoice summary</h3>
+
+            <section class="pay-section">
+                <div class="pay-section__header">
+                    <svg class="pay-section__svg" aria-hidden="true"><use href="#i-doc"/></svg>
+                    <div>
+                        <h3>Invoice Summary</h3>
+                        <p>Review the details below. Nothing is charged until you confirm.</p>
+                    </div>
+                </div>
+                <dl class="pay-rows" id="invoiceRows"></dl>
+                <div class="pay-total">
+                    <span>Final Payable Amount</span>
+                    <strong id="invoiceTotal"></strong>
+                </div>
+                <p class="pay-info-line pay-info-line--block"><svg aria-hidden="true"><use href="#i-info"/></svg><span id="invoiceNote"></span></p>
+                <p class="pay-banner pay-banner--error" id="invoiceError" role="alert" hidden></p>
+            </section>
+
+            <div class="pay-actions pay-actions--split">
+                <button type="button" class="pay-btn pay-btn--secondary" id="payBack3"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-arrow-left"/></svg>Back to Payment</button>
+                <button type="button" class="pay-btn pay-btn--primary pay-btn--wide" id="payConfirm"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-lock"/></svg><span id="payConfirmLabel">Confirm Payment</span></button>
+            </div>
+        </section>
+
+        <section class="pay-panel" data-panel="4" tabindex="-1" aria-labelledby="payPanel4Title" hidden>
+            <h3 class="pay-sr-only" id="payPanel4Title">Step 4: Confirmation</h3>
+
+            <div class="pay-result" id="payResultSuccess" hidden>
+                <div class="pay-result__head">
+                    <span class="pay-result__icon pay-result__icon--ok" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+                    <div>
+                        <h2>Payment Confirmation</h2>
+                        <p>Your payment has been processed successfully.</p>
+                    </div>
+                </div>
+                <dl class="pay-rows pay-rows--tinted" id="successRows"></dl>
+                <div class="pay-thanks">
+                    <span class="pay-thanks__icon" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+                    <div>
+                        <strong>Thank you!</strong>
+                        <p>Your payment has been processed successfully. We appreciate you choosing our clinic for your healthcare needs.</p>
+                        <p class="pay-thanks__proto" id="successProto"></p>
+                    </div>
+                </div>
+                <div class="pay-actions pay-actions--center">
+                    <button type="button" class="pay-btn pay-btn--secondary" id="successHome"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-home"/></svg>Home</button>
+                    <button type="button" class="pay-btn pay-btn--primary" id="successClose"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-close"/></svg>Close</button>
+                </div>
+            </div>
+
+            <div class="pay-result" id="payResultFailed" hidden>
+                <div class="pay-result__head">
+                    <span class="pay-result__icon pay-result__icon--bad" aria-hidden="true"><svg><use href="#i-alert"/></svg></span>
+                    <div>
+                        <h2>Payment Failed</h2>
+                        <p>We couldn't complete your payment.</p>
+                    </div>
+                </div>
+                <div class="pay-banner pay-banner--error pay-banner--reason" role="alert">
+                    <svg aria-hidden="true"><use href="#i-alert"/></svg>
+                    <div><strong>Failure Reason</strong><p id="failReason"></p></div>
+                </div>
+                <section class="pay-section">
+                    <div class="pay-section__header">
+                        <svg class="pay-section__svg" aria-hidden="true"><use href="#i-doc"/></svg>
+                        <div><h3>Payment Details</h3></div>
+                    </div>
+                    <dl class="pay-rows" id="failRows"></dl>
+                </section>
+                <div class="pay-banner pay-banner--info">
+                    <svg aria-hidden="true"><use href="#i-info"/></svg>
+                    <div><strong>Your transaction could not be completed.</strong><p>This record is still unpaid. Please verify your payment details and try again. If the issue persists, contact the front desk for assistance.</p></div>
+                </div>
+                <section class="pay-section">
+                    <div class="pay-section__header">
+                        <svg class="pay-section__svg" aria-hidden="true"><use href="#i-help"/></svg>
+                        <div><h3>What you can do</h3></div>
+                    </div>
+                    <ul class="pay-help">
+                        <li><span aria-hidden="true"><svg><use href="#i-card"/></svg></span><div><strong>Verify card details</strong><p>Check the card number, expiry date, CVV and name entered.</p></div></li>
+                        <li><span aria-hidden="true"><svg><use href="#i-refresh"/></svg></span><div><strong>Try payment again</strong><p>Use the correct payment details and try again.</p></div></li>
+                        <li><span aria-hidden="true"><svg><use href="#i-headset"/></svg></span><div><strong>Contact front desk</strong><p>If the issue persists, please contact the front desk for assistance.</p></div></li>
+                    </ul>
+                </section>
+                <div class="pay-actions pay-actions--split">
+                    <button type="button" class="pay-btn pay-btn--secondary" id="failClose"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-arrow-left"/></svg>Close</button>
+                    <div class="pay-actions__group">
+                        <button type="button" class="pay-btn pay-btn--secondary" id="failHome"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-home"/></svg>Home</button>
+                        <button type="button" class="pay-btn pay-btn--primary" id="failRetry"><svg class="pay-btn__svg" aria-hidden="true"><use href="#i-refresh"/></svg>Try Again</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </section>
+</main>
+
+<div class="pay-modal" id="payCancelModal" hidden>
+    <div class="pay-modal__card" role="alertdialog" aria-modal="true" aria-labelledby="payCancelTitle" aria-describedby="payCancelText">
+        <h2 id="payCancelTitle">Discard this payment?</h2>
+        <p id="payCancelText">The selected patient and any payment details entered will be discarded, and you will return to the dashboard.</p>
+        <div class="pay-modal__actions">
+            <button type="button" class="pay-btn pay-btn--secondary" id="payCancelKeep">Keep editing</button>
+            <button type="button" class="pay-btn pay-btn--danger" id="payCancelLeave">Discard and leave</button>
+        </div>
+    </div>
+</div>
+
+<div id="footer-container"></div>
+
+<script src="js/navbar.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/payment.js"></script>
+</body>
+</html>

@@ -2992,6 +2992,28 @@ document.addEventListener(
 
     
 
+        document
+            .querySelectorAll('.next-action-btn')
+            .forEach(button => {
+
+                button.addEventListener(
+                    'click',
+                    () => {
+
+                        const patientId =
+                            currentPatient()?.id;
+
+                        const url =
+                            patientId
+                                ? `${button.dataset.href}?patientId=${encodeURIComponent(patientId)}`
+                                : button.dataset.href;
+
+                        window.location.href = url;
+                    }
+                );
+            });
+
+
         setStep(
             1,
             true
