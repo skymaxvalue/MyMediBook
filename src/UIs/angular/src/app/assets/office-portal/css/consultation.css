@@ -1883,3 +1883,21 @@ select:disabled {
     line-height: 1.5;
     color: var(--hh-text);
 }
+
+
+.next-actions {
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+.next-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .next-actions-grid {
+        grid-template-columns: 1fr;
+    }
+}
