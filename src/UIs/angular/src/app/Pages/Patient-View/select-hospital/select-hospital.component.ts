@@ -4,11 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
-import { getOrganizationList } from "src/app/Store/Organization/organization.actions";
-import {
-  selectOrganizationList,
-  selectOrganizationState,
-} from "src/app/Store/Organization/organization.selectors";
+import { MasterFacade } from "../../../Store/Master/master.facade";
 
 interface Hospital {
   hospitalId: number;
@@ -60,13 +56,14 @@ export class SelectHospitalComponent implements OnInit {
   constructor(
     private router: Router,
     private store: Store<AppState>,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private masterFacade: MasterFacade
   ) {}
 
   ngOnInit(): void {
     this.InitialAPICall();
 
-    this.store.select(selectOrganizationList).subscribe((res: Hospital[]) => {
+    this.masterFacade.organisationList$.subscribe((res: Hospital[]) => {
       console.log("Hospital API Response:", res);
 
       if (!Array.isArray(res) || res.length === 0) {
@@ -86,7 +83,7 @@ export class SelectHospitalComponent implements OnInit {
   }
 
   InitialAPICall() {
-    this.store.dispatch(getOrganizationList());
+    this.masterFacade.getOrganisationList();
   }
 
   /* =========================================================

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as BillingAction from './billing.actions';
 import { catchError, map, mergeMap, of } from 'rxjs';
-import { BillsService } from 'src/app/core/Services/bills.service';
+import { BillsService } from 'src/app/core/Services/billing/bills.service';
 
 @Injectable()
 export class BillsEffects {

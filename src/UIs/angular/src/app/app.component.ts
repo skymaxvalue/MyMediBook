@@ -5,7 +5,7 @@ import { Observable, combineLatest, map } from "rxjs";
 import { AsyncPipe, CommonModule } from "@angular/common";
 import { Store } from "@ngrx/store";
 import { AppState } from "./Store/app.state";
-import { AuthService } from "./core/Services/auth.service";
+import { AuthService } from "./core/Services/auth/auth.service";
 import { ToastComponent } from "./shared/Components/Toaster/toast.component";
 @Component({
   selector: "app-root",
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private authService: AuthService
-  ) {}
+  ) { }
   isLoading$ = combineLatest([
     this.store.select((state) => state.auth.isLoading),
     this.store.select((state) => state.doctor.isLoading),

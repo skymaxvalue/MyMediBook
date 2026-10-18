@@ -1,20 +1,29 @@
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy,
+  OnDestroy,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-
-interface Doctor {
-  name: string;
-  department: string;
-  room: string;
-}
+import { Store } from "@ngrx/store";
+import { combineLatest, filter, map, Subject, takeUntil } from "rxjs";
+import * as DoctorActions from "../../../Store/Doctor/doctor.action";
+import * as DoctorSelector from "../../../Store/Doctor/doctor.selectors";
+import { ListRequestModel } from "../../../core/Models/list-request.model";
+import { AppointmentFacade } from "../../../Store/Appointments/appointment.facade";
+import { MasterFacade } from "../../../Store/Master/master.facade";
+import { UpdateConsultationStatusRequestModel } from "../../../core/Models/update-appointment-status.model";
 
 interface QueuePatient {
-  id: number;
+  appointmentid: number;
   name: string;
   time: string;
   checkedIn: boolean;
-  status: string;
+  statusId: number;
   uhid?: string;
 }
 
@@ -26,393 +35,172 @@ interface QueuePatient {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./doctor-queue.component.css",
 })
-export class DoctorQueueComponent implements OnInit {
-  @ViewChild("dateInput")
-  dateInput!: ElementRef<HTMLInputElement>;
+export class DoctorQueueComponent implements OnInit, OnDestroy {
+  @ViewChild("dateInput") dateInput!: ElementRef<HTMLInputElement>;
 
-  selectedDate = "2026-04-10";
-  // ==========================================
-  // DOCTOR
-  // ==========================================
+  private destroy$ = new Subject<void>();
+  private doctorId = 0;
 
-  doctor: Doctor = {
-    name: "Dr. Kumaravel",
-    department: "General Physician",
-    room: "#5, 2nd Floor",
+  selectedDate = "";
+  queuePatients: QueuePatient[] = [];
+  statusOptions: { id: number; label: string; css: string }[] = [];
+
+  private readonly CSS_BY_KEY: Record<string, string> = {
+    Waiting: "waiting",
+    "Next In Queue": "next",
+    "In Consultation": "consultation",
+    Completed: "completed",
   };
 
-  // ==========================================
-  // QUEUE
-  // ==========================================
-
-  queuePatients: QueuePatient[] = [];
-
-  selectedPatient: QueuePatient | null = null;
-
-  openCalendar(): void {
-    const input = this.dateInput.nativeElement;
-
-    if (input.showPicker) {
-      input.showPicker();
-    } else {
-      input.click();
-    }
-  }
-
-  // ==========================================
-  // MODALS
-  // ==========================================
-
-  showConfirmModal = false;
-  showSuccessModal = false;
-
-  checkInTime = "";
+  doctor = { name: "", qualification: "", department: "", room: "" };
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store,
+    private appointmentFacade: AppointmentFacade,
+    private masterFacade: MasterFacade
   ) {}
 
-  // ==========================================
-  // GETTERS
-  // ==========================================
+  ngOnInit(): void {
+    this.setDefaultDate();
+    this.subscribeQueueData();
+    this.LoadAndsubscribeStatusOptions();
+    this.subscribeDoctorAndRoute();
+  }
 
-  get doctorName(): string {
+  private LoadAndsubscribeStatusOptions(): void {
+    this.masterFacade.getStatusKeyList();
+    this.masterFacade.stausKeyList$.pipe(takeUntil(this.destroy$)).subscribe((list: any) => {
+      const groups = Array.isArray(list) ? list : (list ?? []);
+      const g = groups.find((x: any) => x.category === "AppointmentConsultationStatus");
+      this.statusOptions = (g?.statuses ?? []).map((s: any) => ({
+        id: s.statusId,
+        label: s.statusValue,
+        css: this.CSS_BY_KEY[s.statusKey] ?? "",
+      }));
+    });
+    console.log(this.statusOptions);
+  }
+
+  private subscribeDoctorAndRoute(): void {
+    const id$ = this.route.paramMap.pipe(
+      map((p) => Number(p.get("doctorId"))),
+      filter((id) => id > 0)
+    );
+    const specs$ = this.store.select(DoctorSelector.selectDoctorSpecialities);
+
+    combineLatest([id$, specs$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([id, specs]: [number, any]) => {
+        if (id !== this.doctorId) {
+          this.doctorId = id;
+          this.loadQueue();
+        }
+        if (!specs) {
+          this.store.dispatch(DoctorActions.loadDoctorSpecialities());
+          return;
+        }
+        for (const s of specs) {
+          const d = (s.doctors ?? []).find((x: any) => x.associateId === id);
+          if (d) {
+            this.doctor = {
+              name: d.name ?? "",
+              qualification: d.qualification ?? "",
+              department: s.name ?? d.department ?? "",
+              room: d.room ?? "N/A",
+            };
+            return;
+          }
+        }
+      });
+  }
+
+  private loadQueue(): void {
+    if (!this.doctorId || !this.selectedDate) return;
+
+    const payload: ListRequestModel = {
+      DoctorId: this.doctorId,
+      FromDate: new Date(`${this.selectedDate}T00:00:00`).toISOString(),
+      ToDate: new Date(`${this.selectedDate}T23:59:59.999`).toISOString(),
+    };
+    this.appointmentFacade.getDoctorAppointmentQueueList(payload);
+  }
+
+  private subscribeQueueData(): void {
+    this.appointmentFacade.doctorAppointmentQueueList$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((rows: any) => {
+        this.queuePatients = (Array.isArray(rows) ? rows : []).map((a: any) => ({
+          appointmentid: a.appointmentId,
+          name: a.patientName ?? "-",
+          time: `${a.slotStartTime} - ${a.slotEndTime}`,
+          checkedIn: !!a.isCheckedIn,
+          statusId: a.consultationStatusId ?? 15,
+          uhid: a.profileId,
+        }));
+      });
+  }
+
+  get doctorName() {
     return this.doctor.name;
   }
-
-  get doctorDepartment(): string {
+  get doctorQualification() {
+    return this.doctor.qualification;
+  }
+  get doctorDepartment() {
     return this.doctor.department;
   }
-
-  get doctorRoom(): string {
+  get doctorRoom() {
     return this.doctor.room;
   }
+  get queueCount() {
+    return this.queuePatients.length;
+  }
 
+  statusClass(statusId: number): string {
+    return this.statusOptions.find((o) => o.id === statusId)?.css ?? "";
+  }
+
+  onStatusChange(patient: QueuePatient, statusId: number): void {
+    if (!patient.checkedIn || patient.statusId === statusId) return;
+    const payload: UpdateConsultationStatusRequestModel = {
+      AppointmentId: patient.appointmentid,
+      ConsultationStatusId: statusId,
+    };
+    this.appointmentFacade.updateConsultationStatus(payload);
+  }
+
+  // ---------- date ----------
   get queueDateLabel(): string {
-    if (!this.selectedDate) {
-      return "";
-    }
-
-    const date = new Date(this.selectedDate + "T00:00:00");
-
-    if (isNaN(date.getTime())) {
-      return "";
-    }
-
-    const day = String(date.getDate()).padStart(2, "0");
-
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
-    const weekdayNames = [
-      "SUNDAY",
-      "MONDAY",
-      "TUESDAY",
-      "WEDNESDAY",
-      "THURSDAY",
-      "FRIDAY",
-      "SATURDAY",
-    ];
-
-    const month = monthNames[date.getMonth()];
-
-    const year = date.getFullYear();
-
-    const weekday = weekdayNames[date.getDay()];
-
-    return `${day}-${month}-${year} (${weekday})`;
+    const d = new Date(`${this.selectedDate}T00:00:00`);
+    if (!this.selectedDate || isNaN(d.getTime())) return "";
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en-GB", { month: "short" });
+    const weekday = d.toLocaleString("en-GB", { weekday: "long" }).toUpperCase();
+    return `${day}-${month}-${d.getFullYear()} (${weekday})`;
   }
 
-  // ==========================================
-  // INIT
-  // ==========================================
-
-  ngOnInit(): void {
-    this.getSelectedDoctor();
-
-    this.setDefaultDate();
-
-    this.loadQueue();
+  private setDefaultDate(): void {
+    const t = new Date();
+    this.selectedDate = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
   }
 
-  // ==========================================
-  // GET SELECTED DOCTOR
-  // ==========================================
-
-  getSelectedDoctor(): void {
-    const storedDoctor = localStorage.getItem("selectedDoctor");
-
-    if (storedDoctor) {
-      try {
-        this.doctor = JSON.parse(storedDoctor);
-      } catch (error) {
-        console.error("Unable to read selected doctor", error);
-      }
-    }
-
-    this.route.queryParams.subscribe((params) => {
-      const doctorName = params["doctor"];
-
-      if (doctorName) {
-        this.doctor.name = doctorName;
-      }
-    });
-  }
-
-  // ==========================================
-  // DATE
-  // ==========================================
-
-  setDefaultDate(): void {
-    const today = new Date();
-
-    this.selectedDate = this.formatDateForInput(today);
-  }
-
-  formatDateForInput(date: Date): string {
-    const year = date.getFullYear();
-
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+  openCalendar(): void {
+    const input = this.dateInput.nativeElement;
+    input.showPicker ? input.showPicker() : input.click();
   }
 
   onDateChange(): void {
     this.loadQueue();
   }
 
-  // ==========================================
-  // LOAD QUEUE
-  // ==========================================
-
-  loadQueue(): void {
-    const storedQueue = localStorage.getItem("myMediBookDoctorQueue");
-
-    if (!storedQueue) {
-      this.queuePatients = [];
-
-      return;
-    }
-
-    try {
-      const queueData = JSON.parse(storedQueue);
-
-      this.queuePatients = queueData[this.selectedDate] || [];
-    } catch (error) {
-      console.error("Unable to load queue", error);
-
-      this.queuePatients = [];
-    }
-  }
-
-  // ==========================================
-  // CHECK-IN
-  // ==========================================
-
-  openConfirmModal(patient: QueuePatient): void {
-    if (patient.checkedIn) {
-      return;
-    }
-
-    this.selectedPatient = patient;
-
-    this.showConfirmModal = true;
-  }
-
-  confirmCheckIn(): void {
-    if (!this.selectedPatient) {
-      return;
-    }
-
-    const storedQueue = localStorage.getItem("myMediBookDoctorQueue");
-
-    if (!storedQueue) {
-      return;
-    }
-
-    try {
-      const queueData = JSON.parse(storedQueue);
-
-      const patients = queueData[this.selectedDate];
-
-      if (!patients) {
-        return;
-      }
-
-      const patient = patients.find((item: QueuePatient) => item.id === this.selectedPatient?.id);
-
-      if (!patient) {
-        return;
-      }
-
-      // Check-in
-      patient.checkedIn = true;
-
-      // Move to next queue
-      patient.status = "Next in queue";
-
-      // Save
-      localStorage.setItem("myMediBookDoctorQueue", JSON.stringify(queueData));
-
-      // Check-in time
-      this.checkInTime = this.formatCheckInTime();
-
-      // Close confirmation
-      this.showConfirmModal = false;
-
-      // Refresh queue
-      this.loadQueue();
-
-      // Show success
-      this.showSuccessModal = true;
-    } catch (error) {
-      console.error("Unable to confirm check-in", error);
-    }
-  }
-
-  // ==========================================
-  // STATUS
-  // ==========================================
-
-  updatePatientStatus(patient: QueuePatient): void {
-    this.saveQueue();
-  }
-
-  saveQueue(): void {
-    const storedQueue = localStorage.getItem("myMediBookDoctorQueue");
-
-    if (!storedQueue) {
-      return;
-    }
-
-    try {
-      const queueData = JSON.parse(storedQueue);
-
-      queueData[this.selectedDate] = this.queuePatients;
-
-      localStorage.setItem("myMediBookDoctorQueue", JSON.stringify(queueData));
-    } catch (error) {
-      console.error("Unable to save queue", error);
-    }
-  }
-
-  // ==========================================
-  // CHECK-IN TIME
-  // ==========================================
-
-  formatCheckInTime(): string {
-    const now = new Date();
-
-    let hours = now.getHours();
-
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-
-    const period = hours >= 12 ? "PM" : "AM";
-
-    hours = hours % 12;
-
-    if (hours === 0) {
-      hours = 12;
-    }
-
-    const day = String(now.getDate()).padStart(2, "0");
-
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
-    const month = monthNames[now.getMonth()];
-
-    const year = now.getFullYear();
-
-    return `${hours}:${minutes} ${period}, ${day} ${month} ${year}`;
-  }
-
-  // ==========================================
-  // CONFIRM MODAL
-  // ==========================================
-
-  closeConfirmModal(): void {
-    this.showConfirmModal = false;
-
-    this.selectedPatient = null;
-  }
-
-  closeConfirmModalOnOutsideClick(event: MouseEvent): void {
-    if (event.target === event.currentTarget) {
-      this.closeConfirmModal();
-    }
-  }
-
-  // ==========================================
-  // SUCCESS MODAL
-  // ==========================================
-
-  closeSuccessModal(): void {
-    this.showSuccessModal = false;
-
-    this.selectedPatient = null;
-  }
-
-  closeSuccessModalOnOutsideClick(event: MouseEvent): void {
-    if (event.target === event.currentTarget) {
-      this.closeSuccessModal();
-    }
-  }
-
-  // ==========================================
-  // VIEW QUEUE
-  // ==========================================
-
-  viewQueue(): void {
-    this.showSuccessModal = false;
-
-    this.selectedPatient = null;
-
-    this.loadQueue();
-  }
-
-  // ==========================================
-  // DONE
-  // ==========================================
-
-  done(): void {
-    this.showSuccessModal = false;
-
-    this.selectedPatient = null;
-  }
-
-  // ==========================================
-  // BACK
-  // ==========================================
-
   backToSearch(): void {
     this.router.navigate(["/front-office/patient-check-in"]);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

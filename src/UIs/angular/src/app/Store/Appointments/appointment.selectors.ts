@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { AppointmentState } from "./appointment.state";
-import { AppointmentDetailModel } from "../../core/Models/appointment-detail.model";
+import { AppointmentDetailModel } from "../../core/Models/appointment/appointment-detail.model";
+import { AppointmentState } from "./appointment.reducer";
 
 export const selectAppointmentState = createFeatureSelector<AppointmentState>("appointment");
 
@@ -52,11 +52,10 @@ export const selectPatientCheckInListForReceptionist = createSelector(
   selectAppointmentState,
   (state) => state.checkInAppointments ?? []
 );
-export const selectAppointmentStatusList = createSelector(
+export const selectDoctorAppointmentQueueList = createSelector(
   selectAppointmentState,
-  (state) => state.statusList
+  (state) => state.doctorAppointmentsQueue ?? []
 );
-
 export const selectCheckInSearchState = createSelector(
   selectAppointmentState,
   (state) => state.checkInSearch

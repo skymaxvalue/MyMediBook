@@ -486,8 +486,6 @@ namespace Medicare.DAL.Persistence.Repositories
                 var param = new DynamicParameters();
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("AppointmentId", model.AppointmentId);
-                param.Add("PatientId", model.PatientId);
-                param.Add("ProfileId", model.ProfileId);
                 param.Add("ConsultationStatusId", model.ConsultationStatusId);
 
                 return await _context.QuerySingleStoredProcAsync<ResponseModel>(procName, param);
@@ -593,6 +591,33 @@ namespace Medicare.DAL.Persistence.Repositories
             {
                 var param = new DynamicParameters();
                 param.Add("AssociateId", model.AssociateId);
+                param.Add("FromDate", model.FromDate?.Date);
+                param.Add("ToDate", model.ToDate?.Date);
+
+                returnData = await _context.QueryStoredProcListAsync<AppointmentDetailModelDto>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
+
+        public async Task<List<AppointmentDetailModelDto>> GetDoctorAppointmentQueueList(DataRequestModel model)
+        {
+            string procName = "USP_GetDoctorAppointmentQueue";
+            List<AppointmentDetailModelDto> returnData = new List<AppointmentDetailModelDto>();
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("AssociateId", model.AssociateId); 
+                param.Add("DoctorId", model?.DoctorId);
                 param.Add("FromDate", model.FromDate?.Date);
                 param.Add("ToDate", model.ToDate?.Date);
 

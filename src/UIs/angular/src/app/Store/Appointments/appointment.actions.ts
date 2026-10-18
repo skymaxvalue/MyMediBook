@@ -1,4 +1,7 @@
 import { createAction, props } from "@ngrx/store";
+import { ListRequestModel } from "../../core/Models/list-request.model";
+import { AppointmentDetailModel } from "./../../core/Models/appointment/appointment-detail.model";
+import { UpdateConsultationStatusRequestModel } from "../../core/Models/update-appointment-status.model";
 
 export const createAppointment = createAction(
   "[Appointment] Create Appointment",
@@ -201,18 +204,6 @@ export const filterCheckInByDoctor = createAction(
   }>()
 );
 
-export const getAppointmentStatusList = createAction("[Dashboard Appointment-status Data] get ");
-
-export const getAppointmentStatusListSuccess = createAction(
-  "[Dashboard Appointment-status Data] get  Success",
-  props<{ statusList: any }>()
-);
-
-export const getAppointmentStatusListFailure = createAction(
-  "[Dashboard Appointment-status Data] get  Failure",
-  props<{ error: string }>()
-);
-
 export const openPatientCheckInDialog = createAction(
   "[Appointment] Open Patient Check-In Dialog",
   props<{ appointment: any }>()
@@ -239,4 +230,30 @@ export const openConfirmPatientCheckInDialog = createAction(
 export const redirectToAppointmentCheckIns = createAction(
   "[Appointment] Redirect To Appointment Check Ins",
   props<{ doctorId: number }>()
+);
+
+export const GetDoctorAppointmentQueueList = createAction(
+  "[Queue] Load Doctor Queue List",
+  props<{ payload: ListRequestModel }>()
+);
+export const GetDoctorAppointmentQueueListSuccess = createAction(
+  "[Queue] Load Doctor Queue List Success ",
+  props<{ response: AppointmentDetailModel[] }>()
+);
+export const GetDoctorAppointmentQueueListFailure = createAction(
+  "[Queue] Load Doctor Queue List Failure",
+  props<{ error: string }>()
+);
+
+export const UpdateConsultationStatus = createAction(
+  "[Appointment] Update Consultation Status",
+  props<{ payload: UpdateConsultationStatusRequestModel }>()
+);
+export const UpdateConsultationStatusSuccess = createAction(
+  "[Appointment] Update Consultation Status Success",
+  props<{ response: any }>()
+);
+export const UpdateConsultationStatusFailure = createAction(
+  "[Appointment] Update Consultation Status Failure",
+  props<{ error: string }>()
 );

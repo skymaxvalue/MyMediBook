@@ -3,7 +3,7 @@ import { FormBuilder, FormsModule } from "@angular/forms";
 import { Router, RouterLink, RouterOutlet } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { take } from "rxjs/operators";
-import { AuthService } from "src/app/core/Services/auth.service";
+import { AuthService } from "src/app/core/Services/auth/auth.service";
 import { AppState } from "src/app/Store/app.state";
 import { login, requestOTP } from "src/app/Store/Auth/auth.actions";
 import { selectLoginUser, selectRequestedOTP } from "src/app/Store/Auth/auth.selectors";

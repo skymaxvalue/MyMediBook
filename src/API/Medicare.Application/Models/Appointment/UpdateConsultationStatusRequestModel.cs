@@ -1,11 +1,12 @@
-﻿namespace Medicare.Application.Models.Appointment
+﻿using System.Text.Json.Serialization;
+
+namespace Medicare.Application.Models.Appointment
 {
     public class UpdateConsultationStatusRequestModel
     {
-        public int AppointmentId { get; set; }
+        [JsonIgnore]
         public int AssociateId { get; set; }
-        public int PatientId { get; set; }
-        public int ProfileId { get; set; }
+        public int AppointmentId { get; set; }
         public int ConsultationStatusId { get; set; }
     }
 }

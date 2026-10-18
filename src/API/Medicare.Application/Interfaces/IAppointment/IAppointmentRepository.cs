@@ -13,6 +13,7 @@ namespace Medicare.Application.Interfaces.IAppointment
         Task<List<AvailableAppointmentModel>> GetAvailableAppointmentsAsync(int associateId);
         Task<List<AppointmentDetailModel>> GetFrontOfficeAppointmentsList(DataRequestFilterModel model);
         Task<List<AppointmentDetailModelDto>> GetFrontOfficeCheckInAppointmentsList(DataRequestModel model);
+        Task<List<AppointmentDetailModelDto>> GetDoctorAppointmentQueueList(DataRequestModel model);
         Task<AppointmentDetailModelDto> GetAppointmentById(int appointmentId);
         Task<ResponseModel> CreateAppointmentAsync(AppointmentMasterModel model);
         Task<ResponseModel> UpdateAppointmentScheduleAsync(UpdateAppointmentScheduleRequestModel model);

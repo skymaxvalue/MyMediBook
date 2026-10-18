@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
 import { Component, HostListener, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { Router, RouterModule } from "@angular/router";
-import { AuthService } from "src/app/core/Services/auth.service";
-import { TabServiceService } from "src/app/core/Services/tab-service.service";
+import { AuthService } from "src/app/core/Services/auth/auth.service";
+import { TabServiceService } from "src/app/core/Services/helper/tab-service/tab-service.service";
 
 @Component({
   selector: "app-navbar",
@@ -62,7 +62,7 @@ export class NavbarComponent implements OnInit {
   constructor(
     private tabService: TabServiceService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     const today = new Date();

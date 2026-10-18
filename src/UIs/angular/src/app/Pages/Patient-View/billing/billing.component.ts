@@ -15,7 +15,7 @@ import { Store } from "@ngrx/store";
 import { getMyAllBills } from "src/app/Store/Billing/billing.actions";
 import { selectMyAllLabResultList } from "src/app/Store/Lab-Results/lab-result.selcetors";
 import { selectMyBills } from "src/app/Store/Billing/billing.selcetors";
-import { PdfService } from "src/app/core/Services/pdf.service";
+import { PdfService } from "src/app/core/Services/helper/pdf-service/pdf.service";
 
 interface Bill {
   id: number;

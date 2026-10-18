@@ -6,6 +6,7 @@ import {
   ElementRef,
   HostListener,
   ViewChild,
+  OnDestroy,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -25,7 +26,7 @@ import * as DoctorSelector from "src/app/Store/Doctor/doctor.selectors";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./patient-check-in.component.css",
 })
-export class PatientCheckInComponent implements OnInit {
+export class PatientCheckInComponent implements OnInit, OnDestroy {
   patientName = "";
   dob = "";
   doctorName = "";
@@ -60,15 +61,16 @@ export class PatientCheckInComponent implements OnInit {
   private destroy$ = new Subject<void>();
   @ViewChild("doctorWrapper") doctorWrapper!: ElementRef<HTMLElement>;
 
-  constructor(
-    private router: Router,
-    private store: Store<AppState>
-  ) {
+  constructor(private store: Store<AppState>) {
     store.dispatch(DoctorActions.loadDoctorSpecialities());
   }
   ngOnInit(): void {
     this.getCheckInAppointmentList();
     this.subscribePatientCheckInList();
+    this.subscribeDoctorSpecialities();
+  }
+
+  subscribeDoctorSpecialities(): void {
     this.store.select(DoctorSelector.selectDoctorSpecialities).subscribe((res: any) => {
       if (res) {
         this.doctors = res.flatMap((speciality: any) => speciality.doctors);
@@ -272,8 +274,6 @@ export class PatientCheckInComponent implements OnInit {
 
   //   this.showSuccessModal = true;
   // }
-
-
 
   done(): void {
     this.showSuccessModal = false;

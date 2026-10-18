@@ -17,7 +17,7 @@ import { LabResultModel } from 'src/app/core/Models/lab-result.model';
 
 import { getMyLabResults } from 'src/app/Store/Lab-Results/lab-result.actions';
 import { selectMyAllLabResultList } from 'src/app/Store/Lab-Results/lab-result.selcetors';
-import { PdfService } from 'src/app/core/Services/pdf.service';
+import { PdfService } from 'src/app/core/Services/helper/pdf-service/pdf.service';
 
 
 type SortField =

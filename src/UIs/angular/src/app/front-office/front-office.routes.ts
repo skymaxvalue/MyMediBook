@@ -90,7 +90,7 @@ export const FRONT_OFFICE_ROUTES: Routes = [
                         .then(m => m.NextInQueueComponent)
             },
             {
-                path: 'doctor-queue',
+                path: 'doctor-queue/:doctorId',
                 loadComponent: () =>
                     import('../Pages/Front-Office-View/doctor-queue/doctor-queue.component')
                         .then(m => m.DoctorQueueComponent)

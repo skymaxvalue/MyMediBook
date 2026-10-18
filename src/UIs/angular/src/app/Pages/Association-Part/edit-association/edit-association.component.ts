@@ -10,7 +10,7 @@ import {
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { UpdateAssociateScheduleRequest } from "src/app/core/Models/Association-model";
+import { UpdateAssociateScheduleRequest } from "src/app/core/Models/associate/Association-model";
 import { AppState } from "src/app/Store/app.state";
 import {
   getAssociatesByID,
@@ -111,7 +111,7 @@ export class EditAssociationComponent implements OnInit {
     private router: Router,
     private store: Store<AppState>,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.createForm();

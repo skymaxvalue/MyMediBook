@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AssociateRequest, UpdateAssociateScheduleRequest } from 'src/app/core/Models/Association-model';
+import { AssociateRequest, UpdateAssociateScheduleRequest } from 'src/app/core/Models/associate/Association-model';
 
 export const loadDoctorSpecialities = createAction(
     '[Doctor Speciality] Load'

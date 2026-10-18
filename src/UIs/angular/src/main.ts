@@ -47,11 +47,9 @@ import { AuditLogEffects } from "./app/auditlogs/audit-log.effects";
 
 // Auth State
 import { AuthEffects } from "./app/Store/Auth/auth.effects";
-import { AuthState } from "./app/Store/Auth/auth.state";
 import { authReducer } from "./app/Store/Auth/auth.reducer";
 import { PatientEffects } from "./app/Store/Patient/patient.effect";
 import { patientReducer } from "./app/Store/Patient/patient.reducer";
-import { appointmentReducer } from "./app/Store/Appointments/appointment.reducer";
 import { AppointmentEffects } from "./app/Store/Appointments/appointment.effect";
 import { doctorSpecialityReducer } from "./app/Store/Doctor/doctor.reducer";
 import { DoctorSpecialityEffects } from "./app/Store/Doctor/doctor.effect";
@@ -61,8 +59,9 @@ import { BillsEffects } from "./app/Store/Billing/billing.effect";
 import { BillReducer } from "./app/Store/Billing/billing.reducer";
 import { MessagesEffects } from "./app/Store/Messages/messages.effect";
 import { MessagesReducer } from "./app/Store/Messages/messages.reducer";
-import { organizationReducer } from "./app/Store/Organization/organization.reducer";
-import { OrganizationEffects } from "./app/Store/Organization/organization.effect";
+import { MasterEffects } from "./app/Store/Master/master.effect";
+import { MasterReducer } from "./app/Store/Master/master.reducer";
+import { AppointmentReducer } from "./app/Store/Appointments/appointment.reducer";
 
 if (environment.production) {
   enableProdMode();
@@ -105,12 +104,12 @@ bootstrapApplication(AppComponent, {
     provideStore({
       auth: authReducer,
       patient: patientReducer,
-      appointment: appointmentReducer,
+      appointment: AppointmentReducer,
       doctor: doctorSpecialityReducer,
       labresult: LabResultReducer,
       bills: BillReducer,
       message: MessagesReducer,
-      organization: organizationReducer,
+      master: MasterReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -121,7 +120,7 @@ bootstrapApplication(AppComponent, {
       AuditLogEffects,
       BillsEffects,
       MessagesEffects,
-      OrganizationEffects,
+      MasterEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LabResultComponent } from "./lab-result.component";
 import { provideMockStore } from "@ngrx/store/testing";
-import { PdfService } from "src/app/core/Services/pdf.service";
+import { PdfService } from "src/app/core/Services/helper/pdf-service/pdf.service";
 
 describe("LabResultComponent", () => {
   let component: LabResultComponent;
