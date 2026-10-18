@@ -10,7 +10,6 @@ import {
   signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { ModalSeviceService } from "src/app/core/Services/modal-sevice.service";
 import { take, filter } from "rxjs";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
@@ -22,12 +21,13 @@ import {
   selectCanceledAppointment,
   selectMyAppointmentList,
 } from "src/app/Store/Appointments/appointment.selectors";
-import { TabServiceService } from "src/app/core/Services/tab-service.service";
+import { TabServiceService } from "src/app/core/Services/helper/tab-service/tab-service.service";
 import { HostListener } from "@angular/core";
 import { cancelRules, rescheduleRules } from "src/app/Utility/EndPointsOfAPI";
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import { getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
 import { Router } from "@angular/router";
+import { ModalSeviceService } from "../../../core/Services/helper/modal-service/modal-sevice.service";
 
 interface FamilyMember {
   id: number;
@@ -91,7 +91,7 @@ export class MyAppointmentComponent implements OnInit {
     private store: Store<AppState>,
     private tabService: TabServiceService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.store.dispatch(getMyAppointments({ patientId: this.user.refId }));

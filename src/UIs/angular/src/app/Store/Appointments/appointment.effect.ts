@@ -1,13 +1,17 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import * as AppointmentActions from "./appointment.actions";
-import { AppointmentService } from "../../core/Services/appointment.service";
-import { catchError, map, mergeMap, of } from "rxjs";
+import { AppointmentService } from "../../core/Services/appointment/appointment.service";
+import { catchError, map, mergeMap, of, tap } from "rxjs";
 import { ConfirmCheckInDialogComponent } from "../../Pages/Front-Office-View/patient-check-in/confirm-check-in-dialog/confirm-check-in-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import { UpdateAppointmentCheckInRequestModel } from "../../core/Models/update-appointment.model";
+import {
+  UpdateAppointmentCheckInRequestModel,
+  UpdateConsultationStatusRequestModel,
+} from "../../core/Models/update-appointment-status.model";
 import { CheckInSuccessDialogComponent } from "../../Pages/Front-Office-View/patient-check-in/confirm-check-in-dialog/check-in-success-dialog/check-in-success-dialog.component";
 import { Router } from "@angular/router";
+import { ListRequestModel } from "../../core/Models/list-request.model";
 
 @Injectable()
 export class AppointmentEffects {
@@ -332,30 +336,6 @@ export class AppointmentEffects {
     )
   );
 
-  getAppointmentStatusList$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AppointmentActions.getAppointmentStatusList),
-
-      mergeMap((action) =>
-        this.appointmentService.getAppointmentStatusList().pipe(
-          map((response: any) =>
-            AppointmentActions.getAppointmentStatusListSuccess({
-              statusList: response.data,
-            })
-          ),
-
-          catchError((error) =>
-            of(
-              AppointmentActions.getAppointmentStatusListFailure({
-                error: error?.message || "Getting Relation Data Failed",
-              })
-            )
-          )
-        )
-      )
-    )
-  );
-
   OpenPatientCheckInDialog$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -428,12 +408,47 @@ export class AppointmentEffects {
     () =>
       this.actions$.pipe(
         ofType(AppointmentActions.redirectToAppointmentCheckIns),
-        map((action) => {
-          this.router.navigate(["/front-office/doctor-queue"], {
-            queryParams: { doctor: action.doctorId },
-          });
-        })
+        tap(({ doctorId }) => this.router.navigate(["/front-office/doctor-queue", doctorId]))
       ),
     { dispatch: false }
+  );
+
+  GetDoctorAppointmentQueueList$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppointmentActions.GetDoctorAppointmentQueueList),
+      mergeMap((action) =>
+        this.appointmentService.getDoctorAppointmentQueueList(action.payload).pipe(
+          map((response) => {
+            return AppointmentActions.GetDoctorAppointmentQueueListSuccess({
+              response,
+            });
+          }),
+
+          catchError((error) =>
+            of(
+              AppointmentActions.GetDoctorAppointmentQueueListFailure({
+                error,
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  UpdateDoctorAppointmentConsultationStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppointmentActions.UpdateConsultationStatus),
+      mergeMap((action) => {
+        return this.appointmentService.updateConsultationStatus(action.payload).pipe(
+          map((response) => {
+            return AppointmentActions.UpdateConsultationStatusSuccess({
+              response,
+            });
+          }),
+          catchError((error) => of(AppointmentActions.UpdateConsultationStatusFailure({ error })))
+        );
+      })
+    )
   );
 }

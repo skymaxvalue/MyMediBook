@@ -6,6 +6,7 @@ namespace Medicare.Application.Models.CommonModels.Request
     {
         [JsonIgnore]
         public int AssociateId { get; set; }
+        public int? DoctorId { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
     }

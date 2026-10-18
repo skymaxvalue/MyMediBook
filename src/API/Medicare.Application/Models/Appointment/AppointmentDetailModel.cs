@@ -25,8 +25,9 @@ namespace Medicare.Application.Models.Appointment
         public string OtpMethod { get; set; }
         public string CreatedDate{ get; set; }
         public bool? Insurance { get; set; }
-        public bool? IsCheckedIn { get; set; }
-        public DateTime? CheckedInAt { get; set; }
+        public bool IsCheckedIn { get; set; }
+        public DateTime CheckedInAt { get; set; }
+        public int? ConsultationStatusId { get; set; }
         public DoctorProfileModel DoctorProfile { get; set; } = null;
         public InsuranceData InsuranceData { get; set; } = null;
         public PaymentData PaymentData { get; set; } = null;
@@ -50,6 +51,7 @@ namespace Medicare.Application.Models.Appointment
         public string SlotDay { get; set; }
         public string SlotStartTime { get; set; }
         public string SlotEndTime { get; set; }
+        public string AppointmentStatusId { get; set; }
         public string AppointmentStatus { get; set; }
         public string VisitPurpose { get; set; }
         public string VisitType { get; set; }
@@ -57,6 +59,7 @@ namespace Medicare.Application.Models.Appointment
         public string CreatedDate { get; set; }
         public bool IsCheckedIn { get; set; }
         public DateTime CheckedInAt { get; set; }
+        public int? ConsultationStatusId { get; set; }
         public int AssociateId { get; set; }
         public string Name { get; set; }
         public string Degree { get; set; }

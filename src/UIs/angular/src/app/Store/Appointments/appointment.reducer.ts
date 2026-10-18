@@ -1,9 +1,60 @@
-import { createReducer, on } from "@ngrx/store";
+import { Action, createReducer, on } from "@ngrx/store";
 import * as AppointmentActions from "./appointment.actions";
-import { initialAppointmentState } from "./appointment.state";
+import { AppointmentDetailModel } from "../../core/Models/appointment/appointment-detail.model";
+import { AppointmentRequestModel } from "../../core/Models/appointment/appointment.model";
 
-export const appointmentReducer = createReducer(
-  initialAppointmentState,
+export const APPOINTMENT_FEATURE_KEY = "appointment";
+
+export interface CheckInSearch {
+  fullName: string;
+  dateOfBirth: string;
+  doctorName: string;
+}
+
+export interface AppointmentState {
+  appointment: AppointmentRequestModel | null;
+  ageType: any[];
+  isLoading: boolean;
+  error: string | null;
+  relations: any[];
+  Appointments: any[];
+  canceledAppoint: any;
+  rescheduledAppointment: any;
+  DashboardDataSummery: any;
+  TodaysAppointments: any;
+  Appointment_list: any[];
+  checkInAppointments: any[];
+  checkInSearch: CheckInSearch;
+  selectedAppointmentId: number;
+  selectedDoctorId: number;
+  doctorAppointmentsQueue: AppointmentDetailModel[];
+}
+
+export const AppointmentState: AppointmentState = {
+  appointment: null,
+  isLoading: false,
+  error: null,
+  ageType: [],
+  relations: [],
+  Appointments: [],
+  canceledAppoint: null,
+  rescheduledAppointment: null,
+  DashboardDataSummery: null,
+  TodaysAppointments: [],
+  Appointment_list: [],
+  checkInAppointments: [],
+  checkInSearch: {
+    fullName: "",
+    dateOfBirth: "",
+    doctorName: "",
+  },
+  selectedAppointmentId: 0,
+  selectedDoctorId: 121,
+  doctorAppointmentsQueue: [],
+};
+
+export const reducer = createReducer(
+  AppointmentState,
 
   on(AppointmentActions.createAppointment, (state) => ({
     ...state,
@@ -213,6 +264,24 @@ export const appointmentReducer = createReducer(
     error: action.error,
   })),
 
+  on(AppointmentActions.GetDoctorAppointmentQueueList, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
+
+  on(AppointmentActions.GetDoctorAppointmentQueueListSuccess, (state, { response }) => ({
+    ...state,
+    isLoading: false,
+    doctorAppointmentsQueue: response,
+  })),
+
+  on(AppointmentActions.GetDoctorAppointmentQueueListFailure, (state, { error }) => ({
+    ...state,
+    isLoading: false,
+    error: error,
+  })),
+
   on(AppointmentActions.searchCheckInPatient, (state, { fullName, dateOfBirth }) => ({
     ...state,
     checkInSearch: {
@@ -246,27 +315,13 @@ export const appointmentReducer = createReducer(
     error,
   })),
 
-  on(AppointmentActions.getAppointmentStatusList, (state) => ({
-    ...state,
-    isLoading: true,
-    error: null,
-  })),
-
-  on(AppointmentActions.getAppointmentStatusListSuccess, (state, action) => ({
-    ...state,
-    isLoading: false,
-    statusList: action.statusList,
-  })),
-
-  on(AppointmentActions.getAppointmentStatusListFailure, (state, action) => ({
-    ...state,
-    isLoading: false,
-    error: action.error,
-  })),
-
   on(AppointmentActions.redirectToAppointmentCheckIns, (state, { doctorId }) => ({
     ...state,
     selectedDoctorId: doctorId,
     isLoading: false,
   }))
 );
+
+export function AppointmentReducer(state: AppointmentState | undefined, action: Action) {
+  return reducer(state, action);
+}

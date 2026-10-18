@@ -50,24 +50,6 @@ namespace Medicare.Application.Handlers.QueryHandlers
                     FromTime = item.FromTime,
                     ToTime = item.ToTime
                 },
-
-                InsuranceData = new InsuranceData
-                {
-                    Provider = item.Provider,
-                    Policy = item.Policy,
-                    GroupId = item.GroupId,
-                    HolderName = item.HolderName,
-                    Address = item.Address
-                },
-
-                PaymentData = new PaymentData
-                {
-                    PaymentType = item.PaymentType,
-                    CardHolder = item.CardHolder,
-                    CardNumber = item.CardNumber,
-                    Expiry = item.Expiry
-                },
-
                 IsSuccess = item.IsSuccess,
                 Status = item.Status,
                 ResponseMessage = item.ResponseMessage

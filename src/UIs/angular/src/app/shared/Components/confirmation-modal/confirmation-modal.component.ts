@@ -2,8 +2,8 @@ import { CommonModule } from "@angular/common";
 import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { ModalSeviceService } from "src/app/core/Services/modal-sevice.service";
 import { ConfirmationModalConfig } from "src/app/Utility/EndPointsOfAPI";
+import { ModalSeviceService } from "../../../core/Services/helper/modal-service/modal-sevice.service";
 
 @Component({
   selector: "app-confirmation-modal",

@@ -20,13 +20,7 @@ import {
 } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import {
-  getAgeType,
-  getAppointmentStatusList,
-  getRelationType,
-} from "src/app/Store/Appointments/appointment.actions";
-import {
   selectAgeType,
-  selectAppointmentStatusList,
   selectRelationShipType,
 } from "src/app/Store/Appointments/appointment.selectors";
 import { requestOTP } from "src/app/Store/Auth/auth.actions";
@@ -39,6 +33,8 @@ import {
   selectGetProfileDataByProfileId,
   selectGetProfileListByPatientId,
 } from "src/app/Store/Patient/patient.selectors";
+import { MasterFacade } from "../../../Store/Master/master.facade";
+import { getAgeType, getRelationType } from "../../../Store/Appointments/appointment.actions";
 
 @Component({
   selector: "app-book-appoiment-form",
@@ -156,7 +152,8 @@ export class BookAppoimentFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private store: Store
+    private store: Store,
+    private masterFacade: MasterFacade
   ) {
     this.loginUser = JSON.parse(localStorage.getItem("user") || "null");
   }
@@ -371,7 +368,7 @@ export class BookAppoimentFormComponent implements OnInit {
     this.store.dispatch(getPetirntProfileListById({ patientId: this.loginUser.refId }));
     this.store.dispatch(getAgeType());
     this.store.dispatch(getRelationType());
-    this.store.dispatch(getAppointmentStatusList());
+    this.masterFacade.getStatusKeyList();
     this.store.select(selectAgeType).subscribe((res: any) => {
       if (res) {
         console.log(res.data);
@@ -391,7 +388,7 @@ export class BookAppoimentFormComponent implements OnInit {
         this.relativeList.set(res.data);
       }
     });
-    this.store.select(selectAppointmentStatusList).subscribe((res: any) => {
+    this.masterFacade.stausKeyList$.subscribe((res: any) => {
       const visitTypeData = res.find((item: any) => item.category === "VisitType");
 
       const visitPurposeData = res.find((item: any) => item.category === "VisitPurpose");

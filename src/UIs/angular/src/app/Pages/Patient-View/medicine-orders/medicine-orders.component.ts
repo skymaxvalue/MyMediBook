@@ -15,7 +15,7 @@ import { getAllMecineDetailByPatientID } from "src/app/Store/Patient/patient.act
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 
 import { selectGetAllMedicineDetailsOfPatient } from "src/app/Store/Patient/patient.selectors";
-import { PdfService } from "src/app/core/Services/pdf.service";
+import { PdfService } from "src/app/core/Services/helper/pdf-service/pdf.service";
 
 @Component({
   selector: "app-medicine-orders",

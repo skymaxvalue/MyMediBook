@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { AuthService } from "../../core/Services/auth.service";
+import { AuthService } from "../../core/Services/auth/auth.service";
 import * as AuthActions from "./auth.actions";
 import { catchError, mergeMap, map, of, exhaustMap, tap } from "rxjs";
 import { Router } from "@angular/router";
@@ -11,7 +11,7 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   //   Login Effect
 
@@ -63,7 +63,7 @@ export class AuthEffects {
         }
       })
     ),
-    {dispatch: false}
+    { dispatch: false }
   );
 
   // Request OTP

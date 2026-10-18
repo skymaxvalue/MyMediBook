@@ -2,7 +2,13 @@ import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from "@a
 
 import { CommonModule } from "@angular/common";
 
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { AppState } from "src/app/Store/app.state";
 import * as AuthActions from "src/app/Store/Auth/auth.actions";
@@ -13,16 +19,13 @@ import {
   selectState,
 } from "src/app/Store/Auth/auth.selectors";
 import { Router } from "@angular/router";
-import {
-  createAppointment,
-  getAppointmentStatusList,
-} from "src/app/Store/Appointments/appointment.actions";
+import { createAppointment } from "src/app/Store/Appointments/appointment.actions";
 import { getCities, getCountries, getStates, requestOTP } from "src/app/Store/Auth/auth.actions";
 import { getPatientListForReceptionist } from "src/app/Store/Patient/patient.action";
 import { HttpClient } from "@angular/common/http";
-import { selectAppointmentStatusList } from "src/app/Store/Appointments/appointment.selectors";
 import { selectPatientListForReceptionist } from "src/app/Store/Patient/patient.selectors";
 import { filter, take } from "rxjs/operators";
+import { MasterFacade } from "../../../Store/Master/master.facade";
 
 interface Doctor {
   id?: number | string;
@@ -167,8 +170,9 @@ export class BookingPatientInformationComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private store: Store<AppState>,
     private router: Router,
-    private http: HttpClient
-  ) { }
+    private http: HttpClient,
+    private masterFacade: MasterFacade
+  ) {}
 
   get patientDobControl(): FormControl {
     return this.patientSearchForm.get("dob") as FormControl;
@@ -454,7 +458,7 @@ export class BookingPatientInformationComponent implements OnInit, OnDestroy {
     // APPOINTMENT STATUS
     // ==============================
 
-    this.store.dispatch(getAppointmentStatusList());
+    this.masterFacade.getStatusKeyList();
 
     // ==============================
     // PATIENTS
@@ -518,7 +522,7 @@ export class BookingPatientInformationComponent implements OnInit, OnDestroy {
     // APPOINTMENT STATUS
     // ==============================
 
-    this.store.select(selectAppointmentStatusList).subscribe((res: any) => {
+    this.masterFacade.stausKeyList$.subscribe((res: any) => {
       console.log("Appointment Status:", res);
     });
 

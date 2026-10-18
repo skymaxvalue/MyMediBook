@@ -97,6 +97,7 @@ namespace Medicare.API.Controllers.V1
         [Route("Associate/UpdateConsultationStatus")]
         public async Task<IActionResult> UpdateConsultationStatus(UpdateConsultationStatusRequestModel model)
         {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             ResponseModel response = new ResponseModel();
             response = await _mediator.Send(new UpdateConsultationStatusCommand(model));
             return HandleResponse(response);
@@ -132,7 +133,7 @@ namespace Medicare.API.Controllers.V1
 
         [HttpPost]
         [Route("Receptionist/GetAppointmentCheckInList")]
-        public async Task<IActionResult> GetAppointmentCheckedInList(DataRequestModel model)
+        public async Task<IActionResult> GetAppointmentCheckInList(DataRequestModel model)
         {
             model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
             List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
@@ -147,6 +148,16 @@ namespace Medicare.API.Controllers.V1
             AppointmentDetailModel response = new AppointmentDetailModel();
             response = await _mediator.Send(new UpdateCheckedInStatusCommand(model));
             return HandleResponse(response);
+        }
+
+        [HttpPost]
+        [Route("Receptionist/GetDoctorAppointmentQueue")]
+        public async Task<IActionResult> GetDoctorAppointmentQueueList(DataRequestModel model)
+        {
+            model.AssociateId = int.Parse(User.FindFirst("RefId")!.Value);
+            List<AppointmentDetailModel> response = new List<AppointmentDetailModel>();
+            response = await _mediator.Send(new GetDoctorAppointmentQueueListQuery(model));
+            return HandleListResponse(response);
         }
     }
 }

@@ -491,6 +491,12 @@ a {
     color: #b87800;
 }
 
+.status-select.waiting {
+  border-color: #e3e8ee;
+  background-color: #f7f8fa;
+  color: #53647c;
+}
+
 .queue-actions {
     width: 100%;
     margin-top: 24px;
