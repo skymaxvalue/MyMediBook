@@ -113,7 +113,7 @@ namespace Medicare.API.Controllers.V1
         [Authorize]
         [HttpPost]
         [Route("Logout")]
-        public async Task<IActionResult> Logout([FromBody] string refreshToken)
+        public async Task<IActionResult> Logout([FromQuery] string refreshToken)
         {
             ResponseModel response = new ResponseModel();
             response = await _refreshTokenRepository.RevokeRefreshTokenAsync(refreshToken);

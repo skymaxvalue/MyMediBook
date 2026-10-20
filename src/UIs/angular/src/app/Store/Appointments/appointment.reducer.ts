@@ -49,7 +49,7 @@ export const AppointmentState: AppointmentState = {
     doctorName: "",
   },
   selectedAppointmentId: 0,
-  selectedDoctorId: 121,
+  selectedDoctorId: 0,
   doctorAppointmentsQueue: [],
 };
 

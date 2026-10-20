@@ -1,10 +1,10 @@
-.layout{
-     display: block;
+.layout {
+  display: block;
   min-height: 100vh;
-  background-color: #F4F7FB;
+  background-color: #f4f7fb;
 }
-.content{
-  background-color: #F4F7FB;
+.content {
+  background-color: #f4f7fb;
 }
 .breadcrumb {
   display: flex;
