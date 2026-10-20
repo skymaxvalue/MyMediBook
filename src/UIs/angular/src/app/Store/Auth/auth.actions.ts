@@ -1,182 +1,152 @@
-import { createAction, props } from '@ngrx/store';
+import { createAction, props } from "@ngrx/store";
 import { PatientRegister } from "../../core/Models/Patient-Model";
 
 // Login Actions
 export const login = createAction(
-    '[Auth] Login',
-    props<{ username: string; password: string, role: string }>()
+  "[Auth] Login",
+  props<{ username: string; password: string; role: string }>()
 );
 
-export const loginSuccess = createAction(
-    '[Auth] Login Success',
-    props<{ user: any }>()
-);
+export const loginSuccess = createAction("[Auth] Login Success", props<{ user: any }>());
 
-export const loginFailure = createAction(
-    '[Auth] Login Failure',
-    props<{ error: string }>()
-);
+export const loginFailure = createAction("[Auth] Login Failure", props<{ error: string }>());
+
+export const LogOut = createAction("[Auth] Log Out");
+
+export const logOutComplete = createAction("[Auth] Log Out Complete", props<{ response: any }>());
+
+export const logOutFailure = createAction("[Auth] Log Out Failure", props<{ error: any }>());
 
 // Requested OTP Action
-export const requestOTP = createAction(
-    '[Auth] OTP',
-    props<{ email: string }>()
-);
+export const requestOTP = createAction("[Auth] OTP", props<{ email: string }>());
 
-export const requestOTPSuccess = createAction(
-    '[Auth] OTP Success',
-    props<{ requestedOtp: any }>()
-);
+export const requestOTPSuccess = createAction("[Auth] OTP Success", props<{ requestedOtp: any }>());
 
-export const requestOTPFailure = createAction(
-    '[Auth] OTP Failure',
-    props<{ error: string }>()
-);
+export const requestOTPFailure = createAction("[Auth] OTP Failure", props<{ error: string }>());
 
 // Register Actions
 export const register = createAction(
-    '[Auth] Register Patient',
-    props<{ patient: PatientRegister, isFrontOffice: boolean }>()
+  "[Auth] Register Patient",
+  props<{ patient: PatientRegister; isFrontOffice: boolean }>()
 );
 
 export const registerPatientSuccess = createAction(
-    '[Auth] Register Patient Success',
-    props<{ patient: any }>()
+  "[Auth] Register Patient Success",
+  props<{ patient: any }>()
 );
 
 export const registerPatientFailure = createAction(
-    '[Auth] Register Patient Failure',
-    props<{ error: string }>()
+  "[Auth] Register Patient Failure",
+  props<{ error: string }>()
 );
-
-
 
 // Get Security Questions Actions
-export const getSecurityQuestions = createAction(
-    '[Auth] Get Security Questions'
-);
+export const getSecurityQuestions = createAction("[Auth] Get Security Questions");
 
 export const getSecurityQuestionsSuccess = createAction(
-    '[Auth] Get Security Questions Success',
-    props<{ questions: any[] }>()
+  "[Auth] Get Security Questions Success",
+  props<{ questions: any[] }>()
 );
 
 export const getSecurityQuestionsFailure = createAction(
-    '[Auth] Get Security Questions Failure',
-    props<{ error: string }>()
+  "[Auth] Get Security Questions Failure",
+  props<{ error: string }>()
 );
 
 // Get Countries Actions
-export const getCountries = createAction(
-    '[Auth] Get Countries'
-);
+export const getCountries = createAction("[Auth] Get Countries");
 
 export const getCountriesSuccess = createAction(
-    '[Auth] Get Countries Success',
-    props<{ countries: any[] }>()
+  "[Auth] Get Countries Success",
+  props<{ countries: any[] }>()
 );
 
 export const getCountriesFailure = createAction(
-    '[Auth] Get Countries Failure',
-    props<{ error: string }>()
+  "[Auth] Get Countries Failure",
+  props<{ error: string }>()
 );
 
 // Get States Actions
-export const getStates = createAction(
-    '[Auth] Get States',
-    props<{ countryId: number }>()
-);
+export const getStates = createAction("[Auth] Get States", props<{ countryId: number }>());
 
 export const getStatesSuccess = createAction(
-    '[Auth] Get States Success',
-    props<{ states: any[] }>()
+  "[Auth] Get States Success",
+  props<{ states: any[] }>()
 );
 
 export const getStatesFailure = createAction(
-    '[Auth] Get States Failure',
-    props<{ error: string }>()
+  "[Auth] Get States Failure",
+  props<{ error: string }>()
 );
 
 // Get Cities Actions
-export const getCities = createAction(
-    '[Auth] Get Cities',
-    props<{ stateId: number }>()
-);
+export const getCities = createAction("[Auth] Get Cities", props<{ stateId: number }>());
 
 export const getCitiesSuccess = createAction(
-    '[Auth] Get Cities Success',
-    props<{ cities: any[] }>()
+  "[Auth] Get Cities Success",
+  props<{ cities: any[] }>()
 );
 
 export const getCitiesFailure = createAction(
-    '[Auth] Get Cities Failure',
-    props<{ error: string }>()
+  "[Auth] Get Cities Failure",
+  props<{ error: string }>()
 );
 
-export const refreshToken = createAction(
-    '[Auth] Refresh Token',
-    props<{ refreshToken: string }>()
-);
+export const refreshToken = createAction("[Auth] Refresh Token", props<{ refreshToken: string }>());
 
 export const refreshTokenSuccess = createAction(
-    '[Auth] Refresh Token Success',
-    props<{
-        accessToken: string;
-        refreshToken: string;
-    }>()
+  "[Auth] Refresh Token Success",
+  props<{
+    accessToken: string;
+    refreshToken: string;
+  }>()
 );
 
 export const refreshTokenFailure = createAction(
-    '[Auth] Refresh Token Failure',
-    props<{ error: string }>()
+  "[Auth] Refresh Token Failure",
+  props<{ error: string }>()
 );
-
-
 
 export const verifyOTP = createAction(
-    '[Auth] verifyOTP',
-    props<{ email: string; otpCode: string }>()
+  "[Auth] verifyOTP",
+  props<{ email: string; otpCode: string }>()
 );
 
-export const verifyOTPSuccess = createAction(
-    '[Auth] verifyOTP Success',
-    props<{ otpres: any }>()
-);
+export const verifyOTPSuccess = createAction("[Auth] verifyOTP Success", props<{ otpres: any }>());
 
 export const verifyOTPFailure = createAction(
-    '[Auth] verifyOTP Failure',
-    props<{ error: string }>()
+  "[Auth] verifyOTP Failure",
+  props<{ error: string }>()
 );
 export const ForrgetResetPassword = createAction(
-    '[Auth] ForrgetResetPassword',
-    props<{ password: string; token: string, isAssociate?: boolean }>()
+  "[Auth] ForrgetResetPassword",
+  props<{ password: string; token: string; isAssociate?: boolean }>()
 );
 
 export const ForrgetResetPasswordSuccess = createAction(
-    '[Auth] ForrgetResetPassword Success',
-    props<{ resetPassRes: any }>()
+  "[Auth] ForrgetResetPassword Success",
+  props<{ resetPassRes: any }>()
 );
 
 export const ForrgetResetPasswordFailure = createAction(
-    '[Auth] ForrgetResetPassword Failure',
-    props<{ error: string }>()
+  "[Auth] ForrgetResetPassword Failure",
+  props<{ error: string }>()
 );
 
 // Register Actions
 export const register_by_reseptionist = createAction(
-    '[Auth] Register  Patient reseptionist',
-    props<{ patient: PatientRegister }>()
+  "[Auth] Register  Patient reseptionist",
+  props<{ patient: PatientRegister }>()
 );
 
 export const register_by_reseptionistSuccess = createAction(
-    '[Auth] Register Patient by reseptionist Success',
-    props<{ patient: any }>()
+  "[Auth] Register Patient by reseptionist Success",
+  props<{ patient: any }>()
 );
 
 export const register_by_reseptionistFailure = createAction(
-    '[Auth] Register Patient reseptionist Failure',
-    props<{ error: string }>()
+  "[Auth] Register Patient reseptionist Failure",
+  props<{ error: string }>()
 );
 
-
-
+export const NavigateToLoginPage = createAction("[Auth] Navigate To Login Page");

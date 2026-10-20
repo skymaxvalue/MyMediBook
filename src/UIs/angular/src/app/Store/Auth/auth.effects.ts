@@ -11,7 +11,7 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {}
 
   //   Login Effect
 
@@ -50,19 +50,20 @@ export class AuthEffects {
   );
 
   //Login Success
-  LoginSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.loginSuccess),
-      tap(({ user }) => {
-        const data = user?.data;
+  LoginSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.loginSuccess),
+        tap(({ user }) => {
+          const data = user?.data;
 
-        if (data?.needsHospitalSelection || !data?.activeHospitalId) {
-          this.router.navigate(["/select-hospital"]);
-        } else {
-          this.router.navigate(["/patient/dashboard"]);
-        }
-      })
-    ),
+          if (data?.needsHospitalSelection || !data?.activeHospitalId) {
+            this.router.navigate(["/select-hospital"]);
+          } else {
+            this.router.navigate(["/patient/dashboard"]);
+          }
+        })
+      ),
     { dispatch: false }
   );
 
@@ -103,6 +104,47 @@ export class AuthEffects {
           )
         )
       )
+    )
+  );
+
+  logOut$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.LogOut),
+      exhaustMap(() => {
+        const refreshToken = localStorage.getItem("refreshToken") ?? "";
+        return this.authService.LogOut(refreshToken).pipe(
+          map((response) => {
+            return AuthActions.logOutComplete({ response });
+          }),
+          catchError((error) => of(AuthActions.logOutFailure({ error })))
+        );
+      })
+    )
+  );
+
+  logOutComplete$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.logOutComplete),
+        tap(() => {
+          this.authService.stopRefreshTimer(); // [Guessing] add this; the timer must stop
+          ["token", "refreshToken", "user", "loggedInUser", "isLoggedIn", "pendingUser"].forEach(
+            (k) => localStorage.removeItem(k)
+          );
+          map(() => {
+            return AuthActions.NavigateToLoginPage();
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  NavigateToLoginPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.NavigateToLoginPage),
+      tap(() => {
+        return this.router.navigate(["/login"]);
+      })
     )
   );
 
