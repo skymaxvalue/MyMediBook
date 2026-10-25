@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 import { map, Observable, Subscription, timer } from "rxjs";
 import { PatientRegister, LoginRequest } from "../../Models/Patient-Model";
 import { environment } from "../../../../environments/environment";
 import {
   AuthEndPoints,
-  MasterAPIEndPoints,
   LocationAPIEndPoint,
-} from "../../../Utility/EndPointsOfAPI";
+  MasterEndPoints,
+} from "../../../utils/API/ApiEndPoints";
 
 @Injectable({
   providedIn: "root",
@@ -25,13 +25,9 @@ export class AuthService {
 
   // Login API
   loginPatient(data: LoginRequest, userRole: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.doLOGIN}`, data);
-  }
-
-  LogOut(refreshToken: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.LOG_OUT}`, refreshToken).pipe(
+    return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.doLOGIN}`, data).pipe(
       map((resp) => {
-        return resp.Data;
+        return resp;
       })
     );
   }
@@ -103,8 +99,6 @@ export class AuthService {
       this.refreshSubscription = timer(remaining).subscribe(() => {
         this.callRefreshToken().subscribe({
           next: (res) => {
-            console.log("Refresh Token Response", res);
-
             localStorage.setItem("token", res.data.accessToken);
             localStorage.setItem("refreshToken", res.data.refreshToken);
 
@@ -129,23 +123,24 @@ export class AuthService {
   callRefreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem("refreshToken");
     const accessToken = localStorage.getItem("token");
-
     return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.REFRESH_TOKEN}`, {
       refreshToken,
       accessToken,
     });
   }
+
   logout() {
     this.stopRefreshTimer(); // Timer stop karo
 
     localStorage.clear(); // Token aur user data remove karo
 
+    // Login page par redirect karo
     window.location.href = "/login";
   }
 
   // getQuestion API
   getSecurityQuestions(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${MasterAPIEndPoints.GET_SECURITY_QUESTIONS}`);
+    return this.http.get<any>(`${this.apiUrl}${MasterEndPoints.GET_SECURITY_QUESTIONS}`);
   }
 
   // getCountries API

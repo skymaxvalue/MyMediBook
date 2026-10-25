@@ -408,11 +408,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("user");
 
-    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("tokenKey");
 
-    localStorage.removeItem("pendingUser");
+    localStorage.removeItem("refreshToken");
 
     this.router.navigate(["/patient/login"]);
   }

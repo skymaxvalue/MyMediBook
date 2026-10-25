@@ -2,11 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { map, Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import {
-  APIEndpoints,
-  AppointmentApiEndPoint,
-  MasterAPIEndPoints,
-} from "../../../Utility/EndPointsOfAPI";
+import { AppointmentApiEndPoint, DashboardEndPoints, MasterEndPoints } from "../../../utils/API/ApiEndPoints";
 import {
   UpdateAppointmentCheckInRequestModel,
   UpdateConsultationStatusRequestModel,
@@ -29,10 +25,10 @@ export class AppointmentService {
     );
   }
   getAgeType() {
-    return this.http.get(`${this.apiUrl}${MasterAPIEndPoints.GET_AGE_TYPE}`);
+    return this.http.get(`${this.apiUrl}${MasterEndPoints.GET_AGE_TYPE}`);
   }
   getRelationType() {
-    return this.http.get(`${this.apiUrl}${MasterAPIEndPoints.GET_RELATIONSHIP_TYPE}`);
+    return this.http.get(`${this.apiUrl}${MasterEndPoints.GET_RELATIONSHIP_TYPE}`);
   }
   getMyAppoitmentsByPatientID(patientId: number) {
     return this.http.get(
@@ -89,7 +85,7 @@ export class AppointmentService {
     );
   }
   getDashboardSummary(associateId: number, fromDate: string, toDate: string) {
-    return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DASHBOARD_SUMMARY}`, {
+    return this.http.post(`${this.apiUrl}${DashboardEndPoints.GET_DASHBOARD_SUMMARY}`, {
       associateId,
       fromDate,
       toDate,
@@ -97,12 +93,12 @@ export class AppointmentService {
   }
   getFrontOfficeRecentPatientQueueList(associateId: number, fromDate: string, toDate: string) {
     return this.http.post(
-      `${this.apiUrl}${APIEndpoints.GET_FRONTOFFICE_RECENT_PATIENTS_QUEUE_LIST}`,
+      `${this.apiUrl}${DashboardEndPoints.GET_FRONTOFFICE_RECENT_PATIENTS_QUEUE_LIST}`,
       { associateId, fromDate, toDate }
     );
   }
   getDoctorRecentPatientList(associateId: number, fromDate: string, toDate: string) {
-    return this.http.post(`${this.apiUrl}${APIEndpoints.GET_DOCTOR_RECENT_PATIENT_LIST}`, {
+    return this.http.post(`${this.apiUrl}${DashboardEndPoints.GET_DOCTOR_RECENT_PATIENT_LIST}`, {
       associateId,
       fromDate,
       toDate,

@@ -31,7 +31,7 @@ export class FrontOfficeLayoutComponent implements OnInit {
   }
 
   private buildBreadcrumbs(): Breadcrumb[] {
-    const path = this.router.url.split(/[?#]/)[0]; 
+    const path = this.router.url.split(/[?#]/)[0];
     const [, feature] = path.split("/").filter(Boolean);
     const trail = BREADCRUMB_MAP[feature] ?? [];
 

@@ -1,7 +1,7 @@
 import { Injectable, signal } from "@angular/core";
 import { LabResultModel } from "../../Models/lab-result.model";
 import { environment } from "src/environments/environment";
-import { LabResultEndPoints } from "src/app/Utility/EndPointsOfAPI";
+import { LabResultEndPoints } from "src/app/utils/API/ApiEndPoints";
 import { HttpClient } from "@angular/common/http";
 
 

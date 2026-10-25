@@ -1,0 +1,128 @@
+import { createAction, props } from '@ngrx/store';
+import { PatientRegister } from "../../../core/Models/Patient-Model";// Login Actions
+
+
+
+export const getPatientDetailsById = createAction(
+  '[Patient] get-patient',
+  props<{ id: string }>()
+);
+
+export const getPatientDetailsByIdSuccess = createAction(
+  '[Patient] get-patient Success',
+  props<{ patient: any }>()
+);
+
+export const getPatientDetailsByIdFailure = createAction(
+  '[Patient] get-patient Failure',
+  props<{ error: string }>()
+);
+
+export const updatePatientDetailsById = createAction(
+  '[Patient] update-patient',
+  props<{ patient: any }>()
+);
+
+export const updatePatientDetailsByIdSuccess = createAction(
+  '[Patient] update-patient Success',
+  props<{ patient: any }>()
+);
+
+export const updatePatientDetailsByIdFailure = createAction(
+  '[Patient] update-patient Failure',
+  props<{ error: string }>()
+);
+
+export const getPetirntProfileListById = createAction(
+  '[Patient] Profile List',
+  props<{ patientId: any }>()
+
+);
+
+export const getPetirntProfileListByIdSuccess = createAction(
+  '[Patient] Profile List Success',
+  props<{ patientProfile: any }>()
+);
+
+export const getPetirntProfileListByIdFailure = createAction(
+  '[Patient] Profile List Failure',
+  props<{ error: string }>()
+);
+export const getProfileDataByProfileId = createAction(
+  '[Patient Profile] Profile List ',
+  props<{ profileId: any }>()
+
+);
+
+export const getProfileDataByProfileIdSuccess = createAction(
+  '[Patient Profile] Profile Data Success',
+  props<{ patientProfileData: any }>()
+);
+
+export const getProfileDataByProfileIdFailure = createAction(
+  '[Patient Profile] Profile Data Failure',
+  props<{ error: string }>()
+);
+
+export const getAllMecineDetailByPatientID = createAction(
+  '[Patient Medicine] Medicine List ',
+  props<{ patientId: any }>()
+
+);
+
+export const getAllMecineDetailByPatientIDSuccess = createAction(
+  '[Patient Medicine] Medicine Data Success',
+  props<{ patientMedicalData: any }>()
+);
+
+export const getAllMecineDetailByPatientIDFailure = createAction(
+  '[Patient Medicine] Medicine Data Failure',
+  props<{ error: string }>()
+);
+export const getSearchPatientDetails = createAction(
+  '[Patient search] Data List ',
+  props<{ payload: any }>()
+
+);
+
+export const getSearchPatientDetailsSuccess = createAction(
+  '[Patient search] Data Success',
+  props<{ searchList: any }>()
+);
+
+export const getSearchPatientDetailsFailure = createAction(
+  '[Patient search] Data Failure',
+  props<{ error: string }>()
+);
+
+export const getPatientListForReceptionist = createAction(
+  '[Patient receptionist] Data List ',
+  props<{ receptionistId: any }>()
+
+);
+
+export const getPatientListForReceptionistSuccess = createAction(
+  '[Patient receptionist] Data Success',
+  props<{ patientList: any }>()
+);
+
+export const getPatientListForReceptionistFailure = createAction(
+  '[Patient receptionist] Data Failure',
+  props<{ error: string }>()
+);
+
+export const getSwitchSelectedHospital = createAction(
+  '[Patient hospital change] Data List ',
+  props<{ hospitalId: any }>()
+
+);
+
+export const getSwitchSelectedHospitalSuccess = createAction(
+  '[Patient hospital change] Data Success',
+  props<{ hospitalDetailRes: any }>()
+);
+
+export const getSwitchSelectedHospitalFailure = createAction(
+  '[Patient hospital change] Data Failure',
+  props<{ error: string }>()
+);

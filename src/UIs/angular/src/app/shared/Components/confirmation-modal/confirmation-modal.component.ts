@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { ConfirmationModalConfig } from "src/app/Utility/EndPointsOfAPI";
+import { ConfirmationModalConfig } from "src/app/utils/API/ApiEndPoints";
 import { ModalSeviceService } from "../../../core/Services/helper/modal-service/modal-sevice.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class ConfirmationModalComponent {
   constructor(
     private confirmationService: ModalSeviceService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log("Modal Init");
