@@ -97,7 +97,7 @@
       "description": "Schedule follow-up",
       "icon": "doctor.png",
       "color": "blue",
-      "route": "follow-up"
+      "route": "follow-up-visits"
     },
     {
       "title": "Prescription Refill",

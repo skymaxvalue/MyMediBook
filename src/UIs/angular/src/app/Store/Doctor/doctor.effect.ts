@@ -66,31 +66,6 @@ export class DoctorSpecialityEffects {
     )
   );
 
-  loadAllDepartments$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(DoctorSpecialityActions.loadAllDepartments),
-
-      mergeMap(() =>
-        this.doctorService.getAllDepartments().pipe(
-
-          map((response: any) =>
-            DoctorSpecialityActions.loadAllDepartmentsSuccess({
-              allDepartments: response.data
-            })
-          ),
-
-          catchError(error =>
-            of(
-              DoctorSpecialityActions.loadAllDepartmentsFailure({
-                error
-              })
-            )
-          )
-        )
-      )
-    )
-  );
-
   loadAllRoles$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DoctorSpecialityActions.loadAllRoles),

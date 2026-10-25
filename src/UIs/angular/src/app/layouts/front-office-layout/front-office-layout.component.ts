@@ -90,6 +90,11 @@ export class FrontOfficeLayoutComponent implements OnInit {
         label: "Room Service Request",
         url: "/front-office/book-appointment",
       });
+    }else if (url.includes("follow-up-visits")) {
+      this.breadcrumbs.push({
+        label: "Follow Up Visits",
+        url: "/front-office/follow-up-visits",
+      });
     }
   }
 }

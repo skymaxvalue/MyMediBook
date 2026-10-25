@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
-import { ConfirmationModalConfig } from 'src/app/Utility/EndPointsOfAPI';
+import { ConfirmationModalConfig } from 'src/app/utils/API/ApiEndPoints';
 
 
 

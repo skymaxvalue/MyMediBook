@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BillingAPiEndPoints } from "src/app/Utility/EndPointsOfAPI";
+import { BillingAPiEndPoints } from "src/app/utils/API/ApiEndPoints";
 import { environment } from "src/environments/environment";
 
 @Injectable({

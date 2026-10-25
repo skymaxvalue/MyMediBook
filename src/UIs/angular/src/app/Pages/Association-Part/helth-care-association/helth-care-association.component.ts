@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -16,21 +16,12 @@ import * as AuthActions from "../../../Store/Auth/auth.actions";
 import { Router } from "@angular/router";
 import {
   getRoleDepaSpecia,
-  loadAllDepartments,
-  loadAllDepartmentsSuccess,
-  loadAllRoles,
-  loadAllSpecialities,
-  loadDoctorSpecialities,
   registerAssociotion,
 } from "src/app/Store/Doctor/doctor.action";
 import {
-  selectAllDepartments,
-  selectAllRoles,
-  selectAllSpecialities,
   selectGetRoleDepSpeciOfAssociate,
   selectRegisterAssociate,
 } from "src/app/Store/Doctor/doctor.selectors";
-import { take } from "rxjs/operators";
 
 @Component({
   selector: "app-helth-care-association",

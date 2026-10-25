@@ -1,59 +1,15 @@
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
+import { homeFor, readUser } from "../../utils/auth/auth.utils";
 
 export const loginGuard: CanActivateFn = () => {
-
   const router = inject(Router);
+  const user = readUser();
+  if (!localStorage.getItem("token") || !user) return true;
 
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(
-    localStorage.getItem('user') || 'null'
-  );
+  const home = homeFor(user);
+  if (home) return router.createUrlTree([home]);
 
-  // User is NOT logged in
-  if (!token || !user) {
-    return true;
-  }
-
-  switch (user.userType) {
-
-    case 'Patient': {
-
-      const selectedHospitalId =
-        localStorage.getItem('selectedHospitalId');
-
-      // Hospital already selected
-      if (selectedHospitalId) {
-        return router.createUrlTree([
-          '/patient/dashboard'
-        ]);
-      }
-
-      // Patient logged in but hospital not selected
-      return router.createUrlTree([
-        '/patient/select-hospital'
-      ]);
-    }
-
-    case 'Associate':
-      return router.createUrlTree([
-        '/front-office/dashboard'
-      ]);
-
-    case 'Admin':
-      return router.createUrlTree([
-        '/admin/dashboard'
-      ]);
-
-    default:
-
-      console.log(
-        'Unknown role:',
-        user?.userType
-      );
-
-      localStorage.clear();
-
-      return true;
-  }
+  ["token", "refreshToken", "user"].forEach((k) => localStorage.removeItem(k));
+  return true;
 };

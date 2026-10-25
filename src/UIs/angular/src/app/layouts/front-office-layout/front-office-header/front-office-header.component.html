@@ -82,7 +82,7 @@
                 </h4>
 
                 <span>
-                    Front Office
+                    {{ designationName }}
                 </span>
 
             </div>
@@ -158,8 +158,8 @@
     </button>
 
 
-    <button type="button" class="nav-item" [class.active]="activePage === 'patient-checkin'"
-        (click)="navigate('patient-checkin')">
+    <button type="button" class="nav-item" [class.active]="activePage === 'patient-check-in'"
+        (click)="navigate('patient-check-in')">
 
         <img src="assets/images/front-office/images/checkin.png" alt="Check In" />
 

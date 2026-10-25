@@ -1,0 +1,1530 @@
+﻿<main class="dashboard-container">
+  <section class="rs-page-card fu-page">
+    <!-- HEADER -->
+    <div class="rs-page-header fu-header">
+      <div class="rs-title-group">
+        <div class="rs-icon-circle">
+          <img [src]="icons + 'calendar-blue.png'" alt="" />
+        </div>
+        <div>
+          <h2>Follow-Up Visit</h2>
+          <p>Continuing care from the previous appointment · Complete all steps to submit</p>
+        </div>
+      </div>
+
+      <span class="rs-request-id" id="fuBadge" *ngIf="badge">{{ badge }}</span>
+    </div>
+
+    <!-- SUMMARY (previous visit) -->
+    <div class="fu-summary" aria-label="Previous visit summary">
+      <div class="fu-tile">
+        <img [src]="icons + 'calendar2.png'" alt="" />
+        <div>
+          <small>Last Visit</small><strong>{{ summary.lastVisit || "—" }}</strong>
+        </div>
+      </div>
+      <div class="fu-tile">
+        <img [src]="icons + 'doctor-icon-blue.png'" alt="" />
+        <div>
+          <small>Provider</small><strong>{{ summary.provider || "—" }}</strong>
+        </div>
+      </div>
+      <div class="fu-tile">
+        <img [src]="icons + 'ic-file-blue.png'" alt="" />
+        <div>
+          <small>Diagnosis</small><strong>{{ summary.diagnosis || "—" }}</strong>
+        </div>
+      </div>
+      <div class="fu-tile">
+        <img [src]="icons + 'ic-pulse-blue.png'" alt="" />
+        <div>
+          <small>Status</small><strong>{{ summary.status || "—" }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEPPER -->
+    <nav class="rs-stepper fu-stepper" id="fuStepper" aria-label="Follow-up visit steps">
+      <button
+        *ngFor="let s of steps"
+        type="button"
+        class="rs-step"
+        [class.active]="currentStep === s.number"
+        [class.done]="isDone(s.number)"
+        [class.is-locked]="isLocked(s.number)"
+        [attr.aria-current]="currentStep === s.number ? 'step' : null"
+        [attr.aria-disabled]="isLocked(s.number)"
+        [attr.aria-label]="stepLabel(s)"
+        (click)="onStepClick(s.number)"
+      >
+        <span>{{ s.number < 10 ? "0" + s.number : s.number }}</span>
+        <strong>{{ s.title }}</strong>
+      </button>
+    </nav>
+
+    <form id="fuForm" novalidate (input)="onFieldEvent($event)" (change)="onFieldEvent($event)">
+      <!-- ALERT -->
+      <div
+        class="fu-alert"
+        id="fuAlert"
+        role="alert"
+        aria-live="assertive"
+        [class.show]="alert.show"
+      >
+        <strong>{{ alert.title }}</strong>
+        <ul>
+          <li *ngFor="let m of alert.messages">{{ m }}</li>
+        </ul>
+      </div>
+
+      <fieldset class="fu-fieldset" id="fuPanels" [disabled]="submitted">
+        <!-- ===================== STEP 1 ===================== -->
+        <section class="rs-step-panel" [class.active]="currentStep === 1">
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'patient-icon-blue.png'" alt="" />
+              <h3>Patient Confirmation</h3>
+            </div>
+
+            <div class="rs-grid-2">
+              <div class="rs-field" [class.fu-invalid]="errors['fullName']">
+                <label for="fuFullName">Full Name *</label>
+                <input
+                  id="fuFullName"
+                  name="fullName"
+                  type="text"
+                  list="fuPatientList"
+                  autocomplete="off"
+                  maxlength="120"
+                  placeholder="Confirm legal name"
+                  [(ngModel)]="form.fullName"
+                />
+                <datalist id="fuPatientList">
+                  <option *ngFor="let p of patientOptions" [value]="p"></option>
+                </datalist>
+                <p class="fu-error" *ngIf="errors['fullName']">{{ errors["fullName"] }}</p>
+              </div>
+
+              <div
+                class="rs-field"
+                [class.fu-invalid]="errors['dob']"
+                [class.fu-onfile]="onFile.includes('dob')"
+              >
+                <label for="fuDob">Date of Birth *</label>
+                <input id="fuDob" name="dob" type="date" [max]="today" [(ngModel)]="form.dob" />
+                <p class="fu-error" *ngIf="errors['dob']">{{ errors["dob"] }}</p>
+              </div>
+            </div>
+
+            <div class="rs-grid-3">
+              <div
+                class="rs-field"
+                [class.fu-invalid]="errors['mrn']"
+                [class.fu-onfile]="onFile.includes('mrn')"
+              >
+                <label for="fuMrn">Medical Record Number (MRN) *</label>
+                <input
+                  id="fuMrn"
+                  name="mrn"
+                  type="text"
+                  maxlength="20"
+                  placeholder="MRN-000000"
+                  [(ngModel)]="form.mrn"
+                />
+                <p class="fu-error" *ngIf="errors['mrn']">{{ errors["mrn"] }}</p>
+              </div>
+
+              <div
+                class="rs-field"
+                [class.fu-invalid]="errors['phone']"
+                [class.fu-onfile]="onFile.includes('phone')"
+              >
+                <label for="fuPhone">Phone Number *</label>
+                <input
+                  id="fuPhone"
+                  name="phone"
+                  type="tel"
+                  maxlength="20"
+                  placeholder="(000) 000-0000"
+                  [(ngModel)]="form.phone"
+                />
+                <p class="fu-error" *ngIf="errors['phone']">{{ errors["phone"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['contactMethod']">
+                <label for="fuContact">Preferred Contact Method *</label>
+                <select id="fuContact" name="contactMethod" [(ngModel)]="form.contactMethod">
+                  <option value="">Select method</option>
+                  <option>Phone call</option>
+                  <option>Text message</option>
+                  <option>Email</option>
+                  <option>Patient portal</option>
+                </select>
+                <p class="fu-error" *ngIf="errors['contactMethod']">
+                  {{ errors["contactMethod"] }}
+                </p>
+              </div>
+            </div>
+
+            <div class="fu-group" [class.fu-invalid]="errors['patientConfirmed']">
+              <label class="rv-check">
+                <input
+                  type="checkbox"
+                  name="patientConfirmed"
+                  [(ngModel)]="form.patientConfirmed"
+                />
+                <span>I confirmed these patient details with the patient *</span>
+              </label>
+              <p class="fu-error" *ngIf="errors['patientConfirmed']">
+                {{ errors["patientConfirmed"] }}
+              </p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'calendar-blue.png'" alt="" />
+              <h3>Visit Details</h3>
+            </div>
+
+            <div class="rs-grid-3">
+              <div class="rs-field" [class.fu-invalid]="errors['visitDate']">
+                <label for="fuVisitDate">Visit Date *</label>
+                <input
+                  id="fuVisitDate"
+                  name="visitDate"
+                  type="date"
+                  [max]="today"
+                  [(ngModel)]="form.visitDate"
+                />
+                <p class="fu-error" *ngIf="errors['visitDate']">{{ errors["visitDate"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['visitType']">
+                <label for="fuVisitType">Visit Type *</label>
+                <select id="fuVisitType" name="visitType" [(ngModel)]="form.visitType">
+                  <option value="">Select type</option>
+                  <option>In-person</option>
+                  <option>Video call</option>
+                  <option>Phone call</option>
+                </select>
+                <p class="fu-error" *ngIf="errors['visitType']">{{ errors["visitType"] }}</p>
+              </div>
+
+              <div class="rs-field">
+                <label for="fuCompanion">Accompanying Person</label>
+                <input
+                  id="fuCompanion"
+                  name="companion"
+                  type="text"
+                  maxlength="120"
+                  placeholder="Name and relation (optional)"
+                  [(ngModel)]="form.companion"
+                />
+              </div>
+            </div>
+
+            <div class="rs-grid-2">
+              <div class="rs-field">
+                <label for="fuReferrer">Referring Provider</label>
+                <input
+                  id="fuReferrer"
+                  name="referrer"
+                  type="text"
+                  maxlength="120"
+                  placeholder="Leave blank if unchanged"
+                  [(ngModel)]="form.referrer"
+                />
+              </div>
+
+              <div class="rs-field" [class.fu-onfile]="onFile.includes('insurance')">
+                <label for="fuInsurance">Insurance</label>
+                <input
+                  id="fuInsurance"
+                  name="insurance"
+                  type="text"
+                  maxlength="120"
+                  placeholder="Leave blank if unchanged"
+                  [(ngModel)]="form.insurance"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-file-blue.png'" alt="" />
+              <h3>Since Last Visit</h3>
+            </div>
+
+            <div class="rs-field fu-spaced" [class.fu-invalid]="errors['sinceEvents']">
+              <label for="fuSince"
+                >Hospitalizations or emergency visits since the last appointment *</label
+              >
+              <select id="fuSince" name="sinceEvents" [(ngModel)]="form.sinceEvents">
+                <option value="">Select an option</option>
+                <option>None</option>
+                <option>Hospitalization</option>
+                <option>Emergency visit</option>
+                <option>Hospitalization and emergency visit</option>
+              </select>
+              <p class="fu-error" *ngIf="errors['sinceEvents']">{{ errors["sinceEvents"] }}</p>
+            </div>
+
+            <div class="rs-field">
+              <label for="fuNewEvents">New diagnoses or major health events</label>
+              <textarea
+                id="fuNewEvents"
+                name="newEvents"
+                maxlength="500"
+                placeholder="Describe new conditions, procedures, or significant changes since the last visit"
+                [(ngModel)]="form.newEvents"
+              ></textarea>
+              <div class="notes-count">{{ (form.newEvents || "").length }}/500</div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ===================== STEP 2 ===================== -->
+        <section class="rs-step-panel" [class.active]="currentStep === 2">
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-file-blue.png'" alt="" />
+              <h3>Current Condition</h3>
+            </div>
+            <div class="rs-field" [class.fu-invalid]="errors['condition']">
+              <label for="fuCondition">How has the patient been since the last visit? *</label>
+              <textarea
+                id="fuCondition"
+                name="condition"
+                maxlength="500"
+                placeholder="Describe overall health, improvements, or concerns"
+                [(ngModel)]="form.condition"
+              ></textarea>
+              <div class="notes-count">{{ (form.condition || "").length }}/500</div>
+              <p class="fu-error" *ngIf="errors['condition']">{{ errors["condition"] }}</p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-pulse-blue.png'" alt="" />
+              <h3>Symptom Update</h3>
+            </div>
+
+            <fieldset class="fu-group" [class.fu-invalid]="errors['symptoms']">
+              <legend class="fu-legend">Select all that apply *</legend>
+              <div class="fu-chip-grid">
+                <label class="diet-chip" *ngFor="let symptom of symptomOptions">
+                  <input
+                    type="checkbox"
+                    name="symptoms"
+                    [checked]="form.symptoms.includes(symptom)"
+                    (change)="toggleArrayValue('symptoms', symptom, $any($event.target).checked)"
+                  />
+                  <span>{{ symptom }}</span>
+                </label>
+              </div>
+              <p class="fu-error" *ngIf="errors['symptoms']">{{ errors["symptoms"] }}</p>
+            </fieldset>
+
+            <div
+              class="rs-field"
+              *ngIf="showOtherSymptoms"
+              [class.fu-invalid]="errors['symptomOther']"
+            >
+              <label for="fuSymptomOther">Other symptoms (not listed) *</label>
+              <input
+                id="fuSymptomOther"
+                name="symptomOther"
+                type="text"
+                maxlength="300"
+                placeholder="Describe any other symptoms"
+                [(ngModel)]="form.symptomOther"
+              />
+              <p class="fu-error" *ngIf="errors['symptomOther']">{{ errors["symptomOther"] }}</p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-pulse-blue.png'" alt="" />
+              <h3>Symptom Improvement</h3>
+            </div>
+            <fieldset class="fu-group" [class.fu-invalid]="errors['improvement']">
+              <legend class="fu-legend">Overall condition compared with the last visit *</legend>
+              <div class="fu-chip-grid">
+                <label class="diet-chip" *ngFor="let option of improvementOptions">
+                  <input
+                    type="radio"
+                    name="improvement"
+                    [value]="option"
+                    [(ngModel)]="form.improvement"
+                  />
+                  <span>{{ option }}</span>
+                </label>
+              </div>
+              <p class="fu-error" *ngIf="errors['improvement']">{{ errors["improvement"] }}</p>
+            </fieldset>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-badge-blue.png'" alt="" />
+              <h3>Treatment Adherence</h3>
+            </div>
+            <fieldset class="fu-group" [class.fu-invalid]="errors['treatAdherence']">
+              <legend class="fu-legend">
+                Has the patient been following the treatment plan? *
+              </legend>
+              <div class="fu-chip-grid fu-chip-grid-sm">
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="treatAdherence"
+                    value="Yes"
+                    [(ngModel)]="form.treatAdherence"
+                  />
+                  <span>Yes</span>
+                </label>
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="treatAdherence"
+                    value="No"
+                    [(ngModel)]="form.treatAdherence"
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+              <p class="fu-error" *ngIf="errors['treatAdherence']">
+                {{ errors["treatAdherence"] }}
+              </p>
+            </fieldset>
+
+            <div
+              class="rs-field"
+              *ngIf="showTreatmentNote"
+              [class.fu-invalid]="errors['treatAdherenceNote']"
+            >
+              <label for="fuTreatNote"
+                >Please specify missed doses, side effects, cost issues, or other concerns *</label
+              >
+              <textarea
+                id="fuTreatNote"
+                name="treatAdherenceNote"
+                maxlength="300"
+                placeholder="e.g. missed doses, side effects, or other reasons"
+                [(ngModel)]="form.treatAdherenceNote"
+              ></textarea>
+              <div class="notes-count">{{ (form.treatAdherenceNote || "").length }}/300</div>
+              <p class="fu-error" *ngIf="errors['treatAdherenceNote']">
+                {{ errors["treatAdherenceNote"] }}
+              </p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-file-blue.png'" alt="" />
+              <h3>Additional Notes</h3>
+            </div>
+            <div class="rs-field">
+              <label for="fuNotesProgress">Optional</label>
+              <textarea
+                id="fuNotesProgress"
+                name="notesProgress"
+                maxlength="500"
+                placeholder="Any other updates the patient wants to share with the provider"
+                [(ngModel)]="form.notesProgress"
+              ></textarea>
+              <div class="notes-count">{{ (form.notesProgress || "").length }}/500</div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ===================== STEP 3 ===================== -->
+        <section class="rs-step-panel" [class.active]="currentStep === 3">
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'medical-icon-blue.png'" alt="" />
+              <h3>Current Medications</h3>
+              <button type="button" class="fu-add-btn" (click)="openEntry('med')">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add Medication
+              </button>
+            </div>
+
+            <div class="fu-table-wrap">
+              <table class="fu-table">
+                <caption class="fu-sr">
+                  Current medications
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Medication</th>
+                    <th scope="col">Dose</th>
+                    <th scope="col">Frequency</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="fu-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let m of medications; let i = index">
+                    <td>
+                      <strong>{{ m.name }}</strong
+                      ><small *ngIf="m.note">{{ m.note }}</small>
+                    </td>
+                    <td>{{ m.dose }}</td>
+                    <td>{{ m.frequency }}</td>
+                    <td>
+                      <span class="fu-pill" [ngClass]="'is-' + pillKind(m.status)">{{
+                        m.status
+                      }}</span>
+                    </td>
+                    <td class="fu-actions">
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="Edit"
+                        [attr.aria-label]="'Edit ' + m.name"
+                        (click)="openEntry('med', i)"
+                      >
+                        <img [src]="icons + 'edit-blue.png'" alt="" />
+                      </button>
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="Remove"
+                        [attr.aria-label]="'Remove ' + m.name"
+                        (click)="confirmRemove('med', i)"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="#EF4444"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14M10 11v6M14 11v6" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!medications.length">
+                    <td colspan="5" class="fu-empty">No medications added yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="fu-group" [class.fu-invalid]="errors['meds']">
+              <label class="rv-check">
+                <input type="checkbox" name="noMedications" [(ngModel)]="form.noMedications" />
+                <span>The patient is not taking any medications</span>
+              </label>
+              <p class="fu-error" *ngIf="errors['meds']">{{ errors["meds"] }}</p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-file-blue.png'" alt="" />
+              <h3>Medication Changes Since Last Visit</h3>
+            </div>
+
+            <fieldset class="fu-group" [class.fu-invalid]="errors['medChanges']">
+              <legend class="fu-legend">Select all that apply *</legend>
+              <div class="fu-chip-grid">
+                <label class="diet-chip" *ngFor="let c of medChangeOptions">
+                  <input
+                    type="checkbox"
+                    name="medChanges"
+                    [checked]="form.medChanges.includes(c)"
+                    (change)="toggleArrayValue('medChanges', c, $any($event.target).checked)"
+                  />
+                  <span>{{ c }}</span>
+                </label>
+              </div>
+              <p class="fu-error" *ngIf="errors['medChanges']">{{ errors["medChanges"] }}</p>
+            </fieldset>
+
+            <div
+              class="rs-field"
+              *ngIf="showMedicationChangeDetails"
+              [class.fu-invalid]="errors['medChangeDetails']"
+            >
+              <label for="fuMedChange">Describe the changes, side effects, or concerns *</label>
+              <textarea
+                id="fuMedChange"
+                name="medChangeDetails"
+                maxlength="500"
+                placeholder="e.g. new medications, stopped medications, dose adjustments, side effects"
+                [(ngModel)]="form.medChangeDetails"
+              ></textarea>
+              <div class="notes-count">{{ (form.medChangeDetails || "").length }}/500</div>
+              <p class="fu-error" *ngIf="errors['medChangeDetails']">
+                {{ errors["medChangeDetails"] }}
+              </p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-badge-blue.png'" alt="" />
+              <h3>Medication Adherence</h3>
+            </div>
+            <fieldset class="fu-group" [class.fu-invalid]="errors['medAdherence']">
+              <legend class="fu-legend">
+                How well has the patient followed the prescribed medication plan? *
+              </legend>
+              <div class="fu-chip-grid fu-chip-grid-sm">
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="medAdherence"
+                    value="Yes"
+                    [(ngModel)]="form.medAdherence"
+                  />
+                  <span>Yes</span>
+                </label>
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="medAdherence"
+                    value="Mostly"
+                    [(ngModel)]="form.medAdherence"
+                  />
+                  <span>Mostly</span>
+                </label>
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="medAdherence"
+                    value="No"
+                    [(ngModel)]="form.medAdherence"
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+              <p class="fu-error" *ngIf="errors['medAdherence']">{{ errors["medAdherence"] }}</p>
+            </fieldset>
+
+            <div
+              class="rs-field"
+              *ngIf="showMedicationAdherenceNote"
+              [class.fu-invalid]="errors['medAdherenceNote']"
+            >
+              <label for="fuMedAdherenceNote">Please tell us more *</label>
+              <textarea
+                id="fuMedAdherenceNote"
+                name="medAdherenceNote"
+                maxlength="300"
+                placeholder="e.g. missed doses, side effects, cost issues"
+                [(ngModel)]="form.medAdherenceNote"
+              ></textarea>
+              <div class="notes-count">{{ (form.medAdherenceNote || "").length }}/300</div>
+              <p class="fu-error" *ngIf="errors['medAdherenceNote']">
+                {{ errors["medAdherenceNote"] }}
+              </p>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'medical-icon-blue.png'" alt="" />
+              <h3>Refills and Concerns</h3>
+            </div>
+            <fieldset class="fu-group" [class.fu-invalid]="errors['refills']">
+              <legend class="fu-legend">
+                Does the patient need refills or have medication concerns? *
+              </legend>
+              <div class="fu-chip-grid fu-chip-grid-sm">
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="refills"
+                    value="No Refills Needed"
+                    [(ngModel)]="form.refills"
+                  />
+                  <span>No Refills Needed</span>
+                </label>
+                <label class="diet-chip">
+                  <input
+                    type="radio"
+                    name="refills"
+                    value="Refill Needed"
+                    [(ngModel)]="form.refills"
+                  />
+                  <span>Refill Needed</span>
+                </label>
+                <label class="diet-chip">
+                  <input type="radio" name="refills" value="Unsure" [(ngModel)]="form.refills" />
+                  <span>Unsure</span>
+                </label>
+              </div>
+              <p class="fu-error" *ngIf="errors['refills']">{{ errors["refills"] }}</p>
+            </fieldset>
+
+            <div class="rs-field">
+              <label for="fuRefillNotes">Additional notes (optional)</label>
+              <textarea
+                id="fuRefillNotes"
+                name="refillNotes"
+                maxlength="300"
+                placeholder="e.g. refill request, pharmacy change, insurance issues"
+                [(ngModel)]="form.refillNotes"
+              ></textarea>
+              <div class="notes-count">{{ (form.refillNotes || "").length }}/300</div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ===================== STEP 4 ===================== -->
+        <section class="rs-step-panel" [class.active]="currentStep === 4">
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-heart-blue.png'" alt="" />
+              <h3>Vitals</h3>
+            </div>
+
+            <div class="fu-grid-4">
+              <div class="rs-field" [class.fu-invalid]="errors['bp']">
+                <label for="fuSys">Blood Pressure (mmHg)</label>
+                <div class="fu-inline">
+                  <input
+                    id="fuSys"
+                    name="bpSys"
+                    type="number"
+                    inputmode="numeric"
+                    step="1"
+                    placeholder="Systolic"
+                    aria-label="Systolic pressure in mmHg"
+                    [(ngModel)]="form.bpSys"
+                  />
+                  <span aria-hidden="true">/</span>
+                  <input
+                    id="fuDia"
+                    name="bpDia"
+                    type="number"
+                    inputmode="numeric"
+                    step="1"
+                    placeholder="Diastolic"
+                    aria-label="Diastolic pressure in mmHg"
+                    [(ngModel)]="form.bpDia"
+                  />
+                </div>
+                <p class="fu-error" *ngIf="errors['bp']">{{ errors["bp"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['heartRate']">
+                <label for="fuHr">Heart Rate (bpm)</label>
+                <input
+                  id="fuHr"
+                  name="heartRate"
+                  type="number"
+                  inputmode="numeric"
+                  step="1"
+                  placeholder="e.g. 72"
+                  [(ngModel)]="form.heartRate"
+                />
+                <p class="fu-error" *ngIf="errors['heartRate']">{{ errors["heartRate"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['temp']">
+                <label for="fuTemp">Temperature</label>
+                <div class="fu-inline">
+                  <input
+                    id="fuTemp"
+                    name="temp"
+                    type="number"
+                    inputmode="decimal"
+                    step="0.1"
+                    placeholder="e.g. 98.6"
+                    [(ngModel)]="form.temp"
+                  />
+                  <select
+                    id="fuTempUnit"
+                    name="tempUnit"
+                    aria-label="Temperature unit"
+                    [(ngModel)]="form.tempUnit"
+                  >
+                    <option value="F">°F</option>
+                    <option value="C">°C</option>
+                  </select>
+                </div>
+                <p class="fu-error" *ngIf="errors['temp']">{{ errors["temp"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['respRate']">
+                <label for="fuRr">Respiratory Rate (/min)</label>
+                <input
+                  id="fuRr"
+                  name="respRate"
+                  type="number"
+                  inputmode="numeric"
+                  step="1"
+                  placeholder="e.g. 16"
+                  [(ngModel)]="form.respRate"
+                />
+                <p class="fu-error" *ngIf="errors['respRate']">{{ errors["respRate"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['height']">
+                <label for="fuHeight">Height (cm)</label>
+                <input
+                  id="fuHeight"
+                  name="height"
+                  type="number"
+                  inputmode="decimal"
+                  step="0.1"
+                  placeholder="e.g. 170"
+                  [(ngModel)]="form.height"
+                />
+                <p class="fu-error" *ngIf="errors['height']">{{ errors["height"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['weight']">
+                <label for="fuWeight">Weight (kg)</label>
+                <input
+                  id="fuWeight"
+                  name="weight"
+                  type="number"
+                  inputmode="decimal"
+                  step="0.1"
+                  placeholder="e.g. 72"
+                  [(ngModel)]="form.weight"
+                />
+                <p class="fu-error" *ngIf="errors['weight']">{{ errors["weight"] }}</p>
+              </div>
+
+              <div class="rs-field">
+                <label for="fuBmi">BMI (kg/m², auto)</label>
+                <input
+                  id="fuBmi"
+                  type="text"
+                  readonly
+                  placeholder="—"
+                  aria-live="polite"
+                  [value]="bmi"
+                />
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['spo2']">
+                <label for="fuSpo2">Oxygen Saturation (%)</label>
+                <input
+                  id="fuSpo2"
+                  name="spo2"
+                  type="number"
+                  inputmode="numeric"
+                  step="1"
+                  placeholder="e.g. 98"
+                  [(ngModel)]="form.spo2"
+                />
+                <p class="fu-error" *ngIf="errors['spo2']">{{ errors["spo2"] }}</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-steth-blue.png'" alt="" />
+              <h3>Physical Examination</h3>
+            </div>
+
+            <div class="fu-grid-4">
+              <div class="rs-field">
+                <label for="fuExamGeneral">General Appearance</label>
+                <select id="fuExamGeneral" name="examGeneral" [(ngModel)]="form.examGeneral">
+                  <option value="">Not recorded</option>
+                  <option>Normal</option>
+                  <option>Abnormal</option>
+                  <option>Not examined</option>
+                </select>
+              </div>
+              <div class="rs-field">
+                <label for="fuExamCardio">Cardiovascular Findings</label>
+                <select id="fuExamCardio" name="examCardio" [(ngModel)]="form.examCardio">
+                  <option value="">Not recorded</option>
+                  <option>Normal</option>
+                  <option>Abnormal</option>
+                  <option>Not examined</option>
+                </select>
+              </div>
+              <div class="rs-field">
+                <label for="fuExamResp">Respiratory Findings</label>
+                <select id="fuExamResp" name="examResp" [(ngModel)]="form.examResp">
+                  <option value="">Not recorded</option>
+                  <option>Normal</option>
+                  <option>Abnormal</option>
+                  <option>Not examined</option>
+                </select>
+              </div>
+              <div class="rs-field">
+                <label for="fuExamAbdo">Abdominal Findings</label>
+                <select id="fuExamAbdo" name="examAbdo" [(ngModel)]="form.examAbdo">
+                  <option value="">Not recorded</option>
+                  <option>Normal</option>
+                  <option>Abnormal</option>
+                  <option>Not examined</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="rs-field">
+              <label for="fuExamOther">Other Examination Findings</label>
+              <textarea
+                id="fuExamOther"
+                name="examOther"
+                maxlength="500"
+                placeholder="Enter additional examination findings"
+                [(ngModel)]="form.examOther"
+              ></textarea>
+              <div class="notes-count">{{ (form.examOther || "").length }}/500</div>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'lab.png'" alt="" />
+              <h3>Lab Tests and Imaging</h3>
+              <button type="button" class="fu-add-btn" (click)="openEntry('lab')">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add Test / Imaging
+              </button>
+            </div>
+
+            <div class="fu-table-wrap">
+              <table class="fu-table">
+                <caption class="fu-sr">
+                  Lab tests and imaging
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Test / Imaging</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Result</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="fu-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of labs; let i = index">
+                    <td>
+                      <strong>{{ r.name }}</strong
+                      ><small *ngIf="r.kind">{{ r.kind }}</small>
+                    </td>
+                    <td>{{ fmtDate(r.date) }}</td>
+                    <td>{{ r.result || "—" }}</td>
+                    <td>
+                      <span class="fu-pill" [ngClass]="'is-' + pillKind(r.status)">{{
+                        r.status
+                      }}</span>
+                    </td>
+                    <td class="fu-actions">
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="View"
+                        [attr.aria-label]="'View ' + r.name"
+                        (click)="openView(i)"
+                      >
+                        <img [src]="icons + 'view.png'" alt="" />
+                      </button>
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="Edit"
+                        [attr.aria-label]="'Edit ' + r.name"
+                        (click)="openEntry('lab', i)"
+                      >
+                        <img [src]="icons + 'edit-blue.png'" alt="" />
+                      </button>
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="Remove"
+                        [attr.aria-label]="'Remove ' + r.name"
+                        (click)="confirmRemove('lab', i)"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="#EF4444"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14M10 11v6M14 11v6" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!labs.length">
+                    <td colspan="5" class="fu-empty">No tests or imaging recorded yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'medicine-icon.png'" alt="" />
+              <h3>Treatments Given</h3>
+            </div>
+            <div class="rs-field">
+              <label for="fuTreatments"
+                >Treatments performed or administered during this visit</label
+              >
+              <textarea
+                id="fuTreatments"
+                name="treatments"
+                maxlength="500"
+                placeholder="e.g. medication adjustments, injections, procedures"
+                [(ngModel)]="form.treatments"
+              ></textarea>
+              <div class="notes-count">{{ (form.treatments || "").length }}/500</div>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'calendar-blue.png'" alt="" />
+              <h3>Plan for Next Visit</h3>
+            </div>
+
+            <div class="rs-grid-2">
+              <div class="rs-field">
+                <label for="fuPlanInterval4">Follow-Up Interval</label>
+                <select id="fuPlanInterval4" name="planInterval4" [(ngModel)]="form.planInterval">
+                  <option value="">Select interval</option>
+                  <option *ngFor="let o of intervalOptions" [value]="o.value">{{ o.label }}</option>
+                </select>
+              </div>
+              <div class="rs-field" [class.fu-invalid]="errors['planDate']">
+                <label for="fuPlanDate4">Next Visit Date</label>
+                <input id="fuPlanDate4" name="planDate4" type="date" [(ngModel)]="form.planDate" />
+                <p class="fu-error" *ngIf="errors['planDate']">{{ errors["planDate"] }}</p>
+              </div>
+            </div>
+
+            <div class="rs-field">
+              <label for="fuPlanNotes">Recommendations or Plan</label>
+              <textarea
+                id="fuPlanNotes"
+                name="planNotes"
+                maxlength="500"
+                placeholder="e.g. lifestyle changes, additional tests, specialist referral"
+                [(ngModel)]="form.planNotes"
+              ></textarea>
+              <div class="notes-count">{{ (form.planNotes || "").length }}/500</div>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-file-blue.png'" alt="" />
+              <h3>Additional Notes</h3>
+            </div>
+            <div class="rs-field">
+              <label for="fuNotesVitals">Optional</label>
+              <textarea
+                id="fuNotesVitals"
+                name="notesVitals"
+                maxlength="500"
+                placeholder="Any other notes or observations from this visit"
+                [(ngModel)]="form.notesVitals"
+              ></textarea>
+              <div class="notes-count">{{ (form.notesVitals || "").length }}/500</div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ===================== STEP 5 ===================== -->
+        <section class="rs-step-panel" [class.active]="currentStep === 5">
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'calendar-blue.png'" alt="" />
+              <h3>Follow-Up Plan</h3>
+            </div>
+
+            <div class="fu-grid-4">
+              <div class="rs-field" [class.fu-invalid]="errors['planInterval']">
+                <label for="fuPlanInterval5">Follow-Up Interval *</label>
+                <select id="fuPlanInterval5" name="planInterval5" [(ngModel)]="form.planInterval">
+                  <option value="">Select interval</option>
+                  <option *ngFor="let o of intervalOptions" [value]="o.value">{{ o.label }}</option>
+                </select>
+                <p class="fu-error" *ngIf="errors['planInterval']">{{ errors["planInterval"] }}</p>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['planDate']">
+                <label for="fuPlanDate5">Next Visit Date *</label>
+                <input id="fuPlanDate5" name="planDate5" type="date" [(ngModel)]="form.planDate" />
+                <p class="fu-error" *ngIf="errors['planDate']">{{ errors["planDate"] }}</p>
+              </div>
+
+              <div class="rs-field">
+                <label for="fuPrefTime">Preferred Time</label>
+                <select id="fuPrefTime" name="prefTime" [(ngModel)]="form.prefTime">
+                  <option value="">No preference</option>
+                  <option>Morning</option>
+                  <option>Afternoon</option>
+                  <option>Evening</option>
+                </select>
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['nextVisitType']">
+                <label for="fuNextType">Visit Type *</label>
+                <select id="fuNextType" name="nextVisitType" [(ngModel)]="form.nextVisitType">
+                  <option value="">Select type</option>
+                  <option>In-person</option>
+                  <option>Video call</option>
+                  <option>Phone call</option>
+                </select>
+                <p class="fu-error" *ngIf="errors['nextVisitType']">
+                  {{ errors["nextVisitType"] }}
+                </p>
+              </div>
+            </div>
+
+            <div class="fu-grid-2-wide">
+              <div class="rs-field">
+                <label for="fuNextPhysician">Preferred Physician</label>
+                <input
+                  id="fuNextPhysician"
+                  name="nextPhysician"
+                  type="text"
+                  maxlength="120"
+                  placeholder="Optional"
+                  [(ngModel)]="form.nextPhysician"
+                />
+              </div>
+
+              <div class="rs-field" [class.fu-invalid]="errors['nextReason']">
+                <label for="fuNextReason">Reason for Next Visit *</label>
+                <input
+                  id="fuNextReason"
+                  name="nextReason"
+                  type="text"
+                  maxlength="200"
+                  placeholder="e.g. follow-up on blood pressure, review test results"
+                  [(ngModel)]="form.nextReason"
+                />
+                <p class="fu-error" *ngIf="errors['nextReason']">{{ errors["nextReason"] }}</p>
+              </div>
+            </div>
+
+            <div class="amenity-info">
+              <span
+                >Choosing an interval fills in the next visit date from the visit date. Adjust the
+                date if needed.</span
+              >
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-clipboard-blue.png'" alt="" />
+              <h3>Tests and Assessments</h3>
+              <button type="button" class="fu-add-btn" (click)="openEntry('plan')">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add Test / Assessment
+              </button>
+            </div>
+
+            <div class="fu-table-wrap">
+              <table class="fu-table">
+                <caption class="fu-sr">
+                  Tests and assessments for the next visit
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Test / Assessment</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Expected Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="fu-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of planTests; let i = index">
+                    <td>
+                      <strong>{{ r.name }}</strong>
+                    </td>
+                    <td>{{ r.reason || "—" }}</td>
+                    <td>{{ r.expected || "—" }}</td>
+                    <td>
+                      <span class="fu-pill" [ngClass]="'is-' + pillKind(r.status)">{{
+                        r.status
+                      }}</span>
+                    </td>
+                    <td class="fu-actions">
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="Edit"
+                        [attr.aria-label]="'Edit ' + r.name"
+                        (click)="openEntry('plan', i)"
+                      >
+                        <img [src]="icons + 'edit-blue.png'" alt="" />
+                      </button>
+                      <button
+                        type="button"
+                        class="fu-icon-btn"
+                        title="Remove"
+                        [attr.aria-label]="'Remove ' + r.name"
+                        (click)="confirmRemove('plan', i)"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="16"
+                          height="16"
+                          fill="none"
+                          stroke="#EF4444"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14M10 11v6M14 11v6" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!planTests.length">
+                    <td colspan="5" class="fu-empty">No tests or assessments planned yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-badge-blue.png'" alt="" />
+              <h3>Lifestyle and Care Recommendations</h3>
+            </div>
+            <fieldset class="fu-group">
+              <legend class="fu-legend">Select the recommendations the clinician has given</legend>
+              <div class="fu-rec-grid">
+                <label class="diet-chip fu-rec" *ngFor="let l of lifestyleOptions">
+                  <input
+                    type="checkbox"
+                    name="lifestyle"
+                    [checked]="form.lifestyle.includes(l.value)"
+                    (change)="toggleArrayValue('lifestyle', l.value, $any($event.target).checked)"
+                  />
+                  <span class="fu-rec-text">
+                    <strong>{{ l.value }}</strong>
+                    <small>{{ l.sub }}</small>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="rs-section">
+            <div class="rs-section-header">
+              <img [src]="icons + 'ic-file-blue.png'" alt="" />
+              <h3>Additional Instructions</h3>
+            </div>
+            <div class="rs-field">
+              <label for="fuNextInstructions">Instructions before the next visit (optional)</label>
+              <textarea
+                id="fuNextInstructions"
+                name="nextInstructions"
+                maxlength="500"
+                placeholder="e.g. bring previous reports, monitor blood pressure at home, contact the clinic if symptoms worsen"
+                [(ngModel)]="form.nextInstructions"
+              ></textarea>
+              <div class="notes-count">{{ (form.nextInstructions || "").length }}/500</div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ===================== STEP 6 ===================== -->
+        <section class="rs-step-panel" [class.active]="currentStep === 6">
+          <div class="rv-banner">
+            <img class="ico ico-blue" [src]="icons + 'ic-clipboard-blue.png'" alt="" />
+            <div>
+              <h3>Review Follow-Up Visit</h3>
+              <p>
+                Check each section before submitting. Use Edit to change an answer; everything you
+                entered is kept.
+              </p>
+            </div>
+          </div>
+
+          <div class="rv-grid">
+            <div class="rv-card" *ngFor="let c of reviewCards" [class.rv-span-2]="c.span">
+              <div class="rv-head">
+                <div class="rv-title">
+                  <img class="ico" [src]="icons + c.icon" alt="" />
+                  <h3>{{ c.title }}</h3>
+                </div>
+                <div class="fu-edit-group">
+                  <button
+                    type="button"
+                    class="rv-edit"
+                    *ngFor="let e of c.edits"
+                    [attr.aria-label]="'Edit ' + (e.aria || c.title)"
+                    (click)="onReviewEdit(e.step)"
+                  >
+                    <img class="ico" [src]="icons + 'edit-blue.png'" alt="" />{{ e.label }}
+                  </button>
+                </div>
+              </div>
+
+              <ng-container *ngFor="let b of c.blocks">
+                <dl class="rv-list" *ngIf="b.rows">
+                  <ng-container *ngFor="let r of b.rows">
+                    <dt>{{ r[0] }}</dt>
+                    <dd>{{ r[1] }}</dd>
+                  </ng-container>
+                </dl>
+
+                <div class="fu-table-wrap" *ngIf="b.table">
+                  <table class="fu-table">
+                    <thead>
+                      <tr>
+                        <th scope="col" *ngFor="let h of b.table.head">{{ h }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let row of b.table.rows">
+                        <td *ngFor="let cell of row">
+                          <span
+                            *ngIf="cell.pill"
+                            class="fu-pill"
+                            [ngClass]="'is-' + pillKind(cell.pill)"
+                            >{{ cell.pill }}</span
+                          >
+                          <ng-container *ngIf="!cell.pill">
+                            <strong *ngIf="cell.strong">{{ cell.text }}</strong>
+                            <ng-container *ngIf="!cell.strong">{{ cell.text }}</ng-container>
+                            <small *ngIf="cell.sub">{{ cell.sub }}</small>
+                          </ng-container>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <ul class="fu-review-list" *ngIf="b.list">
+                  <li *ngFor="let item of b.list">{{ item }}</li>
+                </ul>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="rv-card rv-consent" [class.fu-invalid]="errors['consent']">
+            <div class="rv-head">
+              <div class="rv-title">
+                <img class="ico" [src]="icons + 'ic-file-blue.png'" alt="" />
+                <h3>Confirmation</h3>
+              </div>
+            </div>
+            <div class="rv-consent-body">
+              <label class="rv-check">
+                <input type="checkbox" name="consentAccurate" [(ngModel)]="form.consentAccurate" />
+                <span>I confirm that the information entered is accurate.</span>
+              </label>
+              <label class="rv-check">
+                <input type="checkbox" name="consentSubmit" [(ngModel)]="form.consentSubmit" />
+                <span>I authorize submitting this follow-up visit record.</span>
+              </label>
+            </div>
+            <p class="fu-error" *ngIf="errors['consent']">{{ errors["consent"] }}</p>
+          </div>
+        </section>
+      </fieldset>
+
+      <!-- FOOTER -->
+      <div class="rs-form-footer">
+        <div class="rs-step-count">{{ stepCounter }}</div>
+
+        <div class="rs-footer-actions">
+          <button type="button" class="btn-outline" [disabled]="submitted" (click)="saveDraft()">
+            <img [src]="icons + 'save.png'" alt="" />
+            Save Draft
+          </button>
+
+          <button *ngIf="currentStep > 1" type="button" class="btn-outline" (click)="back()">
+            <img [src]="icons + 'arrow-left.png'" alt="" />
+            Back
+          </button>
+
+          <button type="button" class="btn-primary" [disabled]="busy" (click)="onNext()">
+            <ng-container *ngIf="submitted">
+              Start New Follow-Up <img [src]="icons + 'arrow-right.png'" alt="" />
+            </ng-container>
+            <ng-container *ngIf="!submitted && currentStep === totalSteps">
+              <img [src]="icons + 'check-white.png'" alt="" /> Submit Follow-Up Visit
+            </ng-container>
+            <ng-container *ngIf="!submitted && currentStep < totalSteps">
+              Continue <img [src]="icons + 'arrow-right.png'" alt="" />
+            </ng-container>
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+</main>
+
+<!-- ===================== MODALS ===================== -->
+
+<div
+  class="modal-overlay"
+  [class.show]="modal === 'draft'"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="draftSavedTitle"
+>
+  <div class="modal-card">
+    <div class="modal-success-icon"><img [src]="icons + 'icon-normal.png'" alt="" /></div>
+    <h3 id="draftSavedTitle">Draft Saved</h3>
+    <p>{{ draftMessage }}</p>
+    <button type="button" class="btn-primary modal-btn" (click)="closeModal()">OK</button>
+  </div>
+</div>
+
+<div
+  class="modal-overlay"
+  [class.show]="modal === 'submit'"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="submitTitle"
+>
+  <div class="modal-card">
+    <div class="modal-success-icon"><img [src]="icons + 'icon-normal.png'" alt="" /></div>
+    <h3 id="submitTitle">Follow-Up Visit Submitted</h3>
+    <p>The follow-up visit record has been submitted.</p>
+    <dl class="modal-details">
+      <dt>Reference</dt>
+      <dd>{{ receipt.reference || "—" }}</dd>
+      <dt>Patient</dt>
+      <dd>{{ receipt.patient || "—" }}</dd>
+      <dt>Visit Date</dt>
+      <dd>{{ receipt.visitDate || "—" }}</dd>
+      <dt>Next Visit</dt>
+      <dd>{{ receipt.nextVisit || "—" }}</dd>
+      <dt>Submitted On</dt>
+      <dd>{{ receipt.submittedOn || "—" }}</dd>
+      <dt>Status</dt>
+      <dd>{{ receipt.status || "—" }}</dd>
+    </dl>
+    <button type="button" class="btn-primary modal-btn" (click)="closeModal()">OK</button>
+  </div>
+</div>
+
+<div
+  class="modal-overlay"
+  [class.show]="dialog.open"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="fuDialogTitle"
+>
+  <form class="modal-card fu-modal-card" *ngIf="dialog.open" novalidate (ngSubmit)="submitDialog()">
+    <h3 id="fuDialogTitle">{{ dialog.title }}</h3>
+
+    <div class="fu-dialog-body" *ngIf="dialog.mode === 'entry'">
+      <div class="rs-field" *ngFor="let f of dialog.fields" [class.fu-invalid]="dialog.errors[f.k]">
+        <label [attr.for]="'fuE_' + f.k"
+          >{{ f.l }}<ng-container *ngIf="f.req"> *</ng-container></label
+        >
+
+        <select
+          *ngIf="f.t === 'select'; else dialogInput"
+          [id]="'fuE_' + f.k"
+          [name]="f.k"
+          [(ngModel)]="dialog.values[f.k]"
+        >
+          <option value="">Select</option>
+          <option *ngFor="let o of f.opts" [value]="o">{{ o }}</option>
+        </select>
+
+        <ng-template #dialogInput>
+          <input
+            [id]="'fuE_' + f.k"
+            [name]="f.k"
+            [type]="f.t || 'text'"
+            autocomplete="off"
+            [attr.maxlength]="f.max || null"
+            [attr.placeholder]="f.ph || null"
+            [attr.list]="f.opts ? 'fuE_' + f.k + '_list' : null"
+            [(ngModel)]="dialog.values[f.k]"
+          />
+          <datalist *ngIf="f.opts" [id]="'fuE_' + f.k + '_list'">
+            <option *ngFor="let o of f.opts" [value]="o"></option>
+          </datalist>
+        </ng-template>
+
+        <p class="fu-error" *ngIf="dialog.errors[f.k]">{{ dialog.errors[f.k] }}</p>
+      </div>
+    </div>
+
+    <dl class="modal-details" *ngIf="dialog.mode === 'view'">
+      <ng-container *ngFor="let r of dialog.details">
+        <dt>{{ r[0] }}</dt>
+        <dd>{{ r[1] || "—" }}</dd>
+      </ng-container>
+    </dl>
+
+    <p *ngIf="dialog.mode === 'confirm' || dialog.mode === 'message'">{{ dialog.message }}</p>
+
+    <div class="fu-dialog-actions">
+      <button type="button" class="btn-outline" (click)="closeDialog()">
+        {{ dialog.cancelLabel || "Cancel" }}
+      </button>
+      <button
+        *ngIf="dialog.submitLabel"
+        type="submit"
+        [ngClass]="dialog.danger ? 'btn-outline-danger' : 'btn-primary'"
+      >
+        {{ dialog.submitLabel }}
+      </button>
+    </div>
+  </form>
+</div>

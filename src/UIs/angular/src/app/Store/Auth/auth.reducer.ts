@@ -1,198 +1,193 @@
-import { createReducer, on } from '@ngrx/store';
-import * as AuthActions from './auth.actions';
-import { initialAuthState } from './auth.state';
-
+import { createReducer, on } from "@ngrx/store";
+import * as AuthActions from "./auth.actions";
+import { initialAuthState } from "./auth.state";
 
 export const authReducer = createReducer(
-    initialAuthState,
+  initialAuthState,
 
-    on(AuthActions.login, (state) => ({
-        ...state,
-        isLoading: true
-    })),
+  on(AuthActions.login, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    on(AuthActions.loginSuccess, (state, action) => {
+  on(AuthActions.loginSuccess, (state, { user }) => {
+    return {
+      ...state,
+      isLoading: false,
+      loginUser: user,
+      user: user,
+      token: user.tokenKey,
+      refreshToken: user.refreshToken,
+    };
+  }),
 
-        return {
-            ...state,
-            isLoading: false,
-            loginUser: action.user,
-            user: action.user.data,
-            token: action.user.accessToken ?? action.user.tokenKey,
+  on(AuthActions.loginFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-            refreshToken: action.user.refreshToken
-        };
-    }),
+  on(AuthActions.refreshToken, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    on(AuthActions.loginFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
+  on(AuthActions.refreshTokenSuccess, (state, { accessToken, refreshToken }) => ({
+    ...state,
+    token: accessToken,
+    accessToken,
+    refreshToken,
+  })),
 
-    on(AuthActions.refreshToken, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
+  on(AuthActions.refreshTokenFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-    on(AuthActions.refreshTokenSuccess, (state, { accessToken, refreshToken }) => ({
+  // Request OTP
+  on(AuthActions.requestOTP, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-        ...state,
-        token: accessToken,
-        accessToken,
-        refreshToken
+  on(AuthActions.requestOTPSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    requestedOtp: action.requestedOtp,
+  })),
 
-    })),
+  on(AuthActions.requestOTPFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-    on(AuthActions.refreshTokenFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error
-    })),
+  on(AuthActions.register, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    // Request OTP
-    on(AuthActions.requestOTP, (state) => ({
-        ...state,
-        isLoading: true
-    })),
+  on(AuthActions.registerPatientSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    registeredPatient: action.patient,
+  })),
 
-    on(AuthActions.requestOTPSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        requestedOtp: action.requestedOtp
-    })),
+  on(AuthActions.registerPatientFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-    on(AuthActions.requestOTPFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
+  on(AuthActions.getSecurityQuestions, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    on(AuthActions.register, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
+  on(AuthActions.getSecurityQuestionsSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    // Assuming you want to store the questions in the state, you can add a property for it
+    securityQuestions: action.questions,
+  })),
 
-    on(AuthActions.registerPatientSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        registeredPatient: action.patient,
-    })),
+  on(AuthActions.getSecurityQuestionsFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
+  on(AuthActions.getCountries, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(AuthActions.getCountriesSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    getCountries: action.countries,
+  })),
+  on(AuthActions.getCountriesFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
+  on(AuthActions.getStates, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(AuthActions.getStatesSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    getStates: action.states,
+  })),
+  on(AuthActions.getStatesFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
+  on(AuthActions.getCities, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(AuthActions.getCitiesSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    getCities: action.cities,
+  })),
+  on(AuthActions.getCitiesFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-    on(AuthActions.registerPatientFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error
-    })),
+  on(AuthActions.verifyOTP, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    on(AuthActions.getSecurityQuestions, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
+  on(AuthActions.verifyOTPSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    otpres: action.otpres,
+  })),
 
-    on(AuthActions.getSecurityQuestionsSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        // Assuming you want to store the questions in the state, you can add a property for it
-        securityQuestions: action.questions,
-    })),
+  on(AuthActions.verifyOTPFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-    on(AuthActions.getSecurityQuestionsFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
-    on(AuthActions.getCountries, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
-    on(AuthActions.getCountriesSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        getCountries: action.countries,
-    })),
-    on(AuthActions.getCountriesFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
-    on(AuthActions.getStates, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
-    on(AuthActions.getStatesSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        getStates: action.states,
-    })),
-    on(AuthActions.getStatesFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
-    on(AuthActions.getCities, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
-    on(AuthActions.getCitiesSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        getCities: action.cities,
-    })),
-    on(AuthActions.getCitiesFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error,
-    })),
+  on(AuthActions.ForrgetResetPassword, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    on(AuthActions.verifyOTP, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
+  on(AuthActions.ForrgetResetPasswordSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    resetPassRes: action.resetPassRes,
+  })),
 
-    on(AuthActions.verifyOTPSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        otpres: action.otpres,
-    })),
+  on(AuthActions.ForrgetResetPasswordFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
 
-    on(AuthActions.verifyOTPFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error
-    })),
+  on(AuthActions.register_by_reseptionist, (state) => ({
+    ...state,
+    isLoading: true,
+  })),
 
-    on(AuthActions.ForrgetResetPassword, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
+  on(AuthActions.register_by_reseptionistSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    registeredPatient: action.patient,
+  })),
 
-    on(AuthActions.ForrgetResetPasswordSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        resetPassRes: action.resetPassRes,
-    })),
-
-    on(AuthActions.ForrgetResetPasswordFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error
-    })),
-
-    on(AuthActions.register_by_reseptionist, (state) => ({
-        ...state,
-        isLoading: true,
-    })),
-
-    on(AuthActions.register_by_reseptionistSuccess, (state, action) => ({
-        ...state,
-        isLoading: false,
-        registeredPatient: action.patient,
-    })),
-
-    on(AuthActions.register_by_reseptionistFailure, (state, action) => ({
-        ...state,
-        isLoading: false,
-        error: action.error
-    })),
-)
+  on(AuthActions.register_by_reseptionistFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  }))
+);

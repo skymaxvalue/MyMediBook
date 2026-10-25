@@ -1,16 +1,14 @@
-import { UPDATE } from "@ngrx/store";
-
-export const APIEndpoints = {
+export const DoctorEndPoints = {
   DOCTOR_LIST: "Doctor/GetDoctorList",
-  GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
-  GET_DEPARTMENT: "Department/GetDepartmentList",
   GET_ALL_SPECIALITYLIST: "Doctor/GetDoctorSpecialityList",
-  GET_TIME_SLOTE_BYDOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
-  GET_ROLES: "Role/GetRoleList",
+  GET_TIME_SLOT_BY_DOCTOR_ID: "Doctor/GetDoctorTimeSlotById",
+  GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
+};
+
+export const DashboardEndPoints = {
   GET_DASHBOARD_SUMMARY: "Dashboard/Receptionist/GetDashboardSummary",
   GET_DOCTOR_RECENT_PATIENT_LIST: "Dashboard/Receptionist/GetRecentPatientList",
   GET_FRONTOFFICE_RECENT_PATIENTS_QUEUE_LIST: "Dashboard/Receptionist/GetPatientQueueList",
-  APPOINTMENT_STATUS_KEY: "Master/GetStatusKeyList",
 };
 export const MedicineOrderEndPoints = {
   GET_MEDICINE_OF_PATIENT: "RxOrder/GetRxOrderByPatientProfileId",
@@ -26,10 +24,9 @@ export const AppointmentApiEndPoint = {
   GET_APPOINTMENT_LIST_FOR_RECEPTIONIST: "Appointment/Receptionist/GetAppointmentList",
   GET_APPOINTMENT_CHECK_IN_LIST_FOR_RECEPTIONIST:
     "Appointment/Receptionist/GetAppointmentCheckInList",
-  GET_APPOINTMENT_CHECKED_IN_LIST_FOR_DOCTOR:
-    "Appointment/Receptionist/GetDoctorAppointmentQueue",
+  GET_APPOINTMENT_CHECKED_IN_LIST_FOR_DOCTOR: "Appointment/Receptionist/GetDoctorAppointmentQueue",
   UPDATE_APPOINTMENT_CHECK_IN_STATUS: "Appointment/Receptionist/UpdateCheckedInStatus",
-  UPDATE_APPOINTMENT_CONSULTATION_STATUS: "Appointment/Associate/UpdateConsultationStatus"
+  UPDATE_APPOINTMENT_CONSULTATION_STATUS: "Appointment/Associate/UpdateConsultationStatus",
 };
 export const PatientApiEndPoint = {
   UPDATE_PATIONT_DTAILS: "Patient/UpdatePatientDetails",
@@ -64,12 +61,15 @@ export const LocationAPIEndPoint = {
   GET_STAETES: "Location/GetStatesByCountryList/",
   GET_CITIES: "Location/GetCitiesByStateList/",
 };
-export const MasterAPIEndPoints = {
+export const MasterEndPoints = {
   GET_SECURITY_QUESTIONS: "Master/GetSecurityQuestionList",
   GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
   GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
   GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
   GET_AGE_TYPE: "Master/GetAgeTypeList",
+  GET_ROLES: "Master/GetRoleList",
+  ORGANISATION_LIST: "Organisation/GetOrganisationList",
+  STATUS_KEY_LIST: "Master/GetStatusKeyList",
 };
 export const MessageEndPoints = {
   GET_MESSAGE_BY_ITS_ID: "Message/MessageListById/",
@@ -86,14 +86,6 @@ export const AuthEndPoints = {
   RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
   doLOGIN: "Auth/doLogin",
   CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount",
-};
-
-export const MasterEndPoints = {
-  ORGANISATION_LIST: "Organisation/GetOrganisationList",
-  STATUS_KEY_LIST: "Master/GetStatusKeyList",
-  AGE_TYPE_LIST: "Master/GetStatusKeyList",
-  RELATION_TYPE_LIST: "Master/GetRelationTypeList",
-  WEEK_DAYS_LIST: "Master/Master/GetWeekDaysList",
 };
 
 export const cancelRules = [

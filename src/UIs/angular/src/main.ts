@@ -62,6 +62,7 @@ import { MessagesReducer } from "./app/Store/Messages/messages.reducer";
 import { MasterEffects } from "./app/Store/Master/master.effect";
 import { MasterReducer } from "./app/Store/Master/master.reducer";
 import { AppointmentReducer } from "./app/Store/Appointments/appointment.reducer";
+import { NavigationEffects } from "./app/Store/Shared/Navigation/navigation.effect";
 
 if (environment.production) {
   enableProdMode();
@@ -121,6 +122,7 @@ bootstrapApplication(AppComponent, {
       BillsEffects,
       MessagesEffects,
       MasterEffects,
+      NavigationEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

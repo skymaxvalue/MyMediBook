@@ -22,16 +22,19 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/app/assets",
               "src/api",
               {
                 "glob": "**/*",
-                "input": "node_modules/intl-tel-input/build/img",
-                "output": "assets/intl-tel-input/img"
+                "input": "src/app/assets",
+                "output": "assets"
               }
             ],
-            "styles": [ "src/styles.css",
-  "node_modules/bootstrap/dist/css/bootstrap.min.css",
-  "node_modules/bootstrap-icons/font/bootstrap-icons.css"],
+            "styles": [
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            ],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -53,16 +56,16 @@
               "namedChunks": false,
               "extractLicenses": true,
               "budgets": [
-                 {
-    "type": "initial",
-    "maximumWarning": "2MB",
-    "maximumError": "3MB"
-  },
-  {
-    "type": "anyComponentStyle",
-    "maximumWarning": "20kB",
-    "maximumError": "25kB"
-  }
+                {
+                  "type": "initial",
+                  "maximumWarning": "2MB",
+                  "maximumError": "3MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "20kB",
+                  "maximumError": "25kB"
+                }
               ]
             }
           },
@@ -70,14 +73,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-     "options": {
-     "buildTarget": "angular:build"
-                 },
-         "configurations": {
-         "production": {
-      "buildTarget": "angular:build:production"
-    }
-  }
+          "options": {
+            "buildTarget": "angular:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "angular:build:production"
+            }
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

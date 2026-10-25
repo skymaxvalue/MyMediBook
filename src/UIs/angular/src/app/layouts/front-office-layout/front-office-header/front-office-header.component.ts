@@ -12,15 +12,13 @@ import { filter } from "rxjs/operators";
 })
 export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   currentDate = "";
-
   currentTime = "";
-
   private timer: any;
 
-  username = "Front Office";
+  username: string = "";
+  designationName: string = "";
 
   isProfileOpen = false;
-
   activePage = "dashboard";
 
   constructor(private router: Router) {}
@@ -104,24 +102,18 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
   }
 
   loadUser(): void {
-    const userData = localStorage.getItem("loggedInUser");
-
+    const userData = localStorage.getItem("user");
     if (!userData) {
-      this.username = "Front Office";
-
       return;
     }
+    const user = JSON.parse(userData);
 
-    try {
-      const user = JSON.parse(userData);
-
-      if (user?.name) {
-        this.username = user.name;
-      } else {
-        this.username = "Front Office";
-      }
-    } catch {
-      this.username = "Front Office";
+    if (user?.fullName) {
+      this.username = user.fullName;
+      this.designationName = user.designationName
+    } else {
+      this.username = "Error";
+      this.designationName = "Front Office"
     }
   }
 
@@ -165,8 +157,8 @@ export class FrontOfficeHeaderComponent implements OnInit, OnDestroy {
 
         break;
 
-      case "patient-checkin":
-        this.router.navigate(["/front-office/patient-checkin"]);
+      case "patient-check-in":
+        this.router.navigate(["/front-office/patient-check-in"]);
 
         break;
 

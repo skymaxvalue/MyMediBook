@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../../core/Services/auth/auth.service";
 import * as AuthActions from "./auth.actions";
-import { catchError, mergeMap, map, of, exhaustMap, tap } from "rxjs";
+import { catchError, mergeMap, map, of, tap } from "rxjs";
 import { Router } from "@angular/router";
+import * as NavActions from "../Shared/Navigation/navigation.action";
 
 @Injectable()
 export class AuthEffects {
@@ -11,7 +12,7 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {}
 
   //   Login Effect
 
@@ -29,14 +30,14 @@ export class AuthEffects {
           )
           .pipe(
             tap((response: any) => {
-              localStorage.setItem("token", response.accessToken);
+              localStorage.setItem("token", response.tokenKey);
               localStorage.setItem("refreshToken", response.refreshToken);
               localStorage.setItem("user", JSON.stringify(response.data));
-
               this.authService.startRefreshTimer();
             }),
-
-            map((response: any) => AuthActions.loginSuccess({ user: response })),
+            map((response: any) => {
+              return AuthActions.loginSuccess({ user: response });
+            }),
             catchError((error) =>
               of(
                 AuthActions.loginFailure({
@@ -50,20 +51,30 @@ export class AuthEffects {
   );
 
   //Login Success
+
   LoginSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.loginSuccess),
-      tap(({ user }) => {
+      map(({ user }) => {
         const data = user?.data;
+        const roleName: string = data?.roleName;
 
-        if (data?.needsHospitalSelection || !data?.activeHospitalId) {
-          this.router.navigate(["/select-hospital"]);
-        } else {
-          this.router.navigate(["/patient/dashboard"]);
+        switch (roleName) {
+          case "Patient":
+            return data?.needsHospitalSelection || !data?.activeHospitalId
+              ? NavActions.NavigateToPatientHospitalSelectionPage()
+              : NavActions.NavigateToPatientDashboardPage();
+          case "Receptionist":
+            return NavActions.NavigateToFrontOfficeDashboardPage();
+          case "Doctor":
+            return NavActions.NavigateToDoctorDashboardPage();
+          case "Admin":
+            return NavActions.NavigateToAdminDashboardPage();
+          default:
+            return AuthActions.loginFailure({ error: "Unknown role" });
         }
       })
-    ),
-    { dispatch: false }
+    )
   );
 
   // Request OTP

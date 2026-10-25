@@ -23,7 +23,7 @@ import {
 } from "src/app/Store/Appointments/appointment.selectors";
 import { TabServiceService } from "src/app/core/Services/helper/tab-service/tab-service.service";
 import { HostListener } from "@angular/core";
-import { cancelRules, rescheduleRules } from "src/app/Utility/EndPointsOfAPI";
+import { cancelRules, rescheduleRules } from "src/app/utils/API/ApiEndPoints";
 import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import { getPetirntProfileListById } from "src/app/Store/Patient/patient.action";
 import { Router } from "@angular/router";
@@ -91,7 +91,7 @@ export class MyAppointmentComponent implements OnInit {
     private store: Store<AppState>,
     private tabService: TabServiceService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.store.dispatch(getMyAppointments({ patientId: this.user.refId }));

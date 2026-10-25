@@ -1,8 +1,12 @@
-import { AssociateEndPoints } from "./../../../Utility/EndPointsOfAPI";
+import {
+  AssociateEndPoints,
+  DoctorEndPoints,
+  MasterEndPoints,
+  AuthEndPoints,
+} from "../../../utils/API/ApiEndPoints";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
-import { APIEndpoints, AuthEndPoints, MasterAPIEndPoints } from "../../../Utility/EndPointsOfAPI";
 import {
   AssociateRequest,
   CreateScheduleRequest,
@@ -15,21 +19,21 @@ import {
 export class DoctorService {
   constructor(private http: HttpClient) {}
   getDoctorSpecialities() {
-    return this.http.get(`${environment.OpenIdConnect.apiUrl}${APIEndpoints.DOCTOR_LIST}`);
+    return this.http.get(`${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.DOCTOR_LIST}`);
   }
 
   getAllSpecialities() {
     return this.http.get(
-      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_ALL_SPECIALITYLIST}`
+      `${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.GET_ALL_SPECIALITYLIST}`
     );
   }
 
-  getAllDepartments() {
-    return this.http.get(`${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_DEPARTMENT}`);
-  }
+  // getAllDepartments() {
+  //   return this.http.get(`${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.GET_DEPARTMENT}`);
+  // }
 
   getAllRoles() {
-    return this.http.get(`${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_ROLES}`);
+    return this.http.get(`${environment.OpenIdConnect.apiUrl}${MasterEndPoints.GET_ROLES}`);
   }
 
   registerAssociate(data: AssociateRequest) {
@@ -41,13 +45,13 @@ export class DoctorService {
 
   getAllRoleDepSpeci() {
     return this.http.get(
-      `${environment.OpenIdConnect.apiUrl}${MasterAPIEndPoints.GET_ROLE_SPECIALITY_AVAILABITY}`
+      `${environment.OpenIdConnect.apiUrl}${MasterEndPoints.GET_ROLE_SPECIALITY_AVAILABITY}`
     );
   }
 
   getAllWeeksDays() {
     return this.http.get(
-      `${environment.OpenIdConnect.apiUrl}${MasterAPIEndPoints.GET_DAYS_OF_WEEKEND}`
+      `${environment.OpenIdConnect.apiUrl}${MasterEndPoints.GET_DAYS_OF_WEEKEND}`
     );
   }
 
@@ -65,7 +69,7 @@ export class DoctorService {
   }
   getDoctorAvalabilityTimeSlot(data: any) {
     return this.http.post(
-      `${environment.OpenIdConnect.apiUrl}${APIEndpoints.GET_TIME_SLOTE_BYDOCTOR_ID}`,
+      `${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.GET_TIME_SLOT_BY_DOCTOR_ID}`,
       data
     );
   }

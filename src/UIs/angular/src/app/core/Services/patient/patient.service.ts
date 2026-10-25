@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { PatientRegister, LoginRequest } from '../../Models/Patient-Model';
 import { environment } from '../../../../environments/environment';
-import { APIEndpoints, MedicineOrderEndPoints, PatientApiEndPoint } from '../../../Utility/EndPointsOfAPI'
+import { MedicineOrderEndPoints, PatientApiEndPoint } from '../../../utils/API/ApiEndPoints'
 
 @Injectable({
   providedIn: "root",
