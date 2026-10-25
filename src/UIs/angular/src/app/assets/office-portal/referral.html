@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Referral to Other Doctor</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/consultation.css">
+    <link rel="stylesheet" href="css/referral.css">
+</head>
+
+<body>
+
+    <div id="navbar-container"></div>
+
+    <main class="dashboard-container">
+
+        <section class="breadcrumb">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <span class="separator">
+                <img src="images/right-arrow-blue.png" alt="">
+            </span>
+
+            <span class="active">
+                Referral to Other Doctor
+            </span>
+
+        </section>
+
+        <section class="consultation-card">
+
+            <header class="consultation-header">
+
+                <div class="consultation-title-group">
+
+                    <span class="page-icon-badge">
+                        <img src="images/doctor-icon-blue.png" alt="">
+                    </span>
+
+                    <div>
+                        <h1>Referral to Other Doctor</h1>
+                        <p>
+                            Record a referral to another doctor for this patient.
+                            Referrals are saved on this device only and are not sent externally.
+                        </p>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <div class="form-error-summary" id="formErrorSummary" role="alert" tabindex="-1" hidden></div>
+
+            <form id="referralForm" novalidate>
+
+                <section class="consultation-section" aria-labelledby="referralInfoHeading">
+
+                    <div class="section-header">
+                        <img src="images/note-blue.png" alt="">
+                        <h2 id="referralInfoHeading">Referral Information</h2>
+                    </div>
+
+                    <div class="detail-grid two-col">
+
+                        <div class="field-pair">
+                            <label for="referralReference">Referral Reference</label>
+                            <input type="text" id="referralReference" readonly>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="referralDate">Referral Date <span class="req" aria-hidden="true">*</span></label>
+                            <input type="date" id="referralDate" required aria-required="true" aria-describedby="referralDateError">
+                            <p class="field-error" id="referralDateError" hidden></p>
+                        </div>
+
+                        <div class="field-pair full-width">
+                            <span class="field-label" id="priorityLabel">Referral Priority <span class="req" aria-hidden="true">*</span></span>
+                            <div
+                                class="history-check-grid three-up"
+                                id="priorityGroup"
+                                role="radiogroup"
+                                aria-labelledby="priorityLabel"
+                                aria-required="true"
+                                aria-describedby="priorityError"
+                            >
+                                <label class="check-card">
+                                    <input type="radio" name="referralPriority" value="Routine">
+                                    Routine
+                                </label>
+                                <label class="check-card">
+                                    <input type="radio" name="referralPriority" value="Urgent">
+                                    Urgent
+                                </label>
+                                <label class="check-card">
+                                    <input type="radio" name="referralPriority" value="Emergency">
+                                    Emergency
+                                </label>
+                            </div>
+                            <p class="field-error" id="priorityError" hidden></p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="consultation-section" aria-labelledby="patientInfoHeading">
+
+                    <div class="section-header">
+                        <img src="images/patient-icon-blue.png" alt="">
+                        <h2 id="patientInfoHeading">Patient Information</h2>
+                    </div>
+
+                    <p class="section-helper" id="patientSourceNote" hidden></p>
+
+                    <div class="detail-grid two-col">
+
+                        <div class="field-pair">
+                            <label for="patientId">Patient ID <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="patientId" autocomplete="off" required aria-required="true" aria-describedby="patientIdError">
+                            <p class="field-error" id="patientIdError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="patientName">Full Name <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="patientName" autocomplete="off" required aria-required="true" aria-describedby="patientNameError">
+                            <p class="field-error" id="patientNameError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="patientDob">Date of Birth <span class="req" aria-hidden="true">*</span></label>
+                            <input type="date" id="patientDob" required aria-required="true" aria-describedby="patientDobError">
+                            <p class="field-error" id="patientDobError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="patientGender">Gender <span class="req" aria-hidden="true">*</span></label>
+                            <select id="patientGender" required aria-required="true" aria-describedby="patientGenderError">
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <p class="field-error" id="patientGenderError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="patientPhone">Contact Number <span class="req" aria-hidden="true">*</span></label>
+                            <input type="tel" id="patientPhone" inputmode="numeric" maxlength="10" autocomplete="off" required aria-required="true" aria-describedby="patientPhoneError">
+                            <p class="field-error" id="patientPhoneError" hidden></p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="consultation-section" aria-labelledby="referringHeading">
+
+                    <div class="section-header">
+                        <img src="images/doctor-icon-blue.png" alt="">
+                        <h2 id="referringHeading">Referring Physician</h2>
+                    </div>
+
+                    <div class="detail-grid two-col">
+
+                        <div class="field-pair">
+                            <label for="referringName">Physician Name <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="referringName" autocomplete="off" required aria-required="true" aria-describedby="referringNameError">
+                            <p class="field-error" id="referringNameError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="referringSpecialty">Specialty <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="referringSpecialty" list="specialtyOptions" autocomplete="off" required aria-required="true" aria-describedby="referringSpecialtyError">
+                            <p class="field-error" id="referringSpecialtyError" hidden></p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="consultation-section" aria-labelledby="receivingHeading">
+
+                    <div class="section-header">
+                        <img src="images/doctor-icon-blue.png" alt="">
+                        <h2 id="receivingHeading">Receiving Physician</h2>
+                    </div>
+
+                    <div class="detail-grid two-col">
+
+                        <div class="field-pair">
+                            <label for="receivingName">Doctor's Name <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="receivingName" autocomplete="off" required aria-required="true" aria-describedby="receivingNameError">
+                            <p class="field-error" id="receivingNameError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="receivingSpecialty">Specialty <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="receivingSpecialty" list="specialtyOptions" autocomplete="off" required aria-required="true" aria-describedby="receivingSpecialtyError">
+                            <p class="field-error" id="receivingSpecialtyError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="receivingFacility">Hospital / Clinic <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="receivingFacility" autocomplete="off" required aria-required="true" aria-describedby="receivingFacilityError">
+                            <p class="field-error" id="receivingFacilityError" hidden></p>
+                        </div>
+
+                        <div class="field-pair">
+                            <label for="receivingContact">Contact (Phone or Email) <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="receivingContact" autocomplete="off" required aria-required="true" aria-describedby="receivingContactError">
+                            <p class="field-error" id="receivingContactError" hidden></p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="consultation-section" aria-labelledby="detailsHeading">
+
+                    <div class="section-header">
+                        <img src="images/medical-icon-blue.png" alt="">
+                        <h2 id="detailsHeading">Referral Details</h2>
+                    </div>
+
+                    <p class="section-helper">Include only the information the receiving physician needs.</p>
+
+                    <div class="detail-grid two-col">
+
+                        <div class="field-pair full-width">
+                            <label for="referralReason">Reason for Referral <span class="req" aria-hidden="true">*</span></label>
+                            <textarea id="referralReason" maxlength="500" required aria-required="true" aria-describedby="referralReasonError"></textarea>
+                            <p class="field-error" id="referralReasonError" hidden></p>
+                        </div>
+
+                        <div class="field-pair full-width">
+                            <label for="clinicalSummary">Relevant Clinical Summary <span class="req" aria-hidden="true">*</span></label>
+                            <textarea id="clinicalSummary" maxlength="1000" required aria-required="true" aria-describedby="clinicalSummaryError"></textarea>
+                            <p class="field-error" id="clinicalSummaryError" hidden></p>
+                        </div>
+
+                        <div class="field-pair full-width">
+                            <label for="diagnosis">Diagnosis / Working Diagnosis <span class="req" aria-hidden="true">*</span></label>
+                            <input type="text" id="diagnosis" maxlength="200" autocomplete="off" required aria-required="true" aria-describedby="diagnosisError">
+                            <p class="field-error" id="diagnosisError" hidden></p>
+                        </div>
+
+                        <div class="field-pair full-width">
+                            <label for="requestedAction">Specific Questions / Requested Action <span class="req" aria-hidden="true">*</span></label>
+                            <textarea id="requestedAction" maxlength="500" required aria-required="true" aria-describedby="requestedActionError"></textarea>
+                            <p class="field-error" id="requestedActionError" hidden></p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="consultation-section" aria-labelledby="documentsHeading">
+
+                    <div class="section-header">
+                        <img src="images/upload-blue.png" alt="">
+                        <h2 id="documentsHeading">Supporting Documents</h2>
+                    </div>
+
+                    <p class="section-helper">
+                        Optional. Only file names are recorded with the referral; file contents are not stored or sent.
+                    </p>
+
+                    <div id="consultationDocsBlock" hidden>
+                        <span class="field-label" id="consultationDocsLabel">Documents listed on the consultation</span>
+                        <div class="doc-checks" id="consultationDocList" role="group" aria-labelledby="consultationDocsLabel"></div>
+                    </div>
+
+                    <label class="upload-box referral-upload">
+                        <input type="file" id="referralDocuments" multiple accept=".pdf,image/*">
+                        <img src="images/upload-blue.png" alt="">
+                        Select Additional Documents
+                        <small>Optional</small>
+                    </label>
+
+                    <ul class="doc-list" id="selectedDocList" aria-live="polite"></ul>
+
+                </section>
+
+                <footer class="step-footer referral-actions">
+
+                    <div class="footer-actions">
+
+                        <button type="button" class="btn-outline" id="cancelBtn">
+                            Cancel
+                        </button>
+
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            Submit Referral
+                            <img src="images/check-white.png" alt="">
+                        </button>
+
+                    </div>
+
+                </footer>
+
+            </form>
+
+            <datalist id="specialtyOptions">
+                <option value="Cardiology"></option>
+                <option value="Neurology"></option>
+                <option value="Orthopedics"></option>
+                <option value="Pulmonology"></option>
+                <option value="Ophthalmology"></option>
+                <option value="Endocrinology"></option>
+                <option value="Surgery"></option>
+                <option value="Psychiatry"></option>
+                <option value="Nephrology"></option>
+                <option value="Oncology"></option>
+            </datalist>
+
+        </section>
+
+    </main>
+
+    <div
+        id="referralSuccessModal"
+        class="modal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-content success-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="referralSuccessTitle"
+            aria-describedby="referralSuccessMessage"
+        >
+
+            <div class="success-icon" aria-hidden="true">✓</div>
+
+            <h2 id="referralSuccessTitle">Referral Saved</h2>
+
+            <p id="referralSuccessMessage">
+                The referral has been saved on this device. It has not been sent to the receiving physician.
+            </p>
+
+            <dl class="confirmation-details">
+                <dt>Reference</dt><dd id="successReference">&mdash;</dd>
+                <dt>Patient</dt><dd id="successPatient">&mdash;</dd>
+                <dt>Receiving Doctor</dt><dd id="successReceiving">&mdash;</dd>
+                <dt>Priority</dt><dd id="successPriority">&mdash;</dd>
+                <dt>Status</dt><dd id="successStatus">&mdash;</dd>
+            </dl>
+
+            <div class="modal-actions">
+
+                <button type="button" class="btn-outline" id="closeReferralModal">
+                    Close
+                </button>
+
+                <button type="button" class="btn-primary" id="leaveReferralBtn">
+                    Done
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/navbar.js"></script>
+    <script src="js/referral.js"></script>
+
+</body>
+
+</html>
