@@ -31,6 +31,13 @@ const DEFAULT_USERNAME = "Front Office";
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class FrontOfficeHeaderComponent implements OnInit {
+  currentDate = "";
+  currentTime = "";
+  username = "";
+  designationName = "";
+  isProfileOpen = false;
+  activePage = "";
+
   constructor(
     private router: Router,
     private store: Store,
@@ -39,14 +46,8 @@ export class FrontOfficeHeaderComponent implements OnInit {
     private authFacade: AuthFacade
   ) {}
 
-  currentDate = "";
-  currentTime = "";
-  username = DEFAULT_USERNAME;
-  isProfileOpen = false;
-  activePage = "";
-
   ngOnInit(): void {
-    this.username = this.readUsername();
+    this.loadUser();
     this.setActivePage(this.router.url);
     this.startClock();
 
@@ -55,10 +56,34 @@ export class FrontOfficeHeaderComponent implements OnInit {
         filter((e): e is NavigationEnd => e instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((e) => this.setActivePage(e.urlAfterRedirects));
+      .subscribe((e) => {
+        this.loadUser(); // keeps the name correct if someone else logs in without a reload
+        this.setActivePage(e.urlAfterRedirects);
+      });
   }
 
-  // ---------- navigation ----------
+  private loadUser(): void {
+    const user = this.readStoredUser();
+    this.username = this.clean(user?.fullName) || DEFAULT_USERNAME;
+    this.designationName = this.clean(user?.designationName) || this.clean(user?.roleName);
+  }
+
+  private readStoredUser(): {
+    fullName?: string;
+    designationName?: string;
+    roleName?: string;
+  } | null {
+    try {
+      return JSON.parse(localStorage.getItem("user") ?? "null");
+    } catch {
+      return null;
+    }
+  }
+
+  private clean(value?: string | null): string {
+    return (value ?? "").replace(/\s+/g, " ").trim();
+  }
+
   navigate(key: string): void {
     const item = NAV_ITEMS.find((n) => n.key === key);
     if (!item) return;
@@ -79,7 +104,6 @@ export class FrontOfficeHeaderComponent implements OnInit {
     this.activePage = match?.key ?? "";
   }
 
-  // ---------- profile menu ----------
   toggleProfile(event: Event): void {
     event.stopPropagation();
     this.isProfileOpen = !this.isProfileOpen;
@@ -98,7 +122,6 @@ export class FrontOfficeHeaderComponent implements OnInit {
     this.router.navigate([LOGIN_URL]);
   }
 
-  // ---------- clock ----------
   private startClock(): void {
     this.tick();
     const msToNextMinute = 60_000 - (Date.now() % 60_000);
@@ -122,13 +145,5 @@ export class FrontOfficeHeaderComponent implements OnInit {
       minute: "2-digit",
       hour12: true,
     });
-  }
-
-  private readUsername(): string {
-    try {
-      return JSON.parse(localStorage.getItem("loggedInUser") ?? "null")?.name || DEFAULT_USERNAME;
-    } catch {
-      return DEFAULT_USERNAME;
-    }
   }
 }

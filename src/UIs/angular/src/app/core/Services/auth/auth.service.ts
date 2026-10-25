@@ -16,14 +16,11 @@ import {
 export class AuthService {
   register_by_reseptionist(patient: PatientRegister) {
     throw new Error("Method not implemented.");
-    throw new Error("Method not implemented.");
   }
 
   // API Base URL
   private apiUrl = environment.OpenIdConnect.apiUrl;
-  private apiUrl = environment.OpenIdConnect.apiUrl;
   private refreshSubscription?: Subscription;
-  constructor(private http: HttpClient) {}
   constructor(private http: HttpClient) {}
 
   // Login API
@@ -37,14 +34,9 @@ export class AuthService {
 
   requestOTP(email: any) {
     return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.REQUEST_OTP}`, email);
-    return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.REQUEST_OTP}`, email);
   }
 
   verifyOTP(email: any, otpCode: string) {
-    return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.VERIFY_OTP}`, {
-      email,
-      otpCode,
-    });
     return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.VERIFY_OTP}`, {
       email,
       otpCode,
@@ -57,15 +49,7 @@ export class AuthService {
         password,
         token,
       });
-      return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.RESET_PASS_FOR_ASSOCIATE}`, {
-        password,
-        token,
-      });
     } else {
-      return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.FORGET_PASSWORD_RESETL}`, {
-        password,
-        token,
-      });
       return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.FORGET_PASSWORD_RESETL}`, {
         password,
         token,
@@ -75,14 +59,12 @@ export class AuthService {
 
   // Self Registration API
   registerPatient(patient: PatientRegister, isFrontOffice: boolean): Observable<any> {
-  registerPatient(patient: PatientRegister, isFrontOffice: boolean): Observable<any> {
     if (isFrontOffice) {
       return this.http.post<any>(
         `${this.apiUrl}${AuthEndPoints.PATIENT_REG_FROM_FRONT_OFFICE}`,
         patient
       );
     } else {
-      return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.PATIENT_REGISTER}`, patient);
       return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.PATIENT_REGISTER}`, patient);
     }
   }
@@ -91,7 +73,6 @@ export class AuthService {
     // alert("start Refresh ")
     this.stopRefreshTimer();
 
-    const loginTime = Number(localStorage.getItem("loginTime"));
     const loginTime = Number(localStorage.getItem("loginTime"));
 
     if (!loginTime) {
@@ -107,39 +88,27 @@ export class AuthService {
           localStorage.setItem("token", res.data.accessToken);
           localStorage.setItem("refreshToken", res.data.refreshToken);
           localStorage.setItem("loginTime", Date.now().toString());
-          localStorage.setItem("token", res.data.accessToken);
-          localStorage.setItem("refreshToken", res.data.refreshToken);
-          localStorage.setItem("loginTime", Date.now().toString());
 
           this.startRefreshTimer();
         },
         error: () => {
           this.logout();
         },
-        },
       });
     } else {
       this.refreshSubscription = timer(remaining).subscribe(() => {
         this.callRefreshToken().subscribe({
           next: (res) => {
-            console.log("Refresh Token Response", res);
-            console.log("Refresh Token Response", res);
-
-            localStorage.setItem("token", res.data.accessToken);
-            localStorage.setItem("refreshToken", res.data.refreshToken);
             localStorage.setItem("token", res.data.accessToken);
             localStorage.setItem("refreshToken", res.data.refreshToken);
 
-            localStorage.setItem("loginTime", Date.now().toString());
             localStorage.setItem("loginTime", Date.now().toString());
 
             this.startRefreshTimer();
           },
           error: (err) => {
             console.error("Refresh Token Error", err);
-            console.error("Refresh Token Error", err);
             this.logout();
-          },
           },
         });
       });
@@ -154,22 +123,15 @@ export class AuthService {
   callRefreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem("refreshToken");
     const accessToken = localStorage.getItem("token");
-    const refreshToken = localStorage.getItem("refreshToken");
-    const accessToken = localStorage.getItem("token");
-
-    return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.REFRESH_TOKEN}`, {
-      refreshToken,
-      accessToken,
-    });
     return this.http.post<any>(`${this.apiUrl}${AuthEndPoints.REFRESH_TOKEN}`, {
       refreshToken,
       accessToken,
     });
   }
+
   logout() {
     this.stopRefreshTimer(); // Timer stop karo
 
-    localStorage.clear(); // Token aur user data remove karo
     localStorage.clear(); // Token aur user data remove karo
 
     // Login page par redirect karo
@@ -184,23 +146,19 @@ export class AuthService {
   // getCountries API
   getCountries(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_COUNTRIES}`);
-    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_COUNTRIES}`);
   }
 
   // getStates API
   getStates(countryId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_STAETES}${countryId}`);
     return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_STAETES}${countryId}`);
   }
 
   // getCities API
   getCities(stateId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_CITIES}${stateId}`);
-    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_CITIES}${stateId}`);
   }
 
   // Self Registration API
-  registerPatientByReceptionist(patient: PatientRegister): Observable<any> {
   registerPatientByReceptionist(patient: PatientRegister): Observable<any> {
     return this.http.post<any>(
       `${this.apiUrl}${AuthEndPoints.CREATE_PATIENT_PROFILE_BY_RECEPTIONIST}`,

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../../core/Services/auth/auth.service";
 import * as AuthActions from "./auth.actions";
-import { catchError, mergeMap, map, of, tap } from "rxjs";
+import { catchError, mergeMap, map, of, tap, exhaustMap } from "rxjs";
 import { Router } from "@angular/router";
 import * as NavActions from "../Shared/Navigation/navigation.action";
 
@@ -12,7 +12,6 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router
-  ) {}
   ) {}
 
   //   Login Effect
@@ -118,20 +117,20 @@ export class AuthEffects {
     )
   );
 
-  logOut$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.LogOut),
-      exhaustMap(() => {
-        const refreshToken = localStorage.getItem("refreshToken") ?? "";
-        return this.authService.LogOut(refreshToken).pipe(
-          map((response) => {
-            return AuthActions.logOutComplete({ response });
-          }),
-          catchError((error) => of(AuthActions.logOutFailure({ error })))
-        );
-      })
-    )
-  );
+  // LogOut$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(AuthActions.LogOut),
+  //     exhaustMap(() => {
+  //       const refreshToken = localStorage.getItem("refreshToken") ?? "";
+  //       return this.authService.logout(refreshToken).pipe(
+  //         map((response) => {
+  //           return AuthActions.LogOutComplete({ response });
+  //         }),
+  //         catchError((error) => of(AuthActions.LogOutFailure({ error })))
+  //       );
+  //     })
+  //   )
+  // );
 
   logOutComplete$ = createEffect(
     () =>
