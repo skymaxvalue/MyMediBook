@@ -1,5 +1,5 @@
 import { AppointmentState } from "./Appointments/appointment.reducer";
-import { AuthState } from "./Auth/auth.state";
+import { AuthState } from "./Auth/auth.reducer";
 import { billsState } from "./Billing/billing.state";
 import { DoctorSpecialityState } from "./Doctor/doctor.state";
 import { labResultState } from "./Lab-Results/lab-result.state";

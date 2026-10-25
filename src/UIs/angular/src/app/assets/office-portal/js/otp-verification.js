@@ -161,11 +161,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (otp === "1234") {
 
+                const destination = HHAuth.establishSession();
+
+                if (!destination) {
+
+                    window.location.href = "login.html";
+
+                    return;
+
+                }
+
                 localStorage.setItem("isLoggedIn", "true");
 
-                localStorage.removeItem("pendingUser");
-
-                window.location.href = "dashboard.html";
+                window.location.href = destination;
 
             } else {
 

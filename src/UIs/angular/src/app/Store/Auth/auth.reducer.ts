@@ -1,23 +1,62 @@
-import { createReducer, on } from "@ngrx/store";
+import { Action, createReducer, on } from "@ngrx/store";
 import * as AuthActions from "./auth.actions";
-import { initialAuthState } from "./auth.state";
+import { PatientRegister } from "../../core/Models/Patient-Model";
 
-export const authReducer = createReducer(
-  initialAuthState,
+export const AUTH_FEATURE_KEY = "auth";
+
+export interface AuthState {
+  user: any;
+  token: string | null;
+  loginUser: any | null;
+  registeredPatient: PatientRegister | null;
+  isLoading: boolean;
+  error: string | null;
+  securityQuestions?: any[];
+  getCountries?: any[];
+  getStates?: any[];
+  getCities?: any[];
+  requestedOtp: any;
+  refreshToken: string | null;
+  associate: any;
+  otpres: any;
+  resetPassRes: any;
+}
+
+export const initialState: AuthState = {
+  user: null,
+  token: null,
+  registeredPatient: null,
+  isLoading: false,
+  error: null,
+  securityQuestions: [],
+  getCountries: [],
+  getStates: [],
+  getCities: [],
+  loginUser: null,
+  requestedOtp: null,
+  refreshToken: null,
+  associate: null,
+  otpres: null,
+  resetPassRes: null,
+};
+
+export const reducer = createReducer(
+  initialState,
 
   on(AuthActions.login, (state) => ({
     ...state,
     isLoading: true,
   })),
 
-  on(AuthActions.loginSuccess, (state, { user }) => {
+  on(AuthActions.loginSuccess, (state, action) => {
     return {
       ...state,
       isLoading: false,
-      loginUser: user,
-      user: user,
-      token: user.tokenKey,
-      refreshToken: user.refreshToken,
+      loginUser: action.user,
+      user: action.user.data,
+      token: action.user.accessToken ?? action.user.tokenKey,
+
+      refreshToken: action.user.refreshToken,
     };
   }),
 
@@ -25,6 +64,15 @@ export const authReducer = createReducer(
     ...state,
     isLoading: false,
     error: action.error,
+  })),
+
+  on(AuthActions.LogOut, (state) => ({
+    ...state,
+  })),
+  on(AuthActions.logOutComplete, () => initialState),
+  on(AuthActions.logOutFailure, (state, { error }) => ({
+    ...initialState,
+    error: error,
   })),
 
   on(AuthActions.refreshToken, (state) => ({
@@ -191,3 +239,7 @@ export const authReducer = createReducer(
     error: action.error,
   }))
 );
+
+export function AuthReducer(state: AuthState | undefined, action: Action) {
+  return reducer(state, action);
+}

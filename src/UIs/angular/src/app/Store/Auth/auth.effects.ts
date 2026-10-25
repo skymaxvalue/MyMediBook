@@ -13,6 +13,7 @@ export class AuthEffects {
     private authService: AuthService,
     private router: Router
   ) {}
+  ) {}
 
   //   Login Effect
 
@@ -114,6 +115,47 @@ export class AuthEffects {
           )
         )
       )
+    )
+  );
+
+  logOut$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.LogOut),
+      exhaustMap(() => {
+        const refreshToken = localStorage.getItem("refreshToken") ?? "";
+        return this.authService.LogOut(refreshToken).pipe(
+          map((response) => {
+            return AuthActions.logOutComplete({ response });
+          }),
+          catchError((error) => of(AuthActions.logOutFailure({ error })))
+        );
+      })
+    )
+  );
+
+  logOutComplete$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.logOutComplete),
+        tap(() => {
+          this.authService.stopRefreshTimer(); // [Guessing] add this; the timer must stop
+          ["token", "refreshToken", "user", "loggedInUser", "isLoggedIn", "pendingUser"].forEach(
+            (k) => localStorage.removeItem(k)
+          );
+          map(() => {
+            return AuthActions.NavigateToLoginPage();
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  NavigateToLoginPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.NavigateToLoginPage),
+      tap(() => {
+        return this.router.navigate(["/login"]);
+      })
     )
   );
 

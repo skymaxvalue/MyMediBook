@@ -9,6 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initializeDashboard(){
 
+    if(!HHAuth.requireRole("frontoffice")){
+
+        return;
+
+    }
+
     setupSearch();
 
     setupCardNavigation();

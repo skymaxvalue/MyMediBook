@@ -47,7 +47,6 @@ import { AuditLogEffects } from "./app/auditlogs/audit-log.effects";
 
 // Auth State
 import { AuthEffects } from "./app/Store/Auth/auth.effects";
-import { authReducer } from "./app/Store/Auth/auth.reducer";
 import { PatientEffects } from "./app/Store/Patient/patient.effect";
 import { patientReducer } from "./app/Store/Patient/patient.reducer";
 import { AppointmentEffects } from "./app/Store/Appointments/appointment.effect";
@@ -63,6 +62,7 @@ import { MasterEffects } from "./app/Store/Master/master.effect";
 import { MasterReducer } from "./app/Store/Master/master.reducer";
 import { AppointmentReducer } from "./app/Store/Appointments/appointment.reducer";
 import { NavigationEffects } from "./app/Store/Shared/Navigation/navigation.effect";
+import { AuthReducer } from "./app/Store/Auth/auth.reducer";
 
 if (environment.production) {
   enableProdMode();
@@ -103,7 +103,7 @@ bootstrapApplication(AppComponent, {
       useClass: GlobalErrorHandler,
     },
     provideStore({
-      auth: authReducer,
+      auth: AuthReducer,
       patient: patientReducer,
       appointment: AppointmentReducer,
       doctor: doctorSpecialityReducer,

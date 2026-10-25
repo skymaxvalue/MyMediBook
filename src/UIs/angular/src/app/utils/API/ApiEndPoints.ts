@@ -85,6 +85,7 @@ export const AuthEndPoints = {
   FORGET_PASSWORD_RESETL: "Auth/ResetForgotPassword",
   RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
   doLOGIN: "Auth/doLogin",
+  LOG_OUT: "Auth/Logout",
   CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount",
 };
 

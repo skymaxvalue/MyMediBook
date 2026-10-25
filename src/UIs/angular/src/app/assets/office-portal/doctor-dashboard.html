@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Dashboard</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/dashboard.css">
+
+    <link rel="stylesheet"
+          href="css/doctor-dashboard.css">
+
+</head>
+
+<body class="auth-pending">
+
+    <div id="navbar-container">
+
+        <header class="dashboard-header">
+
+            <div class="top-header">
+
+                <div class="header-left">
+
+                    <div class="hospital-brand">
+
+                        <div class="dc-logo" aria-hidden="true">HH</div>
+
+                        <div class="hospital-text">
+                            <h2>Health Haven</h2>
+                            <span>Medical Center</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="header-center">
+
+                    <h1>Doctor Dashboard</h1>
+
+                    <div class="dashboard-info">
+
+                        <div class="info-item">
+                            <span id="dcHeaderDate"></span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="info-item">
+                            <span id="dcHeaderTime"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="header-right">
+
+                    <div class="user-profile">
+
+                        <div class="dc-avatar" id="dcAvatar" aria-hidden="true"></div>
+
+                        <div class="profile-info">
+                            <h4 id="dcUserName"></h4>
+                            <span id="dcUserRole"></span>
+                        </div>
+
+                        <button type="button"
+                                class="profile-toggle"
+                                id="dcProfileToggle"
+                                aria-label="Open profile menu"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="#fff"
+                                 stroke-width="2.4"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+
+                        </button>
+
+                        <div class="profile-dropdown" id="dcProfileDropdown">
+                            <button type="button" id="dcProfileOpen">My Profile</button>
+                            <button type="button" id="dcLogoutOpen">Logout</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <nav class="dashboard-nav" id="dcTabs" aria-label="Doctor sections">
+
+            <button type="button" class="nav-item active" data-tab="appointments">
+                <span>Appointment List</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="patients">
+                <span>Patient</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="referrals">
+                <span>Referral List</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="inpatient">
+                <span>In-Patient Care</span>
+            </button>
+
+        </nav>
+
+    </div>
+
+    <main class="dashboard-container dc-container">
+
+        <section class="stats-section dc-stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
+                        <path d="M3.5 10h17M8 3v4M16 3v4"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <p>Today's Appointments</p>
+                    <h2 id="dcStatAppointments">0</h2>
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="8.5"/>
+                        <path d="M12 7.5V12l3 2"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <p>Waiting Patients</p>
+                    <h2 id="dcStatWaiting">0</h2>
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="8.5"/>
+                        <path d="M8.5 12.5l2.5 2.5 4.5-5"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <p>Completed Consultations</p>
+                    <h2 id="dcStatCompleted">0</h2>
+                </div>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 12h13M13 7l5 5-5 5"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <p>Pending Referrals</p>
+                    <h2 id="dcStatReferrals">0</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="dashboard-card dc-panel">
+
+            <div class="card-header">
+                <h3 id="dcPanelTitle">APPOINTMENT LIST</h3>
+                <span class="dc-demo-tag">Demo data</span>
+            </div>
+
+            <p class="dc-notice" id="dcNotice" role="status" hidden></p>
+
+            <div class="dc-tab-panel" id="panel-appointments">
+
+                <div class="dc-date-banner" id="dcDateBanner"></div>
+
+                <div class="dc-table-wrap">
+                    <table class="dc-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Patient Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Status</th>
+                                <th>Compliance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dcAppointmentRows"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="dc-tab-panel" id="panel-patients" hidden>
+
+                <div class="dc-table-wrap">
+                    <table class="dc-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Compliance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dcPatientRows"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="dc-tab-panel" id="panel-referrals" hidden>
+
+                <div class="dc-table-wrap">
+                    <table class="dc-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Receiving Doctor</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dcReferralRows"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="dc-tab-panel" id="panel-inpatient" hidden>
+
+                <div class="dc-table-wrap">
+                    <table class="dc-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Room / Bed</th>
+                                <th>Admitted On</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dcInpatientRows"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="footer-container"></div>
+
+    <div class="modal-overlay" id="dcLogoutModal">
+
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="dcLogoutTitle">
+
+            <button type="button" class="modal-close" data-close="dcLogoutModal" aria-label="Close">&times;</button>
+
+            <div class="logout-icon" aria-hidden="true">&#128682;</div>
+
+            <h2 id="dcLogoutTitle">Log out?</h2>
+
+            <p>You will need to sign in again to open the Doctor Dashboard.</p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" data-close="dcLogoutModal">Stay signed in</button>
+                <button type="button" class="btn-danger" id="dcLogoutConfirm">Log out</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="dcProfileModal">
+
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="dcProfileTitle">
+
+            <button type="button" class="modal-close" data-close="dcProfileModal" aria-label="Close">&times;</button>
+
+            <div class="logout-icon dc-profile-icon" id="dcProfileInitials" aria-hidden="true"></div>
+
+            <h2 id="dcProfileTitle"></h2>
+
+            <p id="dcProfileMeta"></p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" data-close="dcProfileModal">Close</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/auth.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/doctor-dashboard.js"></script>
+
+</body>
+
+</html>

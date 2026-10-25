@@ -1,100 +1,44 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { FrontOfficeFooterComponent } from "./front-office-footer/front-office-footer.component";
-import { FrontOfficeSidebarComponent } from "./front-office-sidebar/front-office-sidebar.component";
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from "@angular/router";
-import { FrontOfficeHeaderComponent } from "./front-office-header/front-office-header.component";
 import { filter } from "rxjs";
+import { FrontOfficeFooterComponent } from "./front-office-footer/front-office-footer.component";
+import { FrontOfficeHeaderComponent } from "./front-office-header/front-office-header.component";
+import { BREADCRUMB_MAP, Breadcrumb, DASHBOARD_CRUMB } from "./fron-office-config/front-office-breadcrumb.config";
 
 @Component({
   selector: "app-front-office-layout",
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    //  FrontOfficeSidebarComponent
-    // ,
-    FrontOfficeFooterComponent,
-    FrontOfficeHeaderComponent,
-  ],
+  imports: [RouterOutlet, RouterLink, FrontOfficeHeaderComponent, FrontOfficeFooterComponent],
   templateUrl: "./front-office-layout.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./front-office-layout.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class FrontOfficeLayoutComponent implements OnInit {
-  breadcrumbs: {
-    label: string;
-    url: string;
-  }[] = [];
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(private router: Router) {}
+  breadcrumbs: Breadcrumb[] = [DASHBOARD_CRUMB];
 
   ngOnInit(): void {
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      this.generateBreadcrumb();
-    });
+    this.breadcrumbs = this.buildBreadcrumbs();
 
-    this.generateBreadcrumb();
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => (this.breadcrumbs = this.buildBreadcrumbs()));
   }
 
-  generateBreadcrumb(): void {
-    const url = this.router.url;
+  private buildBreadcrumbs(): Breadcrumb[] {
+    const path = this.router.url.split(/[?#]/)[0];
+    const [, feature] = path.split("/").filter(Boolean);
+    const trail = BREADCRUMB_MAP[feature] ?? [];
 
-    this.breadcrumbs = [
-      {
-        label: "Dashboard",
-        url: "/front-office/dashboard",
-      },
+    // The current page links to the live URL, so params like :doctorId are preserved.
+    return [
+      DASHBOARD_CRUMB,
+      ...trail.map((crumb, i) => (i === trail.length - 1 ? { ...crumb, url: path } : crumb)),
     ];
-
-    if (url.includes("patient-registration")) {
-      this.breadcrumbs.push({
-        label: "Patient Registration",
-        url: "/front-office/patient-registration",
-      });
-    } else if (url.includes("book-appointment")) {
-      this.breadcrumbs.push({
-        label: "Book Appointment",
-        url: "/front-office/book-appointment",
-      });
-    } else if (url.includes("patient-checkin")) {
-      this.breadcrumbs.push({
-        label: "patient-checkin",
-        url: "/front-office/patient-checkin",
-      });
-    } else if (url.includes("lab-service")) {
-      this.breadcrumbs.push({
-        label: "Lab Service",
-        url: "/front-office/lab-service",
-      });
-    } else if (url.includes("doctor-queue")) {
-      this.breadcrumbs.push({
-        label: "Patient Check-In",
-        url: "/front-office/patient-check-in",
-      });
-
-      this.breadcrumbs.push({
-        label: "Appointment Check-Ins",
-        url: "/front-office/doctor-queue",
-      });
-    } else if (url.includes("doctor-availability")) {
-      this.breadcrumbs.push({
-        label: "Book Appointment",
-        url: "/front-office/book-appointment",
-      });
-
-      this.breadcrumbs.push({
-        label: "Doctor Availability",
-        url: "/front-office/doctor-availability",
-      });
-    } else if (url.includes("room-service")) {
-      this.breadcrumbs.push({
-        label: "Room Service Request",
-        url: "/front-office/book-appointment",
-      });
-    }else if (url.includes("follow-up-visits")) {
-      this.breadcrumbs.push({
-        label: "Follow Up Visits",
-        url: "/front-office/follow-up-visits",
-      });
-    }
   }
 }
