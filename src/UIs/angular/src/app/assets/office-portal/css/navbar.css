@@ -379,140 +379,275 @@
 
 
 
-@media (max-width:1200px){
-
-    .top-header{
-
-        padding:0 20px;
-
+@media (max-width: 1200px) {
+    .top-header {
+        padding: 0 18px;
+        gap: 14px;
     }
 
-    .header-right{
-
-        gap:22px;
-
+    .header-left,
+    .header-right {
+        width: auto;
+        min-width: 0;
     }
 
-    .dashboard-nav{
-
-        padding:0 14px;
-
+    .hospital-brand {
+        gap: 10px;
     }
 
+    .hospital-brand img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .hospital-text h2 {
+        font-size: 18px;
+    }
+
+    .hospital-text span {
+        font-size: 15px;
+    }
+
+    .header-center h1 {
+        font-size: 22px;
+    }
+
+    .header-right {
+        gap: 16px;
+    }
+
+    .medibook-brand span {
+        font-size: 16px;
+    }
+
+    .dashboard-nav {
+        padding: 0 12px;
+        gap: 2px;
+    }
+
+    .nav-item {
+        padding: 0 11px;
+        gap: 7px;
+        font-size: 13px;
+    }
 }
 
-
-
-@media (max-width:992px){
-
-    .top-header{
-
-        height:auto;
-
-        padding:20px;
-
-        flex-wrap:wrap;
-
-        gap:18px;
-
+@media (max-width: 900px) {
+    .top-header {
+        height: 82px;
+        padding: 0 12px;
+        gap: 10px;
     }
 
-    .header-left{
-
-        width:100%;
-
+    .header-left,
+    .header-right {
+        flex: 1 1 0;
     }
 
-    .header-center{
-
-        position:static;
-
-        width:100%;
-
-        order:3;
-
-        transform:none;
-
-        text-align:center;
-
+    .header-center {
+        position: static;
+        left: auto;
+        flex: 0 1 auto;
+        min-width: 0;
+        transform: none;
     }
 
-    .header-right{
-
-        margin-left:auto;
-
+    .header-center h1 {
+        font-size: 18px;
+        margin-bottom: 4px;
+        white-space: nowrap;
     }
 
-    .dashboard-nav{
-
-        padding:0 12px;
-
-        gap:10px;
-
+    .dashboard-info {
+        gap: 8px;
+        white-space: nowrap;
     }
 
+    .info-item {
+        gap: 5px;
+        font-size: 11px;
+    }
+
+    .info-item img {
+        width: 13px;
+        height: 13px;
+    }
+
+    .hospital-brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .hospital-text h2 {
+        font-size: 14px;
+    }
+
+    .hospital-text span {
+        font-size: 12px;
+    }
+
+    .medibook-brand {
+        display: none;
+    }
+
+    .header-right {
+        gap: 8px;
+    }
+
+    .profile-image {
+        width: 34px;
+        height: 34px;
+    }
+
+    .profile-info h4 {
+        font-size: 12px;
+    }
+
+    .profile-info span {
+        font-size: 10px;
+    }
+
+    .profile-toggle {
+        width: 26px;
+        height: 30px;
+    }
+
+    .profile-dropdown {
+        top: 56px;
+    }
+
+    .dashboard-nav {
+        height: 52px;
+        padding: 0 8px;
+        gap: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-item {
+        flex: 0 0 auto;
+        height: 40px;
+        padding: 0 10px;
+        font-size: 12px;
+        gap: 6px;
+        border-radius: 10px;
+    }
+
+    .nav-item img {
+        width: 17px;
+        height: 17px;
+    }
 }
 
-@media (max-width:768px){
-
-    .divider,
-
-    .medibook-brand,
-
-    .profile-info{
-
-        display:none;
-
+@media (max-width: 600px) {
+    .top-header {
+        height: auto;
+        min-height: 72px;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "brand profile"
+            "title title";
+        row-gap: 8px;
     }
 
-    .hospital-brand{
-
-        gap:12px;
-
+    .header-left {
+        grid-area: brand;
+        min-width: 0;
     }
 
-    .hospital-brand img{
-
-        width:44px;
-
-        height:44px;
-
+    .hospital-brand {
+        gap: 8px;
+        min-width: 0;
     }
 
-    .hospital-text h2{
-
-        font-size:18px;
-
+    .hospital-brand img {
+        width: 32px;
+        height: 32px;
     }
 
-    .hospital-text span{
-
-        font-size:14px;
-
+    .hospital-text h2 {
+        font-size: 13px;
+        letter-spacing: 0;
     }
 
-    .header-center h1{
-
-        font-size:22px;
-
+    .hospital-text span {
+        font-size: 11px;
     }
 
-    .dashboard-info{
-
-        flex-direction:column;
-
-        gap:6px;
-
+    .header-center {
+        grid-area: title;
+        width: 100%;
+        align-items: flex-start;
+        text-align: left;
     }
 
-    .profile-image{
-
-        width:42px;
-
-        height:42px;
-
+    .header-center h1 {
+        font-size: 17px;
+        white-space: normal;
     }
 
+    .dashboard-info {
+        flex-wrap: wrap;
+        white-space: normal;
+        row-gap: 4px;
+    }
+
+    .info-item {
+        font-size: 10px;
+    }
+
+    .header-right {
+        grid-area: profile;
+        justify-content: flex-end;
+        min-width: 0;
+    }
+
+    .profile-info {
+        display: none;
+    }
+
+    .profile-image {
+        width: 30px;
+        height: 30px;
+    }
+
+    .profile-toggle {
+        width: 24px;
+    }
+
+    .profile-dropdown {
+        top: 42px;
+        width: 180px;
+    }
+
+    .dashboard-nav {
+        height: 48px;
+        padding: 0 6px;
+        gap: 3px;
+    }
+
+    .nav-item {
+        height: 36px;
+        padding: 0 9px;
+        font-size: 11px;
+        gap: 5px;
+        border-radius: 9px;
+    }
+
+    .nav-item img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .logout-modal {
+        width: calc(100% - 32px);
+        max-width: 460px;
+        padding: 24px;
+    }
 }
 
 
@@ -597,4 +732,83 @@
   border:none;
   background:#DC2626;
   color:#fff;
+}
+
+.dashboard-header {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.top-header,
+.dashboard-nav {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.dashboard-nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.45) #143A78;
+}
+
+.dashboard-nav::-webkit-scrollbar {
+    display: block;
+    height: 5px;
+}
+
+.dashboard-nav::-webkit-scrollbar-track {
+    background: #143A78;
+}
+
+.dashboard-nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.45);
+    border-radius: 999px;
+}
+
+.nav-item {
+    flex: 0 0 auto;
+}
+
+@media (min-width: 901px) {
+    .top-header {
+        display: grid;
+        grid-template-columns: minmax(230px, 1fr) minmax(300px, 1.15fr) minmax(300px, 1fr);
+        column-gap: 16px;
+    }
+
+    .header-left,
+    .header-right {
+        width: auto;
+        min-width: 0;
+    }
+
+    .header-center {
+        position: static;
+        left: auto;
+        min-width: 0;
+        transform: none;
+        justify-self: center;
+    }
+
+    .header-center h1,
+    .dashboard-info {
+        white-space: nowrap;
+    }
+
+    .header-right {
+        justify-self: end;
+        gap: clamp(10px, 1.5vw, 28px);
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-nav {
+        scrollbar-width: thin;
+    }
 }

@@ -2446,6 +2446,12 @@ function confirmConsultation() {
         ? 'The physician consultation has been confirmed and flagged for immediate clinical / triage attention.'
         : 'The physician consultation has been successfully confirmed.';
 
+    const nextActions = el('nextActions');
+
+    if (nextActions) {
+        nextActions.hidden = false;
+    }
+
     setModal('successModal', true);
 }
 
@@ -3003,12 +3009,22 @@ document.addEventListener(
                         const patientId =
                             currentPatient()?.id;
 
-                        const url =
-                            patientId
-                                ? `${button.dataset.href}?patientId=${encodeURIComponent(patientId)}`
-                                : button.dataset.href;
+                        const params = new URLSearchParams();
 
-                        window.location.href = url;
+                        if (patientId) {
+                            params.set('patientId', patientId);
+                        }
+
+                        if (button.hasAttribute('data-include-consultation') && consultation.id) {
+                            params.set('consultationId', consultation.id);
+                        }
+
+                        const query = params.toString();
+
+                        window.location.href =
+                            query
+                                ? `${button.dataset.href}?${query}`
+                                : button.dataset.href;
                     }
                 );
             });

@@ -27,25 +27,51 @@ body {
 
 
 
+
 .breadcrumb {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 14px 0 0;
-    font-size: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 18px 27px 0;
+    box-sizing: border-box;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 15px;
+    line-height: 20px;
 }
 
 .breadcrumb a {
-    color: #155ee8;
+    color: #155EE8;
     text-decoration: none;
+    font-weight: 400;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb .separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.breadcrumb .separator img {
+    display: block;
+    width: 8px;
+    height: 12px;
+    object-fit: contain;
 }
 
 .breadcrumb .active {
     color: #101828;
+    font-weight: 600;
 }
-
 .separator img {
     width: 14px;
     height: 14px;
@@ -1890,10 +1916,23 @@ select:disabled {
     margin-bottom: 0;
 }
 
+.next-actions[hidden] {
+    display: none !important;
+}
+
 .next-actions-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 10px;
+}
+
+.next-action-btn {
+    height: auto;
+    min-height: 44px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    white-space: normal;
+    text-align: center;
 }
 
 @media (max-width: 640px) {

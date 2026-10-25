@@ -1,5 +1,10 @@
 
 
+const DEMO_ACCOUNTS = {
+    "1024": "1234",
+    "DOC1001": "Doc@1234"
+};
+
 document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -105,9 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-if (user === "1024" && pass === "1234") {
+const accountKey = user.toUpperCase();
 
-    localStorage.setItem("pendingUser", user);
+if (Object.prototype.hasOwnProperty.call(DEMO_ACCOUNTS, accountKey) && DEMO_ACCOUNTS[accountKey] === pass) {
+
+    localStorage.setItem("pendingUser", accountKey);
 
  
     window.location.href = "otp-verification.html";
