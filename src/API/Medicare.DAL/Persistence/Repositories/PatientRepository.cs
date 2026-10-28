@@ -192,6 +192,7 @@ namespace Medicare.DAL.Persistence.Repositories
                 param.Add("AssociateId", model.AssociateId);
                 param.Add("Name", model.Name);
                 param.Add("DOB", model.DOB);
+                param.Add("MobileNo", model.MobileNo);
                 param.Add("FromDate", model.FromDate?.Date);
                 param.Add("ToDate", model.ToDate?.Date);
 

@@ -18,7 +18,7 @@ import {
   NavItem,
   PROFILE_URL,
   navUrl,
-} from "../fron-office-config/from-office-header.config";
+} from "../front-office-config/front-office-header.config";
 import { AuthFacade } from "../../../Store/Auth/auth.facade";
 
 const DEFAULT_USERNAME = "Front Office";
@@ -44,7 +44,7 @@ export class FrontOfficeHeaderComponent implements OnInit {
     private zone: NgZone,
     private destroyRef: DestroyRef,
     private authFacade: AuthFacade
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUser();

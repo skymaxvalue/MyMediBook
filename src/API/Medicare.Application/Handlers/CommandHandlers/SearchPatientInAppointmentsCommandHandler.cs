@@ -12,7 +12,10 @@ namespace Medicare.Application.Handlers.CommandHandlers
         {
             _patientRepository = patientRepository;
         }
-        public async Task<List<SearchPatientResponseModel>> Handle(SearchPatientInAppointmentsCommand request, CancellationToken cancellationToken)
+        public async Task<List<SearchPatientResponseModel>> Handle(
+            
+            
+            SearchPatientInAppointmentsCommand request, CancellationToken cancellationToken)
         {
             return await _patientRepository.SearchPatientInAppointmentsAsync(request.model);
         }

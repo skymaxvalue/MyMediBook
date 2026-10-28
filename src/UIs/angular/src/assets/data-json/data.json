@@ -90,7 +90,7 @@
       "description": "Create OP consultation",
       "icon": "consultation.png",
       "color": "green",
-      "route": "consultation"
+      "route": "physician-consultation"
     },
     {
       "title": "Follow-up Visits",

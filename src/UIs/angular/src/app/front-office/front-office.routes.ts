@@ -147,6 +147,12 @@ export const FRONT_OFFICE_ROUTES: Routes = [
           import("../Pages/Front-Office-View/follow-up-visits/follow-up-visits.component").then(
             (m) => m.FollowUpVisitsComponent
           ),
+      },{
+        path: "physician-consultation",
+        loadComponent: () =>
+          import("../Pages/Front-Office-View/physician-consultation/physician-consultation.component").then(
+            (m) => m.PhysicianConsultationComponent
+          ),
       },
     ],
   },

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import * as AppointmentAction from "../../../../Store/Appointments/appointment.actions";
+import * as AppointmentAction from "src/app/Store/Appointments/appointment.actions";
 import { Store } from "@ngrx/store";
 @Component({
   imports: [],

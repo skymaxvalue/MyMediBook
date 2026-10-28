@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Store } from "@ngrx/store";
-import * as AppointmentActions from "../../../../../Store/Appointments/appointment.actions";
 import { AssociateFacade } from "../../../../../Store/Associate/associate.facade";
 import { AppointmentFacade } from "../../../../../Store/Appointments/appointment.facade";
 
@@ -18,7 +17,7 @@ export class CheckInSuccessDialogComponent {
     private store: Store,
     private associateFacade: AssociateFacade,
     private appointmentFacade: AppointmentFacade
-  ) {}
+  ) { }
 
   viewQueue(): void {
     const doctorId = this.data?.doctorProfile?.associateId;

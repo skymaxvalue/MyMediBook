@@ -4,7 +4,7 @@ import { NavigationEnd, Router, RouterLink, RouterOutlet } from "@angular/router
 import { filter } from "rxjs";
 import { FrontOfficeFooterComponent } from "./front-office-footer/front-office-footer.component";
 import { FrontOfficeHeaderComponent } from "./front-office-header/front-office-header.component";
-import { BREADCRUMB_MAP, Breadcrumb, DASHBOARD_CRUMB } from "./fron-office-config/front-office-breadcrumb.config";
+import { BREADCRUMB_MAP, Breadcrumb, DASHBOARD_CRUMB } from "./front-office-config/front-office-breadcrumb.config";
 
 @Component({
   selector: "app-front-office-layout",
