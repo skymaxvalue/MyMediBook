@@ -32,115 +32,14 @@
     <link rel="stylesheet"
           href="css/doctor-dashboard.css">
 
+    <link rel="stylesheet"
+          href="css/navbar-doctor.css">
+
 </head>
 
 <body class="auth-pending">
 
-    <div id="navbar-container">
-
-        <header class="dashboard-header">
-
-            <div class="top-header">
-
-                <div class="header-left">
-
-                    <div class="hospital-brand">
-
-                        <div class="dc-logo" aria-hidden="true">HH</div>
-
-                        <div class="hospital-text">
-                            <h2>Health Haven</h2>
-                            <span>Medical Center</span>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="header-center">
-
-                    <h1>Doctor Dashboard</h1>
-
-                    <div class="dashboard-info">
-
-                        <div class="info-item">
-                            <span id="dcHeaderDate"></span>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="info-item">
-                            <span id="dcHeaderTime"></span>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="header-right">
-
-                    <div class="user-profile">
-
-                        <div class="dc-avatar" id="dcAvatar" aria-hidden="true"></div>
-
-                        <div class="profile-info">
-                            <h4 id="dcUserName"></h4>
-                            <span id="dcUserRole"></span>
-                        </div>
-
-                        <button type="button"
-                                class="profile-toggle"
-                                id="dcProfileToggle"
-                                aria-label="Open profile menu"
-                                aria-haspopup="true"
-                                aria-expanded="false">
-
-                            <svg viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="#fff"
-                                 stroke-width="2.4"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 aria-hidden="true">
-                                <path d="M6 9l6 6 6-6"/>
-                            </svg>
-
-                        </button>
-
-                        <div class="profile-dropdown" id="dcProfileDropdown">
-                            <button type="button" id="dcProfileOpen">My Profile</button>
-                            <button type="button" id="dcLogoutOpen">Logout</button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </header>
-
-        <nav class="dashboard-nav" id="dcTabs" aria-label="Doctor sections">
-
-            <button type="button" class="nav-item active" data-tab="appointments">
-                <span>Appointment List</span>
-            </button>
-
-            <button type="button" class="nav-item" data-tab="patients">
-                <span>Patient</span>
-            </button>
-
-            <button type="button" class="nav-item" data-tab="referrals">
-                <span>Referral List</span>
-            </button>
-
-            <button type="button" class="nav-item" data-tab="inpatient">
-                <span>In-Patient Care</span>
-            </button>
-
-        </nav>
-
-    </div>
+    <div id="navbar-container"></div>
 
     <main class="dashboard-container dc-container">
 
@@ -149,10 +48,7 @@
             <div class="stat-card">
 
                 <div class="stat-icon blue">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
-                        <path d="M3.5 10h17M8 3v4M16 3v4"/>
-                    </svg>
+                    <img src="/images/calendar2.png" alt="Appointments">
                 </div>
 
                 <div class="stat-content">
@@ -165,10 +61,7 @@
             <div class="stat-card">
 
                 <div class="stat-icon orange">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="8.5"/>
-                        <path d="M12 7.5V12l3 2"/>
-                    </svg>
+                    <img src="images/clock2.png" alt="">
                 </div>
 
                 <div class="stat-content">
@@ -181,10 +74,7 @@
             <div class="stat-card">
 
                 <div class="stat-icon green">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="8.5"/>
-                        <path d="M8.5 12.5l2.5 2.5 4.5-5"/>
-                    </svg>
+                    <img src="/images/check-blue.png" alt="">
                 </div>
 
                 <div class="stat-content">
@@ -197,9 +87,7 @@
             <div class="stat-card">
 
                 <div class="stat-icon purple">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M4 12h13M13 7l5 5-5 5"/>
-                    </svg>
+                    <img src="/images/right-arrow-blue.png" alt="">
                 </div>
 
                 <div class="stat-content">
@@ -222,7 +110,43 @@
 
             <div class="dc-tab-panel" id="panel-appointments">
 
-                <div class="dc-date-banner" id="dcDateBanner"></div>
+                <div class="dc-toolbar">
+
+                    <div class="dc-date-nav">
+
+                        <button type="button" class="dc-date-btn" id="dcDatePrev" aria-label="Previous day">
+                            <img src="/images/arrow-left.png" alt="">
+                        </button>
+
+                        <div class="dc-date-banner">
+                            <button type="button" class="dc-calendar-trigger" id="dcCalendarTrigger" aria-label="Choose appointment date">
+                                <img src="/images/calendar2.png" alt="">
+                            </button>
+                            <span id="dcDateBanner"></span>
+                            <input type="date" id="dcDatePicker" class="dc-date-picker" aria-label="Choose appointment date" tabindex="-1">
+                        </div>
+
+                        <button type="button" class="dc-date-btn" id="dcDateNext" aria-label="Next day">
+                            <img src="/images/arrow-right.png" alt="">
+                        </button>
+
+                    </div>
+
+                    <div class="search-box">
+
+                        <button type="button" class="search-btn" id="dcSearchBtn" aria-label="Search patient">
+                            <img src="images/search.png" alt="">
+                        </button>
+
+                        <input type="text"
+                               id="dcSearch"
+                               placeholder="Search patient..."
+                               aria-label="Search patient"
+                               autocomplete="off">
+
+                    </div>
+
+                </div>
 
                 <div class="dc-table-wrap">
                     <table class="dc-table">
@@ -240,22 +164,9 @@
                     </table>
                 </div>
 
-            </div>
-
-            <div class="dc-tab-panel" id="panel-patients" hidden>
-
-                <div class="dc-table-wrap">
-                    <table class="dc-table">
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Age</th>
-                                <th>Gender</th>
-                                <th>Compliance</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dcPatientRows"></tbody>
-                    </table>
+                <div class="dc-table-footer">
+                    <span class="dc-record-count" id="dcRecordCount"></span>
+                    <div class="dc-pager" id="dcPager"></div>
                 </div>
 
             </div>
@@ -346,6 +257,12 @@
     <script src="js/auth.js"></script>
 
     <script src="js/footer.js"></script>
+
+    <script src="js/navbar-doctor.js"></script>
+
+    <script src="js/doctor-data.js"></script>
+
+    <script src="js/doctor-common.js"></script>
 
     <script src="js/doctor-dashboard.js"></script>
 

@@ -32,17 +32,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const start = (page - 1) * SIZE, slice = list.slice(start, start + SIZE);
 
     $('rmRows').innerHTML = slice.length ? slice.map(r => {
-      const st = S.displayStatus(r), label = U.esc(r.roomName);
+      const label = U.esc(r.roomName);
+      const beds = Array.isArray(r.beds) ? r.beds : [];
+      const roomStatus = getRoomStatus(r, beds);
+      const grouped = values => {
+        const counts = values.filter(Boolean).reduce((out, value) => {
+          out[value] = (out[value] || 0) + 1;
+          return out;
+        }, {});
+        return Object.entries(counts).map(([value, count]) => ({ value, count }));
+      };
+      const bedStatuses = grouped(beds.map(b => b.status || 'Available'));
+      const cleaningStatuses = grouped(beds.map(b => b.cleaningStatus || (b.status === 'Cleaning' ? 'RequiresCleaning' : 'Clean')));
+      const patientStatuses = grouped(beds.map(b => b.patientStatus || (b.status === 'Occupied' ? 'Admitted' : b.status === 'Reserved' ? 'Reserved' : '')));
+      const chips = (items, kind) => items.length
+        ? items.map(({ value, count }) => `<span class="rm-status rm-status--${slug(value)}" title="${U.esc(value)}"><i aria-hidden="true"></i>${U.esc(value)}${count > 1 ? `<span class="rm-status__count">×${count}</span>` : ''}</span>`).join('<span class="rm-status__separator" aria-hidden="true">, </span>')
+        : '<span class="rm-status rm-status--empty">—</span>';
+      const statusCell = value => `<span class="rm-status rm-status--${slug(value)}"><i aria-hidden="true"></i>${U.esc(value)}</span>`;
       return `<tr>
-        <td>${U.esc(r.roomNo)}</td><td>${label}</td><td>${U.esc(r.ward)}</td><td>${U.esc(r.roomType)}</td>
-        <td class="cl-num">${r.beds ? r.beds.length : r.totalBeds}</td>
-        <td><span class="rm-status rm-status--${slug(st)}"><i aria-hidden="true"></i>${U.esc(st)}</span></td>
-        <td class="rm-actions">
+        <td data-label="Room No">${U.esc(r.roomNo)}</td>
+        <td data-label="Room Name">${label}</td>
+        <td data-label="Ward">${U.esc(r.ward)}</td>
+        <td data-label="Room Type">${U.esc(r.roomType)}</td>
+        <td data-label="Beds" class="cl-num">${beds.length || r.totalBeds || 0}</td>
+        <td data-label="Room Status">${statusCell(roomStatus)}</td>
+        <td data-label="Bed Status" class="rm-status-cell">${chips(bedStatuses, 'bed')}</td>
+        <td data-label="Cleaning Status" class="rm-status-cell">${chips(cleaningStatuses, 'cleaning')}</td>
+        <td data-label="Patient Status" class="rm-status-cell">${chips(patientStatuses, 'patient')}</td>
+        <td data-label="Actions" class="rm-actions cl-actions-col">
           <button type="button" class="rm-act" data-a="view" data-id="${r.id}" aria-label="View ${label}" title="View">${ICON.view}</button>
           <button type="button" class="rm-act" data-a="edit" data-id="${r.id}" aria-label="Edit ${label}" title="Edit">${ICON.edit}</button>
           <button type="button" class="rm-act rm-act--danger" data-a="del" data-id="${r.id}" aria-label="Delete ${label}" title="Delete">${ICON.del}</button>
         </td></tr>`;
-    }).join('') : `<tr><td colspan="7" class="rm-empty"><strong>No rooms match your filters.</strong><br>Try a different ward, room type, or search term, or reset the filters.</td></tr>`;
+    }).join('') : `<tr><td colspan="10" class="rm-empty"><strong>No rooms match your filters.</strong><br>Try a different ward, room type, or search term, or reset the filters.</td></tr>`;
 
     $('rmInfo').textContent = list.length ? `Showing ${start + 1} to ${start + slice.length} of ${list.length} records` : 'Showing 0 of 0 records';
 
@@ -53,6 +75,27 @@ document.addEventListener('DOMContentLoaded', () => {
     $('rmPager').innerHTML = html;
   }
 
+  function getRoomStatus(room, beds = Array.isArray(room.beds) ? room.beds : []) {
+    if (room.recordStatus === 'Inactive') return 'Inactive';
+    if (room.recordStatus === 'Maintenance' || room.roomStatus === 'Maintenance') return 'Maintenance';
+    if (!beds.length) return room.roomStatus || 'Available';
+
+    const statuses = beds.map(b => b.status || 'Available');
+    const occupied = statuses.filter(status => status === 'Occupied').length;
+    const reserved = statuses.filter(status => status === 'Reserved').length;
+    const cleaning = statuses.filter(status => status === 'Cleaning').length;
+    const unavailable = statuses.filter(status => ['Occupied', 'Reserved', 'Cleaning', 'Maintenance', 'Inactive'].includes(status)).length;
+
+    if (occupied === beds.length) return 'Occupied';
+    if (occupied > 0 && occupied < beds.length) return 'Partially Occupied';
+    if (reserved === beds.length) return 'Reserved';
+    if (cleaning === beds.length || beds.some(b => b.cleaningStatus === 'RequiresCleaning') && unavailable === beds.length) return 'Cleaning';
+    if (statuses.every(status => status === 'Maintenance')) return 'Maintenance';
+    if (reserved > 0) return 'Partially Reserved';
+    if (cleaning > 0) return 'Cleaning';
+    return room.roomStatus || 'Available';
+  }
+
   function notice(text, kind = 'ok', href = '', linkText = '') {
     const n = $('rmNotice');
     n.className = `rm-notice rm-notice--${kind}`;
@@ -61,13 +104,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function details(r) {
-    const row = (k, v) => `<dt>${k}</dt><dd>${v ? U.esc(v) : '—'}</dd>`;
-    const beds = (r.beds || []).map(b => `${U.esc(b.no)} (${U.esc(b.type)}, ${U.esc(b.status)})`).join('<br>');
+    const row = (k, v) => `<dt>${k}</dt><dd>${v !== null && v !== undefined && v !== '' ? U.esc(v) : '—'}</dd>`;
+    const beds = (r.beds || []).map(b => {
+      const bedStatus = b.status || 'Available';
+      const cleaningStatus = b.cleaningStatus || (bedStatus === 'Cleaning' ? 'RequiresCleaning' : 'Clean');
+      const patientStatus = b.patientStatus || (bedStatus === 'Occupied' ? 'Admitted' : bedStatus === 'Reserved' ? 'Reserved' : '—');
+      return `<div class="rm-bed-detail"><strong>${U.esc(b.no || 'Bed')}</strong><span>${U.esc(b.type || '—')}</span><span>Bed: ${U.esc(bedStatus)}</span><span>Cleaning: ${U.esc(cleaningStatus)}</span><span>Patient: ${U.esc(patientStatus || '—')}</span></div>`;
+    }).join('');
+    const roomStatus = getRoomStatus(r, r.beds || []);
     return `<dl class="rm-dl">
       ${row('Room ID', r.id)}${row('Room Name', r.roomName)}${row('Facility', `${r.facility} · ${r.building} · Floor ${r.floor}`)}
-      ${row('Ward', r.ward)}${row('Room Type', r.roomType)}${row('Status', S.displayStatus(r))}
+      ${row('Ward', r.ward)}${row('Room Type', r.roomType)}${row('Room Status', roomStatus)}
       ${row('Gender Restriction', r.genderRestriction)}${row('Facilities', (r.facilities || []).join(', '))}
-      <dt>Beds</dt><dd>${beds || '—'}</dd>
+      <dt>Beds and Statuses</dt><dd>${beds || '—'}</dd>
       ${row('Daily Room Charge', U.money(r.dailyCharge))}${row('Tariff', `${r.ratePlan} (${r.billingCategory})`)}
       ${row('Description', r.description)}</dl>`;
   }

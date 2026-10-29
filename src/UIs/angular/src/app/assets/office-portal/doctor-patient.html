@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Dashboard - Patient</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/navbar.css">
+
+    <link rel="stylesheet"
+          href="css/dashboard.css">
+
+    <link rel="stylesheet"
+          href="css/doctor-dashboard.css">
+
+    <link rel="stylesheet"
+          href="css/navbar-doctor.css">
+
+    <link rel="stylesheet"
+          href="css/doctor-patient.css">
+
+</head>
+
+<body class="auth-pending">
+
+    <div id="navbar-container"></div>
+
+    <main class="dashboard-container dc-container">
+
+        <section class="dashboard-card dc-panel">
+
+            <div class="card-header">
+                <h3>PATIENTS</h3>
+                <span class="dc-demo-tag">Demo data</span>
+            </div>
+
+            <p class="dc-notice" id="dcNotice" role="status" hidden></p>
+
+            <div class="dc-pt-screen">
+
+                <div class="dc-pt-tabs" role="tablist" aria-label="Patient details">
+                    <button type="button" class="dc-pt-tab active" role="tab" id="ptTab-info" data-pt="info" aria-selected="true" aria-controls="ptPanel-info">Patient Info</button>
+                    <button type="button" class="dc-pt-tab" role="tab" id="ptTab-observation" data-pt="observation" aria-selected="false" aria-controls="ptPanel-observation">Observation and Prescription</button>
+                    <button type="button" class="dc-pt-tab" role="tab" id="ptTab-tests" data-pt="tests" aria-selected="false" aria-controls="ptPanel-tests">Tests and Scans</button>
+                    <button type="button" class="dc-pt-tab" role="tab" id="ptTab-history" data-pt="history" aria-selected="false" aria-controls="ptPanel-history">History</button>
+                    <button type="button" class="dc-pt-tab" role="tab" id="ptTab-referrals" data-pt="referrals" aria-selected="false" aria-controls="ptPanel-referrals">Referrals</button>
+                </div>
+
+                <div class="dc-pt-panel" role="tabpanel" id="ptPanel-info" aria-labelledby="ptTab-info">
+
+                    <div class="dc-pt-form">
+
+                        <div class="dc-pt-row single">
+                            <div class="dc-field">
+                                <label for="ptName">Name</label>
+                                <input type="text" id="ptName" placeholder="---" readonly>
+                            </div>
+                        </div>
+
+                        <div class="dc-pt-row">
+                            <div class="dc-field compact">
+                                <label for="ptAge">Age</label>
+                                <input type="text" id="ptAge" placeholder="---" readonly>
+                            </div>
+                            <div class="dc-field compact">
+                                <label for="ptGender">Gender</label>
+                                <select id="ptGender" disabled>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="dc-pt-row">
+                            <div class="dc-field">
+                                <label for="ptMobile">Mobile Number</label>
+                                <input type="text" id="ptMobile" placeholder="---" readonly>
+                            </div>
+                            <div class="dc-field">
+                                <label for="ptEmail">Email Address</label>
+                                <input type="text" id="ptEmail" placeholder="---" readonly>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="dc-vitals">
+
+                        <div class="dc-vitals-head">Vitals and Purpose</div>
+
+                        <div class="dc-vitals-body">
+
+                            <div class="dc-vitals-grid">
+
+                                <div class="dc-vitals-col">
+                                    <div class="dc-field">
+                                        <label for="ptWeight">Weight</label>
+                                        <div class="dc-unit">
+                                            <input type="text" id="ptWeight" placeholder="---" readonly>
+                                            <span>kg</span>
+                                        </div>
+                                    </div>
+                                    <div class="dc-field">
+                                        <label for="ptHeight">Height</label>
+                                        <div class="dc-unit">
+                                            <input type="text" id="ptHeight" placeholder="---" readonly>
+                                            <span>cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="dc-vitals-col">
+                                    <div class="dc-field">
+                                        <label for="ptBloodPressure">Blood Pressure</label>
+                                        <div class="dc-unit">
+                                            <input type="text" id="ptBloodPressure" placeholder="---" readonly>
+                                            <span>mmHg</span>
+                                        </div>
+                                    </div>
+                                    <div class="dc-field">
+                                        <label for="ptBloodSugar">Blood Sugar</label>
+                                        <div class="dc-unit">
+                                            <input type="text" id="ptBloodSugar" placeholder="---" readonly>
+                                            <span>mg/dL</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="dc-field dc-purpose">
+                                <label for="ptPurpose">Purpose</label>
+                                <input type="text" id="ptPurpose" placeholder="---" readonly>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="dc-pt-panel" role="tabpanel" id="ptPanel-observation" aria-labelledby="ptTab-observation" hidden>
+                    <p class="dc-pt-empty">No observations or prescriptions to show. Observation and prescription data is not connected yet.</p>
+                </div>
+
+                <div class="dc-pt-panel" role="tabpanel" id="ptPanel-tests" aria-labelledby="ptTab-tests" hidden>
+                    <p class="dc-pt-empty">No tests or scans to show. Test and scan data is not connected yet.</p>
+                </div>
+
+                <div class="dc-pt-panel" role="tabpanel" id="ptPanel-history" aria-labelledby="ptTab-history" hidden>
+                    <p class="dc-pt-empty">No consultation history to show. History data is not connected yet.</p>
+                </div>
+
+                <div class="dc-pt-panel" role="tabpanel" id="ptPanel-referrals" aria-labelledby="ptTab-referrals" hidden>
+                    <div class="dc-table-wrap dc-pt-table">
+                        <table class="dc-table">
+                            <thead>
+                                <tr>
+                                    <th>Receiving Doctor</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dcPatientReferralRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="footer-container"></div>
+
+    <div class="modal-overlay" id="dcLogoutModal">
+
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="dcLogoutTitle">
+
+            <button type="button" class="modal-close" data-close="dcLogoutModal" aria-label="Close">&times;</button>
+
+            <div class="logout-icon" aria-hidden="true">&#128682;</div>
+
+            <h2 id="dcLogoutTitle">Log out?</h2>
+
+            <p>You will need to sign in again to open the Doctor Dashboard.</p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" data-close="dcLogoutModal">Stay signed in</button>
+                <button type="button" class="btn-danger" id="dcLogoutConfirm">Log out</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="dcProfileModal">
+
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="dcProfileTitle">
+
+            <button type="button" class="modal-close" data-close="dcProfileModal" aria-label="Close">&times;</button>
+
+            <div class="logout-icon dc-profile-icon" id="dcProfileInitials" aria-hidden="true"></div>
+
+            <h2 id="dcProfileTitle"></h2>
+
+            <p id="dcProfileMeta"></p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" data-close="dcProfileModal">Close</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/auth.js"></script>
+
+    <script src="js/footer.js"></script>
+
+    <script src="js/navbar-doctor.js"></script>
+
+    <script src="js/doctor-data.js"></script>
+
+    <script src="js/doctor-common.js"></script>
+
+    <script src="js/doctor-patient.js"></script>
+
+</body>
+
+</html>

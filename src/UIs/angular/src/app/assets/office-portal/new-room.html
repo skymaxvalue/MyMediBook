@@ -53,6 +53,7 @@
       </div>
 
       <form id="roomForm" novalidate>
+        <input type="hidden" name="recordStatus" value="Active">
 
         <!-- STEP 1 -->
         <section class="rs-step-panel active" data-step="1">
@@ -81,7 +82,7 @@
           <section class="rs-section">
             <div class="rs-section-header"><img src="images/settings-icon.png" alt=""><h3>Room Status &amp; Access</h3></div>
             <div class="rs-grid-2">
-              <div class="rs-field"><label for="f-recordStatus">Room Status <b class="rm-req">*</b></label><select id="f-recordStatus" name="recordStatus" data-opts="recordStatus"></select></div>
+              <div class="rs-field"><label for="f-roomStatus">Room Status <b class="rm-req">*</b></label><select id="f-roomStatus" name="roomStatus" data-opts="roomStatus"></select></div>
               <div class="rs-field"><label for="f-genderRestriction">Gender Restriction</label><select id="f-genderRestriction" name="genderRestriction" data-opts="genderRestriction" data-sync></select></div>
             </div>
             <div class="rs-field">
@@ -134,7 +135,7 @@
             <div class="rm-table-scroll">
               <table class="rm-bedtable">
                 <caption class="cl-sr">Beds in this room</caption>
-                <thead><tr><th scope="col">#</th><th scope="col">Bed Number</th><th scope="col">Bed Type</th><th scope="col">Status</th><th scope="col">Remarks</th><th scope="col">Actions</th></tr></thead>
+                <thead><tr><th scope="col">#</th><th scope="col">Bed Number</th><th scope="col">Bed Type</th><th scope="col">Bed Status</th><th scope="col">Cleaning Status</th><th scope="col">Patient Status</th><th scope="col">Remarks</th><th scope="col">Actions</th></tr></thead>
                 <tbody id="bedRows"></tbody>
               </table>
             </div>

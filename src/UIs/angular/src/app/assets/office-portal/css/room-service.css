@@ -1075,3 +1075,17 @@ display:block;
 
 /* Allow the longer "Confirm Reservation" label to fit */
 #continueBtn { width: auto; min-width: 140px; white-space: nowrap; }
+
+
+/* Room/bed availability and status display */
+.rs-availability-help { margin: -2px 0 16px; color: #64748B; font-size: 14px; line-height: 1.5; }
+.rs-availability-section .rs-field { max-width: 640px; }
+.rs-availability-section select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #D8E3F6; border-radius: 8px; color: #183153; background: #fff; font: inherit; }
+.rs-availability-message { margin-top: 8px; color: #64748B; font-size: 13px; }
+.rs-availability-message.error { color: #B91C1C; }
+.rs-availability-message.success { color: #166534; }
+.rs-room-details { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; padding: 14px; border: 1px solid #D8E3F6; border-radius: 10px; background: #F8FAFF; }
+.rs-room-detail { min-width: 0; }
+.rs-room-detail span { display: block; color: #64748B; font-size: 12px; margin-bottom: 4px; }
+.rs-room-detail strong { display: block; color: #183153; font-size: 14px; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .rs-room-details { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -1,18 +1,7 @@
-const DEMO_APPOINTMENTS = [
-    { time: "09:00 AM", name: "Sundaram S", age: 40, gender: "Male", status: "Completed", compliance: "---" },
-    { time: "09:30 AM", name: "Balan Pradeep", age: 31, gender: "Male", status: "Checked In", compliance: "---" },
-    { time: "10:00 AM", name: "Sharath Kumar", age: 24, gender: "Male", status: "Waiting", compliance: "---" },
-    { time: "10:30 AM", name: "Prakash", age: 36, gender: "Male", status: "Waiting", compliance: "---" },
-    { time: "11:00 AM", name: "Geetham", age: 33, gender: "Female", status: "Waiting", compliance: "---" }
-];
-
-const DEMO_REFERRALS = [];
-
 const DEMO_INPATIENTS = [];
 
 const TAB_TITLES = {
     appointments: "APPOINTMENT LIST",
-    patients: "PATIENT",
     referrals: "REFERRAL LIST",
     inpatient: "IN-PATIENT CARE"
 };
@@ -27,7 +16,30 @@ const STATUS_CLASSES = {
     "Completed": "completed"
 };
 
+const PAGE_SIZE = 10;
+
+const ICON_CHEVRON_LEFT = '<img src="/images/arrow-left.png" alt="">';
+
+const ICON_CHEVRON_RIGHT = '<img src="/images/arrow-right.png" alt="">';
+
+let selectedDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+let searchTerm = "";
+
+let currentPage = 1;
+
 document.addEventListener("DOMContentLoaded", () => {
+
+    if (!document.getElementById("dcTabs")) {
+        document.addEventListener("doctorNavbarReady", initializeDoctorDashboard, { once: true });
+        return;
+    }
+
+    initializeDoctorDashboard();
+
+});
+
+function initializeDoctorDashboard() {
 
     const session = HHAuth.requireRole("doctor");
 
@@ -39,11 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fillUser(session);
 
-    startClock();
+    startClock(renderDateBanner);
 
     renderAppointments();
-
-    renderPatients();
 
     renderReferrals();
 
@@ -53,63 +63,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupTabs();
 
+    openRequestedTab();
+
+    setupAppointmentControls();
+
     setupProfileMenu();
 
     setupModals();
 
-});
-
-function fillUser(session) {
-
-    const initials = getInitials(session.name);
-
-    document.getElementById("dcUserName").textContent = session.name;
-
-    document.getElementById("dcUserRole").textContent = session.title;
-
-    document.getElementById("dcAvatar").textContent = initials;
-
-    document.getElementById("dcProfileInitials").textContent = initials;
-
-    document.getElementById("dcProfileTitle").textContent = session.name;
-
-    document.getElementById("dcProfileMeta").textContent =
-        session.title + " \u2022 Employee ID " + session.employeeId;
-
 }
 
-function getInitials(name) {
+function renderDateBanner() {
 
-    const words = name.replace(/^Dr\.?\s*/i, "").trim().split(/\s+/).filter(Boolean);
-
-    return words.slice(0, 2).map(word => word.charAt(0).toUpperCase()).join("");
-
-}
-
-function startClock() {
-
-    updateClock();
-
-    setInterval(updateClock, 1000);
-
-}
-
-function updateClock() {
-
-    const now = new Date();
-
-    document.getElementById("dcHeaderDate").textContent =
-        now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-
-    document.getElementById("dcHeaderTime").textContent =
-        now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-
+    const date = selectedDate;
     document.getElementById("dcDateBanner").textContent =
-        String(now.getDate()).padStart(2, "0") + "-" +
-        MONTHS[now.getMonth()] + "-" +
-        now.getFullYear() +
-        " (" + WEEKDAYS[now.getDay()] + ")";
+        String(date.getDate()).padStart(2, "0") + "-" +
+        MONTHS[date.getMonth()] + "-" +
+        date.getFullYear() +
+        " (" + WEEKDAYS[date.getDay()] + ")";
 
+    const picker = document.getElementById("dcDatePicker");
+    if (picker) {
+        picker.value = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+    }
+
+}
+
+function isSelectedDateToday() {
+    const today = new Date();
+    return selectedDate.getFullYear() === today.getFullYear() &&
+        selectedDate.getMonth() === today.getMonth() &&
+        selectedDate.getDate() === today.getDate();
+}
+
+function setSelectedDate(value) {
+    if (!value) return;
+    const parts = value.split("-").map(Number);
+    selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+    currentPage = 1;
+    renderDateBanner();
+    renderAppointments();
 }
 
 function createCell(text) {
@@ -128,19 +121,11 @@ function createPatientCell(name) {
 
     const link = document.createElement("a");
 
-    link.href = "#";
+    link.href = "doctor-patient.html?patient=" + encodeURIComponent(name);
 
     link.className = "dc-patient-link";
 
     link.textContent = name;
-
-    link.addEventListener("click", event => {
-
-        event.preventDefault();
-
-        showNotice("Patient record pages are not connected to this demo yet.");
-
-    });
 
     cell.appendChild(link);
 
@@ -184,16 +169,53 @@ function renderEmpty(bodyId, columns, message) {
 
 }
 
+function getVisibleAppointments() {
+
+    if (!isSelectedDateToday()) {
+        return [];
+    }
+
+    const term = searchTerm.trim().toLowerCase();
+
+    return DEMO_APPOINTMENTS.filter(item => item.name.toLowerCase().includes(term));
+
+}
+
+function getEmptyMessage() {
+
+    if (!isSelectedDateToday()) {
+        return "No appointments are scheduled for this date.";
+    }
+
+    if (DEMO_APPOINTMENTS.length > 0) {
+        return "No patients match your search.";
+    }
+
+    return "No appointments are scheduled for today.";
+
+}
+
 function renderAppointments() {
 
     const body = document.getElementById("dcAppointmentRows");
 
-    if (DEMO_APPOINTMENTS.length === 0) {
-        renderEmpty("dcAppointmentRows", 6, "No appointments are scheduled for today.");
-        return;
+    body.replaceChildren();
+
+    const items = getVisibleAppointments();
+
+    const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+
+    currentPage = Math.min(currentPage, totalPages);
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+
+    const pageItems = items.slice(start, start + PAGE_SIZE);
+
+    if (pageItems.length === 0) {
+        renderEmpty("dcAppointmentRows", 6, getEmptyMessage());
     }
 
-    DEMO_APPOINTMENTS.forEach(item => {
+    pageItems.forEach(item => {
 
         const row = document.createElement("tr");
 
@@ -208,29 +230,123 @@ function renderAppointments() {
 
     });
 
+    renderRecordCount(items.length, start, pageItems.length);
+
+    renderPager(totalPages);
+
 }
 
-function renderPatients() {
+function renderRecordCount(total, start, shown) {
 
-    const body = document.getElementById("dcPatientRows");
+    const label = total === 0
+        ? "Showing 0 to 0 of 0 records"
+        : "Showing " + (start + 1) + " to " + (start + shown) + " of " + total + " records";
 
-    if (DEMO_APPOINTMENTS.length === 0) {
-        renderEmpty("dcPatientRows", 4, "No patients to show yet.");
-        return;
+    document.getElementById("dcRecordCount").textContent = label;
+
+}
+
+function createPagerButton(label, disabled, onClick) {
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+
+    button.className = "dc-page-btn";
+
+    button.setAttribute("aria-label", label);
+
+    button.disabled = disabled;
+
+    button.addEventListener("click", onClick);
+
+    return button;
+
+}
+
+function renderPager(totalPages) {
+
+    const pager = document.getElementById("dcPager");
+
+    pager.replaceChildren();
+
+    const previous = createPagerButton("Previous page", currentPage === 1, () => goToPage(currentPage - 1));
+
+    previous.innerHTML = ICON_CHEVRON_LEFT;
+
+    pager.appendChild(previous);
+
+    for (let page = 1; page <= totalPages; page++) {
+
+        const button = createPagerButton("Page " + page, false, () => goToPage(page));
+
+        button.textContent = page;
+
+        if (page === currentPage) {
+
+            button.classList.add("active");
+
+            button.setAttribute("aria-current", "page");
+
+        }
+
+        pager.appendChild(button);
+
     }
 
-    DEMO_APPOINTMENTS.forEach(item => {
+    const next = createPagerButton("Next page", currentPage === totalPages, () => goToPage(currentPage + 1));
 
-        const row = document.createElement("tr");
+    next.innerHTML = ICON_CHEVRON_RIGHT;
 
-        row.appendChild(createPatientCell(item.name));
-        row.appendChild(createCell(item.age + " years"));
-        row.appendChild(createCell(item.gender));
-        row.appendChild(createCell(item.compliance));
+    pager.appendChild(next);
 
-        body.appendChild(row);
+}
+
+function goToPage(page) {
+
+    currentPage = page;
+
+    renderAppointments();
+
+}
+
+function shiftDate(days) {
+
+    selectedDate.setDate(selectedDate.getDate() + days);
+    currentPage = 1;
+    renderDateBanner();
+    renderAppointments();
+
+}
+
+function setupAppointmentControls() {
+
+    const searchInput = document.getElementById("dcSearch");
+
+    searchInput.addEventListener("input", () => {
+
+        searchTerm = searchInput.value;
+
+        currentPage = 1;
+
+        renderAppointments();
 
     });
+
+    document.getElementById("dcSearchBtn").addEventListener("click", () => searchInput.focus());
+
+    document.getElementById("dcDatePrev").addEventListener("click", () => shiftDate(-1));
+
+    document.getElementById("dcDateNext").addEventListener("click", () => shiftDate(1));
+
+    const picker = document.getElementById("dcDatePicker");
+    const calendarTrigger = document.getElementById("dcCalendarTrigger");
+    calendarTrigger.addEventListener("click", () => {
+        if (typeof picker.showPicker === "function") picker.showPicker();
+        else picker.click();
+    });
+    picker.addEventListener("change", () => setSelectedDate(picker.value));
+    renderDateBanner();
 
 }
 
@@ -300,29 +416,48 @@ function renderStats() {
 
 }
 
+function activateTab(target) {
+
+    document.querySelectorAll("#dcTabs .nav-item").forEach(item => {
+        item.classList.toggle("active", item.dataset.tab === target);
+    });
+
+    document.querySelectorAll(".dc-tab-panel").forEach(panel => {
+        panel.hidden = panel.id !== "panel-" + target;
+    });
+
+    document.getElementById("dcPanelTitle").textContent = TAB_TITLES[target];
+
+    hideNotice();
+
+}
+
 function setupTabs() {
 
-    const tabs = document.querySelectorAll("#dcTabs .nav-item");
-
-    tabs.forEach(tab => {
+    document.querySelectorAll("#dcTabs .nav-item").forEach(tab => {
 
         tab.addEventListener("click", () => {
 
-            const target = tab.dataset.tab;
+            if (tab.dataset.tab === "patients") {
+                window.location.href = "doctor-patient.html";
+                return;
+            }
 
-            tabs.forEach(item => item.classList.toggle("active", item === tab));
-
-            document.querySelectorAll(".dc-tab-panel").forEach(panel => {
-                panel.hidden = panel.id !== "panel-" + target;
-            });
-
-            document.getElementById("dcPanelTitle").textContent = TAB_TITLES[target];
-
-            hideNotice();
+            activateTab(tab.dataset.tab);
 
         });
 
     });
+
+}
+
+function openRequestedTab() {
+
+    const requested = new URLSearchParams(window.location.search).get("tab");
+
+    if (requested && TAB_TITLES[requested]) {
+        activateTab(requested);
+    }
 
 }
 
@@ -339,107 +474,5 @@ function showNotice(message) {
 function hideNotice() {
 
     document.getElementById("dcNotice").hidden = true;
-
-}
-
-function setupProfileMenu() {
-
-    const toggle = document.getElementById("dcProfileToggle");
-
-    const dropdown = document.getElementById("dcProfileDropdown");
-
-    function closeMenu() {
-
-        dropdown.classList.remove("show");
-
-        toggle.setAttribute("aria-expanded", "false");
-
-    }
-
-    toggle.addEventListener("click", event => {
-
-        event.stopPropagation();
-
-        const open = dropdown.classList.toggle("show");
-
-        toggle.setAttribute("aria-expanded", String(open));
-
-    });
-
-    document.addEventListener("click", event => {
-
-        if (!dropdown.contains(event.target)) {
-            closeMenu();
-        }
-
-    });
-
-    document.addEventListener("keydown", event => {
-
-        if (event.key === "Escape") {
-            closeMenu();
-        }
-
-    });
-
-    document.getElementById("dcProfileOpen").addEventListener("click", () => {
-
-        closeMenu();
-
-        openModal("dcProfileModal");
-
-    });
-
-    document.getElementById("dcLogoutOpen").addEventListener("click", () => {
-
-        closeMenu();
-
-        openModal("dcLogoutModal");
-
-    });
-
-}
-
-function openModal(id) {
-
-    document.getElementById(id).classList.add("show");
-
-}
-
-function closeModal(id) {
-
-    document.getElementById(id).classList.remove("show");
-
-}
-
-function setupModals() {
-
-    document.querySelectorAll("[data-close]").forEach(button => {
-
-        button.addEventListener("click", () => closeModal(button.dataset.close));
-
-    });
-
-    document.querySelectorAll(".modal-overlay").forEach(overlay => {
-
-        overlay.addEventListener("click", event => {
-
-            if (event.target === overlay) {
-                overlay.classList.remove("show");
-            }
-
-        });
-
-    });
-
-    document.addEventListener("keydown", event => {
-
-        if (event.key === "Escape") {
-            document.querySelectorAll(".modal-overlay.show").forEach(overlay => overlay.classList.remove("show"));
-        }
-
-    });
-
-    document.getElementById("dcLogoutConfirm").addEventListener("click", () => HHAuth.logout());
 
 }
