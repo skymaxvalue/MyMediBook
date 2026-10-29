@@ -340,7 +340,149 @@ function applyRoomDefaults(roomType) {
     updateAmenityCount();
 }
 
+const ROOM_MASTER_KEY = "hhRoomMaster_v1";
+let selectableRoomBeds = [];
+
+function normalizedStatus(value) {
+    return String(value == null ? "" : value).replace(/[_\s-]/g, "").toLowerCase();
+}
+
+function getRoomInventory() {
+    try {
+        const raw = localStorage.getItem(ROOM_MASTER_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) return parsed;
+        }
+    } catch (error) {
+        console.warn("Unable to read Room Master inventory", error);
+    }
+    // Standalone mock data mirrors the Room Master demonstration inventory.
+    return [
+        { roomNo: "101", roomName: "Private 101", ward: "General", floor: "1", roomType: "Private", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "101-B1", status: "Available", cleaningStatus: "Clean", patientStatus: "" }] },
+        { roomNo: "102", roomName: "Private 102", ward: "General", floor: "1", roomType: "Private", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "102-B1", status: "Occupied", cleaningStatus: "Clean", patientStatus: "Admitted" }] },
+        { roomNo: "201", roomName: "Semi-Private 201", ward: "Medical", floor: "2", roomType: "Semi-Private", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "201-B1", status: "Available", cleaningStatus: "Clean", patientStatus: "" }, { no: "201-B2", status: "Available", cleaningStatus: "Clean", patientStatus: "" }] },
+        { roomNo: "202", roomName: "Semi-Private 202", ward: "Medical", floor: "2", roomType: "Semi-Private", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "202-B1", status: "Cleaning", cleaningStatus: "RequiresCleaning", patientStatus: "" }] },
+        { roomNo: "301", roomName: "Standard 301", ward: "Surgical", floor: "3", roomType: "Standard", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "301-B1", status: "Available", cleaningStatus: "Clean", patientStatus: "" }] },
+        { roomNo: "302", roomName: "Standard 302", ward: "Surgical", floor: "3", roomType: "Standard", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "302-B1", status: "Maintenance", cleaningStatus: "Clean", patientStatus: "" }] },
+        { roomNo: "401", roomName: "Suite 401", ward: "VIP", floor: "4", roomType: "Suite", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "401-B1", status: "Available", cleaningStatus: "Clean", patientStatus: "" }] },
+        { roomNo: "402", roomName: "Suite 402", ward: "VIP", floor: "4", roomType: "Suite", roomStatus: "Available", recordStatus: "Active", beds: [{ no: "402-B1", status: "Reserved", cleaningStatus: "Clean", patientStatus: "Reserved" }] }
+    ];
+}
+
+function isRoomBedSelectable(room, bed) {
+    const roomStatus = normalizedStatus(room.roomStatus || room.status || "Available");
+    const recordStatus = normalizedStatus(room.recordStatus || "Active");
+    const bedStatus = normalizedStatus(bed.status || bed.bedStatus || "Available");
+    const cleaningStatus = normalizedStatus(bed.cleaningStatus || "Clean");
+    const patientStatus = normalizedStatus(bed.patientStatus);
+    return roomStatus === "available" && recordStatus !== "inactive" &&
+        bedStatus === "available" && cleaningStatus === "clean" &&
+        !["admitted", "reserved"].includes(patientStatus);
+}
+
+function renderRoomBedSelection() {
+    const select = document.getElementById("roomBedSelect");
+    const message = document.getElementById("roomBedStatusMessage");
+    const details = document.getElementById("roomBedDetails");
+    if (!select || !message || !details) return;
+
+    const inventory = getRoomInventory();
+    selectableRoomBeds = [];
+    inventory.forEach(room => {
+        (Array.isArray(room.beds) ? room.beds : []).forEach(bed => {
+            if (isRoomBedSelectable(room, bed)) selectableRoomBeds.push({ room, bed });
+        });
+    });
+
+    const previous = select.value || (() => {
+        try { return JSON.parse(localStorage.getItem(ROOM_DRAFT_KEY) || "{}").roomBedKey || ""; }
+        catch (_) { return ""; }
+    })();
+    select.innerHTML = '<option value="">Choose an available room and bed</option>';
+    selectableRoomBeds.forEach((item, index) => {
+        const roomNo = item.room.roomNo || item.room.roomNumber || item.room.name || "Room";
+        const bedNo = item.bed.no || item.bed.bedNo || item.bed.name || `Bed ${index + 1}`;
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = `Room ${roomNo} · ${bedNo} · ${item.room.ward || "Ward not specified"}`;
+        select.appendChild(option);
+    });
+
+    if (!selectableRoomBeds.length) {
+        select.disabled = true;
+        message.className = "rs-availability-message error";
+        message.textContent = "No rooms currently meet the availability and cleaning requirements. Update Room Master statuses before making a reservation.";
+        details.hidden = true;
+        return;
+    }
+    select.disabled = false;
+    message.className = "rs-availability-message";
+    message.textContent = `${selectableRoomBeds.length} room/bed option(s) currently meet the reservation requirements.`;
+    const selectedIndex = selectableRoomBeds.findIndex(item => `${item.room.roomNo || item.room.roomNumber || item.room.name}|${item.bed.no || item.bed.bedNo || item.bed.name}` === previous);
+    if (selectedIndex >= 0) select.value = String(selectedIndex);
+    else if (select.options.length > 1) select.selectedIndex = 1;
+    updateRoomBedDetails();
+}
+
+function selectedRoomBed() {
+    const select = document.getElementById("roomBedSelect");
+    const index = select && select.value !== "" ? Number(select.value) : -1;
+    return Number.isInteger(index) && index >= 0 ? selectableRoomBeds[index] || null : null;
+}
+
+function updateRoomBedDetails() {
+    const item = selectedRoomBed();
+    const details = document.getElementById("roomBedDetails");
+    const message = document.getElementById("roomBedStatusMessage");
+    if (!details || !message) return;
+    if (!item) { details.hidden = true; return; }
+    const room = item.room, bed = item.bed;
+    const roomNo = room.roomNo || room.roomNumber || room.name || "—";
+    const bedNo = bed.no || bed.bedNo || bed.name || "—";
+    const floor = room.floor ? (String(room.floor).toLowerCase().includes("floor") ? room.floor : `${room.floor}${/^\d+$/.test(String(room.floor)) ? "th" : ""} Floor`) : "—";
+    const entries = [
+        ["Room Status", room.roomStatus || room.status || "Available"],
+        ["Bed Status", bed.status || bed.bedStatus || "Available"],
+        ["Cleaning Status", bed.cleaningStatus || "Clean"],
+        ["Patient Status", bed.patientStatus || "None"]
+    ];
+    details.innerHTML = entries.map(([label, value]) => `<div class="rs-room-detail"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
+    details.hidden = false;
+    message.className = "rs-availability-message success";
+    message.textContent = `Selected Room ${roomNo}, ${bedNo}. This option is available and clean.`;
+}
+
+function persistSelectedRoomBed(data) {
+    const item = selectedRoomBed();
+    if (!item) {
+        data.roomBed = null;
+        data.roomBedKey = "";
+        return;
+    }
+    const room = item.room, bed = item.bed;
+    data.roomBed = {
+        room: room.roomNo || room.roomNumber || room.name || "",
+        bed: bed.no || bed.bedNo || bed.name || "",
+        ward: room.ward || "",
+        floor: room.floor || "",
+        roomType: room.roomType || "",
+        roomStatus: room.roomStatus || room.status || "Available",
+        bedStatus: bed.status || bed.bedStatus || "Available",
+        cleaningStatus: bed.cleaningStatus || "Clean",
+        patientStatus: bed.patientStatus || ""
+    };
+    data.roomBedKey = `${data.roomBed.room}|${data.roomBed.bed}`;
+}
+
 function initRoomStep() {
+    renderRoomBedSelection();
+    document.getElementById("roomBedSelect")?.addEventListener("change", () => {
+        updateRoomBedDetails();
+        const draft = JSON.parse(localStorage.getItem(ROOM_DRAFT_KEY) || "{}");
+        persistSelectedRoomBed(draft);
+        localStorage.setItem(ROOM_DRAFT_KEY, JSON.stringify(draft));
+    });
     document.querySelectorAll('input[name="roomType"]').forEach(radio => {
         radio.addEventListener("change", () => applyRoomDefaults(radio.value));
     });
@@ -384,6 +526,11 @@ function nextStep() {
   
     if (currentStep === 1 && !selectedPatient) {
         alert("Please select a patient profile.");
+        return;
+    }
+
+    if (currentStep === 2 && !selectedRoomBed()) {
+        alert("Please select an available, clean room and bed before continuing.");
         return;
     }
 
@@ -498,6 +645,7 @@ function saveStepData() {
     );
 
     data.roomType = room ? room.value : "";
+    persistSelectedRoomBed(data);
 
     data.cleaningTime =
         document.getElementById("cleaningTime")?.value || "";
@@ -667,10 +815,11 @@ function populateReview() {
     setText("rvPhysician", [d.physician, dept].filter(Boolean).join(", "));
 
     // Room
-    setText("rvRoom", RESERVED_ROOM.room);
-    setText("rvBed", RESERVED_ROOM.bed);
-    setText("rvWard", RESERVED_ROOM.ward);
-    setText("rvFloor", RESERVED_ROOM.floor);
+    const selectedRoom = d.roomBed || RESERVED_ROOM;
+    setText("rvRoom", selectedRoom.room);
+    setText("rvBed", selectedRoom.bed);
+    setText("rvWard", selectedRoom.ward);
+    setText("rvFloor", selectedRoom.floor);
     setText("rvRoomType", d.roomType || "Standard");
     setText("rvAmenities", (d.amenities || []).join(", "));
     const hk = [d.cleaningTime, d.cleaningFrequency].filter(Boolean).join(", ");
@@ -746,7 +895,8 @@ function submitRoomRequest() {
     const p = data.patient || {};
     setText("rvRequestId", REQUEST_ID);
     setText("rvReservationPatient", `${p.firstName || ""} ${p.lastName || ""}`.trim());
-    setText("rvReservationRoom", `${RESERVED_ROOM.room} / Bed ${RESERVED_ROOM.bed}`);
+    const selectedRoom = data.roomBed || RESERVED_ROOM;
+    setText("rvReservationRoom", `${selectedRoom.room} / Bed ${selectedRoom.bed}`);
     setText("rvSubmittedOn", formatDateTime(new Date(data.submittedAt)));
     setText("rvStatus", RESERVED_STATUS);
     document.getElementById("submitModal").classList.add("show");

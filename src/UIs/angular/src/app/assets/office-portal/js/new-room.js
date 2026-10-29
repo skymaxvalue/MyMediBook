@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- state ---------- */
   const todayISO = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
   const DEFAULTS = {
-    facility: O.facility[0], roomType: 'Standard', recordStatus: 'Active', genderRestriction: 'Any', layout: 'Standard', doors: 1,
+    facility: O.facility[0], roomType: 'Standard', roomStatus: 'Available', recordStatus: 'Active', genderRestriction: 'Any', layout: 'Standard', doors: 1,
     attachedBathroom: 'Yes', facilities: S.FAC_DEFAULTS.Standard.slice(), totalBeds: T.Standard.def, bedType: 'Standard Bed',
     bedPrefix: 'B', startFrom: 1, autoNumber: true, bedAmenities: [], patientCategory: 'General', infection: O.infection[0],
     isolation: 'No', negativePressure: 'No', oxygen: 'Wall outlet', emergencyEquipment: 'Nearby (nursing station)', accessibility: [],
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stepper = [...document.querySelectorAll('.rs-stepper .rs-step')];
 
   const val = n => (form.elements[n] && (form.elements[n].value ?? '')) || '';
-  const hasData = b => !!b.remarks || b.status !== 'Available';
+  const hasData = b => !!b.remarks || b.status !== 'Available' || (b.cleaningStatus && b.cleaningStatus !== 'Clean') || !!b.patientStatus;
 
   function collect() {
     const d = {};
@@ -58,6 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function fill(d) {
+    d = { ...d, roomStatus: d.roomStatus || (d.recordStatus === 'Inactive' ? 'Inactive' : 'Available') };
+    d.beds = (d.beds || []).map(b => ({
+      ...b,
+      cleaningStatus: b.cleaningStatus || (b.status === 'Cleaning' ? 'RequiresCleaning' : 'Clean'),
+      patientStatus: b.patientStatus || (b.status === 'Occupied' ? 'Admitted' : b.status === 'Reserved' ? 'Reserved' : '')
+    }));
     form.querySelectorAll('[name]').forEach(el => {
       const v = d[el.name];
       if (v === undefined) return;
@@ -82,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- beds ---------- */
-  const newBed = () => ({ no: '', type: val('bedType') || 'Standard Bed', status: 'Available', remarks: '' });
+  const newBed = () => ({ no: '', type: val('bedType') || 'Standard Bed', status: 'Available', cleaningStatus: 'Clean', patientStatus: '', remarks: '' });
   const auto = () => form.elements.autoNumber.checked;
   const gen = i => `${val('roomNo').trim() ? val('roomNo').trim() + '-' : ''}${val('bedPrefix').trim() || 'B'}${(parseInt(val('startFrom'), 10) || 1) + i}`;
 
@@ -117,6 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><input data-i="${i}" data-k="no" value="${U.esc(b.no)}" ${auto() ? 'readonly' : ''} ${dup ? 'aria-invalid="true"' : ''} aria-label="Bed number ${i + 1}"></td>
         <td><select data-i="${i}" data-k="type" aria-label="Bed type ${i + 1}">${sel(O.bedType, b.type)}</select></td>
         <td><select data-i="${i}" data-k="status" aria-label="Bed status ${i + 1}">${sel(O.bedStatus, b.status)}</select></td>
+        <td><select data-i="${i}" data-k="cleaningStatus" aria-label="Cleaning status ${i + 1}">${sel(O.cleaningStatus, b.cleaningStatus || 'Clean')}</select></td>
+        <td><select data-i="${i}" data-k="patientStatus" aria-label="Patient status ${i + 1}"><option value=""${!b.patientStatus ? ' selected' : ''}>None</option>${sel(O.patientStatus, b.patientStatus)}</select></td>
         <td><input data-i="${i}" data-k="remarks" maxlength="120" value="${U.esc(b.remarks)}" placeholder="Optional" aria-label="Remarks ${i + 1}"></td>
         <td><button type="button" class="rm-act rm-act--danger" data-del="${i}" aria-label="Remove bed ${U.esc(b.no || i + 1)}" title="Remove bed"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></td></tr>`;
     }).join('');
@@ -126,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const el = e.target, i = +el.dataset.i, k = el.dataset.k;
     if (k) { beds[i][k] = el.value; if (k === 'no') { const dups = new Set(); beds.forEach((b, x) => { if (!b.no.trim() || beds.some((o, y) => y !== x && o.no.trim().toLowerCase() === b.no.trim().toLowerCase())) dups.add(x); }); $('bedRows').querySelectorAll('input[data-k="no"]').forEach((inp, x) => dups.has(x) ? inp.setAttribute('aria-invalid', 'true') : inp.removeAttribute('aria-invalid')); } }
   });
-  $('bedRows').addEventListener('change', e => { if (e.target.dataset.k === 'status' || e.target.dataset.k === 'type') beds[+e.target.dataset.i][e.target.dataset.k] = e.target.value; });
+  $('bedRows').addEventListener('change', e => { const k = e.target.dataset.k; if (['status', 'type', 'cleaningStatus', 'patientStatus'].includes(k)) beds[+e.target.dataset.i][k] = e.target.value; });
   $('bedRows').addEventListener('click', async e => {
     const b = e.target.closest('[data-del]');
     if (!b) return;
@@ -193,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const num = v => v !== '' && v !== null && Number.isFinite(Number(v));
   const V = {
     1(d) {
-      const e = []; req(d, ['roomNo', 'roomName', 'facility', 'building', 'floor', 'ward', 'roomType', 'recordStatus'], e);
+      const e = []; req(d, ['roomNo', 'roomName', 'facility', 'building', 'floor', 'ward', 'roomType', 'roomStatus'], e);
       if (!e.some(x => x[0] === 'roomNo') && S.duplicate(d, editing && editing.id)) e.push(['roomNo', 'This room number already exists in the selected facility and building.']);
       if (String(d.description).length > 500) e.push(['description', 'Description cannot exceed 500 characters.']);
       return e;

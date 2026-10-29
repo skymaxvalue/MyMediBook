@@ -1,0 +1,111 @@
+<div id="navbar-container">
+
+        <header class="dashboard-header">
+
+            <div class="top-header">
+
+                <div class="header-left">
+
+                    <div class="hospital-brand">
+
+                        <img class="dc-logo" src="/images/hospital2.png" alt="Health Haven Medical Center">
+
+                        <div class="hospital-text">
+                            <h2>Health Haven</h2>
+                            <span>Medical Center</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="header-center">
+
+                    <h1>Doctor Dashboard</h1>
+
+                    <div class="dashboard-info">
+
+                        <div class="info-item">
+                            <img class="info-icon" src="/images/calendar2.png" alt="">
+                            <span id="dcHeaderDate"></span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="info-item">
+                            <img class="info-icon" src="images/clock2.png" alt="">
+                            <span id="dcHeaderTime"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="header-right">
+
+                    <div class="medibook-brand">
+
+                        <img class="dc-medibook-logo" src="images/logo2.png" alt="">
+
+                        <span>My <b>Medi</b> Book</span>
+
+                    </div>
+
+                    <div class="user-profile">
+
+                        <div class="dc-avatar" id="dcAvatar" aria-hidden="true"></div>
+
+                        <div class="profile-info">
+                            <h4 id="dcUserName"></h4>
+                            <span id="dcUserRole"></span>
+                        </div>
+
+                        <button type="button"
+                                class="profile-toggle"
+                                id="dcProfileToggle"
+                                aria-label="Open profile menu"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+
+                            <img class="dc-chevron-image" src="images/down-arrow.png" alt="">
+
+                        </button>
+
+                        <div class="profile-dropdown" id="dcProfileDropdown">
+                            <button type="button" id="dcProfileOpen">My Profile</button>
+                            <button type="button" id="dcLogoutOpen">Logout</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <nav class="dashboard-nav" id="dcTabs" aria-label="Doctor sections">
+
+            <button type="button" class="nav-item active" data-tab="appointments">
+                <img src="/images/calendar2.png" alt="">
+                <span>Appointment List</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="patients">
+                <img src="/images/patient-icon-blue.png" alt="">
+                <span>Patient</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="referrals">
+                <img src="/images/upload-blue.png" alt="">
+                <span>Referral List</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="inpatient">
+                <img src="/images/medical-icon-blue.png" alt="">
+                <span>In-Patient Care</span>
+            </button>
+
+        </nav>
+
+    </div>

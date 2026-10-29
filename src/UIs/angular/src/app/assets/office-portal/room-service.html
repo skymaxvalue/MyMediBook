@@ -290,6 +290,22 @@
     </div>
   </section>
 
+  <section class="rs-section rs-availability-section">
+    <div class="rs-section-header">
+      <img src="images/ic-bed-blue.png" alt="">
+      <h3>Available Rooms &amp; Beds</h3>
+    </div>
+    <p class="rs-availability-help">Only rooms marked Available with an Available bed, Clean status, and no active patient/reservation are selectable.</p>
+    <div class="rs-field">
+      <label for="roomBedSelect">Select room and bed</label>
+      <select id="roomBedSelect" required aria-describedby="roomBedStatusMessage">
+        <option value="">Loading available rooms…</option>
+      </select>
+    </div>
+    <div id="roomBedStatusMessage" class="rs-availability-message" role="status" aria-live="polite"></div>
+    <div id="roomBedDetails" class="rs-room-details" hidden></div>
+  </section>
+
   <section class="rs-section">
     <div class="rs-section-header">
       <img src="images/settings-icon.png" alt="">
