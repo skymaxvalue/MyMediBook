@@ -172,7 +172,7 @@ export class BookingPatientInformationComponent implements OnInit, OnDestroy {
     private router: Router,
     private http: HttpClient,
     private masterFacade: MasterFacade
-  ) {}
+  ) { }
 
   get patientDobControl(): FormControl {
     return this.patientSearchForm.get("dob") as FormControl;

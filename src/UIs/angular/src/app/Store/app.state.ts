@@ -1,7 +1,9 @@
 import { AppointmentState } from "./Appointments/appointment.reducer";
 import { AuthState } from "./Auth/auth.reducer";
 import { billsState } from "./Billing/billing.state";
+import { CommonState } from "./Common/common.reducer";
 import { DoctorSpecialityState } from "./Doctor/doctor.state";
+import { FrontOfficeState } from "./Front-Office/front-office.reducer";
 import { labResultState } from "./Lab-Results/lab-result.state";
 import { MasterState } from "./Master/master.reducer";
 import { MessageState } from "./Messages/messages.state";
@@ -16,4 +18,6 @@ export interface AppState {
   bills: billsState;
   message: MessageState;
   master: MasterState;
+  frontOffice: FrontOfficeState;
+  common: CommonState;
 }

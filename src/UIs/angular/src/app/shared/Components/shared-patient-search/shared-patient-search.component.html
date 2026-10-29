@@ -1,0 +1,103 @@
+<section class="consultation-section">
+  <div class="section-header">
+    <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+    <h2>Select Patient Profile</h2>
+  </div>
+
+  <p class="section-helper">
+    Search for an existing patient using their last name, date of birth, or mobile number.
+  </p>
+
+  <div class="patient-search-grid">
+    <div class="patient-search-column">
+      <div class="field-pair">
+        <label for="patientLastNameSearch">Patient Last Name</label>
+
+        <div class="input-with-icon">
+          <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+          <input
+            type="text"
+            id="patientLastNameSearch"
+            name="patientLastNameSearch"
+            placeholder="Enter last name"
+            [(ngModel)]="lastName"
+          />
+        </div>
+      </div>
+
+      <div class="field-pair">
+        <label for="patientDobSearch">Date of Birth</label>
+        <input type="date" id="patientDobSearch" name="patientDobSearch" [(ngModel)]="dob" />
+      </div>
+    </div>
+
+    <div class="search-or">
+      <span>OR</span>
+    </div>
+
+    <div class="patient-search-column">
+      <div class="field-pair">
+        <label for="patientMobileSearch">Mobile Number</label>
+
+        <div class="input-with-icon">
+          <img src="/assets/images/front-office/images/mobile-icon-blue.png" alt="" />
+          <input
+            type="tel"
+            id="patientMobileSearch"
+            name="patientMobileSearch"
+            placeholder="Enter mobile number"
+            inputmode="numeric"
+            maxlength="10"
+            [(ngModel)]="mobileNo"
+          />
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button type="button" class="btn-outline" (click)="clearSearch()">Clear</button>
+
+        <button type="button" class="btn-primary" (click)="searchPatient()" [disabled]="loading">
+          <img src="/assets/images/front-office/images/search-white.png" alt="" />
+          {{ loading ? "Searching..." : "Search" }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search results -->
+  <div class="patient-search-results" *ngIf="patients.length">
+    <button
+      type="button"
+      class="patient-result"
+      *ngFor="let patient of patients"
+      (click)="selectPatient(patient)"
+    >
+      <strong>{{ patient.fullName || "Unnamed patient" }}</strong>
+      <span>{{ patient.phoneNumber || "No mobile number" }}</span>
+      <span>{{ patient.dateOfBirth || "DOB unavailable" }}</span>
+    </button>
+  </div>
+
+  <!-- Selected patient -->
+  <div class="selected-patient-bar" *ngIf="selectedPatient">
+    <div class="selected-patient-main">
+      <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+      <div>
+        <small>Selected Patient</small>
+        <strong>{{ selectedPatient.fullName || "—" }}</strong>
+      </div>
+    </div>
+
+    <div class="selected-patient-phone">
+      <img src="/assets/images/front-office/images/mobile-icon-blue.png" alt="" />
+      <div>
+        <small>Mobile Number</small>
+        <strong>{{ selectedPatient.phoneNumber || "—" }}</strong>
+      </div>
+    </div>
+
+    <button type="button" class="btn-switch" (click)="switchPatientProfile()">
+      Switch Profile
+    </button>
+  </div>
+</section>

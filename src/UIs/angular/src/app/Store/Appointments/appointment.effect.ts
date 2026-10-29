@@ -5,13 +5,9 @@ import { AppointmentService } from "../../core/Services/appointment/appointment.
 import { catchError, map, mergeMap, of, tap } from "rxjs";
 import { ConfirmCheckInDialogComponent } from "../../Pages/Front-Office-View/patient-check-in/confirm-check-in-dialog/confirm-check-in-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import {
-  UpdateAppointmentCheckInRequestModel,
-  UpdateConsultationStatusRequestModel,
-} from "../../core/Models/update-appointment-status.model";
+import { UpdateAppointmentCheckInRequestModel } from "../../core/Models/update-appointment-status.model";
 import { CheckInSuccessDialogComponent } from "../../Pages/Front-Office-View/patient-check-in/confirm-check-in-dialog/check-in-success-dialog/check-in-success-dialog.component";
 import { Router } from "@angular/router";
-import { ListRequestModel } from "../../core/Models/list-request.model";
 
 @Injectable()
 export class AppointmentEffects {

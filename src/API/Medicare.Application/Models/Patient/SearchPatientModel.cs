@@ -1,10 +1,14 @@
-﻿namespace Medicare.Application.Models.Patient
+﻿using System.Text.Json.Serialization;
+
+namespace Medicare.Application.Models.Patient
 {
     public class SearchPatientRequestModel
     {
         public string? Name { get; set; }
         public DateTime? DOB { get; set; }
+        [JsonIgnore]
         public int? AssociateId { get; set; }
+        public int? MobileNo { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
     }

@@ -1,26 +1,12 @@
-import {
-  enableProdMode,
-  importProvidersFrom,
-  inject,
-  provideZoneChangeDetection,
-} from "@angular/core";
+import { enableProdMode, importProvidersFrom, inject } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { BrowserModule } from "@angular/platform-browser";
 import { provideRouter } from "@angular/router";
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import {
-  //  StoreModule,
-  provideStore,
-} from "@ngrx/store";
-import {
-  //  StoreDevtoolsModule,
-  provideStoreDevtools,
-} from "@ngrx/store-devtools";
-import {
-  //  EffectsModule,
-  provideEffects,
-} from "@ngrx/effects";
+import { provideStore } from "@ngrx/store";
+import { provideStoreDevtools } from "@ngrx/store-devtools";
+import { provideEffects } from "@ngrx/effects";
 import { ErrorHandler, provideAppInitializer, isDevMode } from "@angular/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatTimepickerModule } from "@angular/material/timepicker";
@@ -38,14 +24,8 @@ import { loggingInterceptorProvider } from "./app/logging/logging.interceptor";
 import { AuthInitializer } from "./app/auth/auth.initializer";
 import { AuthService } from "./app/auth/auth.service";
 
-// Guards
-
-// Audit Log State
-import { auditLogReducer } from "./app/auditlogs/audit-log.reducer";
 import { AuditLogEffects } from "./app/auditlogs/audit-log.effects";
-// import { AuthEffects } from "./app/Store/Auth/auth.effects";
 
-// Auth State
 import { AuthEffects } from "./app/Store/Auth/auth.effects";
 import { PatientEffects } from "./app/Store/Patient/patient.effect";
 import { patientReducer } from "./app/Store/Patient/patient.reducer";
@@ -63,6 +43,8 @@ import { MasterReducer } from "./app/Store/Master/master.reducer";
 import { AppointmentReducer } from "./app/Store/Appointments/appointment.reducer";
 import { NavigationEffects } from "./app/Store/Shared/Navigation/navigation.effect";
 import { AuthReducer } from "./app/Store/Auth/auth.reducer";
+import { CommonReducer } from "./app/Store/Common/common.reducer";
+import { CommonEffects } from "./app/Store/Common/common.effect";
 
 if (environment.production) {
   enableProdMode();
@@ -111,6 +93,7 @@ bootstrapApplication(AppComponent, {
       bills: BillReducer,
       message: MessagesReducer,
       master: MasterReducer,
+      common: CommonReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -123,6 +106,7 @@ bootstrapApplication(AppComponent, {
       MessagesEffects,
       MasterEffects,
       NavigationEffects,
+      CommonEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

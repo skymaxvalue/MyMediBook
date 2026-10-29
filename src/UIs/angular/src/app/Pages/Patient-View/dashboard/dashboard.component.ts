@@ -1,26 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { MyAppointmentComponent } from "../my-appointment/my-appointment.component";
-import { SpecialitiesComponent } from "../specialities/specialities.component";
-import { MedicineOrdersComponent } from "../medicine-orders/medicine-orders.component";
-import { CheckDocAvailableComponent } from "../check-doc-available/check-doc-available.component";
-import { DoctorSpecialityState } from "src/app/Store/Doctor/doctor.state";
 import { Store } from "@ngrx/store";
-import { loadDoctorSpecialities } from "src/app/Store/Doctor/doctor.action";
-import { selectDoctorSpecialities } from "src/app/Store/Doctor/doctor.selectors";
-import { AsyncPipe } from "@angular/common";
-import { DoctorSpeciality } from "src/app/core/Models/doctor-detail.model";
 import { AppState } from "src/app/Store/app.state";
-import { MessagesComponent } from "../messages/messages.component";
-import { LabResultComponent } from "../lab-result/lab-result.component";
-import { BillingComponent } from "../billing/billing.component";
-import {
-  getAllMecineDetailByPatientID,
-  getPetirntProfileListById,
-} from "src/app/Store/Patient/patient.action";
-import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
-import { first } from "rxjs";
-import { getMyAppointments } from "src/app/Store/Appointments/appointment.actions";
-import { selectMyAppointmentList } from "src/app/Store/Appointments/appointment.selectors";
 import { TabServiceService } from "src/app/core/Services/helper/tab-service/tab-service.service";
 import { RouterOutlet } from "@angular/router";
 

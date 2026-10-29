@@ -60,7 +60,7 @@ export class DoctorQueueComponent implements OnInit, OnDestroy {
     private store: Store,
     private appointmentFacade: AppointmentFacade,
     private masterFacade: MasterFacade
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setDefaultDate();

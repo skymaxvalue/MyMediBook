@@ -6,5 +6,6 @@
   },
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
-  }
+  },
+  "livePreview.defaultPreviewPath": "/src/app/assets/office-portal/consultation.html"
 }
