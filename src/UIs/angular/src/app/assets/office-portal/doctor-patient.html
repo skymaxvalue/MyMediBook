@@ -50,7 +50,6 @@
 
             <div class="card-header">
                 <h3>PATIENTS</h3>
-                <span class="dc-demo-tag">Demo data</span>
             </div>
 
             <p class="dc-notice" id="dcNotice" role="status" hidden></p>
@@ -116,14 +115,14 @@
                                     <div class="dc-field">
                                         <label for="ptWeight">Weight</label>
                                         <div class="dc-unit">
-                                            <input type="text" id="ptWeight" placeholder="---" readonly>
+                                            <input type="text" id="ptWeight" placeholder="---" autocomplete="off">
                                             <span>kg</span>
                                         </div>
                                     </div>
                                     <div class="dc-field">
                                         <label for="ptHeight">Height</label>
                                         <div class="dc-unit">
-                                            <input type="text" id="ptHeight" placeholder="---" readonly>
+                                            <input type="text" id="ptHeight" placeholder="---" autocomplete="off">
                                             <span>cm</span>
                                         </div>
                                     </div>
@@ -133,14 +132,14 @@
                                     <div class="dc-field">
                                         <label for="ptBloodPressure">Blood Pressure</label>
                                         <div class="dc-unit">
-                                            <input type="text" id="ptBloodPressure" placeholder="---" readonly>
+                                            <input type="text" id="ptBloodPressure" placeholder="---" autocomplete="off">
                                             <span>mmHg</span>
                                         </div>
                                     </div>
                                     <div class="dc-field">
                                         <label for="ptBloodSugar">Blood Sugar</label>
                                         <div class="dc-unit">
-                                            <input type="text" id="ptBloodSugar" placeholder="---" readonly>
+                                            <input type="text" id="ptBloodSugar" placeholder="---" autocomplete="off">
                                             <span>mg/dL</span>
                                         </div>
                                     </div>
@@ -150,7 +149,7 @@
 
                             <div class="dc-field dc-purpose">
                                 <label for="ptPurpose">Purpose</label>
-                                <input type="text" id="ptPurpose" placeholder="---" readonly>
+                                <input type="text" id="ptPurpose" placeholder="---" autocomplete="off">
                             </div>
 
                         </div>
@@ -160,18 +159,69 @@
                 </div>
 
                 <div class="dc-pt-panel" role="tabpanel" id="ptPanel-observation" aria-labelledby="ptTab-observation" hidden>
-                    <p class="dc-pt-empty">No observations or prescriptions to show. Observation and prescription data is not connected yet.</p>
+                    <div class="dc-pt-summary-row">
+                        <div class="dc-pt-summary-field"><label>Patient Name</label><input id="ptConsultName" type="text" readonly></div>
+                        <div class="dc-pt-summary-field"><label>Age</label><input id="ptConsultAge" type="text" readonly></div>
+                    </div>
+                    <div class="dc-pt-editor-grid">
+                        <div class="dc-pt-editor-field"><label for="ptObservation">Observation</label><textarea id="ptObservation" rows="4" placeholder="Enter clinical observations"></textarea></div>
+                        <div class="dc-pt-editor-field"><label for="ptTreatment">Treatment</label><textarea id="ptTreatment" rows="4" placeholder="Enter treatment plan"></textarea></div>
+                        <div class="dc-pt-editor-field"><label for="ptSuggestion">Suggestion</label><textarea id="ptSuggestion" rows="3" placeholder="Enter advice and follow-up instructions"></textarea></div>
+                        <div class="dc-pt-editor-field"><label for="ptPrescription">Prescription</label><textarea id="ptPrescription" rows="4" placeholder="Medicine, dosage, frequency and duration"></textarea></div>
+                    </div>
                 </div>
 
                 <div class="dc-pt-panel" role="tabpanel" id="ptPanel-tests" aria-labelledby="ptTab-tests" hidden>
-                    <p class="dc-pt-empty">No tests or scans to show. Test and scan data is not connected yet.</p>
+                    <div class="dc-pt-section-heading"><div><h4>Tests and Scans</h4><p>Review investigations and add tests recommended during this consultation.</p></div><button type="button" class="dc-pt-small-button" id="ptAddTest">Add Test</button></div>
+                    <div class="dc-table-wrap dc-pt-table"><table class="dc-table"><thead><tr><th>Test / Scan</th><th>Requested Date</th><th>Result</th><th>Status</th></tr></thead><tbody id="dcPatientTestRows"></tbody></table></div>
                 </div>
 
                 <div class="dc-pt-panel" role="tabpanel" id="ptPanel-history" aria-labelledby="ptTab-history" hidden>
-                    <p class="dc-pt-empty">No consultation history to show. History data is not connected yet.</p>
+                    <div class="dc-pt-section-heading"><div><h4>Consultation History</h4><p>Previous visits and clinical notes for this patient.</p></div></div>
+                    <div class="dc-table-wrap dc-pt-table"><table class="dc-table"><thead><tr><th>Visited Date and Time</th><th>Doctor Name</th><th>Purpose</th><th>Action</th></tr></thead><tbody id="dcPatientHistoryRows"></tbody></table></div>
                 </div>
 
                 <div class="dc-pt-panel" role="tabpanel" id="ptPanel-referrals" aria-labelledby="ptTab-referrals" hidden>
+                    <div class="dc-pt-section-heading"><div><h4>Referrals</h4><p>Choose a specialisation, select a doctor and refer this patient.</p></div></div>
+                    <div class="dc-pt-form">
+                        <div class="dc-pt-row">
+                            <div class="dc-field">
+                                <label for="ptReferName">Patient Name</label>
+                                <input type="text" id="ptReferName" readonly>
+                            </div>
+                            <div class="dc-field compact">
+                                <label for="ptReferAge">Age</label>
+                                <input type="text" id="ptReferAge" readonly>
+                            </div>
+                        </div>
+                        <div class="dc-pt-row">
+                            <div class="dc-field">
+                                <label for="ptSpecialisation">Specialisation</label>
+                                <select id="ptSpecialisation">
+                                    <option value="">All Specialisations</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dc-table-wrap dc-pt-table dc-pt-referral-block">
+                        <table class="dc-table">
+                            <thead>
+                                <tr>
+                                    <th>Doctor Name</th>
+                                    <th>Address</th>
+                                    <th>Phone Number(s)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dcReferralDoctorRows"></tbody>
+                        </table>
+                    </div>
+                    <p class="dc-pt-error dc-pt-referral-error" id="ptReferralError" role="alert" hidden></p>
+                    <div class="dc-pt-refer-row">
+                        <div class="dc-pt-editor-field"><label for="ptReferProcedure">Referral Procedure</label><textarea id="ptReferProcedure" rows="3" placeholder="Enter referral procedure and instructions"></textarea></div>
+                        <button type="button" class="dc-pt-small-button" id="ptReferBtn">Refer</button>
+                    </div>
+                    <div class="dc-pt-section-heading dc-pt-records-heading"><div><h4>Referral Records</h4><p>Referrals created for this patient.</p></div></div>
                     <div class="dc-table-wrap dc-pt-table">
                         <table class="dc-table">
                             <thead>
@@ -186,6 +236,12 @@
                     </div>
                 </div>
 
+                <div class="dc-pt-actions" aria-label="Patient page actions">
+                    <button type="button" class="dc-pt-action dc-pt-back" id="ptBackBtn">Back</button>
+                    <button type="button" class="dc-pt-action dc-pt-save" id="ptSaveBtn">Save Draft</button>
+                    <button type="button" class="dc-pt-action dc-pt-next" id="ptNextBtn">Continue <span aria-hidden="true">→</span></button>
+                </div>
+
             </div>
 
         </section>
@@ -193,6 +249,140 @@
     </main>
 
     <div id="footer-container"></div>
+
+    <div class="dc-pt-modal" id="ptTestModal" hidden>
+
+        <div class="dc-pt-dialog" role="dialog" aria-modal="true" aria-labelledby="ptTestTitle">
+
+            <button type="button" class="dc-pt-dialog-close" data-pt-close aria-label="Close">&times;</button>
+
+            <h3 id="ptTestTitle">Add Test</h3>
+            <p class="dc-pt-dialog-sub">Request a test or scan for this patient.</p>
+
+            <form id="ptTestForm" novalidate>
+
+                <div class="dc-pt-form-field">
+                    <label for="ptTestName">Test / Scan *</label>
+                    <input type="text" id="ptTestName" list="ptTestOptions" autocomplete="off" placeholder="Select or enter a test name">
+                    <datalist id="ptTestOptions">
+                        <option value="Complete Blood Count (CBC)"></option>
+                        <option value="Fasting Blood Sugar"></option>
+                        <option value="HbA1c"></option>
+                        <option value="Lipid Profile"></option>
+                        <option value="Liver Function Test"></option>
+                        <option value="Kidney Function Test"></option>
+                        <option value="Thyroid Profile"></option>
+                        <option value="Urine Routine"></option>
+                        <option value="ECG"></option>
+                        <option value="Chest X-Ray"></option>
+                        <option value="Ultrasound Abdomen"></option>
+                        <option value="MRI Brain"></option>
+                    </datalist>
+                    <p class="dc-pt-error" id="ptTestNameError" hidden></p>
+                </div>
+
+                <div class="dc-pt-form-field">
+                    <label for="ptTestDate">Requested Date *</label>
+                    <input type="date" id="ptTestDate">
+                    <p class="dc-pt-error" id="ptTestDateError" hidden></p>
+                </div>
+
+                <div class="dc-pt-form-field">
+                    <label for="ptTestNotes">Clinical Notes</label>
+                    <textarea id="ptTestNotes" rows="3" placeholder="Reason or instructions for this test"></textarea>
+                </div>
+
+                <div class="dc-pt-dialog-actions">
+                    <button type="button" class="dc-pt-dialog-btn" data-pt-close>Cancel</button>
+                    <button type="submit" class="dc-pt-dialog-btn primary">Add Test</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="dc-pt-modal" id="ptDoctorModal" hidden>
+
+        <div class="dc-pt-dialog" role="dialog" aria-modal="true" aria-labelledby="ptDoctorTitle">
+
+            <button type="button" class="dc-pt-dialog-close" data-pt-close aria-label="Close">&times;</button>
+
+            <h3 id="ptDoctorTitle">Doctor Details</h3>
+            <p class="dc-pt-dialog-sub">Profile and contact information.</p>
+
+            <dl class="dc-pt-detail-list">
+                <div><dt>Doctor Name</dt><dd id="ptDocName"></dd></div>
+                <div><dt>Specialisation</dt><dd id="ptDocSpec"></dd></div>
+                <div><dt>Address</dt><dd id="ptDocAddress"></dd></div>
+                <div><dt>Phone Number(s)</dt><dd id="ptDocPhone"></dd></div>
+                <div><dt>Email</dt><dd id="ptDocEmail"></dd></div>
+                <div><dt>Consulting Hours</dt><dd id="ptDocHours"></dd></div>
+            </dl>
+
+            <div class="dc-pt-dialog-actions">
+                <button type="button" class="dc-pt-dialog-btn" data-pt-close>Close</button>
+                <button type="button" class="dc-pt-dialog-btn primary" id="ptDocSelect">Select Doctor</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="dc-pt-modal" id="ptCompleteModal" hidden>
+
+        <div class="dc-pt-dialog center" role="dialog" aria-modal="true" aria-labelledby="ptCompleteTitle">
+
+            <div class="dc-pt-complete-icon" aria-hidden="true">&#10003;</div>
+
+            <h3 id="ptCompleteTitle">Consultation Completed</h3>
+            <p class="dc-pt-dialog-sub" id="ptCompleteText"></p>
+
+            <div class="dc-pt-dialog-actions">
+                <button type="button" class="dc-pt-dialog-btn primary" id="ptCompleteBack">Back to Appointment List</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="dc-pt-modal" id="ptHistoryModal" hidden>
+
+        <div class="dc-pt-dialog wide" role="dialog" aria-modal="true" aria-labelledby="ptHistoryTitle">
+
+            <button type="button" class="dc-pt-dialog-close" data-pt-close aria-label="Close">&times;</button>
+
+            <h3 id="ptHistoryTitle">Consultation Details</h3>
+            <p class="dc-pt-dialog-sub">Record of a previous visit.</p>
+
+            <div class="dc-pt-detail-meta">
+                <span><strong>Visited:</strong> <span id="ptHistDate"></span></span>
+                <span><strong>Doctor:</strong> <span id="ptHistDoctor"></span></span>
+                <span><strong>Purpose:</strong> <span id="ptHistPurpose"></span></span>
+            </div>
+
+            <dl class="dc-pt-detail-vitals">
+                <div><dt>Weight</dt><dd id="ptHistWeight"></dd></div>
+                <div><dt>Height</dt><dd id="ptHistHeight"></dd></div>
+                <div><dt>Blood Pressure</dt><dd id="ptHistBloodPressure"></dd></div>
+                <div><dt>Blood Sugar</dt><dd id="ptHistBloodSugar"></dd></div>
+            </dl>
+
+            <dl class="dc-pt-detail-list">
+                <div><dt>Observation</dt><dd id="ptHistObservation"></dd></div>
+                <div><dt>Treatment</dt><dd id="ptHistTreatment"></dd></div>
+                <div><dt>Suggestion</dt><dd id="ptHistSuggestion"></dd></div>
+                <div><dt>Prescription</dt><dd id="ptHistPrescription"></dd></div>
+            </dl>
+
+            <div class="dc-pt-dialog-actions">
+                <button type="button" class="dc-pt-dialog-btn primary" data-pt-close>Close</button>
+            </div>
+
+        </div>
+
+    </div>
 
     <div class="modal-overlay" id="dcLogoutModal">
 
