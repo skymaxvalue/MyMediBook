@@ -431,16 +431,11 @@
                 Relationship to Patient
                 <span class="req">*</span>
               </label>
-
               <select id="relationToPatient" formControlName="relationToPatient">
-                <option value="">Select relation</option>
-                <option>Father</option>
-                <option>Mother</option>
-                <option>Spouse</option>
-                <option>Son</option>
-                <option>Daughter</option>
-                <option>Guardian</option>
-                <option>Other</option>
+                <option value="" disabled>Select Relation</option>
+                @for (relation of relationTypeList; track relation.relationTypeId) {
+                  <option [value]="relation.relationTypeId">{{ relation.relationTypeName }}</option>
+                }
               </select>
             </div>
           </div>
@@ -597,19 +592,10 @@
               <label for="emergencyRelation"> Relationship </label>
 
               <select id="emergencyRelation" formControlName="emergencyRelation">
-                <option value="">Select relationship</option>
-
-                <option>Spouse</option>
-
-                <option>Parent</option>
-
-                <option>Child</option>
-
-                <option>Sibling</option>
-
-                <option>Guardian</option>
-
-                <option>Other</option>
+                <option value="" disabled>Select Relationship</option>
+                @for (relation of relationTypeList; track relation.relationTypeId) {
+                  <option [value]="relation.relationTypeId">{{ relation.relationTypeName }}</option>
+                }
               </select>
             </div>
 
@@ -645,13 +631,13 @@
 
           <div class="detail-grid two-col" formGroupName="communication">
             <div class="field-pair">
-              <label for="contactMethod">Preferred Contact Method <span class="req">*</span></label>
+              <label for="contactMethod">Preferred Contact Method<span class="req">*</span></label>
+
               <select id="contactMethod" formControlName="contactMethod">
-                <option value="">Select method</option>
-                <option>Phone</option>
-                <option>SMS</option>
-                <option>Email</option>
-                <option>WhatsApp</option>
+                <option value="" disabled>Select Contact Method</option>
+                @for (otpType of otpTypeList; track otpType.otpTypeId) {
+                  <option [value]="otpType.otpTypeId">{{ otpType.otpTypeName }}</option>
+                }
               </select>
             </div>
             <div class="field-pair">
@@ -785,15 +771,11 @@
                 Visit Type
                 <span class="req">*</span>
               </label>
-
-              <select id="visitType" required formControlName="visitType">
-                <option value="">Select visit type</option>
-
-                <option>Consultation</option>
-
-                <option>Follow-up</option>
-
-                <option>Second Opinion</option>
+              <select id="visitType" formControlName="visitType">
+                <option value="" disabled>Select Visit Type</option>
+                @for (visitType of visitTypeList; track visitType.statusId) {
+                  <option [value]="visitType.statusId">{{ visitType.statusKey }}</option>
+                }
               </select>
             </div>
 
@@ -802,14 +784,12 @@
                 Reason for Visit
                 <span class="req">*</span>
               </label>
-
-              <input
-                type="text"
-                id="reasonForVisit"
-                placeholder="Enter reason for consultation"
-                required
-                formControlName="reasonForVisit"
-              />
+              <select id="reasonForVisit" formControlName="reasonForVisit">
+                <option value="" disabled>Select Reason for Visit</option>
+                @for (visitPurpose of visitPurposeList; track visitPurpose.statusId) {
+                  <option [value]="visitPurpose.statusId">{{ visitPurpose.statusKey }}</option>
+                }
+              </select>
             </div>
 
             <div class="field-pair">
@@ -855,14 +835,16 @@
 
           <div class="detail-grid two-col specialty-fields">
             <div class="field-pair">
-              <label for="preferredPhysician"> Preferred Physician </label>
+              <label for="preferredPhysician">Preferred Physician</label>
 
-              <select
-                id="preferredPhysician"
-                formControlName="preferredPhysician"
-                *ngFor="let physician of physicianData"
-              >
-                <option>{{ physician.name }}</option>
+              <select id="preferredPhysician" formControlName="preferredPhysician">
+                <option value="" disabled>Select Physician</option>
+
+                @for (physician of filteredPhysicians; track physician.associateId) {
+                  <option [value]="physician.associateId">
+                    {{ physician.name }}
+                  </option>
+                }
               </select>
             </div>
 
@@ -1275,7 +1257,6 @@
             <div class="consultation-section compact-panel">
               <div class="section-header">
                 <img src="/assets/images/front-office/images/medical-icon-blue.png" alt="" />
-
                 <h2>Pain Level</h2>
               </div>
 
@@ -1294,16 +1275,14 @@
               </div>
 
               <div class="pain-scale-labels">
-                <span> No pain </span>
-
-                <span> Worst pain </span>
+                <span>No pain</span>
+                <span>Worst pain</span>
               </div>
             </div>
 
             <div class="consultation-section compact-panel">
               <div class="section-header">
                 <img src="/assets/images/front-office/images/alert-blue.png" alt="" />
-
                 <h2>Urgency</h2>
               </div>
 
@@ -1324,7 +1303,16 @@
             </div>
           </div>
 
-          <div class="triage-alert conditional" role="alert" hidden></div>
+          @if (urgency === "Emergency") {
+            <div class="triage-alert conditional" role="alert">
+              <strong>Immediate clinical attention required</strong>
+              <p>
+                This consultation has been flagged for immediate clinical / triage attention. If
+                this is a life-threatening emergency, call your local emergency number (112 in
+                India) now. You can continue completing this form.
+              </p>
+            </div>
+          }
         </section>
       </div>
 
@@ -1807,7 +1795,16 @@
               </select>
             </div>
           </div>
-          <div class="triage-alert conditional" role="alert" hidden></div>
+          @if (urgency === "Emergency") {
+            <div class="triage-alert conditional" role="alert">
+              <strong>Immediate clinical attention required</strong>
+              <p>
+                This consultation has been flagged for immediate clinical / triage attention. If
+                this is a life-threatening emergency, call your local emergency number (112 in
+                India) now. You can continue completing this form.
+              </p>
+            </div>
+          }
         </section>
 
         <section class="consultation-section">

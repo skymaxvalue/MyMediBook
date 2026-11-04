@@ -1,20 +1,16 @@
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { catchError, map, mergeMap, of } from "rxjs";
 
-import * as DoctorSpecialityActions from './doctor.action';
-import { DoctorService } from '../../core/Services/doctor/doctor.service';
+import * as DoctorSpecialityActions from "./doctor.action";
+import { DoctorService } from "../../core/Services/doctor/doctor.service";
 
 @Injectable()
 export class DoctorSpecialityEffects {
-
-
-
   constructor(
     private actions$: Actions,
     private doctorService: DoctorService
-  ) { }
-
+  ) {}
 
   loadDoctorList$ = createEffect(() =>
     this.actions$.pipe(
@@ -22,17 +18,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap(() =>
         this.doctorService.getDoctorList().pipe(
-
-          map((response: any) =>
+          map((response) =>
             DoctorSpecialityActions.loadDoctorSpecialitiesSuccess({
-              doctorList: response.data
+              response,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.loadDoctorSpecialitiesFailure({
-                error
+                error,
               })
             )
           )
@@ -47,17 +42,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap(() =>
         this.doctorService.getAllSpecialities().pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.loadAllSpecialitiesSuccess({
-              allSpeciality: response.data
+              allSpeciality: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.loadAllSpecialitiesFailure({
-                error
+                error,
               })
             )
           )
@@ -72,17 +66,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap(() =>
         this.doctorService.getAllRoles().pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.loadAllRolesSuccess({
-              allRoles: response.data
+              allRoles: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.loadAllRolesFailure({
-                error
+                error,
               })
             )
           )
@@ -97,17 +90,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action) =>
         this.doctorService.registerAssociate(action.associate).pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.registerAssociotionSuccess({
-              associate: response.data
+              associate: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.registerAssociotionFailure({
-                error
+                error,
               })
             )
           )
@@ -122,17 +114,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap(() =>
         this.doctorService.getAllRoleDepSpeci().pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.getRoleDepaSpeciaSuccess({
-              allRoleDepartSpeci: response.data
+              allRoleDepartSpeci: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.getRoleDepaSpeciaFailure({
-                error
+                error,
               })
             )
           )
@@ -147,17 +138,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap(() =>
         this.doctorService.getAllWeeksDays().pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.getWeekDaysSuccess({
-              weeakDays: response.data
+              weeakDays: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.getWeekDaysFailure({
-                error
+                error,
               })
             )
           )
@@ -172,17 +162,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap(() =>
         this.doctorService.getAllAssociates().pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.getAllAssociatesSuccess({
-              allAssociates: response.data
+              allAssociates: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.getAllAssociatesFailure({
-                error
+                error,
               })
             )
           )
@@ -197,17 +186,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action) =>
         this.doctorService.createAssociateSchedule(action.associate).pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.createAssociatesScheduleSuccess({
-              associateSchedule: response
+              associateSchedule: response,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.createAssociatesScheduleFailure({
-                error
+                error,
               })
             )
           )
@@ -221,17 +209,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action) =>
         this.doctorService.getDoctorAvalabilityTimeSlot(action.payload).pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess({
-              doctorTimeSlot: response
+              doctorTimeSlot: response,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.getTimeSloteByDoctorIDFailure({
-                error
+                error,
               })
             )
           )
@@ -245,17 +232,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action) =>
         this.doctorService.getAssociateByAssociateID({ associateId: action.associateId }).pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.getAssociatesByIDSuccess({
-              accociateDetails: response.data
+              accociateDetails: response.data,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.getAssociatesByIDFailure({
-                error
+                error,
               })
             )
           )
@@ -270,17 +256,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action) =>
         this.doctorService.updateAssociateSchedule(action.associate).pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess({
-              updatedAssociate: response
+              updatedAssociate: response,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.updateAssociatesAndItsScheduleFailure({
-                error
+                error,
               })
             )
           )
@@ -294,17 +279,16 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action: any) =>
         this.doctorService.deleteAssociateSchedule(action.associate).pipe(
-
           map((response: any) =>
             DoctorSpecialityActions.deleteAssociatesAndItsScheduleSuccess({
-              associate: response
+              associate: response,
             })
           ),
 
-          catchError(error =>
+          catchError((error) =>
             of(
               DoctorSpecialityActions.deleteAssociatesAndItsScheduleFailure({
-                error
+                error,
               })
             )
           )

@@ -2306,3 +2306,19 @@ select:disabled {
   overflow-wrap: anywhere;
   word-break: normal;
 }
+
+.pain-scale button.selected {
+  background: #316bf4;
+  color: #fff;
+  border-color: #316bf4;
+}
+
+.urgency-card.selected {
+  background: #eaf1ff;
+  border-color: #316bf4;
+  color: #316bf4;
+}
+
+.urgency-card.selected strong {
+  color: #316bf4;
+}

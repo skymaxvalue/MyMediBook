@@ -212,5 +212,26 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
+
+        public async Task<List<OtpTypeModel>> GetOtpTypeListAsync()
+        {
+            string procName = "USP_GetOtpTypeList";
+            List<OtpTypeModel> returnData = new List<OtpTypeModel>();
+            try
+            {
+                returnData = await _context.QueryStoredProcListAsync<OtpTypeModel>(procName);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
     }
 }

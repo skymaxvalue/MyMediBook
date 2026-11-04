@@ -30,7 +30,6 @@ export class ConsultationFacade {
   // noCurrentMedications$ = this.store.pipe(select(S.selectNoCurrentMedications));
 
   // ageTypes$ = this.store.pipe(select(S.selectAgeTypes));
-  getRelationsList$ = this.store.pipe(select(S.selectRelationList));
   // doctors$ = this.store.pipe(select(S.selectDoctors));
   // slots$ = this.store.pipe(select(S.selectAvailableSlots));
 
@@ -95,9 +94,7 @@ export class ConsultationFacade {
     this.store.dispatch(A.toggleNoMedications());
   }
 
-  loadRelationTypeList() {
-    this.store.dispatch(A.getRelationTypeList());
-  }
+
   loadDoctors(department?: string) {
     this.store.dispatch(A.loadDoctors({ department }));
   }

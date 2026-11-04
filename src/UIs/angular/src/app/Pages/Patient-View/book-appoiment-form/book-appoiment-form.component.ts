@@ -388,7 +388,7 @@ export class BookAppoimentFormComponent implements OnInit {
         this.relativeList.set(res.data);
       }
     });
-    this.masterFacade.stausKeyList$.subscribe((res: any) => {
+    this.masterFacade.statusKeyList$.subscribe((res: any) => {
       const visitTypeData = res.find((item: any) => item.category === "VisitType");
 
       const visitPurposeData = res.find((item: any) => item.category === "VisitPurpose");

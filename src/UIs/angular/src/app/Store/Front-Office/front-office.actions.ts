@@ -11,7 +11,7 @@ import {
   LookupItem,
   Medication,
 } from "../../core/Models/front-office/consultation.model";
-import { IRelationTypeMasterModel } from "../../core/Models/master/relation-type-master.model";
+import { IRelationTypeModel } from "../../core/Models/master/relation-type.model";
 
 // ---------- Navigation ----------
 export const goToStep = createAction("[Consultation] Go To Step", props<{ step: number }>());
@@ -57,17 +57,6 @@ export const updateMedication = createAction(
   props<{ id: string; field: keyof Omit<Medication, "id">; value: string }>()
 );
 export const toggleNoMedications = createAction("[Consultation] Toggle No Medications");
-
-// ---------- Relation Type List ----------
-export const getRelationTypeList = createAction("[Consultation] Load Relation List");
-export const getRelationTypeListSuccess = createAction(
-  "[Consultation] Load Relation List Success",
-  props<{ response: IRelationTypeMasterModel[] }>()
-);
-export const getRelationTypeListFailure = createAction(
-  "[Consultation] Load Relation List Failure",
-  props<{ error: any }>()
-);
 
 // ---------- Patient / responsible-party search ----------
 export const searchPatients = createAction(

@@ -35,13 +35,6 @@ export class ConsultationService {
   getAgeTypes(): Observable<any> {
     return this.http.get(`${this.apiUrl}/Master/GetAgeTypeList`);
   }
-  getRelations(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/Master/GetRelationTypeList`).pipe(
-      map((resp) => {
-        return resp.data;
-      })
-    );
-  }
   requestOtp(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/Auth/RequestOtp`, { email });
   }

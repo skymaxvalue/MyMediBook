@@ -1,358 +1,236 @@
-import { createReducer, on } from '@ngrx/store';
-import * as DoctorSpecialityActions from './doctor.action';
-import {
-    DoctorSpecialityState,
-    initialState
-} from './doctor.state';
+import { createReducer, on } from "@ngrx/store";
+import * as DoctorSpecialityActions from "./doctor.action";
+import { initialState } from "./doctor.state";
 
 export const doctorSpecialityReducer = createReducer(
-    initialState,
+  initialState,
 
-    on(
-        DoctorSpecialityActions.loadDoctorSpecialities,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.loadDoctorSpecialities, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadDoctorSpecialitiesSuccess,
-        (state, { doctorList }) => ({
-            ...state,
-            doctorList: doctorList,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.loadDoctorSpecialitiesSuccess, (state, { response }) => ({
+    ...state,
+    doctorList: response,
+    isLoading: false,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadDoctorSpecialitiesFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
-    on(
-        DoctorSpecialityActions.loadAllSpecialities,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.loadDoctorSpecialitiesFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.loadAllSpecialities, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadAllSpecialitiesSuccess,
-        (state, { allSpeciality }) => ({
-            ...state,
-            allSpeciality,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.loadAllSpecialitiesSuccess, (state, { allSpeciality }) => ({
+    ...state,
+    allSpeciality,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadAllSpecialitiesFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
-    on(
-        DoctorSpecialityActions.loadAllDepartments,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.loadAllSpecialitiesFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.loadAllDepartments, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadAllDepartmentsSuccess,
-        (state, { allDepartments }) => ({
-            ...state,
-            allDepartments,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.loadAllDepartmentsSuccess, (state, { allDepartments }) => ({
+    ...state,
+    allDepartments,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadAllDepartmentsFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    )
-    ,
-    on(
-        DoctorSpecialityActions.loadAllRoles,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.loadAllDepartmentsFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.loadAllRoles, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadAllRolesSuccess,
-        (state, { allRoles }) => ({
-            ...state,
-            allRoles,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.loadAllRolesSuccess, (state, { allRoles }) => ({
+    ...state,
+    allRoles,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.loadAllRolesFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.loadAllRolesFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.registerAssociotion,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.registerAssociotion, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.registerAssociotionSuccess,
-        (state, { associate }) => ({
-            ...state,
-            registerassociate: associate,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.registerAssociotionSuccess, (state, { associate }) => ({
+    ...state,
+    registerassociate: associate,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.registerAssociotionFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
-    on(
-        DoctorSpecialityActions.getRoleDepaSpecia,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.registerAssociotionFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.getRoleDepaSpecia, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.getRoleDepaSpeciaSuccess,
-        (state, { allRoleDepartSpeci }) => ({
-            ...state,
-            allRoleDepartSpeci: allRoleDepartSpeci,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.getRoleDepaSpeciaSuccess, (state, { allRoleDepartSpeci }) => ({
+    ...state,
+    allRoleDepartSpeci: allRoleDepartSpeci,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getRoleDepaSpeciaFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.getRoleDepaSpeciaFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getWeekDays,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.getWeekDays, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.getWeekDaysSuccess,
-        (state, { weeakDays }) => ({
-            ...state,
-            weeakDays: weeakDays,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.getWeekDaysSuccess, (state, { weeakDays }) => ({
+    ...state,
+    weeakDays: weeakDays,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getWeekDaysFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    )
-    ,
+  on(DoctorSpecialityActions.getWeekDaysFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.getAllAssociates, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.getAllAssociates,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.getAllAssociatesSuccess, (state, { allAssociates }) => ({
+    ...state,
+    allAssociates: allAssociates,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getAllAssociatesSuccess,
-        (state, { allAssociates }) => ({
-            ...state,
-            allAssociates: allAssociates,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.getAllAssociatesFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.getAssociatesByID, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.getAllAssociatesFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    )
-    ,
-    on(
-        DoctorSpecialityActions.getAssociatesByID,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.getAssociatesByIDSuccess, (state, { accociateDetails }) => ({
+    ...state,
+    accociateDetails: accociateDetails,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getAssociatesByIDSuccess,
-        (state, { accociateDetails }) => ({
-            ...state,
-            accociateDetails: accociateDetails,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.getAssociatesByIDFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getAssociatesByIDFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.createAssociatesSchedule, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.createAssociatesSchedule,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.createAssociatesScheduleSuccess, (state, { associateSchedule }) => ({
+    ...state,
+    associateSchedule: associateSchedule,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.createAssociatesScheduleSuccess,
-        (state, { associateSchedule }) => ({
-            ...state,
-            associateSchedule: associateSchedule,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.createAssociatesScheduleFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.getTimeSloteByDoctorID, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.createAssociatesScheduleFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    )
-    ,
+  on(DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess, (state, { doctorTimeSlot }) => ({
+    ...state,
+    doctorTimeSlot: doctorTimeSlot,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.getTimeSloteByDoctorID,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.getTimeSloteByDoctorIDFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.updateAssociatesAndItsSchedule, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess,
-        (state, { doctorTimeSlot }) => ({
-            ...state,
-            doctorTimeSlot: doctorTimeSlot,
-            isLoading: false
-        })
-    ),
+  on(
+    DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess,
+    (state, { updatedAssociate }) => ({
+      ...state,
+      updatedAssociate: updatedAssociate,
+      isLoading: false,
+    })
+  ),
 
-    on(
-        DoctorSpecialityActions.getTimeSloteByDoctorIDFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
-    on(
-        DoctorSpecialityActions.updateAssociatesAndItsSchedule,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
+  on(DoctorSpecialityActions.updateAssociatesAndItsScheduleFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  })),
+  on(DoctorSpecialityActions.deleteAssociatesAndItsSchedule, (state) => ({
+    ...state,
+    isLoading: true,
+    error: null,
+  })),
 
-    on(
-        DoctorSpecialityActions.updateAssociatesAndItsScheduleSuccess,
-        (state, { updatedAssociate }) => ({
-            ...state,
-            updatedAssociate: updatedAssociate,
-            isLoading: false
-        })
-    ),
+  on(DoctorSpecialityActions.deleteAssociatesAndItsScheduleSuccess, (state, { associate }) => ({
+    ...state,
+    associate: associate,
+    isLoading: false,
+  })),
 
-    on(
-        DoctorSpecialityActions.updateAssociatesAndItsScheduleFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    ),
-    on(
-        DoctorSpecialityActions.deleteAssociatesAndItsSchedule,
-        state => ({
-            ...state,
-            isLoading: true,
-            error: null
-        })
-    ),
-
-    on(
-        DoctorSpecialityActions.deleteAssociatesAndItsScheduleSuccess,
-        (state, { associate }) => ({
-            ...state,
-            associate: associate,
-            isLoading: false
-        })
-    ),
-
-    on(
-        DoctorSpecialityActions.deleteAssociatesAndItsScheduleFailure,
-        (state, { error }) => ({
-            ...state,
-            error,
-            isLoading: false
-        })
-    )
+  on(DoctorSpecialityActions.deleteAssociatesAndItsScheduleFailure, (state, { error }) => ({
+    ...state,
+    error,
+    isLoading: false,
+  }))
 );

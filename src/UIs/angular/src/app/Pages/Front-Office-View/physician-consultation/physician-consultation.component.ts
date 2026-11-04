@@ -15,7 +15,7 @@ import {
 } from "@angular/forms";
 
 import { Subject } from "rxjs";
-import { distinctUntilChanged, filter, map, takeUntil } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, takeUntil, tap } from "rxjs/operators";
 import {
   ISearchPatientRequestModel,
   ISearchPatientResponseModel,
@@ -31,11 +31,19 @@ import {
   ICountryModel,
   IStateModel,
 } from "../../../core/Models/location/location-master.model";
+import { MasterFacade } from "../../../Store/Master/master.facade";
+import { IRelationTypeModel } from "../../../core/Models/master/relation-type.model";
+import { IOtpTypeModel } from "../../../core/Models/master/otp-type.model";
+import { IStatusMaster } from "../../../core/Models/master/status-master.model";
+import {
+  DoctorProfileModel,
+  DoctorSpeciality,
+} from "../../../core/Models/doctor/doctor-detail.model";
 
 @Component({
   selector: "app-physician-consultation",
   standalone: true,
-  imports: [ReactiveFormsModule, SharedPatientSearchComponent, AsyncPipe, NgFor],
+  imports: [ReactiveFormsModule, SharedPatientSearchComponent, AsyncPipe],
   templateUrl: "./physician-consultation.component.html",
   styleUrl: "./physician-consultation.component.css",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,20 +67,21 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
   ];
 
   selectedSpecialty = "";
-  specialties = [
-    { value: "Cardiology", icon: "♡" },
-    { value: "Neurology", icon: "◉" },
-    { value: "Orthopedics", icon: "✚" },
-    { value: "Pulmonology", icon: "◌" },
-    { value: "Ophthalmology", icon: "◉" },
-    { value: "Endocrinology", icon: "+" },
-    { value: "Surgery", icon: "✚" },
-    { value: "Psychiatry", icon: "○" },
-    { value: "Nephrology", icon: "♢" },
-    { value: "Oncology", icon: "+" },
-  ];
+  specialtyIcons: Record<string, string> = {
+    Cardiology: "♡",
+    Neurology: "◉",
+    Orthopedics: "✚",
+    Pulmonology: "◌",
+    Ophthalmology: "◉",
+    Endocrinology: "+",
+    Surgery: "✚",
+    Psychiatry: "○",
+    Nephrology: "♢",
+    Oncology: "+",
+  };
 
-  physicianData: any[] = [];
+  physicianList: DoctorSpeciality[] = [];
+  filteredPhysicians: DoctorProfileModel[] = [];
 
   patientType: "existing" | "new" = "existing";
   accountHolder: "self" | "other" | null = null;
@@ -89,35 +98,29 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
   countryList: ICountryModel[] = [];
   stateList: IStateModel[] = [];
   cityList: ICityModel[] = [];
+  relationTypeList: IRelationTypeModel[] = [];
+  otpTypeList: IOtpTypeModel[] = [];
+  visitTypeList: IStatusMaster[] = [];
+  visitPurposeList: IStatusMaster[] = [];
+  specialties: { value: string; icon: string }[] = [];
+
   constructor(
     private fb: UntypedFormBuilder,
     private commonFacade: CommonFacade,
     private doctorFacade: DoctorFacade,
     private authFacade: AuthFacade,
+    private masterFacade: MasterFacade,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.subscribeMasterData();
 
-    // 1. Subscribe to the store streams first
-    this.authFacade.selectCountry$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.countryList = data ?? [];
-      console.log(this.countryList);
-      this.cdr.markForCheck();
-    });
-
-    this.authFacade.selectState$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.stateList = data ?? [];
-      this.cdr.markForCheck();
-    });
-
-    this.authFacade.selectCity$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.cityList = data ?? [];
-      this.cdr.markForCheck();
-    });
-
-    // 2. Then dispatch the first load
+    this.masterFacade.loadRelationTypeList();
+    this.masterFacade.loadOtpTypeList();
+    this.masterFacade.getStatusKeyList();
+    this.doctorFacade.getDoctorList();
     this.authFacade.getCountries();
 
     // Country selected -> load states
@@ -150,7 +153,7 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
       });
 
     this.addMedication();
-    this.subscribPhysicianList();
+    this.subscribePhysicianList();
     this.historyForm
       .get("vitals.vitalHeight")
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -162,15 +165,52 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
       .subscribe(() => this.calculateBMI());
   }
 
-  subscribPhysicianList() {
+  subscribePhysicianList(): void {
     this.doctorFacade.getDoctorList$
       .pipe(
-        map((data) => {
-          this.physicianData = data;
-          console.log(this.physicianData);
+        takeUntil(this.destroy$),
+        tap((data: DoctorSpeciality[]) => {
+          this.physicianList = data ?? [];
+
+          this.specialties = this.physicianList.map((specialty) => ({
+            value: specialty.category,
+            icon: this.specialtyIcons[specialty.category] ?? "✚",
+          }));
         })
       )
       .subscribe();
+  }
+
+  subscribeMasterData() {
+    // 1. Subscribe to the store streams first
+    this.authFacade.selectCountry$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.countryList = data ?? [];
+      console.log(this.countryList);
+      this.cdr.markForCheck();
+    });
+
+    this.authFacade.selectState$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.stateList = data ?? [];
+      this.cdr.markForCheck();
+    });
+
+    this.authFacade.selectCity$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.cityList = data ?? [];
+      this.cdr.markForCheck();
+    });
+    this.masterFacade.getRelationsList$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.relationTypeList = data ?? [];
+    });
+    this.masterFacade.getOtpTypeList$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.otpTypeList = data ?? [];
+    });
+    this.masterFacade.statusKeyList$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      const categories = data ?? [];
+
+      this.visitTypeList = categories.find((x) => x.category === "VisitType")?.statuses ?? [];
+
+      this.visitPurposeList = categories.find((x) => x.category === "VisitPurpose")?.statuses ?? [];
+    });
   }
 
   initForm() {
@@ -458,9 +498,17 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
   selectSpecialty(specialty: string): void {
     this.selectedSpecialty = specialty;
 
-    const control = this.appointmentForm.get("specialty");
-    control?.setValue(specialty);
-    control?.markAsDirty();
+    // Update the form control
+    this.appointmentForm.get("specialty")?.setValue(specialty);
+
+    // Find the selected speciality from API response
+    const selected = this.physicianList.find((s) => s.category === specialty);
+
+    // Filter doctors belonging to that speciality
+    this.filteredPhysicians = selected?.doctors ?? [];
+
+    // Reset previously selected physician
+    this.appointmentForm.get("preferredPhysician")?.reset("");
   }
 
   selectAllergy(status: string): void {

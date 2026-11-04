@@ -64,6 +64,7 @@ export const LocationAPIEndPoint = {
 export const MasterEndPoints = {
   GET_SECURITY_QUESTIONS: "Master/GetSecurityQuestionList",
   GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
+  GET_OTP_TYPE_LIST: "Master/GetOtpTypeList",
   GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
   GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
   GET_AGE_TYPE: "Master/GetAgeTypeList",
