@@ -1,0 +1,441 @@
+<div class="dashboard-container">
+  <section class="pr-page-card">
+    <!-- Page Header -->
+    <div class="pr-page-header">
+      <div class="pr-icon-circle">
+        <img src="/assets/images/front-office/images/prescription.png" alt="" />
+      </div>
+
+      <div>
+        <h2>Prescription Refill Request</h2>
+        <p>
+          Request a refill for current medications. The request will be sent to the prescribing care
+          team for review and authorization.
+        </p>
+      </div>
+    </div>
+
+    <form id="prForm" novalidate>
+      <!-- Select Patient Profile -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <img src="/assets/images/front-office/images/search-blue.png" alt="" />
+          <h3>Select Patient Profile</h3>
+        </div>
+
+        <div class="pr-search-grid">
+          <div class="pr-field">
+            <label for="prLastNameSearch">Patient Last Name</label>
+            <div class="pr-input-icon">
+              <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+              <input
+                class="pr-input"
+                id="prLastNameSearch"
+                type="text"
+                placeholder="Enter last name"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="pr-search-divider">
+            <span>OR</span>
+          </div>
+
+          <div class="pr-field">
+            <label for="prMobileSearch">Mobile Number</label>
+            <div class="pr-input-icon">
+              <img src="/assets/images/front-office/images/phone-blue.png" alt="" />
+              <input
+                class="pr-input"
+                id="prMobileSearch"
+                type="tel"
+                placeholder="Enter mobile number"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="pr-field">
+            <label for="prDobSearch">Date of Birth</label>
+            <input class="pr-input" id="prDobSearch" type="date" />
+          </div>
+
+          <div class="pr-search-actions">
+            <button type="button" class="pr-btn pr-btn--danger-outline">Clear</button>
+
+            <button type="button" class="pr-btn pr-btn--primary">
+              <img src="/assets/images/front-office/images/search-white.png" alt="" />
+              Search
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Patient Information -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+          <h3>Patient Information</h3>
+        </div>
+
+        <div class="pr-grid">
+          <div class="pr-field pr-span-2">
+            <label>First Name <span class="pr-req">*</span></label>
+            <input class="pr-input" type="text" placeholder="First name" readonly />
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <label>Last Name <span class="pr-req">*</span></label>
+            <input class="pr-input" type="text" placeholder="Last name" readonly />
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <label>Date of Birth <span class="pr-req">*</span></label>
+            <input class="pr-input" type="date" readonly />
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <label>Age</label>
+            <input class="pr-input" type="text" placeholder="--" readonly />
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <label>Gender <span class="pr-req">*</span></label>
+            <select class="pr-select" disabled>
+              <option selected>Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <label>Medical Record # (MRN)</label>
+            <input class="pr-input" type="text" placeholder="MRN" readonly />
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <label>Phone Number <span class="pr-req">*</span></label>
+            <input class="pr-input" type="tel" placeholder="(000) 000-0000" />
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <label>Email Address</label>
+            <input class="pr-input" type="email" placeholder="name@example.com" />
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <label>Address Line 1 <span class="pr-req">*</span></label>
+            <input class="pr-input" type="text" placeholder="Street address" />
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <label>Address Line 2</label>
+            <input class="pr-input" type="text" placeholder="Suite 48 (optional)" />
+          </div>
+
+          <div class="pr-field pr-span-4">
+            <label>City <span class="pr-req">*</span></label>
+            <input class="pr-input" type="text" placeholder="City" />
+          </div>
+
+          <div class="pr-field pr-span-4">
+            <label>State / Province</label>
+            <select class="pr-select">
+              <option selected>Select</option>
+            </select>
+          </div>
+
+          <div class="pr-field pr-span-4">
+            <label>Postal / Zip Code</label>
+            <input class="pr-input" type="text" placeholder="Postal / Zip code" maxlength="10" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Current Medications -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <img src="/assets/images/front-office/images/medicine-icon.png" alt="" />
+          <h3>Current Medications</h3>
+
+          <span class="pr-section-hint">
+            Select the medications you need a refill for. Only active medications are shown.
+          </span>
+
+          <button type="button" class="pr-btn pr-btn--outline pr-btn--sm pr-push">
+            <img src="/assets/images/front-office/images/view.png" alt="" />
+            View Full Medication History
+          </button>
+        </div>
+
+        <div class="pr-table-wrap">
+          <table class="pr-table">
+            <thead>
+              <tr>
+                <th class="pr-col-check">
+                  <input type="checkbox" class="pr-checkbox" aria-label="Select all medications" />
+                </th>
+                <th class="pr-left">Medication</th>
+                <th>Strength</th>
+                <th class="pr-left">Directions</th>
+                <th>Last Filled</th>
+                <th>Refills Remaining</th>
+                <th>Status</th>
+                <th>Pharmacy</th>
+                <th>Request Refill</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td colspan="9" class="pr-empty-state">
+                  Select a patient profile to view current medications.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="pr-med-count">0 of 0 medications selected</p>
+      </section>
+
+      <!-- Pharmacy Information -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <svg
+            class="pr-ico"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#2F6FED"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6M12 9v3M10.5 10.5h3" />
+          </svg>
+
+          <h3>Pharmacy Information</h3>
+
+          <label class="pr-inline-check pr-push">
+            <input type="checkbox" class="pr-checkbox" checked />
+            <span>Use patient's preferred pharmacy</span>
+          </label>
+        </div>
+
+        <div class="pr-grid">
+          <div class="pr-field pr-span-4">
+            <label>Preferred Pharmacy <span class="pr-req">*</span></label>
+            <select class="pr-select">
+              <option selected>Select Health Haven Pharmacy</option>
+              <option>Other pharmacy</option>
+            </select>
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <label>Pharmacy Phone</label>
+            <div class="pr-input-icon">
+              <img src="/assets/images/front-office/images/phone-blue.png" alt="" />
+              <input class="pr-input" type="tel" placeholder="(000) 000-0000" readonly />
+            </div>
+          </div>
+
+          <div class="pr-field pr-span-5">
+            <label>Pharmacy Address</label>
+            <div class="pr-input-icon">
+              <img src="/assets/images/front-office/images/location.png" alt="" />
+              <input class="pr-input" type="text" placeholder="Pharmacy address" readonly />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reason for Refill -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <img src="/assets/images/front-office/images/ic-file-blue.png" alt="" />
+          <h3>Reason for Refill</h3>
+        </div>
+
+        <div class="pr-reason">
+          <div>
+            <p class="pr-lead">Please let us know why you are requesting a refill.</p>
+
+            <div class="pr-radio-row" role="radiogroup" aria-label="Reason for refill">
+              <label class="pr-radio-label">
+                <input type="radio" class="pr-radio" name="refillReason" checked />
+                <span>Refill remaining medication</span>
+              </label>
+
+              <label class="pr-radio-label">
+                <input type="radio" class="pr-radio" name="refillReason" />
+                <span>No refills remaining</span>
+              </label>
+
+              <label class="pr-radio-label">
+                <input type="radio" class="pr-radio" name="refillReason" />
+                <span>Medication lost / damaged</span>
+              </label>
+
+              <label class="pr-radio-label">
+                <input type="radio" class="pr-radio" name="refillReason" />
+                <span>Pharmacy change</span>
+              </label>
+
+              <label class="pr-radio-label">
+                <input type="radio" class="pr-radio" name="refillReason" />
+                <span>Other</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="pr-field">
+            <label>Additional Information (optional)</label>
+            <textarea
+              class="pr-textarea"
+              maxlength="500"
+              placeholder="Add any additional details for the care team (e.g. side effects, dose changes, travel, etc.)"
+            ></textarea>
+            <div class="pr-count">0/500</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clinical / Review Information -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <img src="/assets/images/front-office/images/ic-clipboard-blue.png" alt="" />
+          <h3>Clinical / Review Information</h3>
+          <span class="pr-section-hint">(for reference)</span>
+        </div>
+
+        <div class="pr-clin">
+          <div class="pr-field pr-span-2">
+            <span class="pr-label">Last Visit</span>
+            <div class="pr-info">
+              <img src="/assets/images/front-office/images/calendar-blue.png" alt="" />
+              <strong>--</strong>
+            </div>
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <label>Prescribing Physician <span class="pr-req">*</span></label>
+            <div class="pr-lookup">
+              <div class="pr-input-icon">
+                <img src="/assets/office-portal/images/doctor-icon-blue.png" alt="" />
+                <input
+                  class="pr-input pr-input--lookup"
+                  type="text"
+                  readonly
+                  placeholder="Select physician"
+                />
+              </div>
+
+              <button
+                type="button"
+                class="pr-lookup-btn"
+                aria-label="Search for a prescribing physician"
+              >
+                <img src="/assets/images/front-office/images/search-blue.png" alt="" />
+              </button>
+            </div>
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <label>Physician Phone Number</label>
+            <div class="pr-input-icon">
+              <img src="/assets/images/front-office/images/phone-blue.png" alt="" />
+              <input class="pr-input" type="tel" placeholder="(000) 000-0000" />
+            </div>
+          </div>
+
+          <div class="pr-field pr-span-2">
+            <span class="pr-label">Diagnosis / Indication</span>
+            <div class="pr-info">
+              <img src="/assets/images/front-office/images/ic-file-blue.png" alt="" />
+              <div class="pr-info-lines">
+                <span>--</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pr-field pr-span-3">
+            <span class="pr-label">Relevant Monitoring</span>
+            <div class="pr-info">
+              <img src="/assets/images/front-office/images/ic-pulse-blue.png" alt="" />
+              <div class="pr-info-lines">
+                <span>--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Physician Confirmation -->
+      <section class="pr-section">
+        <div class="pr-section-header">
+          <img src="/assets/images/front-office/images/edit-blue.png" alt="" />
+          <h3>Physician Confirmation</h3>
+          <span class="pr-section-hint"> Required for processing the refill request. </span>
+        </div>
+
+        <div class="pr-sign-grid">
+          <div class="pr-field">
+            <span class="pr-label"> Physician Signature <span class="pr-req">*</span> </span>
+
+            <div class="pr-sign-box">
+              <div class="pr-sign-preview">
+                <span class="pr-sign-placeholder">Select the pen to sign</span>
+              </div>
+
+              <button
+                type="button"
+                class="pr-sign-btn"
+                aria-label="Add or replace physician signature"
+              >
+                <img src="/assets/images/front-office/images/edit-blue.png" alt="" />
+              </button>
+            </div>
+          </div>
+
+          <div class="pr-field">
+            <label>Date Signed <span class="pr-req">*</span></label>
+            <input class="pr-input" type="date" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Actions -->
+      <div class="pr-footer">
+        <button type="button" class="pr-btn pr-btn--outline">
+          <svg
+            class="pr-ico"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+          Cancel
+        </button>
+
+        <div class="pr-footer-actions">
+          <button type="button" class="pr-btn pr-btn--outline">
+            <img src="/assets/images/front-office/images/save.png" alt="" />
+            Save Draft
+          </button>
+
+          <button type="button" class="pr-btn pr-btn--primary">
+            <img src="/assets/images/front-office/images/send-white.png" alt="" />
+            Submit Refill Request
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>

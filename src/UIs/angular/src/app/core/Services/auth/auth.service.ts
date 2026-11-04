@@ -145,17 +145,29 @@ export class AuthService {
 
   // getCountries API
   getCountries(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_COUNTRIES}`);
+    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_COUNTRIES}`).pipe(
+      map((resp) => {
+        return resp.data;
+      })
+    );
   }
 
   // getStates API
   getStates(countryId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_STAETES}${countryId}`);
+    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_STAETES}${countryId}`).pipe(
+      map((resp) => {
+        return resp.data;
+      })
+    );
   }
 
   // getCities API
   getCities(stateId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_CITIES}${stateId}`);
+    return this.http.get<any>(`${this.apiUrl}${LocationAPIEndPoint.GET_CITIES}${stateId}`).pipe(
+      map((resp) => {
+        return resp.data;
+      })
+    );
   }
 
   // Self Registration API

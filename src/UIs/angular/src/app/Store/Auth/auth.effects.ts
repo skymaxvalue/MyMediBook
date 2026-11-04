@@ -199,7 +199,7 @@ export class AuthEffects {
       ofType(AuthActions.getCountries),
       mergeMap(() =>
         this.authService.getCountries().pipe(
-          map((response: any) => AuthActions.getCountriesSuccess({ countries: response })),
+          map((response) => AuthActions.getCountriesSuccess({ response })),
           catchError((error) =>
             of(
               AuthActions.getCountriesFailure({
@@ -217,7 +217,7 @@ export class AuthEffects {
       ofType(AuthActions.getStates),
       mergeMap((action) =>
         this.authService.getStates(action.countryId).pipe(
-          map((response: any) => AuthActions.getStatesSuccess({ states: response })),
+          map((response) => AuthActions.getStatesSuccess({ response })),
           catchError((error) =>
             of(AuthActions.getStatesFailure({ error: error.message || "Failed to load states" }))
           )
@@ -231,7 +231,7 @@ export class AuthEffects {
       ofType(AuthActions.getCities),
       mergeMap((action) =>
         this.authService.getCities(action.stateId).pipe(
-          map((response: any) => AuthActions.getCitiesSuccess({ cities: response })),
+          map((response) => AuthActions.getCitiesSuccess({ response })),
           catchError((error) =>
             of(AuthActions.getCitiesFailure({ error: error.message || "Failed to load cities" }))
           )

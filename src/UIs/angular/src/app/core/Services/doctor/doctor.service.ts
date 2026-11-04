@@ -18,7 +18,7 @@ import {
 })
 export class DoctorService {
   constructor(private http: HttpClient) {}
-  getDoctorSpecialities() {
+  getDoctorList() {
     return this.http.get(`${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.DOCTOR_LIST}`);
   }
 

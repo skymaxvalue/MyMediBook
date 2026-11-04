@@ -21,7 +21,7 @@ export class DoctorSpecialityEffects {
       ofType(DoctorSpecialityActions.loadDoctorSpecialities),
 
       mergeMap(() =>
-        this.doctorService.getDoctorSpecialities().pipe(
+        this.doctorService.getDoctorList().pipe(
 
           map((response: any) =>
             DoctorSpecialityActions.loadDoctorSpecialitiesSuccess({

@@ -88,7 +88,9 @@ export const AuthEndPoints = {
   LOG_OUT: "Auth/Logout",
   CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount",
 };
-
+export const ConsultationEndPoints = {
+  SAVE_CONSULTATION: "Consultation/CreateConsultation",
+};
 export const cancelRules = [
   {
     type: "success",

@@ -15,42 +15,42 @@ import {
 export class ConsultationFacade {
   constructor(private store: Store) {}
 
-  currentStep$ = this.store.pipe(select(S.selectCurrentStep));
-  stepLabel$ = this.store.pipe(select(S.selectStepLabel));
-  isFirstStep$ = this.store.pipe(select(S.selectIsFirstStep));
-  draft$ = this.store.pipe(select(S.selectDraft));
-  patientType$ = this.store.pipe(select(S.selectPatientType));
+  // currentStep$ = this.store.pipe(select(S.selectCurrentStep));
+  // stepLabel$ = this.store.pipe(select(S.selectStepLabel));
+  // isFirstStep$ = this.store.pipe(select(S.selectIsFirstStep));
+  // draft$ = this.store.pipe(select(S.selectDraft));
+  // patientType$ = this.store.pipe(select(S.selectPatientType));
 
-  painLevel$ = this.store.pipe(select(S.selectPainLevel));
-  selectedSpecialty$ = this.store.pipe(select(S.selectSelectedSpecialty));
-  selectedUrgency$ = this.store.pipe(select(S.selectSelectedUrgency));
-  allergyStatus$ = this.store.pipe(select(S.selectAllergyStatus));
-  showAllergyDetails$ = this.store.pipe(select(S.selectShowAllergyDetails));
-  medications$ = this.store.pipe(select(S.selectMedications));
-  noCurrentMedications$ = this.store.pipe(select(S.selectNoCurrentMedications));
+  // painLevel$ = this.store.pipe(select(S.selectPainLevel));
+  // selectedSpecialty$ = this.store.pipe(select(S.selectSelectedSpecialty));
+  // selectedUrgency$ = this.store.pipe(select(S.selectSelectedUrgency));
+  // allergyStatus$ = this.store.pipe(select(S.selectAllergyStatus));
+  // showAllergyDetails$ = this.store.pipe(select(S.selectShowAllergyDetails));
+  // medications$ = this.store.pipe(select(S.selectMedications));
+  // noCurrentMedications$ = this.store.pipe(select(S.selectNoCurrentMedications));
 
-  ageTypes$ = this.store.pipe(select(S.selectAgeTypes));
-  relations$ = this.store.pipe(select(S.selectRelations));
-  doctors$ = this.store.pipe(select(S.selectDoctors));
-  slots$ = this.store.pipe(select(S.selectAvailableSlots));
+  // ageTypes$ = this.store.pipe(select(S.selectAgeTypes));
+  getRelationsList$ = this.store.pipe(select(S.selectRelationList));
+  // doctors$ = this.store.pipe(select(S.selectDoctors));
+  // slots$ = this.store.pipe(select(S.selectAvailableSlots));
 
-  patientResults$ = this.store.pipe(select(S.selectPatientResults));
-  searchedPatient$ = this.store.pipe(select(S.selectSearchedPatient));
-  selectedPatient$ = this.store.pipe(select(S.selectSelectedPatient));
+  // patientResults$ = this.store.pipe(select(S.selectPatientResults));
+  // searchedPatient$ = this.store.pipe(select(S.selectSearchedPatient));
+  // selectedPatient$ = this.store.pipe(select(S.selectSelectedPatient));
 
-  responsibleParty$ = this.store.pipe(select(S.selectResponsibleParty));
-  rpStatus$ = this.store.pipe(select(S.selectRpStatus));
-  otpModal$ = this.store.pipe(select(S.selectOtpModal));
-  otpChannel$ = this.store.pipe(select(S.selectOtpChannel));
-  otpVerified$ = this.store.pipe(select(S.selectOtpVerified));
-  otpError$ = this.store.pipe(select(S.selectOtpError));
-  accountStepBlocked$ = this.store.pipe(select(S.selectAccountStepBlocked));
+  // responsibleParty$ = this.store.pipe(select(S.selectResponsibleParty));
+  // rpStatus$ = this.store.pipe(select(S.selectRpStatus));
+  // otpModal$ = this.store.pipe(select(S.selectOtpModal));
+  // otpChannel$ = this.store.pipe(select(S.selectOtpChannel));
+  // otpVerified$ = this.store.pipe(select(S.selectOtpVerified));
+  // otpError$ = this.store.pipe(select(S.selectOtpError));
+  // accountStepBlocked$ = this.store.pipe(select(S.selectAccountStepBlocked));
 
-  triageAlert$ = this.store.pipe(select(S.selectTriageAlert));
-  isLoading$ = this.store.pipe(select(S.selectIsLoading));
-  isSubmitting$ = this.store.pipe(select(S.selectIsSubmitting));
-  error$ = this.store.pipe(select(S.selectError));
-  confirmation$ = this.store.pipe(select(S.selectConfirmation));
+  // triageAlert$ = this.store.pipe(select(S.selectTriageAlert));
+  // isLoading$ = this.store.pipe(select(S.selectIsLoading));
+  // isSubmitting$ = this.store.pipe(select(S.selectIsSubmitting));
+  // error$ = this.store.pipe(select(S.selectError));
+  // confirmation$ = this.store.pipe(select(S.selectConfirmation));
 
   goToStep(step: number) {
     this.store.dispatch(A.goToStep({ step }));
@@ -95,8 +95,8 @@ export class ConsultationFacade {
     this.store.dispatch(A.toggleNoMedications());
   }
 
-  loadMasters() {
-    this.store.dispatch(A.loadMasters());
+  loadRelationTypeList() {
+    this.store.dispatch(A.getRelationTypeList());
   }
   loadDoctors(department?: string) {
     this.store.dispatch(A.loadDoctors({ department }));
@@ -131,7 +131,7 @@ export class ConsultationFacade {
     this.store.dispatch(A.verifyOtp({ email, otpCode }));
   }
 
-  submit(formValue: Record<string, any>) {
+  submitConsultation(formValue: Record<string, any>) {
     this.store.dispatch(A.submitConsultation({ formValue }));
   }
   reset() {

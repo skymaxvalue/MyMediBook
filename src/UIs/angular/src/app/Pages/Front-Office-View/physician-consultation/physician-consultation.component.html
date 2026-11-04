@@ -3,7 +3,7 @@
     <header class="consultation-header">
       <div class="consultation-title-group">
         <span class="page-icon-badge">
-          <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+          <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
         </span>
 
         <div>
@@ -81,11 +81,21 @@
       </button>
     </nav>
 
-    <form id="bookingForm" novalidate>
-      <div class="consultation-step-panel" [class.active]="currentStep === 1" data-step="1">
+    <form
+      id="bookingForm"
+      [formGroup]="consultationForm"
+      (ngSubmit)="submitConsultation()"
+      novalidate
+    >
+      <div
+        class="consultation-step-panel"
+        [class.active]="currentStep === 1"
+        data-step="1"
+        formGroupName="patient"
+      >
         <section class="consultation-section">
           <div class="section-header">
-            <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
             <h2>Patient Type</h2>
           </div>
@@ -94,9 +104,8 @@
             <label class="check-card">
               <input
                 type="radio"
-                name="patientType"
+                formControlName="patientType"
                 value="existing"
-                [checked]="patientType === 'existing'"
                 (change)="onPatientTypeChange('existing')"
               />
               Existing Patient
@@ -105,9 +114,8 @@
             <label class="check-card">
               <input
                 type="radio"
-                name="patientType"
+                formControlName="patientType"
                 value="new"
-                [checked]="patientType === 'new'"
                 (change)="onPatientTypeChange('new')"
               />
               New Patient
@@ -118,10 +126,10 @@
         <section
           class="consultation-section"
           id="existingPatientSection"
-          [hidden]="patientType !== 'existing'"
+          [hidden]="patientForm.get('patientType')?.value !== 'existing'"
         >
           <div class="section-header">
-            <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
             <h2>Select Patient Profile</h2>
           </div>
@@ -130,67 +138,20 @@
             Search for an existing patient using their last name, date of birth, or mobile number.
           </p>
 
-          <div class="patient-search-grid">
-            <div class="patient-search-column">
-              <div class="field-pair">
-                <label for="patientLastNameSearch"> Patient Last Name </label>
-
-                <div class="input-with-icon">
-                  <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
-
-                  <input type="text" id="patientLastNameSearch" placeholder="Enter last name" />
-                </div>
-              </div>
-
-              <div class="field-pair">
-                <label for="patientDobSearch"> Date of Birth </label>
-
-                <input type="date" id="patientDobSearch" />
-              </div>
-            </div>
-
-            <div class="search-or">
-              <span> OR </span>
-            </div>
-
-            <div class="patient-search-column">
-              <div class="field-pair">
-                <label for="patientMobileSearch"> Mobile Number </label>
-
-                <div class="input-with-icon">
-                  <img src="/assets/images/front-office/images/mobile-icon-blue.png" alt="" />
-
-                  <input
-                    type="tel"
-                    id="patientMobileSearch"
-                    placeholder="Enter mobile number"
-                    inputmode="numeric"
-                    maxlength="10"
-                  />
-                </div>
-              </div>
-
-              <div class="search-actions">
-                <button type="button" class="btn-outline" id="patientClearBtn">Clear</button>
-
-                <button
-                  type="button"
-                  class="btn-primary"
-                  id="patientSearchBtn"
-                  (click)="searchPatientRequest()"
-                >
-                  <img src="/assets/images/front-office/images/search-white.png" alt="" />
-                  Search
-                </button>
-              </div>
-            </div>
-          </div>
+          <app-shared-patient-search
+            [patients]="(patients$ | async) ?? []"
+            [loading]="(isSearching$ | async) ?? LoadStatus.NotLoaded"
+            (searchRequested)="searchPatientRequest($event)"
+            (clearRequested)="clearPatientSearch()"
+            (patientSelected)="onPatientSelected($event)"
+            (switchProfile)="onSwitchPatientProfile()"
+          ></app-shared-patient-search>
 
           <div id="patientSearchResults" class="patient-search-results"></div>
 
           <div id="selectedPatientBar" class="selected-patient-bar" hidden>
             <div class="selected-patient-main">
-              <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+              <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
               <div>
                 <small> Selected Patient </small>
@@ -212,24 +173,25 @@
             <button type="button" class="btn-switch" id="switchProfileBtn">Switch Profile</button>
           </div>
 
-          <input type="hidden" id="selectedPatientId" />
+          <input type="hidden" formControlName="selectedPatientId" />
         </section>
 
         <section class="consultation-section">
           <div class="section-header">
-            <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
             <h2>Personal Information</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="personalInfo">
             <div class="field-pair">
               <label for="firstName"> Full Name <span class="req new-only" hidden>*</span> </label>
 
               <input
                 type="text"
                 id="firstName"
-                [readonly]="patientType === 'existing'"
+                formControlName="firstName"
+                [readonly]="patientForm.get('patientType')?.value === 'existing'"
                 placeholder="Patient full name"
               />
             </div>
@@ -241,8 +203,9 @@
                 type="tel"
                 id="phone"
                 inputmode="numeric"
+                formControlName="phone"
                 maxlength="10"
-                [readonly]="patientType === 'existing'"
+                [readonly]="patientForm.get('patientType')?.value === 'existing'"
                 placeholder="Patient phone number"
               />
             </div>
@@ -252,13 +215,22 @@
                 Date of Birth <span class="req new-only" hidden>*</span>
               </label>
 
-              <input type="date" id="dateOfBirth" [readonly]="patientType === 'existing'" />
+              <input
+                type="date"
+                id="dateOfBirth"
+                [readonly]="patientForm.get('patientType')?.value === 'existing'"
+                formControlName="dateOfBirth"
+              />
             </div>
 
             <div class="field-pair">
               <label for="gender"> Gender <span class="req new-only" hidden>*</span> </label>
 
-              <select id="gender" [disabled]="patientType === 'existing'">
+              <select
+                id="gender"
+                [disabled]="patientForm.get('patientType')?.value === 'existing'"
+                formControlName="gender"
+              >
                 <option value="">Select gender</option>
 
                 <option value="Male">Male</option>
@@ -275,15 +247,16 @@
               <input
                 type="email"
                 id="email"
-                [readonly]="patientType === 'existing'"
+                [readonly]="patientForm.get('patientType')?.value === 'existing'"
                 placeholder="Patient email"
+                formControlName="email"
               />
             </div>
 
             <div class="field-pair">
               <label for="preferredLanguage"> Preferred Language </label>
 
-              <select id="preferredLanguage">
+              <select id="preferredLanguage" formControlName="preferredLanguage">
                 <option value="">Select language</option>
 
                 <option>English</option>
@@ -299,7 +272,8 @@
         <section
           class="consultation-section"
           id="responsiblePartySection"
-          [hidden]="patientType !== 'new'"
+          [hidden]="patientForm.get('patientType')?.value !== 'new'"
+          formGroupName="account"
         >
           <div class="section-header">
             <img src="/assets/images/front-office/images/insurance-icon-blue.png" alt="" />
@@ -321,9 +295,8 @@
               <label class="check-card">
                 <input
                   type="radio"
-                  name="accountHolder"
+                  formControlName="accountHolder"
                   value="self"
-                  [checked]="accountHolder === 'self'"
                   (change)="onAccountHolderChange('self')"
                 />
                 The Patient
@@ -332,9 +305,8 @@
               <label class="check-card">
                 <input
                   type="radio"
-                  name="accountHolder"
+                  formControlName="accountHolder"
                   value="other"
-                  [checked]="accountHolder === 'other'"
                   (change)="onAccountHolderChange('other')"
                 />
                 Another Person
@@ -345,7 +317,9 @@
           <div
             class="rp-card"
             id="responsiblePartySearchCard"
-            [hidden]="accountHolder !== 'other' || rpState !== 'search'"
+            [hidden]="
+              patientForm.get('account.accountHolder')?.value !== 'other' || rpState !== 'search'
+            "
           >
             <h3 class="rp-card-title">Search Responsible Party</h3>
 
@@ -360,7 +334,7 @@
                   <label for="responsiblePartyName"> Patient Full Name </label>
 
                   <div class="input-with-icon">
-                    <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+                    <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
                     <input type="text" id="responsiblePartyName" placeholder="Enter full name" />
                   </div>
@@ -436,7 +410,7 @@
             </div>
           </div>
 
-          <div class="detail-grid two-col section-gap" id="accountHolderFields" hidden>
+          <div class="detail-grid two-col section-gap" id="accountHolderFields" [hidden]="true">
             <div class="field-pair">
               <label for="accountHolderName">
                 Account Holder Name
@@ -446,9 +420,9 @@
               <input
                 type="text"
                 id="accountHolderName"
+                formControlName="accountHolderName"
                 placeholder="Account holder name"
                 readonly
-                disabled
               />
             </div>
 
@@ -458,7 +432,7 @@
                 <span class="req">*</span>
               </label>
 
-              <select id="relationToPatient" disabled>
+              <select id="relationToPatient" formControlName="relationToPatient">
                 <option value="">Select relation</option>
                 <option>Father</option>
                 <option>Mother</option>
@@ -481,41 +455,58 @@
             <h2>Address Information</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="address">
             <div class="field-pair full-width">
               <label for="address"> Address </label>
 
-              <textarea id="address" placeholder="Enter patient address"></textarea>
+              <textarea
+                id="address"
+                placeholder="Enter patient address"
+                formControlName="address"
+              ></textarea>
+            </div>
+            <div class="field-pair">
+              <label for="country"> Country </label>
+
+              <select id="country" formControlName="country">
+                <option value="" disabled>Select country</option>
+                @for (country of countryList; track country.countryId) {
+                  <option [value]="country.countryId">{{ country.countryName }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="field-pair">
+              <label for="state"> State </label>
+              <select id="state" formControlName="state">
+                <option value="" disabled>Select state</option>
+                @for (state of stateList; track state.stateId) {
+                  <option [value]="state.stateId">{{ state.stateName }}</option>
+                }
+              </select>
             </div>
 
             <div class="field-pair">
               <label for="city"> City </label>
 
-              <input type="text" id="city" placeholder="Enter city" />
-            </div>
-
-            <div class="field-pair">
-              <label for="state"> State </label>
-
-              <select id="state">
-                <option value="">Select state</option>
-
-                <option>West Bengal</option>
-
-                <option>Maharashtra</option>
-
-                <option>Karnataka</option>
-
-                <option>Delhi</option>
-
-                <option>Tamil Nadu</option>
+              <select id="city" formControlName="city">
+                <option value="" disabled>Select city</option>
+                @for (city of cityList; track city.cityId) {
+                  <option [value]="city.cityId">{{ city.cityName }}</option>
+                }
               </select>
             </div>
 
             <div class="field-pair">
               <label for="pinCode"> PIN Code </label>
 
-              <input type="text" id="pinCode" placeholder="Enter PIN code" maxlength="6" />
+              <input
+                type="text"
+                id="pinCode"
+                placeholder="Enter PIN code"
+                maxlength="6"
+                formControlName="pinCode"
+              />
             </div>
           </div>
         </section>
@@ -527,23 +518,33 @@
             <h2>Insurance & Billing</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="insurance">
             <div class="field-pair">
               <label for="provider"> Insurance Provider </label>
 
-              <input type="text" id="provider" placeholder="Enter insurance provider" />
+              <input
+                type="text"
+                id="provider"
+                placeholder="Enter insurance provider"
+                formControlName="provider"
+              />
             </div>
 
             <div class="field-pair">
               <label for="policy"> Member ID / Policy Number </label>
 
-              <input type="text" id="policy" placeholder="Enter policy number" />
+              <input
+                type="text"
+                id="policy"
+                placeholder="Enter policy number"
+                formControlName="policy"
+              />
             </div>
 
             <div class="field-pair">
               <label for="coverageType"> Coverage Type </label>
 
-              <select id="coverageType">
+              <select id="coverageType" formControlName="coverageType">
                 <option value="">Select coverage</option>
 
                 <option>Individual</option>
@@ -558,7 +559,12 @@
               <label> Insurance Card </label>
 
               <label class="upload-box">
-                <input type="file" id="insuranceCard" accept="image/*,.pdf" />
+                <input
+                  type="file"
+                  id="insuranceCard"
+                  accept="image/*,.pdf"
+                  (change)="onInsuranceCardChange($event)"
+                />
 
                 <img src="/assets/images/front-office/images/upload-blue.png" alt="" />
 
@@ -570,22 +576,27 @@
 
         <section class="consultation-section">
           <div class="section-header">
-            <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
             <h2>Emergency Contact</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="emergencyContact">
             <div class="field-pair">
               <label for="emergencyName"> Contact Name </label>
 
-              <input type="text" id="emergencyName" placeholder="Enter contact name" />
+              <input
+                type="text"
+                id="emergencyName"
+                placeholder="Enter contact name"
+                formControlName="emergencyName"
+              />
             </div>
 
             <div class="field-pair">
               <label for="emergencyRelation"> Relationship </label>
 
-              <select id="emergencyRelation">
+              <select id="emergencyRelation" formControlName="emergencyRelation">
                 <option value="">Select relationship</option>
 
                 <option>Spouse</option>
@@ -605,13 +616,23 @@
             <div class="field-pair">
               <label for="emergencyPhone"> Phone </label>
 
-              <input type="tel" id="emergencyPhone" placeholder="Enter phone number" />
+              <input
+                type="tel"
+                id="emergencyPhone"
+                placeholder="Enter phone number"
+                formControlName="emergencyPhone"
+              />
             </div>
 
             <div class="field-pair">
               <label for="emergencyAlternatePhone"> Alternate Phone </label>
 
-              <input type="tel" id="emergencyAlternatePhone" placeholder="Enter alternate number" />
+              <input
+                type="tel"
+                id="emergencyAlternatePhone"
+                placeholder="Enter alternate number"
+                formControlName="emergencyAlternatePhone"
+              />
             </div>
           </div>
         </section>
@@ -621,10 +642,11 @@
             <img src="/assets/images/front-office/images/mobile-icon-blue.png" alt="" />
             <h2>Communication Preferences</h2>
           </div>
-          <div class="detail-grid two-col">
+
+          <div class="detail-grid two-col" formGroupName="communication">
             <div class="field-pair">
               <label for="contactMethod">Preferred Contact Method <span class="req">*</span></label>
-              <select id="contactMethod">
+              <select id="contactMethod" formControlName="contactMethod">
                 <option value="">Select method</option>
                 <option>Phone</option>
                 <option>SMS</option>
@@ -636,7 +658,7 @@
               <label for="appointmentReminder"
                 >Appointment Reminder <span class="req">*</span></label
               >
-              <select id="appointmentReminder">
+              <select id="appointmentReminder" formControlName="appointmentReminder">
                 <option value="">Select</option>
                 <option>Yes</option>
                 <option>No</option>
@@ -650,24 +672,45 @@
             <img src="/assets/images/front-office/images/medical-icon-blue.png" alt="" />
             <h2>Preferred Pharmacy (Optional)</h2>
           </div>
-          <div class="detail-grid two-col">
+
+          <div class="detail-grid two-col" formGroupName="pharmacy">
             <div class="field-pair">
               <label for="pharmacyName">Pharmacy Name</label>
-              <input type="text" id="pharmacyName" placeholder="Enter pharmacy name" />
+              <input
+                type="text"
+                id="pharmacyName"
+                placeholder="Enter pharmacy name"
+                formControlName="pharmacyName"
+              />
             </div>
             <div class="field-pair">
               <label for="pharmacyPhone">Phone</label>
-              <input type="tel" id="pharmacyPhone" placeholder="Enter pharmacy phone" />
+              <input
+                type="tel"
+                id="pharmacyPhone"
+                placeholder="Enter pharmacy phone"
+                formControlName="pharmacyPhone"
+              />
             </div>
             <div class="field-pair full-width">
               <label for="pharmacyAddress">Address</label>
-              <input type="text" id="pharmacyAddress" placeholder="Enter pharmacy address" />
+              <input
+                type="text"
+                id="pharmacyAddress"
+                placeholder="Enter pharmacy address"
+                formControlName="pharmacyAddress"
+              />
             </div>
           </div>
         </section>
       </div>
 
-      <div class="consultation-step-panel" [class.active]="currentStep === 2" data-step="2">
+      <div
+        class="consultation-step-panel"
+        [class.active]="currentStep === 2"
+        data-step="2"
+        formGroupName="appointment"
+      >
         <section class="consultation-section">
           <div class="section-header">
             <img src="/assets/images/front-office/images/calendar-blue.png" alt="" />
@@ -682,7 +725,7 @@
                 <span class="req">*</span>
               </label>
 
-              <input type="date" id="preferredDate" required />
+              <input type="date" id="preferredDate" required formControlName="preferredDate" />
             </div>
 
             <div class="field-pair">
@@ -691,7 +734,7 @@
                 <span class="req">*</span>
               </label>
 
-              <select id="preferredTime" required>
+              <select id="preferredTime" required formControlName="preferredTime">
                 <option value="">Select time</option>
 
                 <option>09:00 AM</option>
@@ -726,7 +769,7 @@
                 <span class="req">*</span>
               </label>
 
-              <select id="consultationMode" required>
+              <select id="consultationMode" required formControlName="consultationMode">
                 <option value="">Select mode</option>
 
                 <option>In Person</option>
@@ -743,7 +786,7 @@
                 <span class="req">*</span>
               </label>
 
-              <select id="visitType" required>
+              <select id="visitType" required formControlName="visitType">
                 <option value="">Select visit type</option>
 
                 <option>Consultation</option>
@@ -765,13 +808,19 @@
                 id="reasonForVisit"
                 placeholder="Enter reason for consultation"
                 required
+                formControlName="reasonForVisit"
               />
             </div>
 
             <div class="field-pair">
               <label for="referredBy"> Referred By </label>
 
-              <input type="text" id="referredBy" placeholder="Doctor / hospital / self" />
+              <input
+                type="text"
+                id="referredBy"
+                placeholder="Doctor / hospital / self"
+                formControlName="referredBy"
+              />
             </div>
           </div>
         </section>
@@ -802,27 +851,25 @@
             }
           </div>
 
-          <input type="hidden" id="medicalSpecialty" />
+          <input type="hidden" id="medicalSpecialty" formControlName="specialty" />
 
           <div class="detail-grid two-col specialty-fields">
             <div class="field-pair">
               <label for="preferredPhysician"> Preferred Physician </label>
 
-              <select id="preferredPhysician">
-                <option value="">Select physician</option>
-
-                <option>Dr. Kumar</option>
-
-                <option>Dr. Kumaravel</option>
-
-                <option>Dr. Sharma</option>
+              <select
+                id="preferredPhysician"
+                formControlName="preferredPhysician"
+                *ngFor="let physician of physicianData"
+              >
+                <option>{{ physician.name }}</option>
               </select>
             </div>
 
             <div class="field-pair">
               <label for="referralSource"> Referral Source </label>
 
-              <select id="referralSource">
+              <select id="referralSource" formControlName="referralSource">
                 <option value="">Select source</option>
 
                 <option>Self</option>
@@ -849,13 +896,19 @@
 
             <textarea
               id="appointmentNotes"
+              formControlName="appointmentNotes"
               placeholder="Any specific requirements, reason for visit, or special instructions..."
             ></textarea>
           </div>
         </section>
       </div>
 
-      <div class="consultation-step-panel" [class.active]="currentStep === 3" data-step="3">
+      <div
+        class="consultation-step-panel"
+        [class.active]="currentStep === 3"
+        data-step="3"
+        formGroupName="symptoms"
+      >
         <section class="consultation-section">
           <div class="section-header">
             <img src="/assets/images/front-office/images/note-blue.png" alt="" />
@@ -872,6 +925,7 @@
             <textarea
               id="chiefComplaint"
               maxlength="500"
+              formControlName="chiefComplaint"
               placeholder="Describe your main concern in your own words — when it started, how it affects you, and anything else the doctor should know."
             ></textarea>
 
@@ -893,7 +947,7 @@
                 <span class="req">*</span>
               </label>
 
-              <select id="symptomDuration">
+              <select id="symptomDuration" formControlName="symptomDuration">
                 <option value="">Select duration</option>
 
                 <option>Less than 1 day</option>
@@ -915,7 +969,7 @@
             <div class="field-pair">
               <label for="symptomOnset"> When Did It Start? </label>
 
-              <input type="date" id="symptomOnset" />
+              <input type="date" id="symptomOnset" formControlName="symptomOnset" />
             </div>
           </div>
         </section>
@@ -925,18 +979,28 @@
             <img src="/assets/images/front-office/images/medical-icon-blue.png" alt="" />
             <h2>History of Present Illness</h2>
           </div>
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="hpi">
             <div class="field-pair">
               <label for="hpiLocation">Location</label>
-              <input type="text" id="hpiLocation" placeholder="e.g. Left side of chest" />
+              <input
+                type="text"
+                id="hpiLocation"
+                placeholder="e.g. Left side of chest"
+                formControlName="location"
+              />
             </div>
             <div class="field-pair">
               <label for="hpiQuality">Character / Quality</label>
-              <input type="text" id="hpiQuality" placeholder="e.g. Sharp, dull, burning" />
+              <input
+                type="text"
+                id="hpiQuality"
+                placeholder="e.g. Sharp, dull, burning"
+                formControlName="quality"
+              />
             </div>
             <div class="field-pair">
               <label for="hpiSeverity">Severity</label>
-              <select id="hpiSeverity">
+              <select id="hpiSeverity" formControlName="severity">
                 <option value="">Select severity</option>
                 <option>Mild</option>
                 <option>Moderate</option>
@@ -945,7 +1009,7 @@
             </div>
             <div class="field-pair">
               <label for="hpiPattern">Constant / Intermittent</label>
-              <select id="hpiPattern">
+              <select id="hpiPattern" formControlName="pattern">
                 <option value="">Select</option>
                 <option>Constant</option>
                 <option>Intermittent</option>
@@ -953,15 +1017,25 @@
             </div>
             <div class="field-pair">
               <label for="hpiAggravating">Aggravating Factors</label>
-              <input type="text" id="hpiAggravating" placeholder="e.g. Exertion, lying down" />
+              <input
+                type="text"
+                id="hpiAggravating"
+                placeholder="e.g. Exertion, lying down"
+                formControlName="aggravating"
+              />
             </div>
             <div class="field-pair">
               <label for="hpiRelieving">Relieving Factors</label>
-              <input type="text" id="hpiRelieving" placeholder="e.g. Rest, medication" />
+              <input
+                type="text"
+                id="hpiRelieving"
+                placeholder="e.g. Rest, medication"
+                formControlName="relieving"
+              />
             </div>
             <div class="field-pair">
               <label for="hpiProgression">Progression</label>
-              <select id="hpiProgression">
+              <select id="hpiProgression" formControlName="progression">
                 <option value="">Select progression</option>
                 <option>Improving</option>
                 <option>Worsening</option>
@@ -981,93 +1055,203 @@
 
           <div class="symptom-grid" id="symptomGrid">
             <label class="chip">
-              <input type="checkbox" value="Chest pain" />
+              <input
+                type="checkbox"
+                value="Chest pain"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Chest pain')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Chest pain', $event)"
+              />
               <span>♡</span>
               Chest pain
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Shortness of breath" />
+              <input
+                type="checkbox"
+                value="Shortness of breadth"
+                [checked]="
+                  symptomsForm.get('associatedSymptoms')?.value.includes('Shortness of breath')
+                "
+                (change)="
+                  toggleArrayValue('symptoms.associatedSymptoms', 'Shortness of breath', $event)
+                "
+              />
               Shortness of breath
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Palpitations" />
+              <input
+                type="checkbox"
+                value="Chest pain"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Palpitations')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Palpitations', $event)"
+              />
               Palpitations
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Dizziness" />
+              <input
+                type="checkbox"
+                value="Dizziness"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Dizziness')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Dizziness', $event)"
+              />
               Dizziness
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Fatigue" />
+              <input
+                type="checkbox"
+                value="Fatigue"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Fatigue')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Fatigue', $event)"
+              />
               Fatigue
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Nausea" />
+              <input
+                type="checkbox"
+                value="Nausea"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Nausea')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Nausea', $event)"
+              />
               Nausea
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Vomiting" />
+              <input
+                type="checkbox"
+                value="Vomiting"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Vomiting')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Vomiting', $event)"
+              />
               Vomiting
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Headache" />
+              <input
+                type="checkbox"
+                value="Headache"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Headache')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Headache', $event)"
+              />
               Headache
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Fever" />
+              <input
+                type="checkbox"
+                value="Fever"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Fever')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Fever', $event)"
+              />
               Fever
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Chills" />
+              <input
+                type="checkbox"
+                value="Chills"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Chills')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Chills', $event)"
+              />
               Chills
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Swelling" />
+              <input
+                type="checkbox"
+                value="Swelling"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Swelling')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Swelling', $event)"
+              />
               Swelling
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Joint pain" />
+              <input
+                type="checkbox"
+                value="Joint pain"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Joint pain')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Joint pain', $event)"
+              />
               Joint pain
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Numbness / tingling" />
+              <input
+                type="checkbox"
+                value="Numbness / tingling"
+                [checked]="
+                  symptomsForm.get('associatedSymptoms')?.value.includes('Numbness / tingling')
+                "
+                (change)="
+                  toggleArrayValue('symptoms.associatedSymptoms', 'Numbness / tingling', $event)
+                "
+              />
               Numbness / tingling
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Vision changes" />
+              <input
+                type="checkbox"
+                value="Vision changes"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Vision changes')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Vision changes', $event)"
+              />
               Vision changes
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Weight loss" />
+              <input
+                type="checkbox"
+                value="Weight loss"
+                [checked]="symptomsForm.get('associatedSymptoms')?.value.includes('Weight loss')"
+                (change)="toggleArrayValue('symptoms.associatedSymptoms', 'Weight loss', $event)"
+              />
               Weight loss
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Appetite changes" />
+              <input
+                type="checkbox"
+                value="Appetite changes"
+                [checked]="
+                  symptomsForm.get('associatedSymptoms')?.value.includes('Appetite changes')
+                "
+                (change)="
+                  toggleArrayValue('symptoms.associatedSymptoms', 'Appetite changes', $event)
+                "
+              />
               Appetite changes
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Sleep disturbance" />
+              <input
+                type="checkbox"
+                value="Sleep disturbance"
+                [checked]="
+                  symptomsForm.get('associatedSymptoms')?.value.includes('Sleep disturbance')
+                "
+                (change)="
+                  toggleArrayValue('symptoms.associatedSymptoms', 'Sleep disturbance', $event)
+                "
+              />
               Sleep disturbance
             </label>
 
             <label class="chip">
-              <input type="checkbox" value="Anxiety / low mood" />
+              <input
+                type="checkbox"
+                value="Anxiety / low mood"
+                [checked]="
+                  symptomsForm.get('associatedSymptoms')?.value.includes('Anxiety / low mood')
+                "
+                (change)="
+                  toggleArrayValue('symptoms.associatedSymptoms', 'Anxiety / low mood', $event)
+                "
+              />
               Anxiety / low mood
             </label>
           </div>
@@ -1078,6 +1262,7 @@
             <textarea
               id="otherSymptoms"
               maxlength="300"
+              formControlName="otherSymptoms"
               placeholder="Describe any other symptoms..."
             ></textarea>
 
@@ -1143,7 +1328,12 @@
         </section>
       </div>
 
-      <div class="consultation-step-panel" [class.active]="currentStep === 4" data-step="4">
+      <div
+        class="consultation-step-panel"
+        [class.active]="currentStep === 4"
+        data-step="4"
+        formGroupName="history"
+      >
         <section class="consultation-section">
           <div class="section-header">
             <img src="/assets/images/front-office/images/medical-icon-blue.png" alt="" />
@@ -1151,12 +1341,13 @@
             <h2>Medical History</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="medical">
             <div class="field-pair">
               <label for="existingConditions"> Existing Conditions </label>
 
               <textarea
                 id="existingConditions"
+                formControlName="existingConditions"
                 placeholder="List existing medical conditions..."
               ></textarea>
             </div>
@@ -1164,7 +1355,11 @@
             <div class="field-pair">
               <label for="previousDiagnoses"> Previous Diagnoses </label>
 
-              <textarea id="previousDiagnoses" placeholder="List previous diagnoses..."></textarea>
+              <textarea
+                id="previousDiagnoses"
+                placeholder="List previous diagnoses..."
+                formControlName="previousDiagnoses"
+              ></textarea>
             </div>
 
             <div class="field-pair full-width">
@@ -1172,6 +1367,7 @@
 
               <textarea
                 id="chronicIllnesses"
+                formControlName="chronicIllnesses"
                 placeholder="List any chronic illnesses..."
               ></textarea>
             </div>
@@ -1185,29 +1381,44 @@
             <h2>Surgical History</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="surgical">
             <div class="field-pair">
               <label for="previousSurgeries"> Previous Surgeries </label>
 
-              <input type="text" id="previousSurgeries" placeholder="Enter previous surgeries" />
+              <input
+                type="text"
+                id="previousSurgeries"
+                placeholder="Enter previous surgeries"
+                formControlName="previousSurgeries"
+              />
             </div>
 
             <div class="field-pair">
               <label for="surgicalProcedure"> Procedure </label>
 
-              <input type="text" id="surgicalProcedure" placeholder="Enter procedure" />
+              <input
+                type="text"
+                id="surgicalProcedure"
+                placeholder="Enter procedure"
+                formControlName="surgicalProcedure"
+              />
             </div>
 
             <div class="field-pair">
               <label for="surgeryDate"> Approx. Date </label>
 
-              <input type="date" id="surgeryDate" />
+              <input type="date" id="surgeryDate" formControlName="surgeryDate" />
             </div>
 
             <div class="field-pair">
               <label for="surgeryNotes"> Notes </label>
 
-              <input type="text" id="surgeryNotes" placeholder="Additional notes" />
+              <input
+                type="text"
+                id="surgeryNotes"
+                placeholder="Additional notes"
+                formControlName="surgeryNotes"
+              />
             </div>
           </div>
         </section>
@@ -1217,50 +1428,74 @@
             <img src="/assets/images/front-office/images/alert-blue.png" alt="" />
             <h2>Allergies</h2>
           </div>
-          <div class="field-pair">
-            <label id="allergyStatusLabel">Allergy Status <span class="req">*</span></label>
-          </div>
-          <div
-            class="history-check-grid two-up"
-            role="radiogroup"
-            aria-labelledby="allergyStatusLabel"
-          >
-            @for (option of allergyOptions; track option) {
-              <label class="check-card">
-                <input
-                  type="radio"
-                  name="allergyStatus"
-                  [value]="option"
-                  [checked]="allergyStatus === option"
-                  (change)="selectAllergy(option)"
-                />
-                {{ option }}
-              </label>
+
+          <div formGroupName="allergies">
+            <div class="field-pair">
+              <label id="allergyStatusLabel"> Allergy Status <span class="req">*</span> </label>
+            </div>
+
+            <div
+              class="history-check-grid two-up"
+              role="radiogroup"
+              aria-labelledby="allergyStatusLabel"
+            >
+              @for (option of allergyOptions; track option) {
+                <label class="check-card">
+                  <input
+                    type="radio"
+                    formControlName="allergyStatus"
+                    [value]="option"
+                    (change)="selectAllergy(option)"
+                  />
+                  {{ option }}
+                </label>
+              }
+            </div>
+
+            @if (allergyStatus === "Allergies Present") {
+              <div class="detail-grid two-col section-gap">
+                <div class="field-pair">
+                  <label for="drugAllergies">Drug Allergies</label>
+                  <textarea
+                    type="text"
+                    id="drugAllergies"
+                    formControlName="drugAllergies"
+                    placeholder="Enter drug allergies"
+                  ></textarea>
+                </div>
+
+                <div class="field-pair">
+                  <label for="foodAllergies">Food Allergies</label>
+                  <textarea
+                    type="text"
+                    id="foodAllergies"
+                    formControlName="foodAllergies"
+                    placeholder="Enter food allergies"
+                  ></textarea>
+                </div>
+
+                <div class="field-pair">
+                  <label for="otherAllergies">Other Allergies</label>
+                  <textarea
+                    type="text"
+                    id="otherAllergies"
+                    formControlName="otherAllergies"
+                    placeholder="Enter other allergies"
+                  ></textarea>
+                </div>
+
+                <div class="field-pair">
+                  <label for="allergyReaction">Reaction</label>
+                  <textarea
+                    type="text"
+                    id="allergyReaction"
+                    formControlName="allergyReaction"
+                    placeholder="Describe allergic reaction"
+                  ></textarea>
+                </div>
+              </div>
             }
           </div>
-          @if (allergyStatus === "Allergies Present") {
-            <div class="detail-grid two-col section-gap">
-              <div class="field-pair">
-                <label for="drugAllergies">Drug Allergies</label>
-                <textarea id="drugAllergies" placeholder="List drug allergies..."></textarea>
-              </div>
-              <div class="field-pair">
-                <label for="foodAllergies">Food Allergies</label>
-                <textarea id="foodAllergies" placeholder="List food allergies..."></textarea>
-              </div>
-              <div class="field-pair">
-                <label for="otherAllergies">Other Allergies</label>
-                <textarea id="otherAllergies" placeholder="List other allergies..."></textarea>
-              </div>
-              <div class="field-pair">
-                <label for="allergyReaction">Reaction / Notes</label>
-                <textarea
-                  id="allergyReaction"
-                  placeholder="Describe the reaction and any notes..."
-                ></textarea>
-              </div>
-            </div>
-          }
         </section>
 
         <section class="consultation-section medication-section">
@@ -1273,8 +1508,8 @@
             <label class="check-card">
               <input
                 type="checkbox"
-                [checked]="noMedications"
                 (change)="toggleNoMedications($event)"
+                formControlName="noMedications"
               />
               No Current Medications
             </label>
@@ -1282,63 +1517,55 @@
 
           @if (!noMedications) {
             <div
+              formArrayName="medications"
               class="medication-list section-gap"
               role="group"
               aria-label="Current medication entries"
             >
-              @for (med of medications; track med.id; let i = $index) {
-                <div class="med-entry">
+              @for (med of medicationsArray.controls; track $index; let i = $index) {
+                <div class="med-entry" [formGroupName]="i">
                   <div class="med-entry-head">
                     <strong>Medication {{ i + 1 }}</strong>
 
-                    <button
-                      type="button"
-                      class="btn-outline-danger"
-                      (click)="removeMedication(med.id)"
-                    >
+                    <button type="button" class="btn-outline-danger" (click)="removeMedication(i)">
                       Remove
                     </button>
                   </div>
 
+                  <!-- Keep your existing medication fields here -->
+
                   <div class="detail-grid two-col medication-fields">
                     <!-- Medication Name -->
                     <div class="field-pair">
-                      <label [for]="'medName' + med.id">
+                      <label [for]="'medName' + i">
                         Medication Name <span class="req">*</span>
                       </label>
 
                       <input
                         type="text"
-                        [id]="'medName' + med.id"
-                        [value]="med.name"
+                        [id]="'medName' + i"
+                        formControlName="name"
                         placeholder="Enter medication name"
-                        required
-                        (input)="updateMedication(med.id, 'name', $any($event.target).value)"
                       />
                     </div>
 
                     <!-- Dose -->
                     <div class="field-pair">
-                      <label [for]="'medDose' + med.id">Dose</label>
+                      <label [for]="'medDose' + i">Dose</label>
 
                       <input
                         type="text"
-                        [id]="'medDose' + med.id"
-                        [value]="med.dose"
+                        [id]="'medDose' + i"
+                        formControlName="dose"
                         placeholder="e.g. 500 mg"
-                        (input)="updateMedication(med.id, 'dose', $any($event.target).value)"
                       />
                     </div>
 
                     <!-- Route -->
                     <div class="field-pair">
-                      <label [for]="'medRoute' + med.id">Route</label>
+                      <label [for]="'medRoute' + i">Route</label>
 
-                      <select
-                        [id]="'medRoute' + med.id"
-                        [value]="med.route"
-                        (change)="updateMedication(med.id, 'route', $any($event.target).value)"
-                      >
+                      <select [id]="'medRoute' + i" formControlName="route">
                         <option value="">Select route</option>
                         <option value="Oral">Oral</option>
                         <option value="Intravenous">Intravenous (IV)</option>
@@ -1355,13 +1582,9 @@
 
                     <!-- Frequency -->
                     <div class="field-pair">
-                      <label [for]="'medFrequency' + med.id">Frequency</label>
+                      <label [for]="'medFrequency' + i">Frequency</label>
 
-                      <select
-                        [id]="'medFrequency' + med.id"
-                        [value]="med.frequency"
-                        (change)="updateMedication(med.id, 'frequency', $any($event.target).value)"
-                      >
+                      <select [id]="'medFrequency' + i" formControlName="frequency">
                         <option value="">Select frequency</option>
                         <option value="Once daily">Once daily</option>
                         <option value="Twice daily">Twice daily</option>
@@ -1380,31 +1603,23 @@
 
                     <!-- Reason / Indication -->
                     <div class="field-pair">
-                      <label [for]="'medIndication' + med.id"> Reason / Indication </label>
+                      <label [for]="'medIndication' + i"> Reason / Indication </label>
 
                       <input
                         type="text"
-                        [id]="'medIndication' + med.id"
-                        [value]="med.indication"
+                        [id]="'medIndication' + i"
+                        formControlName="indication"
                         placeholder="e.g. Hypertension"
-                        (input)="updateMedication(med.id, 'indication', $any($event.target).value)"
                       />
                     </div>
 
                     <!-- Taking Status -->
                     <div class="field-pair">
-                      <label [for]="'medStatus' + med.id">
+                      <label [for]="'medStatus' + i">
                         Taking Status <span class="req">*</span>
                       </label>
 
-                      <select
-                        [id]="'medStatus' + med.id"
-                        [value]="med.takingStatus"
-                        required
-                        (change)="
-                          updateMedication(med.id, 'takingStatus', $any($event.target).value)
-                        "
-                      >
+                      <select [id]="'medStatus' + i" required formControlName="takingStatus">
                         <option value="">Select status</option>
                         <option value="Currently taking">Currently taking</option>
                         <option value="Not taking">Not taking</option>
@@ -1415,14 +1630,13 @@
 
                     <!-- Notes -->
                     <div class="field-pair full-width medication-notes">
-                      <label [for]="'medNotes' + med.id">Notes</label>
+                      <label [for]="'medNotes' + i">Notes</label>
 
                       <textarea
-                        [id]="'medNotes' + med.id"
-                        [value]="med.notes"
+                        [id]="'medNotes' + i"
+                        formControlName="notes"
                         placeholder="Additional medication notes..."
                         rows="4"
-                        (input)="updateMedication(med.id, 'notes', $any($event.target).value)"
                       ></textarea>
                     </div>
                   </div>
@@ -1448,7 +1662,7 @@
           <p class="section-helper">
             Vitals &mdash; enter any you know; the rest can be recorded at the visit.
           </p>
-          <div class="detail-grid four-col">
+          <div class="detail-grid four-col" formGroupName="vitals">
             <div class="field-pair">
               <label for="vitalBp">Blood Pressure (mmHg)</label>
               <input
@@ -1457,6 +1671,7 @@
                 placeholder="120/80"
                 inputmode="numeric"
                 maxlength="7"
+                formControlName="vitalBp"
               />
             </div>
             <div class="field-pair">
@@ -1469,6 +1684,7 @@
                 max="250"
                 step="any"
                 inputmode="decimal"
+                formControlName="vitalHr"
               />
             </div>
             <div class="field-pair">
@@ -1481,6 +1697,7 @@
                 max="45"
                 step="any"
                 inputmode="decimal"
+                formControlName="vitalTemp"
               />
             </div>
             <div class="field-pair">
@@ -1493,6 +1710,7 @@
                 max="80"
                 step="any"
                 inputmode="decimal"
+                formControlName="vitalRr"
               />
             </div>
             <div class="field-pair">
@@ -1505,6 +1723,7 @@
                 max="100"
                 step="any"
                 inputmode="decimal"
+                formControlName="vitalSpo2"
               />
             </div>
             <div class="field-pair">
@@ -1517,6 +1736,7 @@
                 max="250"
                 step="any"
                 inputmode="decimal"
+                formControlName="vitalHeight"
               />
             </div>
             <div class="field-pair">
@@ -1529,18 +1749,25 @@
                 max="500"
                 step="any"
                 inputmode="decimal"
+                formControlName="vitalWeight"
               />
             </div>
             <div class="field-pair">
               <label for="vitalBmi">BMI (kg/m&sup2;)</label>
-              <input type="text" id="vitalBmi" placeholder="Auto-calculated" readonly />
+              <input
+                type="text"
+                id="vitalBmi"
+                placeholder="Auto-calculated"
+                readonly
+                formControlName="vitalBmi"
+              />
             </div>
           </div>
           <p class="section-helper section-gap">Screening</p>
-          <div class="detail-grid four-col">
+          <div class="detail-grid four-col" formGroupName="screening">
             <div class="field-pair">
               <label for="redFlags">Emergency Symptoms / Red Flags</label>
-              <select id="redFlags">
+              <select id="redFlags" formControlName="redFlags">
                 <option value="">Select</option>
                 <option>No</option>
                 <option>Yes</option>
@@ -1548,7 +1775,7 @@
             </div>
             <div class="field-pair">
               <label for="fallRisk">Fall Risk</label>
-              <select id="fallRisk">
+              <select id="fallRisk" formControlName="fallRisk">
                 <option value="">Select</option>
                 <option>No</option>
                 <option>Yes</option>
@@ -1556,7 +1783,7 @@
             </div>
             <div class="field-pair">
               <label for="mobilityAssist">Mobility Assistance Required</label>
-              <select id="mobilityAssist">
+              <select id="mobilityAssist" formControlName="mobilityAssist">
                 <option value="">Select</option>
                 <option>No</option>
                 <option>Yes</option>
@@ -1564,7 +1791,7 @@
             </div>
             <div class="field-pair">
               <label for="interpreterRequired">Interpreter Required</label>
-              <select id="interpreterRequired">
+              <select id="interpreterRequired" formControlName="interpreterRequired">
                 <option value="">Select</option>
                 <option>No</option>
                 <option>Yes</option>
@@ -1572,7 +1799,7 @@
             </div>
             <div class="field-pair conditional" id="pregnancyField" hidden>
               <label for="pregnancyStatus">Pregnancy Status</label>
-              <select id="pregnancyStatus">
+              <select id="pregnancyStatus" formControlName="pregnancyStatus">
                 <option value="">Select</option>
                 <option>Not pregnant</option>
                 <option>Pregnant</option>
@@ -1585,39 +1812,62 @@
 
         <section class="consultation-section">
           <div class="section-header">
-            <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
             <h2>Family History</h2>
           </div>
 
           <div class="history-check-grid">
             <label class="check-card">
-              <input type="checkbox" name="familyHistory" value="Heart disease" />
-
+              <input
+                type="checkbox"
+                value="Heart disease"
+                [checked]="historyForm.get('familyHistory')?.value.includes('Heart disease')"
+                (change)="toggleArrayValue('history.familyHistory', 'Heart disease', $event)"
+              />
               Heart disease
             </label>
 
             <label class="check-card">
-              <input type="checkbox" name="familyHistory" value="Diabetes" />
-
+              <input
+                type="checkbox"
+                value="Diabetes"
+                [checked]="historyForm.get('familyHistory')?.value.includes('Diabetes')"
+                (change)="toggleArrayValue('history.familyHistory', 'Diabetes', $event)"
+              />
               Diabetes
             </label>
 
             <label class="check-card">
-              <input type="checkbox" name="familyHistory" value="Hypertension" />
-
+              <input
+                type="checkbox"
+                name="familyHistory"
+                value="Hypertension"
+                [checked]="historyForm.get('familyHistory')?.value.includes('Hypertension')"
+                (change)="toggleArrayValue('history.familyHistory', 'Hypertension', $event)"
+              />
               Hypertension
             </label>
 
             <label class="check-card">
-              <input type="checkbox" name="familyHistory" value="Cancer" />
-
+              <input
+                type="checkbox"
+                name="familyHistory"
+                value="Cancer"
+                [checked]="historyForm.get('familyHistory')?.value.includes('Cancer')"
+                (change)="toggleArrayValue('history.familyHistory', 'Cancer', $event)"
+              />
               Cancer
             </label>
 
             <label class="check-card">
-              <input type="checkbox" name="familyHistory" value="Other" />
-
+              <input
+                type="checkbox"
+                name="familyHistory"
+                value="Other"
+                [checked]="historyForm.get('familyHistory')?.value.includes('Other')"
+                (change)="toggleArrayValue('history.familyHistory', 'Other', $event)"
+              />
               Other
             </label>
           </div>
@@ -1625,16 +1875,16 @@
 
         <section class="consultation-section">
           <div class="section-header">
-            <img src="/assets/images/front-office/images/profile-outline.png" alt="" />
+            <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
 
             <h2>Lifestyle</h2>
           </div>
 
-          <div class="detail-grid two-col">
+          <div class="detail-grid two-col" formGroupName="lifestyle">
             <div class="field-pair">
               <label for="smoking"> Smoking </label>
 
-              <select id="smoking">
+              <select id="smoking" formControlName="smoking">
                 <option value="">Select</option>
 
                 <option>Never</option>
@@ -1648,7 +1898,7 @@
             <div class="field-pair">
               <label for="alcohol"> Alcohol </label>
 
-              <select id="alcohol">
+              <select id="alcohol" formControlName="alcohol">
                 <option value="">Select</option>
 
                 <option>Never</option>
@@ -1662,7 +1912,7 @@
             <div class="field-pair">
               <label for="exercise"> Exercise </label>
 
-              <select id="exercise">
+              <select id="exercise" formControlName="exercise">
                 <option value="">Select</option>
 
                 <option>Rarely</option>
@@ -1679,6 +1929,7 @@
               <label for="lifestyleNotes"> Other Lifestyle Notes </label>
 
               <input
+                formControlName="lifestyleNotes"
                 type="text"
                 id="lifestyleNotes"
                 placeholder="Additional lifestyle information"
@@ -1696,7 +1947,12 @@
 
           <div class="detail-grid two-col">
             <label class="upload-box">
-              <input type="file" id="labReports" multiple />
+              <input
+                type="file"
+                id="labReports"
+                multiple
+                (change)="onDocumentsChange($event, 'labReports')"
+              />
 
               <img src="/assets/images/front-office/images/upload-blue.png" alt="" />
 
@@ -1706,7 +1962,12 @@
             </label>
 
             <label class="upload-box">
-              <input type="file" id="medicalReports" multiple />
+              <input
+                type="file"
+                id="medicalReports"
+                multiple
+                (change)="onDocumentsChange($event, 'medicalReports')"
+              />
 
               <img src="/assets/images/front-office/images/upload-blue.png" alt="" />
 
@@ -1719,131 +1980,334 @@
       </div>
 
       <div class="consultation-step-panel" [class.active]="currentStep === 5" data-step="5">
+        <!-- Review Header -->
         <div class="review-banner">
           <img src="/assets/images/front-office/images/check-blue.png" alt="" />
 
           <div>
             <h2>Review Consultation</h2>
-
             <p>Review the information below before confirming the consultation.</p>
           </div>
         </div>
 
         <div class="triage-alert conditional" role="alert" hidden></div>
 
+        <!-- Review Cards -->
         <div class="review-grid">
+          <!-- Patient Information -->
           <section class="review-card">
             <div class="review-card-head">
               <h3>Patient Information</h3>
               <button type="button" class="review-edit" (click)="goToStep(1)">Edit</button>
             </div>
-            <dl id="reviewPatient"></dl>
+
+            <dl class="review-details">
+              <div class="review-row">
+                <dt>Patient Type</dt>
+                <dd>
+                  {{
+                    patientForm.get("patientType")?.value === "existing"
+                      ? "Existing Patient"
+                      : "New Patient"
+                  }}
+                </dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Patient Name</dt>
+                <dd>
+                  {{ patientForm.get("personalInfo.firstName")?.value || "—" }}
+                </dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Phone</dt>
+                <dd>
+                  {{ patientForm.get("personalInfo.phone")?.value || "—" }}
+                </dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Account Holder</dt>
+                <dd>
+                  {{ patientForm.get("account.accountHolder")?.value || "—" }}
+                </dd>
+              </div>
+            </dl>
           </section>
+
+          <!-- Appointment Information -->
           <section class="review-card">
             <div class="review-card-head">
               <h3>Appointment Information</h3>
               <button type="button" class="review-edit" (click)="goToStep(2)">Edit</button>
             </div>
-            <dl id="reviewAppointment"></dl>
+
+            <dl class="review-details">
+              <div class="review-row">
+                <dt>Preferred Date</dt>
+                <dd>{{ appointmentForm.get("preferredDate")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Preferred Time</dt>
+                <dd>{{ appointmentForm.get("preferredTime")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Consultation Mode</dt>
+                <dd>{{ appointmentForm.get("consultationMode")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Visit Type</dt>
+                <dd>{{ appointmentForm.get("visitType")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Reason for Visit</dt>
+                <dd>{{ appointmentForm.get("reasonForVisit")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Physician</dt>
+                <dd>{{ appointmentForm.get("preferredPhysician")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Specialty</dt>
+                <dd>{{ appointmentForm.get("specialty")?.value || "—" }}</dd>
+              </div>
+            </dl>
           </section>
+
+          <!-- Symptoms Summary -->
           <section class="review-card">
             <div class="review-card-head">
               <h3>Symptoms Summary</h3>
               <button type="button" class="review-edit" (click)="goToStep(3)">Edit</button>
             </div>
-            <dl id="reviewSymptomsCard"></dl>
+
+            <dl class="review-details">
+              <div class="review-row">
+                <dt>Pain Level</dt>
+                <dd>
+                  {{
+                    symptomsForm.get("painLevel")?.value !== null &&
+                    symptomsForm.get("painLevel")?.value !== ""
+                      ? symptomsForm.get("painLevel")?.value + "/10"
+                      : "—"
+                  }}
+                </dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Chief Complaint</dt>
+                <dd>{{ symptomsForm.get("chiefComplaint")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Duration</dt>
+                <dd>{{ symptomsForm.get("symptomDuration")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Associated Symptoms</dt>
+                <dd>
+                  {{ symptomsForm.get("associatedSymptoms")?.value?.join(", ") || "—" }}
+                </dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Urgency</dt>
+                <dd>{{ symptomsForm.get("urgency")?.value || "—" }}</dd>
+              </div>
+            </dl>
           </section>
+
+          <!-- Medical History -->
           <section class="review-card">
             <div class="review-card-head">
               <h3>Medical History Summary</h3>
               <button type="button" class="review-edit" (click)="goToStep(4)">Edit</button>
             </div>
-            <dl id="reviewHistory"></dl>
+
+            <dl class="review-details">
+              <div class="review-row">
+                <dt>Allergy Status</dt>
+                <dd>
+                  {{ historyForm.get("allergies.allergyStatus")?.value || "—" }}
+                </dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Existing Conditions</dt>
+                <dd>{{ historyForm.get("medical.existingConditions")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Previous Diagnoses</dt>
+                <dd>{{ historyForm.get("medical.previousDiagnoses")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Previous Surgeries</dt>
+                <dd>{{ historyForm.get("surgical.previousSurgeries")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Family History</dt>
+                <dd>{{ historyForm.get("familyHistory")?.value?.join(", ") || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Medications</dt>
+                <dd>
+                  {{
+                    historyForm.get("noMedications")?.value
+                      ? "No current medications"
+                      : medicationsArray.length + " medication entries"
+                  }}
+                </dd>
+              </div>
+            </dl>
           </section>
+
+          <!-- Vitals & Screening -->
           <section class="review-card">
             <div class="review-card-head">
               <h3>Vitals &amp; Screening</h3>
               <button type="button" class="review-edit" (click)="goToStep(4)">Edit</button>
             </div>
-            <dl id="reviewVitals"></dl>
+
+            <dl class="review-details">
+              <div class="review-row">
+                <dt>Blood Pressure</dt>
+                <dd>{{ historyForm.get("vitals.vitalBp")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Heart Rate</dt>
+                <dd>{{ historyForm.get("vitals.vitalHr")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Temperature</dt>
+                <dd>{{ historyForm.get("vitals.vitalTemp")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>SpO₂</dt>
+                <dd>{{ historyForm.get("vitals.vitalSpo2")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Red Flags</dt>
+                <dd>{{ historyForm.get("screening.redFlags")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Fall Risk</dt>
+                <dd>{{ historyForm.get("screening.fallRisk")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Mobility Assistance</dt>
+                <dd>{{ historyForm.get("screening.mobilityAssist")?.value || "—" }}</dd>
+              </div>
+
+              <div class="review-row">
+                <dt>Interpreter Required</dt>
+                <dd>{{ historyForm.get("screening.interpreterRequired")?.value || "—" }}</dd>
+              </div>
+            </dl>
           </section>
+
+          <!-- Other Information -->
           <section class="review-card">
             <div class="review-card-head">
               <h3>Other Information</h3>
               <button type="button" class="review-edit" (click)="goToStep(1)">Edit</button>
             </div>
-            <dl id="reviewOther"></dl>
+
+            <dl class="review-details">
+              <!-- Insurance -->
+              <div class="review-row">
+                <dt>Insurance</dt>
+                <dd>
+                  {{ patientForm.get("insurance.provider")?.value || "—" }}
+                </dd>
+              </div>
+
+              <!-- Pharmacy -->
+              <div class="review-row">
+                <dt>Pharmacy</dt>
+                <dd>
+                  {{ patientForm.get("pharmacy.pharmacyName")?.value || "Not provided" }}
+                </dd>
+              </div>
+
+              <!-- Notes -->
+              <div class="review-row">
+                <dt>Notes</dt>
+                <dd>
+                  {{ appointmentForm.get("appointmentNotes")?.value || "—" }}
+                </dd>
+              </div>
+            </dl>
           </section>
         </div>
 
-        <section class="consent-card">
+        <!-- Consent -->
+        <section class="consent-card" formGroupName="consent">
           <div class="section-header">
             <img src="/assets/images/front-office/images/check-blue.png" alt="" />
             <h2>Consent &amp; Authorization</h2>
           </div>
+
           <div class="consent-body">
             <label>
-              <input type="checkbox" id="consentAccurate" />
-              <span
-                ><strong>Information Accuracy:</strong> I confirm that the information provided is
-                accurate and complete to the best of my knowledge.</span
-              >
+              <input type="checkbox" id="consentAccurate" formControlName="consentAccurate" />
+              <span>
+                <strong>Information Accuracy:</strong>
+                I confirm that the information provided is accurate and complete to the best of my
+                knowledge.
+              </span>
             </label>
-            <label>
-              <input type="checkbox" id="consentConsultation" />
-              <span
-                ><strong>Consultation / Treatment Consent:</strong> I consent to this physician
-                consultation and to the assessment and treatment the physician considers
-                appropriate.</span
-              >
-            </label>
-            <label>
-              <input type="checkbox" id="consentPrivacy" />
-              <span
-                ><strong>Data Processing / Privacy Consent:</strong> I consent to the collection,
-                use and storage of my personal and health information for this consultation, in line
-                with the privacy policy.</span
-              >
-            </label>
-            <label class="conditional" id="telemedicineConsentRow" hidden>
-              <input type="checkbox" id="consentTelemedicine" />
-              <span
-                ><strong>Telemedicine Consent:</strong> I consent to receiving this consultation by
-                video or telephone. I understand it has limitations compared with an in-person
-                examination, that technical problems can occur, and that I may be advised to attend
-                in person.</span
-              >
-            </label>
-          </div>
-        </section>
 
-        <section class="consultation-section next-actions" id="nextActions" hidden>
-          <div class="section-header">
-            <img src="/assets/images/front-office/images/arrow-right.png" alt="" />
-            <h2>Next Actions</h2>
-          </div>
-          <div class="next-actions-grid">
-            <button type="button" class="btn-outline next-action-btn" data-href="payment.html">
-              Proceed to Payment
-            </button>
-            <button type="button" class="btn-outline next-action-btn" data-href="lab-service.html">
-              Create Lab Service Request
-            </button>
-            <button
-              type="button"
-              class="btn-outline next-action-btn"
-              data-href="prescription-refill.html"
-            >
-              Prescription Refill
-            </button>
-            <button
-              type="button"
-              class="btn-outline next-action-btn"
-              data-href="referral.html"
-              data-include-consultation
-            >
-              Referral to Other Doctor
-            </button>
+            <label>
+              <input
+                type="checkbox"
+                id="consentConsultation"
+                formControlName="consentConsultation"
+              />
+              <span>
+                <strong>Consultation / Treatment Consent:</strong>
+                I consent to this physician consultation and to the assessment and treatment the
+                physician considers appropriate.
+              </span>
+            </label>
+
+            <label>
+              <input type="checkbox" id="consentPrivacy" formControlName="consentPrivacy" />
+              <span>
+                <strong>Data Processing / Privacy Consent:</strong>
+                I consent to the collection, use and storage of my personal and health information
+                for this consultation, in line with the privacy policy.
+              </span>
+            </label>
+
+            <label class="conditional" id="telemedicineConsentRow" hidden>
+              <input
+                type="checkbox"
+                id="consentTelemedicine"
+                formControlName="consentTelemedicine"
+              />
+              <span>
+                <strong>Telemedicine Consent:</strong>
+                I consent to receiving this consultation by video or telephone.
+              </span>
+            </label>
           </div>
         </section>
       </div>
@@ -1856,7 +2320,7 @@
         </div>
 
         <div class="footer-actions">
-          <button type="button" class="btn-outline" id="saveDraftBtn">Save Draft</button>
+          <button type="button" class="btn-outline" (click)="saveDraft()">Save Draft</button>
 
           <button
             type="button"
@@ -1868,10 +2332,17 @@
             Back
           </button>
 
-          <button type="button" class="btn-primary" id="continueBtn" (click)="nextStep()">
-            Continue
-
-            <img src="/assets/images/front-office/images/arrow-right.png" alt="" />
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="currentStep === 5 ? submitConsultation() : nextStep()"
+          >
+            {{ currentStep === 5 ? "Complete Consultation" : "Continue" }}
+            @if (currentStep < 5) {
+              <img src="/assets/images/front-office/images/arrow-right.png" alt="" />
+            } @else {
+              <img src="/assets/images/front-office/images/check-white.png" alt="" />
+            }
           </button>
         </div>
       </footer>
@@ -1885,7 +2356,7 @@
 
     <div class="modal-heading">
       <span class="page-icon-badge">
-        <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+        <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
       </span>
 
       <div>
@@ -1925,7 +2396,7 @@
 
     <div class="modal-heading">
       <span class="page-icon-badge">
-        <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+        <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
       </span>
 
       <div>
@@ -1972,7 +2443,7 @@
 
     <div class="modal-heading">
       <span class="page-icon-badge">
-        <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
+        <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
       </span>
 
       <div>
