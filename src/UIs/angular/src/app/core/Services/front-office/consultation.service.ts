@@ -2,7 +2,11 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
-import { PatientApiEndPoint } from "../../../utils/API/ApiEndPoints";
+import {
+  AuthEndPoints,
+  ConsultationEndPoints,
+  PatientApiEndPoint,
+} from "../../../utils/API/ApiEndPoints";
 @Injectable({ providedIn: "root" })
 export class ConsultationService {
   private http = inject(HttpClient);
@@ -31,9 +35,6 @@ export class ConsultationService {
   getAgeTypes(): Observable<any> {
     return this.http.get(`${this.apiUrl}/Master/GetAgeTypeList`);
   }
-  getRelations(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/Master/GetRelationTypeList`);
-  }
   requestOtp(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/Auth/RequestOtp`, { email });
   }
@@ -46,5 +47,13 @@ export class ConsultationService {
   // [Certain] no such endpoint exists in the swagger yet. Backend needs to add it.
   saveIntake(_appointmentId: number, _intake: any): Observable<any> {
     throw new Error("Intake endpoint not implemented on backend");
+  }
+
+  submitConsultation(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${ConsultationEndPoints}`, payload).pipe(
+      map((resp) => {
+        return resp.Data;
+      })
+    );
   }
 }

@@ -7,6 +7,7 @@ import { ISearchPatientRequestModel } from "../../core/Models/common/search-pati
 @Injectable({ providedIn: "root" })
 export class CommonFacade {
   searchedPatient$ = this.store.pipe(select(S.selectSearchedPatientList));
+  patientSearchLoadingStatus$ = this.store.pipe(select(S.selectPatientSearchLoadingStatus));
 
   constructor(private store: Store) {}
 
@@ -29,7 +30,10 @@ export class CommonFacade {
     this.store.dispatch(A.searchByPhoneNumber({ phoneNumber }));
   }
 
-  clearPatientSearch(){
+  clearPatientSearch() {
     this.store.dispatch(A.clearPatientSearch());
+  }
+  openPatientSwitchDialog() {
+    this.store.dispatch(A.openPatientSwitchDialog());
   }
 }

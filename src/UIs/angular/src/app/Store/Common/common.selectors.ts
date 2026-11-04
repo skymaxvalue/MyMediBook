@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { CommonState } from "./common.reducer";
+import { LoadStatus } from "../../utils/enum/load-status.enum";
 
 export const selectCommonState = createFeatureSelector<CommonState>("common");
 
@@ -23,4 +24,8 @@ export const selectSearchByName = createSelector(selectCommonState, (state) => s
 export const selectSearchByMobileNo = createSelector(
   selectCommonState,
   (state) => state.searchByPhoneNumber
+);
+export const selectPatientSearchLoadingStatus = createSelector(
+  selectCommonState,
+  (state) => state.loading ?? LoadStatus.NotLoaded
 );

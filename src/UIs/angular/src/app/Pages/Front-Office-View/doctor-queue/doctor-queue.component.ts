@@ -71,7 +71,7 @@ export class DoctorQueueComponent implements OnInit, OnDestroy {
 
   private LoadAndsubscribeStatusOptions(): void {
     this.masterFacade.getStatusKeyList();
-    this.masterFacade.stausKeyList$.pipe(takeUntil(this.destroy$)).subscribe((list: any) => {
+    this.masterFacade.statusKeyList$.pipe(takeUntil(this.destroy$)).subscribe((list: any) => {
       const groups = Array.isArray(list) ? list : (list ?? []);
       const g = groups.find((x: any) => x.category === "AppointmentConsultationStatus");
       this.statusOptions = (g?.statuses ?? []).map((s: any) => ({

@@ -11,63 +11,62 @@
   font-family: "Source Sans Pro", sans-serif !important;
 }
 :root {
-  --ls-navy:          #0b2c56;
-  --ls-blue:           #2f6fed;
-  --ls-blue-light:     #3b82f6;
-  --ls-blue-bg:        #e8f0fe;
-  --ls-blue-bg-2:      #f2f6fd;
-  --ls-green:          #16a34a;
-  --ls-green-bg:       #e7f7ed;
-  --ls-grey-bg:        #eef1f6;
-  --ls-white:          #ffffff;
-  --ls-border:         #dfe4ec;
-  --ls-border-strong:  #c7cfdc;
-  --ls-text-900:       #16233c;
-  --ls-text-600:       #4b5768;
-  --ls-text-400:       #8792a2;
-  --ls-danger:         #e0334f;
-  --ls-shadow-card:    0 8px 28px rgba(16, 35, 68, 0.08);
-  --ls-radius-lg:      16px;
-  --ls-radius-md:      10px;
-  --ls-radius-sm:      8px;
-  --ls-radius-pill:    999px;
+  --ls-navy: #0b2c56;
+  --ls-blue: #2f6fed;
+  --ls-blue-light: #3b82f6;
+  --ls-blue-bg: #e8f0fe;
+  --ls-blue-bg-2: #f2f6fd;
+  --ls-green: #16a34a;
+  --ls-green-bg: #e7f7ed;
+  --ls-grey-bg: #eef1f6;
+  --ls-white: #ffffff;
+  --ls-border: #dfe4ec;
+  --ls-border-strong: #c7cfdc;
+  --ls-text-900: #16233c;
+  --ls-text-600: #4b5768;
+  --ls-text-400: #8792a2;
+  --ls-danger: #e0334f;
+  --ls-shadow-card: 0 8px 28px rgba(16, 35, 68, 0.08);
+  --ls-radius-lg: 16px;
+  --ls-radius-md: 10px;
+  --ls-radius-sm: 8px;
+  --ls-radius-pill: 999px;
   --ls-font: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 :root {
---primary1: #2F6FED;
-  --primary-dark: #255DCC;
-  --primary-soft: #EEF4FF;
-  --danger: #EF4444;
+  --primary1: #2f6fed;
+  --primary-dark: #255dcc;
+  --primary-soft: #eef4ff;
+  --danger: #ef4444;
   --text: #183153;
-  --muted: #64748B;
-  --border: #D8E3F6;
-  --surface: #FFFFFF;
-  --bg: #F4F7FC;
+  --muted: #64748b;
+  --border: #d8e3f6;
+  --surface: #ffffff;
+  --bg: #f4f7fc;
   --radius: 12px;
 }
 
-
 :root {
-  --primary: #183C75;
-  --primary-dark: #14325F;
-  --secondary: #4D87FF;
+  --primary: #183c75;
+  --primary-dark: #14325f;
+  --secondary: #4d87ff;
 
-  --success: #34C759;
-  --warning: #F59E0B;
-  --danger: #EF4444;
+  --success: #34c759;
+  --warning: #f59e0b;
+  --danger: #ef4444;
 
-  --purple: #7C3AED;
-  --cyan: #06B6D4;
-  --green: #10B981;
-  --orange: #FB923C;
+  --purple: #7c3aed;
+  --cyan: #06b6d4;
+  --green: #10b981;
+  --orange: #fb923c;
 
-  --background: #F4F7FB;
-  --card: #FFFFFF;
+  --background: #f4f7fb;
+  --card: #ffffff;
 
-  --text: #1F2937;
-  --text-light: #6B7280;
+  --text: #1f2937;
+  --text-light: #6b7280;
 
-  --border: #E6ECF5;
+  --border: #e6ecf5;
 
   --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 
@@ -91,8 +90,8 @@ div.card {
 .table {
   margin-top: 10px;
 }
-a{
-    text-decoration: none !important;
+a {
+  text-decoration: none !important;
 }
 
 * {
@@ -198,3 +197,4 @@ button {
 .footer-brand-name {
   letter-spacing: 0.1px;
 }
+

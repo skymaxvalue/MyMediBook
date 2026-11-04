@@ -51,4 +51,51 @@ export class MasterEffects {
       )
     )
   );
+  GetRelationTypeList$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MasterActions.getRelationTypeList),
+
+      mergeMap(() =>
+        this.masterService.getRelations().pipe(
+          map((response: any) =>
+            MasterActions.getRelationTypeListSuccess({
+              response,
+            })
+          ),
+
+          catchError((error) =>
+            of(
+              MasterActions.getRelationTypeListFailure({
+                error: error?.message || "Getting Organization Data Failed",
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  GetOtpTypeList$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MasterActions.getOtpTypeList),
+
+      mergeMap(() =>
+        this.masterService.getOtpTypeList().pipe(
+          map((response: any) =>
+            MasterActions.getOtpTypeListSuccess({
+              response,
+            })
+          ),
+
+          catchError((error) =>
+            of(
+              MasterActions.getOtpTypeListFailure({
+                error: error?.message || "Getting Organization Data Failed",
+              })
+            )
+          )
+        )
+      )
+    )
+  );
 }

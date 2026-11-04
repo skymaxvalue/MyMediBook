@@ -1,0 +1,274 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Dialog */
+.patient-dialog {
+  width: 100%;
+  max-width: 430px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 35px rgba(24, 49, 83, 0.2);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Header */
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.dialog-title-icon {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #eef4ff;
+  border-radius: 50%;
+}
+
+.dialog-title-icon img {
+  width: 18px;
+  height: 18px;
+}
+
+.dialog-title-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dialog-title-content h2 {
+  margin: 0;
+  color: #255dcc;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dialog-title-content p {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.dialog-close {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dialog-close:hover {
+  color: #183153;
+}
+
+/* Search */
+.dialog-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.75fr) auto;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.dialog-search input {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #d6e2f6;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #183153;
+  font-size: 11px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.dialog-search input:focus {
+  border-color: #2f6fed;
+  box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.1);
+}
+
+/* Buttons */
+.btn-primary,
+.btn-outline {
+  height: 35px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  color: #ffffff;
+  background: #2f6fed;
+  border: 1px solid #2f6fed;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #255dcc;
+  border-color: #255dcc;
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  color: #2f6fed;
+  background: #ffffff;
+  border: 1px solid #2f6fed;
+}
+
+.btn-outline:hover {
+  background: #eef4ff;
+}
+
+.search-icon {
+  font-size: 13px;
+}
+
+/* Patient list */
+.dialog-patient-list {
+  flex: 1;
+  min-height: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 2px 4px 2px 0;
+}
+
+.dialog-patient-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.dialog-patient-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.dialog-patient-list::-webkit-scrollbar-thumb {
+  background: #a7b4c8;
+  border-radius: 8px;
+}
+
+/* Patient row */
+.patient-option {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 9px;
+  border: 1px solid #d6e2f6;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.patient-option:hover {
+  background: #f5f8ff;
+  border-color: #8eb3ff;
+}
+
+.patient-option.selected {
+  background: #eef4ff;
+  border-color: #2f6fed;
+  box-shadow: 0 0 0 1px rgba(47, 111, 237, 0.15);
+}
+
+.patient-option-icon {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.patient-option-icon img {
+  width: 15px;
+  height: 15px;
+}
+
+.patient-option-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.patient-option-info small {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.patient-option-info strong {
+  color: #183153;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Messages */
+.dialog-message {
+  padding: 16px 8px;
+  text-align: center;
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* Footer */
+.dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  padding-top: 10px;
+  margin-top: 8px;
+  border-top: 1px solid #edf1f7;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .patient-dialog {
+    max-height: 90vh;
+    padding: 12px;
+  }
+
+  .dialog-search {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dialog-search .btn-primary {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .dialog-patient-list {
+    max-height: 45vh;
+  }
+}

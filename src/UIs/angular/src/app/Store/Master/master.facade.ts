@@ -6,15 +6,23 @@ import * as MasterActions from "./master.actions";
   providedIn: "root",
 })
 export class MasterFacade {
-  constructor(private store: Store) {}
-
-  stausKeyList$ = this.store.pipe(select(MasterSelectors.selectStatuskeyList));
+  statusKeyList$ = this.store.pipe(select(MasterSelectors.selectStatuskeyList));
   organisationList$ = this.store.pipe(select(MasterSelectors.selectOrganisationList));
+  getRelationsList$ = this.store.pipe(select(MasterSelectors.selectRelationList));
+  getOtpTypeList$ = this.store.pipe(select(MasterSelectors.selectOtpTypeList));
+
+  constructor(private store: Store) {}
 
   getOrganisationList() {
     this.store.dispatch(MasterActions.GetOrganisationList());
   }
   getStatusKeyList() {
     this.store.dispatch(MasterActions.GetStatusKeyList());
+  }
+  loadRelationTypeList() {
+    this.store.dispatch(MasterActions.getRelationTypeList());
+  }
+  loadOtpTypeList() {
+    this.store.dispatch(MasterActions.getOtpTypeList());
   }
 }

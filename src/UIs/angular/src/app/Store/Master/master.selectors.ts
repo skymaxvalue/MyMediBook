@@ -11,3 +11,9 @@ export const selectOrganisationList = createSelector(
   selectMasterState,
   (state) => state.organisationList ?? []
 );
+export const selectRelationList = createSelector(selectMasterState, (state) => {
+  return state.relationList ?? [];
+});
+export const selectOtpTypeList = createSelector(selectMasterState, (state) => {
+  return state.otpTypeList ?? [];
+});

@@ -3,16 +3,20 @@ import {
   ISearchPatientRequestModel,
   ISearchPatientResponseModel,
 } from "../../../core/Models/common/search-patient.model";
-
+import { CommonModule, DatePipe } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { LoadStatus } from "../../../utils/enum/load-status.enum";
+import { CommonFacade } from "../../../Store/Common/common.facade";
 @Component({
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule, DatePipe],
   selector: "app-shared-patient-search",
   styleUrl: "./shared-patient-search.component.css",
   templateUrl: "./shared-patient-search.component.html",
 })
 export class SharedPatientSearchComponent {
   @Input() patients: ISearchPatientResponseModel[] = [];
-  @Input() loading = false;
+  @Input() loading: LoadStatus = LoadStatus.NotLoaded;
 
   @Output() searchRequested = new EventEmitter<ISearchPatientRequestModel>();
 
@@ -21,26 +25,31 @@ export class SharedPatientSearchComponent {
   @Output() patientSelected = new EventEmitter<ISearchPatientResponseModel>();
 
   @Output() switchProfile = new EventEmitter<void>();
-
+  LoadStatus = LoadStatus;
   lastName = "";
   dob = "";
-  mobileNo?: number;
+  mobileNo = "";
 
   selectedPatient: ISearchPatientResponseModel | null = null;
   showPatientModal = false;
 
+  constructor(private commonFacade: CommonFacade) {}
   get searchPayload(): ISearchPatientRequestModel {
     return {
       name: this.lastName.trim() || null,
       dob: this.dob || null,
-      mobileNo: this.mobileNo || null,
-      fromDate: "",
-      toDate: "",
+      mobileNo: this.mobileNo.trim() || null,
+      fromDate: null,
+      toDate: null,
     };
   }
 
   searchPatient(): void {
-    if (!this.lastName.trim() && !this.dob && !this.mobileNo) {
+    if (this.loading === LoadStatus.Loading) {
+      return;
+    }
+
+    if (!this.lastName.trim() && !this.dob && !this.mobileNo.trim()) {
       return;
     }
 
@@ -50,7 +59,7 @@ export class SharedPatientSearchComponent {
   clearSearch(): void {
     this.lastName = "";
     this.dob = "";
-    this.mobileNo = 0;
+    this.mobileNo = "";
 
     this.clearRequested.emit();
   }
@@ -70,7 +79,6 @@ export class SharedPatientSearchComponent {
   }
 
   switchPatientProfile(): void {
-    this.selectedPatient = null;
-    this.switchProfile.emit();
+    this.commonFacade.openPatientSwitchDialog();
   }
 }

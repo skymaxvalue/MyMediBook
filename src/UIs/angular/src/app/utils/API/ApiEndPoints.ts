@@ -64,6 +64,7 @@ export const LocationAPIEndPoint = {
 export const MasterEndPoints = {
   GET_SECURITY_QUESTIONS: "Master/GetSecurityQuestionList",
   GET_RELATIONSHIP_TYPE: "Master/GetRelationTypeList",
+  GET_OTP_TYPE_LIST: "Master/GetOtpTypeList",
   GET_ROLE_SPECIALITY_AVAILABITY: "Master/GetRoleDepartmentSpecialityList",
   GET_DAYS_OF_WEEKEND: "Master/GetWeekDaysList",
   GET_AGE_TYPE: "Master/GetAgeTypeList",
@@ -88,7 +89,9 @@ export const AuthEndPoints = {
   LOG_OUT: "Auth/Logout",
   CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount",
 };
-
+export const ConsultationEndPoints = {
+  SAVE_CONSULTATION: "Consultation/CreateConsultation",
+};
 export const cancelRules = [
   {
     type: "success",

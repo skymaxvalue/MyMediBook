@@ -104,7 +104,7 @@
       "description": "E-prescription & refills",
       "icon": "prescription.png",
       "color": "purple",
-      "route": "prescription"
+      "route": "prescription-refill"
     },
     {
       "title": "Payment",

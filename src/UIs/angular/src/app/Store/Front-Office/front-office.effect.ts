@@ -1,18 +1,38 @@
-import { Injectable, inject } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { catchError, forkJoin, map, mergeMap, of, switchMap, withLatestFrom } from "rxjs";
-import * as A from "./front-office.actions";
-import * as S from "./front-office.selectors";
-import { VISIT_TYPE_IDS, VISIT_PURPOSE_IDS } from "../consultation.constants";
-import { ConsultationService } from "../../core/Services/front-office/consultation.service";
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, map, of, switchMap } from 'rxjs';
 
-const msg = (e: any, fallback: string) => e?.error?.message || e?.message || fallback;
+import * as A from './front-office.actions';
+import { ConsultationService } from '../../core/Services/front-office/consultation.service';
 
 @Injectable()
-export class Effects {
-  private actions$ = inject(Actions);
-  private service = inject(ConsultationService);
-  private store = inject(Store);
+export class FrontOfficeEffects {
 
+  submitConsultation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(A.submitConsultation),
+
+      switchMap(({ formValue }) =>
+        this.consultationService.submitConsultation(formValue).pipe(
+          map((response) =>
+            A.submitConsultationSuccess({
+              confirmation: response
+            })
+          ),
+          catchError((error) =>
+            of(
+              A.submitConsultationFailure({
+                error: error?.error?.message || 'Failed to submit consultation'
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  constructor(
+    private actions$: Actions,
+    private consultationService: ConsultationService
+  ) {}
 }

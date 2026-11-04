@@ -11,6 +11,7 @@ import {
   LookupItem,
   Medication,
 } from "../../core/Models/front-office/consultation.model";
+import { IRelationTypeModel } from "../../core/Models/master/relation-type.model";
 
 // ---------- Navigation ----------
 export const goToStep = createAction("[Consultation] Go To Step", props<{ step: number }>());
@@ -56,17 +57,6 @@ export const updateMedication = createAction(
   props<{ id: string; field: keyof Omit<Medication, "id">; value: string }>()
 );
 export const toggleNoMedications = createAction("[Consultation] Toggle No Medications");
-
-// ---------- Masters ----------
-export const loadMasters = createAction("[Consultation] Load Masters");
-export const loadMastersSuccess = createAction(
-  "[Consultation] Load Masters Success",
-  props<{ ageTypes: LookupItem[]; relations: LookupItem[] }>()
-);
-export const loadMastersFailure = createAction(
-  "[Consultation] Load Masters Failure",
-  props<{ error: string }>()
-);
 
 // ---------- Patient / responsible-party search ----------
 export const searchPatients = createAction(
@@ -142,15 +132,15 @@ export const verifyOtpFailure = createAction(
 
 // ---------- Submit ----------
 export const submitConsultation = createAction(
-  "[Consultation] Submit",
+  "[Consultation] Submit Consultation",
   props<{ formValue: Record<string, any> }>()
 );
 export const submitConsultationSuccess = createAction(
-  "[Consultation] Submit Success",
+  "[Consultation] Submit Consultation Success",
   props<{ confirmation: ConfirmationSummary }>()
 );
 export const submitConsultationFailure = createAction(
-  "[Consultation] Submit Failure",
+  "[Consultation] Submit Consultation Failure",
   props<{ error: string }>()
 );
 

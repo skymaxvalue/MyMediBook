@@ -1,4 +1,4 @@
-import { DoctorProfileModel } from "../doctor-detail.model";
+import { DoctorProfileModel } from "../doctor/doctor-detail.model";
 import { InsuranceData, PaymentData } from "./appointment.model";
 
 export interface AppointmentDetailModel {

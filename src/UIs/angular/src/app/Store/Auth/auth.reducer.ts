@@ -1,6 +1,11 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import * as AuthActions from "./auth.actions";
 import { PatientRegister } from "../../core/Models/Patient-Model";
+import {
+  ICityModel,
+  ICountryModel,
+  IStateModel,
+} from "../../core/Models/location/location-master.model";
 
 export const AUTH_FEATURE_KEY = "auth";
 
@@ -12,9 +17,9 @@ export interface AuthState {
   isLoading: boolean;
   error: string | null;
   securityQuestions?: any[];
-  getCountries?: any[];
-  getStates?: any[];
-  getCities?: any[];
+  getCountries: ICountryModel[];
+  getStates: IStateModel[];
+  getCities: ICityModel[];
   requestedOtp: any;
   refreshToken: string | null;
   associate: any;
@@ -149,10 +154,10 @@ export const reducer = createReducer(
     ...state,
     isLoading: true,
   })),
-  on(AuthActions.getCountriesSuccess, (state, action) => ({
+  on(AuthActions.getCountriesSuccess, (state, { response }) => ({
     ...state,
     isLoading: false,
-    getCountries: action.countries,
+    getCountries: response,
   })),
   on(AuthActions.getCountriesFailure, (state, action) => ({
     ...state,
@@ -163,10 +168,10 @@ export const reducer = createReducer(
     ...state,
     isLoading: true,
   })),
-  on(AuthActions.getStatesSuccess, (state, action) => ({
+  on(AuthActions.getStatesSuccess, (state, {response}) => ({
     ...state,
     isLoading: false,
-    getStates: action.states,
+    getStates: response,
   })),
   on(AuthActions.getStatesFailure, (state, action) => ({
     ...state,
@@ -177,10 +182,10 @@ export const reducer = createReducer(
     ...state,
     isLoading: true,
   })),
-  on(AuthActions.getCitiesSuccess, (state, action) => ({
+  on(AuthActions.getCitiesSuccess, (state, {response}) => ({
     ...state,
     isLoading: false,
-    getCities: action.cities,
+    getCities: response,
   })),
   on(AuthActions.getCitiesFailure, (state, action) => ({
     ...state,

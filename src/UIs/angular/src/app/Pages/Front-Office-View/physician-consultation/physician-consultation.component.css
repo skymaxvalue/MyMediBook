@@ -475,6 +475,63 @@ select:disabled {
   margin-top: 10px;
 }
 
+.patient-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* Patient row */
+.patient-search-results .patient-option {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  align-items: center;
+
+  min-height: 42px;
+  padding: 8px 12px;
+
+  border: 1px solid #d6e2f6;
+  border-radius: 8px;
+  background: #ffffff;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.patient-search-results .patient-option:hover {
+  background: #f5f8ff;
+  border-color: #8eb3ff;
+}
+
+/* Selected */
+.patient-search-results .patient-option.selected {
+  background: #eef4ff;
+  border-color: #2f6fed;
+}
+
+/* Patient name */
+.patient-search-results .patient-name {
+  color: #183153;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Mobile number */
+.patient-search-results .patient-mobile {
+  color: #64748b;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* DOB */
+.patient-search-results .patient-dob {
+  color: #64748b;
+  font-size: 11px;
+  text-align: right;
+}
+
 .patient-search-result {
   border: 1px solid #d6e2f3;
   border-radius: 8px;
@@ -1935,4 +1992,333 @@ select:disabled {
   .next-actions-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Review Section */
+.consultation-step-panel[data-step="5"] .review-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.consultation-step-panel[data-step="5"] .review-banner h2 {
+  margin: 0 0 4px;
+}
+
+.consultation-step-panel[data-step="5"] .review-banner p {
+  margin: 0;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.review-card {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #dce5f1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.review-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.review-card-head h3 {
+  margin: 0;
+  color: #17458b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.review-edit {
+  border: none;
+  padding: 3px 6px;
+  background: transparent;
+  color: #2463eb;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+/* Review section */
+.review-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+/* Individual review cards */
+.review-card {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid #d8e3f6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Card heading */
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Label and value rows */
+.review-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+.review-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* Review page responsiveness */
+@media (max-width: 768px) {
+  .review-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.review-row dt {
+  color: #718096;
+}
+
+.review-row dd {
+  margin: 0;
+  color: #26364d;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.consent-card {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #dce5f1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.consent-card .section-header {
+  margin-bottom: 12px;
+}
+
+.consent-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.consent-body label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #526176;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.consent-body input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.consent-body strong {
+  color: #26364d;
+}
+
+@media (max-width: 650px) {
+  .review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-row {
+    grid-template-columns: 110px minmax(0, 1fr);
+  }
+}
+
+/* ================================
+   STEP 5 - REVIEW CONSULTATION
+================================ */
+
+.consultation-step-panel[data-step="5"] {
+  width: 100%;
+  min-width: 0;
+}
+
+.consultation-step-panel[data-step="5"] .review-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.consultation-step-panel[data-step="5"] .review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.consultation-step-panel[data-step="5"] .review-card {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 12px;
+  border: 1px solid #dfe8f5;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.consultation-step-panel[data-step="5"] .review-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.consultation-step-panel[data-step="5"] .review-card-head h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.consultation-step-panel[data-step="5"] .review-details {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.consultation-step-panel[data-step="5"] .review-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 8px;
+}
+
+.consultation-step-panel[data-step="5"] .review-row:last-child {
+  margin-bottom: 0;
+}
+
+.consultation-step-panel[data-step="5"] .review-row dt {
+  min-width: 0;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: #64748b;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.consultation-step-panel[data-step="5"] .review-row dd {
+  min-width: 0;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #16233c;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.consultation-step-panel[data-step="5"] .consent-card {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #dfe8f5;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.consultation-step-panel[data-step="5"] .consent-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.consultation-step-panel[data-step="5"] .consent-body label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.consultation-step-panel[data-step="5"] .consent-body input[type="checkbox"] {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+
+@media (max-width: 768px) {
+  .consultation-step-panel[data-step="5"] .review-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .consultation-step-panel[data-step="5"] .review-row {
+    grid-template-columns: minmax(110px, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+.review-row dt,
+.review-row dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.pain-scale button.selected {
+  background: #316bf4;
+  color: #fff;
+  border-color: #316bf4;
+}
+
+.urgency-card.selected {
+  background: #eaf1ff;
+  border-color: #316bf4;
+  color: #316bf4;
+}
+
+.urgency-card.selected strong {
+  color: #316bf4;
 }

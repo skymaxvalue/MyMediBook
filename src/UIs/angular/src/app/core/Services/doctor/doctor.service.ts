@@ -12,14 +12,21 @@ import {
   CreateScheduleRequest,
   UpdateAssociateScheduleRequest,
 } from "../../Models/associate/Association-model";
+import { map, Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class DoctorService {
   constructor(private http: HttpClient) {}
-  getDoctorSpecialities() {
-    return this.http.get(`${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.DOCTOR_LIST}`);
+  getDoctorList(): Observable<any> {
+    return this.http
+      .get<any>(`${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.DOCTOR_LIST}`)
+      .pipe(
+        map((resp) => {
+          return resp.data;
+        })
+      );
   }
 
   getAllSpecialities() {
