@@ -443,6 +443,11 @@ function setupTabs() {
                 return;
             }
 
+            if (tab.dataset.tab === "referrals") {
+                window.location.href = "doctor-referals.html";
+                return;
+            }
+
             activateTab(tab.dataset.tab);
 
         });

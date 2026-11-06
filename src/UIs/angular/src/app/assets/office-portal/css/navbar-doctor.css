@@ -239,3 +239,10 @@ img.info-icon{
 .dashboard-nav{padding:0 12px;}
 .dashboard-nav .nav-item{padding:0 14px;}
 }
+
+.dashboard-nav a.nav-item{
+    display:inline-flex;
+    align-items:center;
+    text-decoration:none;
+    color:inherit;
+}

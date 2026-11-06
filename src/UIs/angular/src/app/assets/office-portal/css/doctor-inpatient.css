@@ -1,0 +1,477 @@
+.dc-ip-title{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:0;
+}
+
+.dc-ip-title-icon{
+    width:30px;
+    height:30px;
+    flex-shrink:0;
+    object-fit:contain;
+}
+
+.dc-ip-title h3{
+    margin:0;
+}
+
+.dc-ip-subtitle{
+    margin:4px 0 0;
+    font-size:14px;
+    color:var(--text-light);
+}
+
+.dc-ip-sr{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+}
+
+.dc-ip-toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    gap:14px;
+    margin:20px 26px 0;
+}
+
+.dc-ip-toolbar .dc-ip-search{
+    flex:1 1 300px;
+    max-width:420px;
+    align-self:flex-end;
+}
+
+.dc-ip-filter{
+    display:grid;
+    gap:4px;
+    flex:0 1 180px;
+    min-width:140px;
+}
+
+.dc-ip-filter label,
+.dc-ip-field label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text);
+}
+
+.dc-ip-filter select,
+.dc-ip-field select,
+.dc-ip-field input,
+.dc-ip-field textarea{
+    width:100%;
+    min-width:0;
+    height:46px;
+    padding:0 14px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#fff;
+    font-family:inherit;
+    font-size:14px;
+    color:var(--text);
+}
+
+.dc-ip-filter select,
+.dc-ip-field select{
+    appearance:none;
+    padding-right:40px;
+    background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23112B66' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;
+}
+
+.dc-ip-field textarea{
+    height:auto;
+    min-height:112px;
+    padding:12px 14px;
+    line-height:1.5;
+    resize:vertical;
+}
+
+.dc-ip-field input[readonly]{
+    background:#F1F4F9;
+    color:var(--text-light);
+}
+
+.dc-ip-filter select:focus,
+.dc-ip-field select:focus,
+.dc-ip-field input:focus,
+.dc-ip-field textarea:focus{
+    outline:3px solid rgba(36,87,229,.2);
+    border-color:#2457E5;
+}
+
+.dc-ip-field [aria-invalid="true"]{
+    border-color:#D93025;
+}
+
+.dc-ip-btn{
+    min-height:44px;
+    padding:10px 20px;
+    border:1px solid #2F6FED;
+    border-radius:10px;
+    background:#fff;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    color:#2F6FED;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:background .2s ease;
+}
+
+.dc-ip-btn:hover{
+    background:#F1F6FF;
+}
+
+.dc-ip-btn.primary{
+    background:#2F6FED;
+    color:#fff;
+}
+
+.dc-ip-btn.primary:hover{
+    background:#245ED0;
+}
+
+.dc-ip-btn:focus-visible,
+.dc-ip-close:focus-visible{
+    outline:3px solid rgba(47,111,237,.25);
+    outline-offset:2px;
+}
+
+.dc-ip-btn.small{
+    min-height:34px;
+    padding:6px 12px;
+}
+
+.dc-ip-table{
+    min-width:1180px;
+}
+
+.dc-ip-name{
+    font-weight:700;
+    color:var(--primary);
+}
+
+.dc-ip-muted{
+    color:var(--text-light);
+}
+
+.dc-ip-diagnosis{
+    min-width:200px;
+}
+
+.dc-ip-actions{
+    display:flex;
+    gap:8px;
+}
+
+.dc-ip-pill{
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.dc-ip-pill.green{background:#EAF9EF;color:#138A43;}
+.dc-ip-pill.blue{background:#EAF2FF;color:#2457E5;}
+.dc-ip-pill.amber{background:#FFF8E5;color:#B7791F;}
+.dc-ip-pill.red{background:#FDECEA;color:#D93025;}
+.dc-ip-pill.purple{background:#F3EBFF;color:#7A3FD1;}
+
+.dc-ip-empty-title{
+    display:block;
+    margin-bottom:4px;
+    font-weight:700;
+    color:var(--text);
+}
+
+body.dc-ip-modal-open{
+    overflow:hidden;
+}
+
+.dc-ip-modal{
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    background:rgba(17,43,102,.45);
+}
+
+.dc-ip-modal[hidden]{
+    display:none;
+}
+
+.dc-ip-dialog{
+    position:relative;
+    width:min(560px,100%);
+    max-height:calc(100vh - 32px);
+    overflow-y:auto;
+    padding:28px;
+    border-radius:16px;
+    background:#fff;
+    box-shadow:0 20px 50px rgba(17,43,102,.25);
+}
+
+.dc-ip-dialog.wide{
+    width:min(900px,100%);
+}
+
+.dc-ip-dialog:focus{
+    outline:none;
+}
+
+.dc-ip-dialog h3{
+    margin:0 40px 4px 0;
+    font-size:20px;
+    color:var(--primary);
+}
+
+.dc-ip-dialog-sub{
+    margin:0 0 20px;
+    font-size:14px;
+    color:var(--text-light);
+}
+
+.dc-ip-close{
+    position:absolute;
+    top:14px;
+    right:16px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:transparent;
+    font-size:26px;
+    line-height:1;
+    color:var(--text-light);
+    cursor:pointer;
+}
+
+.dc-ip-close:hover{
+    background:#EEF4FF;
+    color:var(--primary);
+}
+
+.dc-ip-dialog-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:20px;
+}
+
+.dc-ip-section{
+    margin-bottom:20px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:14px;
+}
+
+.dc-ip-section-head{
+    margin:0;
+    padding:11px 18px;
+    border-bottom:1px solid var(--border);
+    background:#EDF4FF;
+    font-size:14px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.dc-ip-section-body{
+    padding:16px 18px;
+}
+
+.dc-ip-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px 20px;
+    margin:0;
+}
+
+.dc-ip-grid dt{
+    margin:0 0 2px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-light);
+}
+
+.dc-ip-grid dd{
+    margin:0;
+    font-size:15px;
+    color:var(--text);
+    overflow-wrap:anywhere;
+}
+
+.dc-ip-vitals{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:12px;
+    margin:0;
+}
+
+.dc-ip-vital{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#F9FBFE;
+}
+
+.dc-ip-vital dt{
+    margin:0 0 4px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-light);
+}
+
+.dc-ip-vital dd{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.dc-ip-vital small{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-light);
+}
+
+.dc-ip-caption{
+    margin:12px 0 0;
+    font-size:13px;
+    color:var(--text-light);
+}
+
+.dc-ip-block{
+    margin:0 0 14px;
+}
+
+.dc-ip-block h5{
+    margin:0 0 4px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.dc-ip-block p,
+.dc-ip-block ul{
+    margin:0;
+    font-size:15px;
+    line-height:1.5;
+    color:var(--text);
+}
+
+.dc-ip-block ul{
+    padding-left:20px;
+}
+
+.dc-ip-notes{
+    display:grid;
+    gap:10px;
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.dc-ip-note{
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-left:4px solid #2457E5;
+    border-radius:10px;
+}
+
+.dc-ip-note-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px 12px;
+    margin-bottom:6px;
+    font-size:13px;
+    color:var(--text-light);
+}
+
+.dc-ip-note-meta strong{
+    color:var(--primary);
+}
+
+.dc-ip-note-text{
+    margin:0;
+    font-size:15px;
+    line-height:1.5;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+}
+
+.dc-ip-status-row{
+    margin-top:16px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    gap:12px;
+}
+
+.dc-ip-status-row .dc-ip-field{
+    flex:1 1 220px;
+    max-width:300px;
+}
+
+.dc-ip-field{
+    display:grid;
+    gap:6px;
+    margin-bottom:16px;
+    min-width:0;
+}
+
+.dc-ip-status-row .dc-ip-field{
+    margin-bottom:0;
+}
+
+.dc-ip-field-row{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px;
+}
+
+.dc-ip-error{
+    margin:0;
+    font-size:13px;
+    font-weight:600;
+    color:#D93025;
+}
+
+.dc-ip-error[hidden]{
+    display:none;
+}
+
+.dc-ip-hint{
+    margin:0;
+    font-size:12px;
+    text-align:right;
+    color:var(--text-light);
+}
+
+@media (max-width:900px){
+    .dc-ip-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dc-ip-vitals{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+
+@media (max-width:768px){
+    .dc-ip-toolbar{margin:16px 18px 0;}
+    .dc-ip-toolbar .dc-ip-search,
+    .dc-ip-filter{flex:1 1 100%;max-width:none;}
+    .dc-ip-btn#ipReset{width:100%;}
+}
+
+@media (max-width:600px){
+    .dc-ip-dialog{padding:22px 16px;}
+    .dc-ip-grid{grid-template-columns:minmax(0,1fr);}
+    .dc-ip-vitals{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dc-ip-field-row{grid-template-columns:minmax(0,1fr);}
+    .dc-ip-dialog-actions{flex-direction:column-reverse;}
+    .dc-ip-dialog-actions .dc-ip-btn{width:100%;}
+}

@@ -125,7 +125,9 @@ function setupNavigation() {
     document.querySelectorAll("#dcTabs .nav-item").forEach(tab => {
         tab.classList.toggle("active", tab.dataset.tab === "patients");
         tab.addEventListener("click", () => {
-            if (tab.dataset.tab !== "patients") window.location.href = "doctor-dashboard.html?tab=" + encodeURIComponent(tab.dataset.tab);
+            if (tab.dataset.tab === "inpatient") return;
+            if (tab.dataset.tab === "referrals") window.location.href = "doctor-referals.html";
+            else if (tab.dataset.tab !== "patients") window.location.href = "doctor-dashboard.html?tab=" + encodeURIComponent(tab.dataset.tab);
         });
     });
 }
