@@ -5,6 +5,7 @@ using Medicare.Application.Interfaces.IAssociate;
 using Medicare.Application.Interfaces.IAuthRepository;
 using Medicare.Application.Interfaces.IBilling;
 using Medicare.Application.Interfaces.IClaim;
+using Medicare.Application.Interfaces.IConsultation;
 using Medicare.Application.Interfaces.IDashboard;
 using Medicare.Application.Interfaces.IDoctor;
 using Medicare.Application.Interfaces.IEmail;
@@ -81,6 +82,7 @@ namespace Medicare_API.Registrars
             builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
             builder.Services.AddScoped<IOrganizationRepository, OrganisationRepository>();
             builder.Services.AddScoped<IRoomMangementRepository, RoomMangementRepository>();
+            builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
 
             // ✅ Services
             builder.Services.AddSignalR();

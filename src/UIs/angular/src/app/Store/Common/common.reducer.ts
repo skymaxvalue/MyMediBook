@@ -1,12 +1,14 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import * as A from "./common.actions";
 import { ISearchPatientResponseModel } from "../../core/Models/common/search-patient.model";
+import { LoadStatus } from "../../utils/enum/load-status.enum";
 
 export const COMMON_FEATURE_KEY = "common";
 
 export interface CommonState {
   patientDetails: ISearchPatientResponseModel[];
   error: any;
+  loading: LoadStatus;
   searchByFromDate: string;
   searchByEndDate: string;
   searchByName: string;
@@ -17,6 +19,7 @@ export interface CommonState {
 export const initialState: CommonState = {
   patientDetails: [],
   error: null,
+  loading: LoadStatus.NotLoaded,
   searchByFromDate: "",
   searchByEndDate: "",
   searchByName: "",
@@ -28,15 +31,19 @@ export const reducer = createReducer(
   initialState,
   on(A.searchPatients, (state) => ({
     ...state,
+    loading: LoadStatus.Loading,
   })),
   on(A.searchPatientsSuccess, (state, { response }) => ({
     ...state,
     patientDetails: response,
+    loading: LoadStatus.Loaded,
+    error: null,
   })),
   on(A.searchPatientsFailure, (state, { error }) => ({
     ...state,
     patientDetails: [],
     error: error,
+    loading: LoadStatus.NotLoaded,
   })),
   on(A.searchByFromAndEndDate, (state, { fromDate, endDate }) => ({
     ...state,
@@ -53,11 +60,14 @@ export const reducer = createReducer(
   })),
   on(A.searchByPhoneNumber, (state, { phoneNumber }) => ({
     ...state,
-    searchByMobileNo: A.searchByPhoneNumber,
+    searchByPhoneNumber: phoneNumber,
   })),
   on(A.clearPatientSearch, (state) => ({
     ...state,
-    searchByMobileNo: null,
+    patientDetails: [],
+    error: null,
+    loading: LoadStatus.NotLoaded,
+    searchByPhoneNumber: 0,
     searchByDob: "",
     searchByEndDate: "",
     searchByFromDate: "",

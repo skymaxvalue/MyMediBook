@@ -29,3 +29,10 @@ export const searchPatientsFailure = createAction(
 );
 
 export const clearPatientSearch = createAction("[Common] Clear Patient Search");
+
+export const openPatientSwitchDialog = createAction("[Common] Open Patient Switch Dialog");
+
+export const patientSelectedFromSearch = createAction(
+  "[Common] Patient Selected From Search",
+  props<{ patient: ISearchPatientResponseModel }>()
+);

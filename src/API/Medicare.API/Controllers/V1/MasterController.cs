@@ -58,6 +58,14 @@ namespace Medicare.API.Controllers.V1
             return HandleListResponse(response);
         }
 
+        [HttpGet("GetOtpTypeList")]
+        public async Task<IActionResult> GetOtpTypeList()
+        {
+            List<OtpTypeModel> response = new List<OtpTypeModel>();
+            response = await _mediator.Send(new GetOtpTypeListQuery());
+            return HandleListResponse(response);
+        }
+
         [Authorize(Roles ="Admin")]
         [HttpGet]
         [Route("GetRoleList")]

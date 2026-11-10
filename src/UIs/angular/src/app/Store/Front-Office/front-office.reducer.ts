@@ -1,9 +1,20 @@
 import { createReducer, on } from "@ngrx/store";
-
+import { IRelationTypeModel } from "../../core/Models/master/relation-type.model";
+import * as A from "./front-office.actions";
+import { LoadStatus } from "../../utils/enum/load-status.enum";
 export const FRONT_OFFICE_FEATURE_KEY = "front-office";
 
-export interface FrontOfficeState {}
+export interface FrontOfficeState {
+  isLoading: LoadStatus;
+  error: any;
+}
 
-export const initialState: FrontOfficeState = {};
+export const initialState: FrontOfficeState = {
+  isLoading: LoadStatus.NotLoaded,
+  error: null,
+};
 
-export const reducer = createReducer(initialState);
+export const reducer = createReducer(
+  initialState,
+
+);

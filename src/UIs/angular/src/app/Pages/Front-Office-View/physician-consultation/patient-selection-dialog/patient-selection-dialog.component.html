@@ -1,0 +1,81 @@
+<div class="patient-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="dialog-title-icon">
+      <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
+    </div>
+
+    <div class="dialog-title-content">
+      <h2>Select Existing Patient</h2>
+      <p>Search and select the correct patient profile.</p>
+    </div>
+
+    <button type="button" class="dialog-close" (click)="closeDialog()" aria-label="Close dialog">
+      &times;
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="dialog-search">
+    <input
+      type="text"
+      name="dialogPatientName"
+      placeholder="Search by full name"
+      [(ngModel)]="searchName"
+    />
+
+    <input type="date" name="dialogPatientDob" [(ngModel)]="searchDob" />
+
+    <button
+      type="button"
+      class="btn-primary"
+      [disabled]="loading === LoadStatus.Loading"
+      (click)="searchPatients()"
+    >
+      <span class="search-icon">&#9906;</span>
+      {{ loading === LoadStatus.Loading ? "Searching..." : "Search" }}
+    </button>
+  </div>
+
+  <!-- Patient Results -->
+  <div class="dialog-patient-list">
+    <div
+      class="patient-option"
+      *ngFor="let patient of patients"
+      [class.selected]="selectedPatient?.profileId === patient.profileId"
+      (click)="selectPatient(patient)"
+      tabindex="0"
+      role="button"
+      (keydown.enter)="selectPatient(patient)"
+    >
+      <div class="patient-option-icon">
+        <img src="/assets/images/front-office/images/profile-solid-blue.png" alt="" />
+      </div>
+
+      <div class="patient-option-info">
+        <small> Patient · DOB {{ patient.dateOfBirth | date: "dd-MM-yyyy" }} </small>
+        <strong>{{ patient.fullName || "Unnamed patient" }}</strong>
+      </div>
+    </div>
+
+    <div class="dialog-message" *ngIf="loading === LoadStatus.Loading">Searching patients...</div>
+
+    <div class="dialog-message" *ngIf="loading === LoadStatus.Loaded && patients.length === 0">
+      No patients found. Try different search criteria.
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <button type="button" class="btn-outline" (click)="closeDialog()">Cancel</button>
+
+    <button
+      type="button"
+      class="btn-primary"
+      [disabled]="!selectedPatient"
+      (click)="confirmSelection()"
+    >
+      Select Patient
+    </button>
+  </div>
+</div>

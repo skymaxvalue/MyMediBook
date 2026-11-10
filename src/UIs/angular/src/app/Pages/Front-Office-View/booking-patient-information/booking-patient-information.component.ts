@@ -522,7 +522,7 @@ export class BookingPatientInformationComponent implements OnInit, OnDestroy {
     // APPOINTMENT STATUS
     // ==============================
 
-    this.masterFacade.stausKeyList$.subscribe((res: any) => {
+    this.masterFacade.statusKeyList$.subscribe((res: any) => {
       console.log("Appointment Status:", res);
     });
 

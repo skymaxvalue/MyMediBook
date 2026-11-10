@@ -8,10 +8,22 @@ import * as AuthActions from "./auth.actions";
 })
 export class AuthFacade {
   selectLoggedInUser$ = this.store.pipe(select(AuthSelector.selectLoginUser));
+  selectCountry$ = this.store.pipe(select(AuthSelector.selectCountry));
+  selectCity$ = this.store.pipe(select(AuthSelector.selectCity));
+  selectState$ = this.store.pipe(select(AuthSelector.selectState));
 
   constructor(private store: Store) {}
 
   logOut() {
     this.store.dispatch(AuthActions.LogOut());
+  }
+  getCountries() {
+    this.store.dispatch(AuthActions.getCountries());
+  }
+  getCities(stateId: number) {
+    this.store.dispatch(AuthActions.getCities({ stateId }));
+  }
+  getStates(countryId: number) {
+    this.store.dispatch(AuthActions.getStates({ countryId }));
   }
 }

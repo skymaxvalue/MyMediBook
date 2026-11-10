@@ -1,5 +1,10 @@
 import { createAction, props } from "@ngrx/store";
 import { PatientRegister } from "../../core/Models/Patient-Model";
+import {
+  ICityModel,
+  ICountryModel,
+  IStateModel,
+} from "../../core/Models/location/location-master.model";
 
 // Login Actions
 export const login = createAction(
@@ -58,7 +63,7 @@ export const getCountries = createAction("[Auth] Get Countries");
 
 export const getCountriesSuccess = createAction(
   "[Auth] Get Countries Success",
-  props<{ countries: any[] }>()
+  props<{ response: ICountryModel[] }>()
 );
 
 export const getCountriesFailure = createAction(
@@ -71,7 +76,7 @@ export const getStates = createAction("[Auth] Get States", props<{ countryId: nu
 
 export const getStatesSuccess = createAction(
   "[Auth] Get States Success",
-  props<{ states: any[] }>()
+  props<{ response: IStateModel[] }>()
 );
 
 export const getStatesFailure = createAction(
@@ -84,7 +89,7 @@ export const getCities = createAction("[Auth] Get Cities", props<{ stateId: numb
 
 export const getCitiesSuccess = createAction(
   "[Auth] Get Cities Success",
-  props<{ cities: any[] }>()
+  props<{ response: ICityModel[] }>()
 );
 
 export const getCitiesFailure = createAction(
