@@ -1,16 +1,16 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import * as MasterActions from "./associate.actions";
+import { IAssociateResponseModel } from "../../core/Models/associate/associate-response.model";
 
 export const ASSOCIATE_FEATURE_KEY = "associate";
 
 export interface AssociateState {
-  associate: any;
+  associate?: IAssociateResponseModel;
   selectedAssociateId: number;
   error: any;
 }
 
 export const initialState: AssociateState = {
-  associate: null,
   selectedAssociateId: 0,
   error: null,
 };

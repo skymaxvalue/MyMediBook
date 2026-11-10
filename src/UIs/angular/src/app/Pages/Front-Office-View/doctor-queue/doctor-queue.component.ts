@@ -10,13 +10,15 @@ import {
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Store } from "@ngrx/store";
-import { combineLatest, filter, map, Subject, takeUntil } from "rxjs";
+import { combineLatest, distinctUntilChanged, filter, map, Subject, takeUntil } from "rxjs";
 import * as DoctorActions from "../../../Store/Doctor/doctor.action";
 import * as DoctorSelector from "../../../Store/Doctor/doctor.selectors";
 import { ListRequestModel } from "../../../core/Models/list-request.model";
 import { AppointmentFacade } from "../../../Store/Appointments/appointment.facade";
 import { MasterFacade } from "../../../Store/Master/master.facade";
 import { UpdateConsultationStatusRequestModel } from "../../../core/Models/update-appointment-status.model";
+import { AssociateFacade } from "../../../Store/Associate/associate.facade";
+import { IAssociateResponseModel } from "../../../core/Models/associate/associate-response.model";
 
 interface QueuePatient {
   appointmentid: number;
@@ -52,21 +54,29 @@ export class DoctorQueueComponent implements OnInit, OnDestroy {
     Completed: "completed",
   };
 
-  doctor = { name: "", qualification: "", department: "", room: "" };
+  doctor?: IAssociateResponseModel;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private store: Store,
     private appointmentFacade: AppointmentFacade,
-    private masterFacade: MasterFacade
-  ) { }
+    private masterFacade: MasterFacade,
+    private associateFacade: AssociateFacade
+  ) {}
 
   ngOnInit(): void {
     this.setDefaultDate();
     this.subscribeQueueData();
     this.LoadAndsubscribeStatusOptions();
+    this.subscribeDoctorData();
     this.subscribeDoctorAndRoute();
+  }
+
+  private subscribeDoctorData(): void {
+    this.associateFacade.selectedDoctor$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.doctor = data;
+    });
   }
 
   private LoadAndsubscribeStatusOptions(): void {
@@ -80,39 +90,19 @@ export class DoctorQueueComponent implements OnInit, OnDestroy {
         css: this.CSS_BY_KEY[s.statusKey] ?? "",
       }));
     });
-    console.log(this.statusOptions);
   }
 
   private subscribeDoctorAndRoute(): void {
-    const id$ = this.route.paramMap.pipe(
-      map((p) => Number(p.get("doctorId"))),
-      filter((id) => id > 0)
-    );
-    const specs$ = this.store.select(DoctorSelector.selectDoctorSpecialities);
-
-    combineLatest([id$, specs$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([id, specs]: [number, any]) => {
-        if (id !== this.doctorId) {
-          this.doctorId = id;
-          this.loadQueue();
-        }
-        if (!specs) {
-          this.store.dispatch(DoctorActions.loadDoctorSpecialities());
-          return;
-        }
-        for (const s of specs) {
-          const d = (s.doctors ?? []).find((x: any) => x.associateId === id);
-          if (d) {
-            this.doctor = {
-              name: d.name ?? "",
-              qualification: d.qualification ?? "",
-              department: s.name ?? d.department ?? "",
-              room: d.room ?? "N/A",
-            };
-            return;
-          }
-        }
+    this.route.paramMap
+      .pipe(
+        map((params) => Number(params.get("doctorId"))),
+        filter((id) => id > 0),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((id) => {
+        this.doctorId = id;
+        this.loadQueue();
       });
   }
 
@@ -142,18 +132,6 @@ export class DoctorQueueComponent implements OnInit, OnDestroy {
       });
   }
 
-  get doctorName() {
-    return this.doctor.name;
-  }
-  get doctorQualification() {
-    return this.doctor.qualification;
-  }
-  get doctorDepartment() {
-    return this.doctor.department;
-  }
-  get doctorRoom() {
-    return this.doctor.room;
-  }
   get queueCount() {
     return this.queuePatients.length;
   }
@@ -200,6 +178,7 @@ export class DoctorQueueComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.associateFacade.clearSelectedAssociateId();
     this.destroy$.next();
     this.destroy$.complete();
   }

@@ -9,7 +9,7 @@ import { environment } from "src/environments/environment";
 })
 export class AssociateService {
   private apiUrl = environment.OpenIdConnect.apiUrl;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAssociateById(associateId: number): Observable<any> {
     return this.http

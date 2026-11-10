@@ -317,7 +317,6 @@ export const reducer = createReducer(
 
   on(AppointmentActions.redirectToAppointmentCheckIns, (state, { doctorId }) => ({
     ...state,
-    selectedDoctorId: doctorId,
     isLoading: false,
   }))
 );

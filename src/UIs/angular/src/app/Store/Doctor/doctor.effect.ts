@@ -209,9 +209,9 @@ export class DoctorSpecialityEffects {
 
       mergeMap((action) =>
         this.doctorService.getDoctorAvalabilityTimeSlot(action.payload).pipe(
-          map((response: any) =>
+          map((response) =>
             DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess({
-              doctorTimeSlot: response,
+              response,
             })
           ),
 

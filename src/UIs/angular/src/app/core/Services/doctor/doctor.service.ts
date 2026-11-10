@@ -13,6 +13,7 @@ import {
   UpdateAssociateScheduleRequest,
 } from "../../Models/associate/Association-model";
 import { map, Observable } from "rxjs";
+import { IDataRequestModel } from "../../Models/common/data-request.model";
 
 @Injectable({
   providedIn: "root",
@@ -74,11 +75,17 @@ export class DoctorService {
       data
     );
   }
-  getDoctorAvalabilityTimeSlot(data: any) {
-    return this.http.post(
-      `${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.GET_TIME_SLOT_BY_DOCTOR_ID}`,
-      data
-    );
+  getDoctorAvalabilityTimeSlot(payload: IDataRequestModel) {
+    return this.http
+      .post<any>(
+        `${environment.OpenIdConnect.apiUrl}${DoctorEndPoints.GET_TIME_SLOT_BY_DOCTOR_ID}`,
+        payload
+      )
+      .pipe(
+        map((resp) => {
+          return resp.data;
+        })
+      );
   }
 
   getAssociateByAssociateID(associateId: any) {

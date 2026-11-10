@@ -1,4 +1,5 @@
 import { createAction, props } from "@ngrx/store";
+import { IAssociateResponseModel } from "../../core/Models/associate/associate-response.model";
 
 export const GetAssociateById = createAction(
   "[Associate] Get Associate By Id",
@@ -6,11 +7,11 @@ export const GetAssociateById = createAction(
 );
 export const GetAssociateByIdSuccess = createAction(
   "[Associate] Get Associate By Id Success",
-  props<{ response: any[] }>()
+  props<{ response: IAssociateResponseModel }>()
 );
 export const GetAssociateByIdFailure = createAction(
   "[Associate] Get Associate By Id Failure",
-  props<{ error: string }>()
+  props<{ error: any }>()
 );
 
 export const SetSelectedAssociateId = createAction(

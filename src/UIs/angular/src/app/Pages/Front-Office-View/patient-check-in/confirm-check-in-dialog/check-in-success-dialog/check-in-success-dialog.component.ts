@@ -16,7 +16,7 @@ export class CheckInSuccessDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private store: Store,
     private associateFacade: AssociateFacade,
-    private appointmentFacade: AppointmentFacade
+    private appointmentFacade: AppointmentFacade,
   ) { }
 
   viewQueue(): void {
@@ -28,6 +28,7 @@ export class CheckInSuccessDialogComponent {
     this.dialogRef.close();
     this.associateFacade.setSelectedAssociateId(doctorId);
     this.appointmentFacade.redirectToAppointmentCheckInsPage(doctorId);
+    this.associateFacade.setSelectedAssociateId(doctorId);
   }
   done(): void {
     this.dialogRef.close("done");

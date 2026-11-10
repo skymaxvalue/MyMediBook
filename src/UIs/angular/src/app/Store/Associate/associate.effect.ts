@@ -7,7 +7,7 @@ import { AssociateService } from "../../core/Services/associate/associate.servic
 import * as AssociateSelectors from "./associate.selectors";
 import { Store } from "@ngrx/store";
 @Injectable()
-export class MasterEffects {
+export class AssociateEffects {
   constructor(
     private actions$: Actions,
     private associateService: AssociateService,
@@ -18,9 +18,10 @@ export class MasterEffects {
     this.actions$.pipe(
       ofType(AssociateActions.GetAssociateById),
       concatLatestFrom(() => this.store.select(AssociateSelectors.selectedAssociateId)),
-      filter(([associateId]) => !!associateId && associateId > 0),
-      mergeMap(([, associateId]) =>
-        this.associateService.getAssociateById(associateId).pipe(
+      filter(([associateId]) => !!associateId),
+      mergeMap(([, associateId]) => {
+        console.log(associateId);
+        return this.associateService.getAssociateById(associateId).pipe(
           map((response) => AssociateActions.GetAssociateByIdSuccess({ response })),
           catchError((error) =>
             of(
@@ -29,32 +30,8 @@ export class MasterEffects {
               })
             )
           )
-        )
-      )
-    )
-  );
-
-  GetOrganisationList$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(MasterActions.GetOrganisationList),
-
-      mergeMap(() =>
-        this.masterService.getOrganizationList().pipe(
-          map((response: any) =>
-            MasterActions.GetOrganisationListSuccess({
-              response,
-            })
-          ),
-
-          catchError((error) =>
-            of(
-              MasterActions.GetOrganisationListFailure({
-                error: error?.message || "Getting Organization Data Failed",
-              })
-            )
-          )
-        )
-      )
+        );
+      })
     )
   );
 }
