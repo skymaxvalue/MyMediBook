@@ -1,8 +1,9 @@
 import { AppointmentState } from "./Appointments/appointment.reducer";
+import { AssociateState } from "./Associate/associate.reducer";
 import { AuthState } from "./Auth/auth.reducer";
 import { billsState } from "./Billing/billing.state";
 import { CommonState } from "./Common/common.reducer";
-import { DoctorSpecialityState } from "./Doctor/doctor.state";
+import { DoctorState } from "./Doctor/doctor.reducer";
 import { FrontOfficeState } from "./Front-Office/front-office.reducer";
 import { labResultState } from "./Lab-Results/lab-result.state";
 import { MasterState } from "./Master/master.reducer";
@@ -13,11 +14,12 @@ export interface AppState {
   auth: AuthState;
   patient: PatientState;
   appointment: AppointmentState;
-  doctor: DoctorSpecialityState;
+  doctor: DoctorState;
   labresult: labResultState;
   bills: billsState;
   message: MessageState;
   master: MasterState;
   frontOffice: FrontOfficeState;
   common: CommonState;
+  associate: AssociateState;
 }

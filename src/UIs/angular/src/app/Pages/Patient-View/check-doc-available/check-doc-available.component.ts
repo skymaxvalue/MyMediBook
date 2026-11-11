@@ -5,7 +5,6 @@ import {
   Output,
   OnInit,
   OnChanges,
-  signal,
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
@@ -17,13 +16,10 @@ import { BookingSuccessfullComponent } from "../booking-successfull/booking-succ
 import { BookingFailedComponent } from "../booking-failed/booking-failed.component";
 import { Store } from "@ngrx/store";
 import { getTimeSloteByDoctorID } from "src/app/Store/Doctor/doctor.action";
-import { selectGetTimeSlotOfDoctor } from "src/app/Store/Doctor/doctor.selectors";
-import { selectGetProfileListByPatientId } from "src/app/Store/Patient/patient.selectors";
 import {
   selectCreateAppointmentRes,
   selectRescheduledAppointment,
 } from "src/app/Store/Appointments/appointment.selectors";
-import { take } from "rxjs";
 import { ToastService } from "src/app/shared/Components/Toaster/toast.service";
 import {
   createAppointment,
@@ -31,6 +27,7 @@ import {
   rescheduleMyAppointment,
 } from "src/app/Store/Appointments/appointment.actions";
 import { BookingPatientInformationComponent } from "../../Front-Office-View/booking-patient-information/booking-patient-information.component";
+import { DoctorFacade } from "../../../Store/Doctor/doctor.facade";
 interface ScheduleItem {
   date: Date;
   formattedDate: string;
@@ -103,7 +100,8 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
   constructor(
     private router: Router,
     private store: Store,
-    private toast: ToastService
+    private toast: ToastService,
+    private doctorFacade: DoctorFacade
   ) {
     // this.generateSlots(this.doctor.fromTime, this.doctor.toTime, 30)
   }
@@ -210,7 +208,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
         isHighlighted:
           this.updatesheduledpatient &&
           this.formatInputDate(d) ===
-          this.formatInputDate(new Date(this.updatesheduledpatient.appointmentDate)),
+            this.formatInputDate(new Date(this.updatesheduledpatient.appointmentDate)),
       });
     }
   }
@@ -292,7 +290,7 @@ export class CheckDocAvailableComponent implements OnInit, OnChanges {
       toDate: new Date(item.date).toISOString(),
     };
     await this.store.dispatch(getTimeSloteByDoctorID({ payload }));
-    await this.store.select(selectGetTimeSlotOfDoctor).subscribe((res: any) => {
+    await this.doctorFacade.selectDoctorTimeSlotList$.subscribe((res: any) => {
       if (res?.data) {
         this.slots = res.data.map((slot: any) => ({
           time: slot.startTime,

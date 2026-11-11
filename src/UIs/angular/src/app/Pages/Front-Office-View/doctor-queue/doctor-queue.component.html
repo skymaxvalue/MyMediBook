@@ -3,11 +3,14 @@
     <!-- ================= DOCTOR CARD ================= -->
     <aside class="doctor-card">
       <div class="doctor-image-wrapper">
-        <img src="/assets/images/doc.jpg" alt="Doctor Image" />
+        <img
+          [src]="doctor?.profileImage || '/assets/images/doc.jpg'"
+          [alt]="doctor?.firstName || 'Doctor Image'"
+        />
       </div>
 
-      <h1>{{ doctorName }}</h1>
-      <div class="doctor-qualification">{{ doctorQualification }}</div>
+      <h1>{{ doctor?.firstName }} {{ doctor?.lastName }}</h1>
+      <div class="doctor-qualification">{{ doctor?.qualifications }}</div>
       <div class="doctor-divider"></div>
 
       <div class="doctor-info-item">
@@ -16,7 +19,7 @@
         </div>
         <div>
           <span class="info-label">Department</span>
-          <strong>{{ doctorDepartment }}</strong>
+          <strong>{{ doctor?.departmentName }}</strong>
         </div>
       </div>
 
@@ -26,7 +29,7 @@
         </div>
         <div>
           <span class="info-label">Room Number</span>
-          <strong>{{ doctorRoom }}</strong>
+          <strong>{{ doctor?.schedule.doctorRoom }}</strong>
         </div>
       </div>
 

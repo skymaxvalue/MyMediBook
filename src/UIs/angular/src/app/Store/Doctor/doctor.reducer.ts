@@ -1,6 +1,45 @@
 import { createReducer, on } from "@ngrx/store";
 import * as DoctorSpecialityActions from "./doctor.action";
-import { initialState } from "./doctor.state";
+import { DoctorSpeciality } from "../../core/Models/doctor/doctor-detail.model";
+import { IDoctorTimeSlotModel } from "../../core/Models/doctor/doctor-time-slots.model";
+
+export const DOCTOR_FEATURE_KEY = "doctor";
+
+export interface DoctorState {
+  specialities: any[];
+  isLoading: boolean;
+  error: any;
+  allSpeciality: any[];
+  allDepartments: any[];
+  allRoles: any[];
+  registerassociate: any;
+  allRoleDepartSpeci: any[];
+  weeakDays: any[];
+  allAssociates: any[];
+  associateSchedule: any;
+  doctorTimeSlotList: IDoctorTimeSlotModel[];
+  accociateDetails: any;
+  updatedAssociate: any;
+  doctorList: DoctorSpeciality[];
+}
+
+export const initialState: DoctorState = {
+  specialities: [],
+  isLoading: false,
+  error: null,
+  allSpeciality: [],
+  allDepartments: [],
+  allRoles: [],
+  registerassociate: null,
+  allRoleDepartSpeci: [],
+  weeakDays: [],
+  allAssociates: [],
+  associateSchedule: null,
+  doctorTimeSlotList: [],
+  accociateDetails: null,
+  updatedAssociate: null,
+  doctorList: [],
+};
 
 export const doctorSpecialityReducer = createReducer(
   initialState,
@@ -182,19 +221,21 @@ export const doctorSpecialityReducer = createReducer(
   on(DoctorSpecialityActions.getTimeSloteByDoctorID, (state) => ({
     ...state,
     isLoading: true,
+    doctorTimeSlotList: [],
     error: null,
   })),
 
-  on(DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess, (state, { doctorTimeSlot }) => ({
+  on(DoctorSpecialityActions.getTimeSloteByDoctorIDSuccess, (state, { response }) => ({
     ...state,
-    doctorTimeSlot: doctorTimeSlot,
+    doctorTimeSlotList: response,
     isLoading: false,
   })),
 
   on(DoctorSpecialityActions.getTimeSloteByDoctorIDFailure, (state, { error }) => ({
     ...state,
-    error,
+    error: error,
     isLoading: false,
+    doctorTimeSlotList: [],
   })),
   on(DoctorSpecialityActions.updateAssociatesAndItsSchedule, (state) => ({
     ...state,

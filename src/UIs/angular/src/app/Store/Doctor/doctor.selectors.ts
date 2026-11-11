@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { DoctorSpecialityState } from "./doctor.state";
+import { DoctorState } from "./doctor.reducer";
 
-export const selectDoctorSpecialityState = createFeatureSelector<DoctorSpecialityState>("doctor");
+export const selectDoctorSpecialityState = createFeatureSelector<DoctorState>("doctor");
 
 export const selectDoctorSpecialities = createSelector(
   selectDoctorSpecialityState,
@@ -45,9 +45,9 @@ export const selectCreatedAssociateSchedule = createSelector(
   selectDoctorSpecialityState,
   (state) => state.associateSchedule
 );
-export const selectGetTimeSlotOfDoctor = createSelector(
+export const selectDoctorTimeSlotList = createSelector(
   selectDoctorSpecialityState,
-  (state) => state.doctorTimeSlot
+  (state) => state.doctorTimeSlotList ?? []
 );
 export const selectGetAssociateDetailsByItID = createSelector(
   selectDoctorSpecialityState,

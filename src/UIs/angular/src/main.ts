@@ -45,6 +45,8 @@ import { NavigationEffects } from "./app/Store/Shared/Navigation/navigation.effe
 import { AuthReducer } from "./app/Store/Auth/auth.reducer";
 import { CommonReducer } from "./app/Store/Common/common.reducer";
 import { CommonEffects } from "./app/Store/Common/common.effect";
+import { AssociateReducer } from "./app/Store/Associate/associate.reducer";
+import { AssociateEffects } from "./app/Store/Associate/associate.effect";
 
 if (environment.production) {
   enableProdMode();
@@ -94,6 +96,7 @@ bootstrapApplication(AppComponent, {
       message: MessagesReducer,
       master: MasterReducer,
       common: CommonReducer,
+      associate: AssociateReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -107,6 +110,7 @@ bootstrapApplication(AppComponent, {
       MasterEffects,
       NavigationEffects,
       CommonEffects,
+      AssociateEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

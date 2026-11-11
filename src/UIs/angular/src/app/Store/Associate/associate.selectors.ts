@@ -4,7 +4,7 @@ import { AssociateState } from "./associate.reducer";
 export const selectAssociateState = createFeatureSelector<AssociateState>("associate");
 
 export const selectAsssocicateById = createSelector(selectAssociateState, (state) => {
-  return state.associate ?? [];
+  return state.associate;
 });
 
 export const selectedAssociateId = createSelector(

@@ -1,5 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 import { DoctorSpeciality } from "../../core/Models/doctor/doctor-detail.model";
+import { IDataRequestModel } from "../../core/Models/common/data-request.model";
 
 export const loadDoctorSpecialities = createAction("[Doctor Speciality] Load Doctor Specialities");
 export const loadDoctorSpecialitiesSuccess = createAction(
@@ -116,20 +117,20 @@ export const createAssociatesScheduleFailure = createAction(
   "Create Associates Schedule Failure",
   props<{ error: any }>()
 );
+
 export const getTimeSloteByDoctorID = createAction(
   "Create Time Slote Schedule",
-  props<{ payload: any }>()
+  props<{ payload: IDataRequestModel }>()
 );
-
 export const getTimeSloteByDoctorIDSuccess = createAction(
   "Create Time Slot Success",
-  props<{ doctorTimeSlot: any }>()
+  props<{ response: any }>()
 );
-
 export const getTimeSloteByDoctorIDFailure = createAction(
   "Create Time Schedule Failure",
   props<{ error: any }>()
 );
+
 export const updateAssociatesAndItsSchedule = createAction(
   "Update Associates Schedule",
   props<{ associate: any }>()

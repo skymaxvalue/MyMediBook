@@ -699,6 +699,71 @@
       >
         <section class="consultation-section">
           <div class="section-header">
+            <img src="/assets/images/front-office/images/doctor-icon-blue.png" alt="" />
+
+            <h2>Specialty & Physician</h2>
+          </div>
+
+          <div class="field-pair">
+            <label> Medical Specialty </label>
+          </div>
+
+          <div class="specialty-grid">
+            @for (s of specialties; track s.value) {
+              <button
+                type="button"
+                class="choice-card"
+                [class.selected]="selectedSpecialty === s.value"
+                [attr.aria-pressed]="selectedSpecialty === s.value"
+                (click)="selectSpecialty(s.value)"
+              >
+                <span>{{ s.icon }}</span>
+                {{ s.value }}
+              </button>
+            }
+          </div>
+
+          <input type="hidden" id="medicalSpecialty" formControlName="specialty" />
+
+          <div class="detail-grid two-col specialty-fields">
+            <div class="field-pair">
+              <label for="preferredPhysician">Preferred Physician</label>
+
+              <select
+                id="preferredPhysician"
+                formControlName="preferredPhysician"
+                (change)="onPhysicianChange($event)"
+              >
+                <option value="" disabled>Select Physician</option>
+
+                @for (physician of filteredPhysicians; track physician.associateId) {
+                  <option [value]="physician.associateId">
+                    {{ physician.name }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="field-pair">
+              <label for="referralSource"> Referral Source </label>
+
+              <select id="referralSource" formControlName="referralSource">
+                <option value="">Select source</option>
+
+                <option>Self</option>
+
+                <option>Physician Referral</option>
+
+                <option>Hospital Referral</option>
+
+                <option>Family / Friend</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="consultation-section">
+          <div class="section-header">
             <img src="/assets/images/front-office/images/calendar-blue.png" alt="" />
 
             <h2>Appointment Details</h2>
@@ -711,7 +776,13 @@
                 <span class="req">*</span>
               </label>
 
-              <input type="date" id="preferredDate" required formControlName="preferredDate" />
+              <input
+                type="date"
+                id="preferredDate"
+                required
+                formControlName="preferredDate"
+                (change)="onPreferredDateChange($event)"
+              />
             </div>
 
             <div class="field-pair">
@@ -723,29 +794,14 @@
               <select id="preferredTime" required formControlName="preferredTime">
                 <option value="">Select time</option>
 
-                <option>09:00 AM</option>
-
-                <option>09:30 AM</option>
-
-                <option>10:00 AM</option>
-
-                <option>10:30 AM</option>
-
-                <option>11:00 AM</option>
-
-                <option>11:30 AM</option>
-
-                <option>12:00 PM</option>
-
-                <option>02:00 PM</option>
-
-                <option>02:30 PM</option>
-
-                <option>03:00 PM</option>
-
-                <option>03:30 PM</option>
-
-                <option>04:00 PM</option>
+                @for (
+                  slot of (doctorFacade.selectDoctorTimeSlotList$ | async) ?? [];
+                  track slot.slotId
+                ) {
+                  <option [value]="slot.slotId" [disabled]="!slot.isAvailable || slot.isBooked">
+                    {{ slot.startTime }} - {{ slot.endTime }}
+                  </option>
+                }
               </select>
             </div>
 
@@ -801,67 +857,6 @@
                 placeholder="Doctor / hospital / self"
                 formControlName="referredBy"
               />
-            </div>
-          </div>
-        </section>
-
-        <section class="consultation-section">
-          <div class="section-header">
-            <img src="/assets/images/front-office/images/doctor-icon-blue.png" alt="" />
-
-            <h2>Specialty & Physician</h2>
-          </div>
-
-          <div class="field-pair">
-            <label> Medical Specialty </label>
-          </div>
-
-          <div class="specialty-grid">
-            @for (s of specialties; track s.value) {
-              <button
-                type="button"
-                class="choice-card"
-                [class.selected]="selectedSpecialty === s.value"
-                [attr.aria-pressed]="selectedSpecialty === s.value"
-                (click)="selectSpecialty(s.value)"
-              >
-                <span>{{ s.icon }}</span>
-                {{ s.value }}
-              </button>
-            }
-          </div>
-
-          <input type="hidden" id="medicalSpecialty" formControlName="specialty" />
-
-          <div class="detail-grid two-col specialty-fields">
-            <div class="field-pair">
-              <label for="preferredPhysician">Preferred Physician</label>
-
-              <select id="preferredPhysician" formControlName="preferredPhysician">
-                <option value="" disabled>Select Physician</option>
-
-                @for (physician of filteredPhysicians; track physician.associateId) {
-                  <option [value]="physician.associateId">
-                    {{ physician.name }}
-                  </option>
-                }
-              </select>
-            </div>
-
-            <div class="field-pair">
-              <label for="referralSource"> Referral Source </label>
-
-              <select id="referralSource" formControlName="referralSource">
-                <option value="">Select source</option>
-
-                <option>Self</option>
-
-                <option>Physician Referral</option>
-
-                <option>Hospital Referral</option>
-
-                <option>Family / Friend</option>
-              </select>
             </div>
           </div>
         </section>

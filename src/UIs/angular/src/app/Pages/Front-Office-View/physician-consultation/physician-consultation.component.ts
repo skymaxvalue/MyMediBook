@@ -39,6 +39,7 @@ import {
   DoctorProfileModel,
   DoctorSpeciality,
 } from "../../../core/Models/doctor/doctor-detail.model";
+import { IDataRequestModel } from "../../../core/Models/common/data-request.model";
 
 @Component({
   selector: "app-physician-consultation",
@@ -79,7 +80,7 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
     Nephrology: "♢",
     Oncology: "+",
   };
-
+  preferredPhysician: number = 0;
   physicianList: DoctorSpeciality[] = [];
   filteredPhysicians: DoctorProfileModel[] = [];
 
@@ -107,7 +108,7 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
   constructor(
     private fb: UntypedFormBuilder,
     private commonFacade: CommonFacade,
-    private doctorFacade: DoctorFacade,
+    public doctorFacade: DoctorFacade,
     private authFacade: AuthFacade,
     private masterFacade: MasterFacade,
     private cdr: ChangeDetectorRef
@@ -534,6 +535,23 @@ export class PhysicianConsultationComponent implements OnInit, OnDestroy {
     control?.setValue(level);
     control?.markAsDirty();
   }
+
+  onPhysicianChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const associateId = selectElement.value;
+    this.preferredPhysician = parseInt(associateId);
+  }
+
+  onPreferredDateChange(event: Event) {
+    const date = this.consultationForm.get("appointment.preferredDate")?.value;
+    const payload: IDataRequestModel = {
+      associateId: this.preferredPhysician,
+      fromDate: date,
+      toDate: date,
+    };
+    this.doctorFacade.getDoctorTimeSlotList(payload);
+  }
+
   toggleNoMedications(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
 

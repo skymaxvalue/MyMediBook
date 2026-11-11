@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import * as AppointmentActions from "./appointment.actions";
+import * as AssociateActions from "../Associate/associate.actions";
 import { AppointmentService } from "../../core/Services/appointment/appointment.service";
-import { catchError, map, mergeMap, of, tap } from "rxjs";
+import { catchError, map, mergeMap, of, switchMap, tap } from "rxjs";
 import { ConfirmCheckInDialogComponent } from "../../Pages/Front-Office-View/patient-check-in/confirm-check-in-dialog/confirm-check-in-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { UpdateAppointmentCheckInRequestModel } from "../../core/Models/update-appointment-status.model";
@@ -400,13 +401,19 @@ export class AppointmentEffects {
     { dispatch: false }
   );
 
-  RedirectToAppointmentCheckInPage$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AppointmentActions.redirectToAppointmentCheckIns),
-        tap(({ doctorId }) => this.router.navigate(["/front-office/doctor-queue", doctorId]))
-      ),
-    { dispatch: false }
+  RedirectToAppointmentCheckInPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppointmentActions.redirectToAppointmentCheckIns),
+      switchMap(({ doctorId }) => {
+        this.router.navigate(["/front-office/doctor-queue", doctorId]);
+        console.log("DoctorId:", doctorId);
+        return of(
+          AssociateActions.GetAssociateById({
+            associateId: doctorId,
+          })
+        );
+      })
+    )
   );
 
   GetDoctorAppointmentQueueList$ = createEffect(() =>
