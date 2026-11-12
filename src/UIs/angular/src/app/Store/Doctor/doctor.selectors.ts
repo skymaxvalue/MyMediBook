@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { DoctorState } from "./doctor.reducer";
+import { DoctorModelDto } from "../../core/Models/doctor/doctor-detail.model";
 
 export const selectDoctorSpecialityState = createFeatureSelector<DoctorState>("doctor");
 
@@ -56,4 +57,40 @@ export const selectGetAssociateDetailsByItID = createSelector(
 export const selectUpdateAssociateDetailsByItID = createSelector(
   selectDoctorSpecialityState,
   (state) => state.updatedAssociate
+);
+
+export const selectDoctorSearchTerm = createSelector(
+  selectDoctorSpecialityState,
+  (state) => state.searchTerm
+);
+
+export const selectDoctorList = createSelector(
+  selectDoctorSpecialities,
+  (specialities): DoctorModelDto[] => {
+    return (specialities ?? []).flatMap((speciality) =>
+      (speciality.doctors ?? []).map((doctor) => ({
+        ...doctor,
+        specialityId: speciality.specialityId,
+        speciality: speciality.category,
+      }))
+    );
+  }
+);
+
+export const selectFilteredDoctors = createSelector(
+  selectDoctorList,
+  selectDoctorSearchTerm,
+  (doctors, searchTerm) => {
+    const search = (searchTerm ?? "").trim().toLowerCase();
+
+    if (!search) {
+      return doctors;
+    }
+
+    return doctors.filter((doctor) =>
+      [doctor.name, doctor.department, doctor.speciality].some((value) =>
+        value?.toLowerCase().includes(search)
+      )
+    );
+  }
 );

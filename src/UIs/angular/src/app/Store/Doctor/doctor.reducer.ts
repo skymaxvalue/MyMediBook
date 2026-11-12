@@ -21,6 +21,7 @@ export interface DoctorState {
   accociateDetails: any;
   updatedAssociate: any;
   doctorList: DoctorSpeciality[];
+  searchTerm: string;
 }
 
 export const initialState: DoctorState = {
@@ -39,6 +40,7 @@ export const initialState: DoctorState = {
   accociateDetails: null,
   updatedAssociate: null,
   doctorList: [],
+  searchTerm: "",
 };
 
 export const doctorSpecialityReducer = createReducer(
@@ -273,5 +275,9 @@ export const doctorSpecialityReducer = createReducer(
     ...state,
     error,
     isLoading: false,
+  })),
+  on(DoctorSpecialityActions.filterDoctors, (state, { searchTerm }) => ({
+    ...state,
+    searchTerm,
   }))
 );
