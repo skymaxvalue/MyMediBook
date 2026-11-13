@@ -47,6 +47,8 @@ import { CommonReducer } from "./app/Store/Common/common.reducer";
 import { CommonEffects } from "./app/Store/Common/common.effect";
 import { AssociateReducer } from "./app/Store/Associate/associate.reducer";
 import { AssociateEffects } from "./app/Store/Associate/associate.effect";
+import { paymentReducer } from "./app/Store/Payment/payment.reducer";
+import { PaymentEffects } from "./app/Store/Payment/payment.effects";
 
 if (environment.production) {
   enableProdMode();
@@ -97,6 +99,7 @@ bootstrapApplication(AppComponent, {
       master: MasterReducer,
       common: CommonReducer,
       associate: AssociateReducer,
+      payment: paymentReducer
     }),
     provideEffects([
       AuthEffects,
@@ -111,6 +114,7 @@ bootstrapApplication(AppComponent, {
       NavigationEffects,
       CommonEffects,
       AssociateEffects,
+      PaymentEffects
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

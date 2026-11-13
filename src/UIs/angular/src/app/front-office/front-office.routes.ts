@@ -156,6 +156,13 @@ export const FRONT_OFFICE_ROUTES: Routes = [
           ),
       },
       {
+        path: "payment-gateway",
+        loadComponent: () =>
+          import("../Pages/Front-Office-View/payment/payment.component").then(
+            (m) => m.PaymentComponent
+          ),
+      },
+      {
         path: "prescription-refill",
         loadComponent: () =>
           import("../Pages/Front-Office-View/prescription-refill/prescription-refill.component").then(

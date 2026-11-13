@@ -111,7 +111,7 @@
       "description": "Collect and manage payments",
       "icon": "payment2.png",
       "color": "green",
-      "route": "payment"
+      "route": "payment-gateway"
     }
   ],
 

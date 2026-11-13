@@ -24,4 +24,5 @@ export const BREADCRUMB_MAP: Record<string, Breadcrumb[]> = {
   "room-service": [{ label: "Room Service Request" }],
   "follow-up-visits": [{ label: "Follow Up Visits" }],
   "physician-consultation": [{ label: "Physician Consultation" }],
+  "payment-gateway": [{ label: "Payment" }],
 };
