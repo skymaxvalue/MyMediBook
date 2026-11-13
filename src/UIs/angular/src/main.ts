@@ -47,6 +47,8 @@ import { CommonReducer } from "./app/Store/Common/common.reducer";
 import { CommonEffects } from "./app/Store/Common/common.effect";
 import { AssociateReducer } from "./app/Store/Associate/associate.reducer";
 import { AssociateEffects } from "./app/Store/Associate/associate.effect";
+import { FrontOfficeReducer } from "./app/Store/Front-Office/front-office.reducer";
+import { FrontOfficeEffects } from "./app/Store/Front-Office/front-office.effect";
 
 if (environment.production) {
   enableProdMode();
@@ -97,6 +99,7 @@ bootstrapApplication(AppComponent, {
       master: MasterReducer,
       common: CommonReducer,
       associate: AssociateReducer,
+      frontoffice: FrontOfficeReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -111,6 +114,7 @@ bootstrapApplication(AppComponent, {
       NavigationEffects,
       CommonEffects,
       AssociateEffects,
+      FrontOfficeEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

@@ -159,3 +159,8 @@ export const deleteAssociatesAndItsScheduleFailure = createAction(
   "Delete Associates Schedule Failure",
   props<{ error: any }>()
 );
+
+export const filterDoctors = createAction(
+  "[Doctor] Filter Doctors",
+  props<{ searchTerm: string }>()
+);
