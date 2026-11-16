@@ -47,6 +47,8 @@ import { CommonReducer } from "./app/Store/Common/common.reducer";
 import { CommonEffects } from "./app/Store/Common/common.effect";
 import { AssociateReducer } from "./app/Store/Associate/associate.reducer";
 import { AssociateEffects } from "./app/Store/Associate/associate.effect";
+import { paymentReducer } from "./app/Store/Payment/payment.reducer";
+import { PaymentEffects } from "./app/Store/Payment/payment.effects";
 import { FrontOfficeReducer } from "./app/Store/Front-Office/front-office.reducer";
 import { FrontOfficeEffects } from "./app/Store/Front-Office/front-office.effect";
 import { prescriptionRefillReducer } from "./app/Pages/Front-Office-View/prescription-refill/store/prescription-refill.reducer";
@@ -101,6 +103,7 @@ bootstrapApplication(AppComponent, {
       master: MasterReducer,
       common: CommonReducer,
       associate: AssociateReducer,
+      payment: paymentReducer
       frontoffice: FrontOfficeReducer,
       prescriptionRefill: prescriptionRefillReducer,
     }),
@@ -117,6 +120,7 @@ bootstrapApplication(AppComponent, {
       NavigationEffects,
       CommonEffects,
       AssociateEffects,
+      PaymentEffects
       FrontOfficeEffects,
       PrescriptionRefillEffects,
     ]),
