@@ -47,6 +47,8 @@ import { CommonReducer } from "./app/Store/Common/common.reducer";
 import { CommonEffects } from "./app/Store/Common/common.effect";
 import { AssociateReducer } from "./app/Store/Associate/associate.reducer";
 import { AssociateEffects } from "./app/Store/Associate/associate.effect";
+import { paymentReducer } from "./app/Store/Payment/payment.reducer";
+import { PaymentEffects } from "./app/Store/Payment/payment.effects";
 import { FrontOfficeReducer } from "./app/Store/Front-Office/front-office.reducer";
 import { FrontOfficeEffects } from "./app/Store/Front-Office/front-office.effect";
 
@@ -99,6 +101,7 @@ bootstrapApplication(AppComponent, {
       master: MasterReducer,
       common: CommonReducer,
       associate: AssociateReducer,
+      payment: paymentReducer
       frontoffice: FrontOfficeReducer,
     }),
     provideEffects([
@@ -114,6 +117,7 @@ bootstrapApplication(AppComponent, {
       NavigationEffects,
       CommonEffects,
       AssociateEffects,
+      PaymentEffects
       FrontOfficeEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
