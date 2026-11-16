@@ -1,191 +1,148 @@
 <main class="page-container">
-
-
-
-    <!-- <div class="breadcrumb">
-
-        <span>Dashboard</span>
-
-        <span class="breadcrumb-separator">
-            »
-        </span>
-
-        <span>Patient Check-In</span>
-
-        <span class="breadcrumb-separator">
-            »
-        </span>
-
-        <span class="current">
-            Next in Queue
-        </span>
-
-    </div> -->
-
-
-
-
-    <section class="page-header">
-
-        <h1>
-            Next in Queue
-        </h1>
-
-        <p>
-            Select a doctor to view their appointment queue.
-        </p>
-
+  <div class="page-content">
+    <section class="page-heading">
+      <div class="page-heading-title">
+        <h1>Next in Queue</h1>
+      </div>
+      <p>Select a doctor to view their appointment queue.</p>
     </section>
 
-
-
-
-    <section class="doctor-selection-card">
-
-
-        <div class="card-header">
-
-            <h2>
-                Select Doctor
-            </h2>
-
-            <p>
-                Choose a doctor to view today's patient queue.
-            </p>
-
+    <section class="queue-card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <img src="/assets/images/front-office/images/doctor.png" alt="" />
         </div>
 
+        <div class="card-header-content">
+          <h2>Select Doctor</h2>
+          <p>Choose a doctor to view today's patient queue.</p>
+        </div>
+      </div>
 
+      <div class="card-divider"></div>
 
-
-        <div class="form-group">
-
+      <div class="selection-and-preview">
+        <div class="doctor-selection">
+          <div class="form-group">
             <label for="doctorSearch">
-                Doctor Name
+              Doctor Name
+              <span class="required-asterisk">*</span>
             </label>
 
+            <div class="doctor-select-wrapper" (click)="$event.stopPropagation()">
+              <span class="doctor-input-icon">
+                <img src="/assets/images/front-office/images/search.png" alt="" />
+              </span>
 
-            <div class="doctor-select-wrapper">
+              <input
+                type="text"
+                class="doctor-input"
+                placeholder="Select Doctor"
+                autocomplete="off"
+                [value]="doctorSearchText"
+                (input)="onDoctorSearch($event)"
+                (focus)="isDoctorDropdownOpen = true"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="isDoctorDropdownOpen"
+              />
 
-                <input type="text" id="doctorSearch" class="doctor-input" placeholder="Search or select doctor"
-                    autocomplete="off" [(ngModel)]="doctorSearch" (input)="searchDoctor()" (focus)="openDropdown()">
+              <button
+                type="button"
+                class="dropdown-button"
+                aria-label="Open doctor list"
+                (click)="toggleDoctorDropdown()"
+              >
+                <span class="dropdown-arrow"></span>
+              </button>
 
-
-                <button type="button" class="dropdown-button" (click)="openDropdown()">
-
-                    <span>
-                        ▼
-                    </span>
-
-                </button>
-
-
-
-
-                @if (isDropdownOpen) {
-
-                <div class="doctor-dropdown active">
-
-                    @if (filteredDoctors.length > 0) {
-
-                    @for (
-                    doctor of filteredDoctors;
-                    track doctor.name
-                    ) {
-
-                    <div class="doctor-option" (click)="selectDoctor(doctor)">
-
-                        <strong>
-                            {{ doctor.name }}
-                        </strong>
+              @if (isDoctorDropdownOpen) {
+                <div class="doctor-dropdown" role="listbox">
+                  @if (doctorFacade.filteredDoctors$ | async; as doctors) {
+                    @for (doctor of doctors; track doctor.associateId) {
+                      <button
+                        type="button"
+                        class="doctor-option"
+                        role="option"
+                        [class.selected]="selectedDoctor?.associateId === doctor.associateId"
+                        [attr.aria-selected]="selectedDoctor?.associateId === doctor.associateId"
+                        (click)="selectDoctor(doctor)"
+                      >
+                        <strong>{{ doctor.name }}</strong>
 
                         @if (doctor.department) {
-
-                        <span>
-                            {{ doctor.department }}
-                        </span>
-
+                          <span>{{ doctor.department }}</span>
                         }
-
-                    </div>
-
+                      </button>
                     }
 
-                    } @else {
-
-                    <div class="no-doctors">
-                        No doctors found
-                    </div>
-
+                    @if (doctors.length === 0) {
+                      <div class="no-doctors">No matching doctors</div>
                     }
-
+                  }
                 </div>
-
-                }
-
+              }
             </div>
 
+            <p id="doctorError" class="field-message field-error">
+              <span class="msg-icon">!</span>
+              Please select a doctor.
+            </p>
+
+            <p class="field-message field-info">
+              <span class="msg-icon">i</span>
+              Pick a doctor to see the list of patients waiting for their appointment.
+            </p>
+          </div>
         </div>
 
+        <aside class="doctor-preview" id="doctorPreview">
+          <div class="doctor-preview-avatar">
+            <img src="/assets/images/front-office/images/doctor-placeholder.png" alt="" />
+          </div>
+          @if (!selectedDoctor) {
+            <div class="doctor-preview-content">
+              <h3 id="doctorPreviewTitle">No doctor selected</h3>
 
-
-        @if (selectedDoctor) {
-
-        <div class="selected-doctor">
-
-            <div class="selected-doctor-icon">
-                ✓
+              <p id="doctorPreviewText">
+                Please select a doctor from the list to view their patient queue.
+              </p>
             </div>
-
-
-            <div>
-
-                <span class="selected-label">
-                    Selected Doctor
-                </span>
-
-                <strong>
-                    {{ selectedDoctor.name }}
-                </strong>
-
+          } @else {
+            <div class="doctor-preview" [class.has-doctor]="!!selectedDoctor">
+              @if (selectedDoctor) {
+                <div class="ready-status">
+                  <span class="status-indicator"></span>
+                  <span> Ready to view {{ selectedDoctor.name }}'s appointment queue. </span>
+                </div>
+              } @else {
+                <span class="empty-status"> Select a doctor to view their appointment queue. </span>
+              }
             </div>
+          }
+        </aside>
+      </div>
 
-        </div>
+      <div class="card-divider bottom-divider"></div>
 
-        }
+      <div class="card-actions">
+        <button type="button" class="btn btn-clear" (click)="clearSelection($event)">Clear</button>
 
-
-
-        @if (validationMessage) {
-
-        <div class="validation-message">
-
-            {{ validationMessage }}
-
-        </div>
-
-        }
-
-
-
-
-        <div class="card-actions">
-
-            <button type="button" class="secondary-button" (click)="clearSelection()">
-
-                Clear
-
-            </button>
-
-
-            <button type="button" class="primary-button" (click)="viewQueue()">
-
-                View Queue
-
-            </button>
-
-        </div>
-
+        <button
+          type="button"
+          id="viewQueueButton"
+          class="btn btn-primary"
+          [disabled]="!selectedDoctor"
+          (click)="onViewQueueClick()"
+        >
+          View Queue
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
     </section>
 
+    <p class="queue-note">
+      <img src="/assets/images/front-office/images/lock.png" alt="" class="queue-note-icon" />
+      Only today's appointments are shown in the queue.
+    </p>
+  </div>
 </main>

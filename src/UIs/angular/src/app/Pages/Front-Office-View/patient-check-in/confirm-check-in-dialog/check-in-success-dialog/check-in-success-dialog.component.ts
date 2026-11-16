@@ -28,7 +28,6 @@ export class CheckInSuccessDialogComponent {
     this.dialogRef.close();
     this.associateFacade.setSelectedAssociateId(doctorId);
     this.appointmentFacade.redirectToAppointmentCheckInsPage(doctorId);
-    this.associateFacade.setSelectedAssociateId(doctorId);
   }
   done(): void {
     this.dialogRef.close("done");

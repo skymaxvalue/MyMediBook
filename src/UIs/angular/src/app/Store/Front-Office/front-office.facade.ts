@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Store, select } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import * as A from "./front-office.actions";
-import * as S from "./front-office.selectors";
 import {
   Medication,
   OtpChannel,
@@ -12,7 +11,7 @@ import {
 } from "../../core/Models/front-office/consultation.model";
 
 @Injectable({ providedIn: "root" })
-export class ConsultationFacade {
+export class FrontOfficeFacade {
   constructor(private store: Store) {}
 
   // currentStep$ = this.store.pipe(select(S.selectCurrentStep));
@@ -93,7 +92,6 @@ export class ConsultationFacade {
   toggleNoMedications() {
     this.store.dispatch(A.toggleNoMedications());
   }
-
 
   loadDoctors(department?: string) {
     this.store.dispatch(A.loadDoctors({ department }));

@@ -59,7 +59,7 @@
       "description": "View next patient in queue",
       "icon": "queue2.png",
       "color": "purple",
-      "route": "queue"
+      "route": "next-in-queue"
     },
     {
       "title": "Walk-in Registration",
