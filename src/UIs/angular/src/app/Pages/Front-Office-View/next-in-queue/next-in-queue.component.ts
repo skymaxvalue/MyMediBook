@@ -1,152 +1,113 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { Router } from "@angular/router";
+import { AssociateFacade } from "./../../../Store/Associate/associate.facade";
+import { AppointmentFacade } from "./../../../Store/Appointments/appointment.facade";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
-interface Appointment {
-  doctor?: string;
-  department?: string;
-  room?: string;
-}
-interface Doctor {
-  name: string;
-  department: string;
-  room: string;
-}
+import { Subject } from "rxjs";
+
+import {
+  DoctorModelDto,
+} from "../../../core/Models/doctor/doctor-detail.model";
+
+import { DoctorFacade } from "../../../Store/Doctor/doctor.facade";
+import { AsyncPipe } from "@angular/common";
+
 @Component({
   selector: "app-next-in-queue",
-  imports: [FormsModule],
+  standalone: true,
+  imports: [FormsModule, AsyncPipe],
   templateUrl: "./next-in-queue.component.html",
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./next-in-queue.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class NextInQueueComponent implements OnInit {
-  doctors: Doctor[] = [];
+export class NextInQueueComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
-  filteredDoctors: Doctor[] = [];
-
-  selectedDoctor: Doctor | null = null;
-
-  doctorSearch = "";
-
-  isDropdownOpen = false;
-
+  selectedDoctor: DoctorModelDto | null = null;
+  doctorSearchText = "";
+  isDoctorDropdownOpen = false;
   validationMessage = "";
 
-  constructor(private router: Router) {}
+  constructor(
+    public doctorFacade: DoctorFacade,
+    private elementRef: ElementRef,
+    private appointmentFacade: AppointmentFacade,
+    private associateFacade: AssociateFacade
+  ) {}
 
   ngOnInit(): void {
-    this.loadDoctors();
+    this.doctorFacade.getDoctorList();
   }
 
-  getAppointments(): Appointment[] {
-    try {
-      const storedAppointments = localStorage.getItem("myMediBookAppointments");
+  onDoctorSearch(event: Event): void {
+    const searchTerm = (event.target as HTMLInputElement).value;
 
-      if (!storedAppointments) {
-        return [];
-      }
+    this.doctorSearchText = searchTerm;
+    this.isDoctorDropdownOpen = true;
 
-      const appointments = JSON.parse(storedAppointments);
+    this.doctorFacade.filterDoctors(searchTerm);
+  }
 
-      return Array.isArray(appointments) ? appointments : [];
-    } catch (error) {
-      console.error("Error loading appointments:", error);
+  toggleDoctorDropdown(): void {
+    this.isDoctorDropdownOpen = !this.isDoctorDropdownOpen;
 
-      return [];
+    if (this.isDoctorDropdownOpen) {
+      this.doctorFacade.filterDoctors(this.doctorSearchText);
     }
   }
 
-  loadDoctors(): void {
-    const appointments = this.getAppointments();
-
-    const doctorMap = new Map<string, Doctor>();
-
-    appointments.forEach((appointment) => {
-      if (!appointment.doctor) {
-        return;
-      }
-
-      const doctorName = appointment.doctor.trim();
-
-      if (!doctorName) {
-        return;
-      }
-
-      if (!doctorMap.has(doctorName)) {
-        doctorMap.set(doctorName, {
-          name: doctorName,
-          department: appointment.department || "",
-          room: appointment.room || "",
-        });
-      }
-    });
-
-    this.doctors = Array.from(doctorMap.values());
-
-    this.filteredDoctors = [...this.doctors];
-  }
-
-  searchDoctor(): void {
-    const searchTerm = this.doctorSearch.trim().toLowerCase();
-
-    this.filteredDoctors = this.doctors.filter((doctor) =>
-      doctor.name.toLowerCase().includes(searchTerm)
-    );
-
-    this.selectedDoctor = null;
-
-    this.validationMessage = "";
-
-    this.isDropdownOpen = true;
-  }
-
-  openDropdown(): void {
-    this.filteredDoctors = [...this.doctors];
-
-    this.isDropdownOpen = true;
-  }
-
-  selectDoctor(doctor: Doctor): void {
+  selectDoctor(doctor: DoctorModelDto): void {
     this.selectedDoctor = doctor;
+    this.doctorSearchText = doctor.name;
 
-    this.doctorSearch = doctor.name;
+    // Close dropdown after selection
+    this.isDoctorDropdownOpen = false;
 
-    this.validationMessage = "";
-
-    this.isDropdownOpen = false;
+    // Reset search filter
+    this.doctorFacade.filterDoctors("");
   }
 
-  clearSelection(): void {
+  clearSelection(event?: MouseEvent): void {
+    event?.stopPropagation();
+
     this.selectedDoctor = null;
+    this.doctorSearchText = "";
+    this.isDoctorDropdownOpen = false;
 
-    this.doctorSearch = "";
-
-    this.validationMessage = "";
-
-    this.isDropdownOpen = false;
-
-    this.filteredDoctors = [...this.doctors];
+    this.doctorFacade.filterDoctors("");
   }
 
-  viewQueue(): void {
-    if (!this.selectedDoctor) {
-      this.validationMessage = "Please select a doctor to continue.";
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as Node;
+    const dropdownWrapper = this.elementRef.nativeElement.querySelector(".doctor-select-wrapper");
 
+    if (dropdownWrapper && !dropdownWrapper.contains(target)) {
+      this.isDoctorDropdownOpen = false;
+    }
+  }
+
+  onViewQueueClick(): void {
+    if (!this.selectedDoctor) {
+      this.validationMessage = "Please select a doctor.";
       return;
     }
 
-    localStorage.setItem(
-      "selectedDoctor",
-      JSON.stringify({
-        name: this.selectedDoctor.name,
-        department: this.selectedDoctor.department || "",
-        room: this.selectedDoctor.room || "",
-      })
-    );
+    this.validationMessage = "";
 
-    this.router.navigate(["/doctor-queue"]);
+    this.associateFacade.setSelectedAssociateId(this.selectedDoctor.associateId);
+
+    this.appointmentFacade.redirectToAppointmentCheckInsPage(this.selectedDoctor.associateId);
   }
 
-  closeDropdown(): void {
-    this.isDropdownOpen = false;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

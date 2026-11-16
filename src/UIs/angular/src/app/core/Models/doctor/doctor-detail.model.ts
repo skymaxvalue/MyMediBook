@@ -26,3 +26,19 @@ export interface DoctorSpecialityResponse {
   tokenKey: string | null;
   refreshToken: string | null;
 }
+
+export interface DoctorModelDto {
+  associateId: number;
+  name: string;
+  degree: string | null;
+  image: string | null;
+  department: string;
+  specialityId: number;
+  speciality: string;
+  designationName: string | null;
+  fromTime: string | null;
+  toTime: string | null;
+  fromDate: string | null;
+  toDate: string | null;
+  availableWeekDays: string[];
+}
