@@ -32,6 +32,18 @@
   --ls-radius-sm: 8px;
   --ls-radius-pill: 999px;
   --ls-font: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+   --pr-primary: #2F6FED;
+  --pr-primary-dark: #255DCC;
+  --pr-primary-soft: #EEF4FF;
+  --pr-danger: #EF4444;
+  --pr-error: #E0334F;
+  --pr-text: #183153;
+  --pr-muted: #64748B;
+  --pr-border: #D8E3F6;
+  --pr-field-border: #D6E2F3;
+  --pr-bg: #F4F7FC;
+  --pr-green: #16A34A;
+  --pr-green-bg: #E7F7ED;
 }
 :root {
   --primary1: #2f6fed;

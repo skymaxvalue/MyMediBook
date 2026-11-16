@@ -33,12 +33,14 @@ export class SharedPatientSearchComponent {
   selectedPatient: ISearchPatientResponseModel | null = null;
   showPatientModal = false;
 
-  constructor(private commonFacade: CommonFacade) {}
+  constructor(private commonFacade: CommonFacade) { }
   get searchPayload(): ISearchPatientRequestModel {
     return {
       name: this.lastName.trim() || null,
       dob: this.dob || null,
-      mobileNo: this.mobileNo.trim() || null,
+      mobileNo: this.mobileNo.trim()
+        ? Number(this.mobileNo.trim())
+        : null,
       fromDate: null,
       toDate: null,
     };

@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import {
   PatientSearchCriteria,
   RefillRequestPayload,
-} from '../prescription-refill.models/Model';
+} from '../model/prescription-refill.model';
 import { PrescriptionRefillActions as A } from './prescription-refill.actions';
 import * as S from './prescription-refill.selectors';
 

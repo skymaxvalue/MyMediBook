@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, of, switchMap } from 'rxjs';
 import { PrescriptionRefillApiService } from '../service/prescription-refill.api.service';
 import { PrescriptionRefillActions as A } from './prescription-refill.actions';
+import { ISearchPatientRequestModel } from 'src/app/core/Models/common/search-patient.model';
 
 const message = (e: unknown, fallback: string) => (e instanceof Error ? e.message : fallback);
 
@@ -11,17 +12,51 @@ export class PrescriptionRefillEffects {
   private readonly actions$ = inject(Actions);
   private readonly api = inject(PrescriptionRefillApiService);
 
+  // searchPatients$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(A.searchPatients),
+  //     switchMap(({ criteria }) =>
+  //       this.api.searchPatients(criteria).pipe(
+  //         map((patients) => A.searchPatientsSuccess({ patients })),
+  //         catchError((e) => of(A.searchPatientsFailure({ error: message(e, 'Patient search failed') }))),
+  //       ),
+  //     ),
+  //   ),
+  // );
+
+
   searchPatients$ = createEffect(() =>
     this.actions$.pipe(
       ofType(A.searchPatients),
-      switchMap(({ criteria }) =>
-        this.api.searchPatients(criteria).pipe(
-          map((patients) => A.searchPatientsSuccess({ patients })),
-          catchError((e) => of(A.searchPatientsFailure({ error: message(e, 'Patient search failed') }))),
-        ),
-      ),
-    ),
+      switchMap(({ criteria }) => {
+
+        const mobile = criteria.mobile?.trim();
+        const dob = criteria.dob?.trim();
+
+        const payload: ISearchPatientRequestModel = {
+          name: criteria.lastName?.trim() || null,
+          dob: dob || null,
+          mobileNo: mobile ? Number(mobile) : null,
+          fromDate: null,
+          toDate: null
+        };
+
+        console.log('Patient Search API Payload:', payload);
+
+        return this.api.searchPatients(payload).pipe(
+          map((patients) =>
+            A.searchPatientsSuccess({ patients })
+          ),
+          catchError((e) =>
+            of(A.searchPatientsFailure({
+              error: message(e, 'Patient search failed')
+            }))
+          )
+        );
+      })
+    )
   );
+
 
   selectPatient$ = createEffect(() =>
     this.actions$.pipe(

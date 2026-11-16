@@ -49,6 +49,8 @@ import { AssociateReducer } from "./app/Store/Associate/associate.reducer";
 import { AssociateEffects } from "./app/Store/Associate/associate.effect";
 import { FrontOfficeReducer } from "./app/Store/Front-Office/front-office.reducer";
 import { FrontOfficeEffects } from "./app/Store/Front-Office/front-office.effect";
+import { prescriptionRefillReducer } from "./app/Pages/Front-Office-View/prescription-refill/store/prescription-refill.reducer";
+import { PrescriptionRefillEffects } from "./app/Pages/Front-Office-View/prescription-refill/store/prescription-refill.effects";
 
 if (environment.production) {
   enableProdMode();
@@ -100,6 +102,7 @@ bootstrapApplication(AppComponent, {
       common: CommonReducer,
       associate: AssociateReducer,
       frontoffice: FrontOfficeReducer,
+      prescriptionRefill: prescriptionRefillReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -115,6 +118,7 @@ bootstrapApplication(AppComponent, {
       CommonEffects,
       AssociateEffects,
       FrontOfficeEffects,
+      PrescriptionRefillEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

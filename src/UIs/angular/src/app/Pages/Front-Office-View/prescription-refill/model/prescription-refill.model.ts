@@ -57,7 +57,7 @@ export interface PatientDetails {
 
 export interface PatientSearchCriteria {
   lastName: string;
-  mobile: string;
+  mobile: string | null;
   dob: string;
 }
 
