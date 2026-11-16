@@ -4,7 +4,8 @@ import {
   Component,
   ElementRef,
   OnDestroy,
-  ViewEncapsulation
+  ViewEncapsulation,
+  OnInit
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -69,7 +70,7 @@ interface ZipRule {
   styleUrl: './payment.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class PaymentComponent implements AfterViewInit, OnDestroy {
+export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
 
   private readonly PATIENTS_KEY = 'labServicePatients_v1';
   private readonly RECORDS_KEY = 'paymentRecords_v1';
@@ -763,83 +764,74 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
     const mobile = this.input('patientMobileSearch');
     const results = this.$('patientSearchResults');
 
+    // Search button click
     this.listen(
       this.$('patientSearchBtn'),
       'click',
       ((event: Event) => {
+        event.preventDefault();
         event.stopPropagation();
-
-        if (this.debounceTimer) {
-          clearTimeout(this.debounceTimer);
-        }
-
         this.runSearch();
       }) as EventListener
     );
 
+    // Clear button
     this.listen(
       this.$('patientClearBtn'),
       'click',
       (() => this.clearPatient()) as EventListener
     );
 
-    [lastName, dob, mobile].forEach(input => {
-      this.listen(
-        input,
-        'input',
-        (() => {
-          if (this.debounceTimer) {
-            clearTimeout(this.debounceTimer);
-          }
+    // Handle keyboard events from all three search fields
+    this.listen(
+      this.root,
+      'keydown',
+      ((event: Event) => {
+        const keyboardEvent = event as KeyboardEvent;
+        const target = keyboardEvent.target as HTMLElement;
 
-          this.debounceTimer = setTimeout(() => {
-            this.runSearch();
-          }, 300);
-        }) as EventListener
-      );
+        const isSearchInput = [
+          'patientLastNameSearch',
+          'patientDobSearch',
+          'patientMobileSearch'
+        ].includes(target.id);
 
-      this.listen(
-        input,
-        'keydown',
-        ((event: KeyboardEvent) => {
+        if (!isSearchInput) return;
+
+        if (keyboardEvent.key === 'Enter') {
+          keyboardEvent.preventDefault();
+          keyboardEvent.stopPropagation();
+
+          console.log('Enter key detected');
+
           const options = this.optionElements();
 
-          if (event.key === 'Enter') {
-            event.preventDefault();
-
-            if (
-              this.activeIndex >= 0 &&
-              options[this.activeIndex]
-            ) {
-              this.selectPatientById(
-                options[this.activeIndex].dataset['id'] || ''
-              );
-            } else {
-              if (this.debounceTimer) {
-                clearTimeout(this.debounceTimer);
-              }
-
-              this.runSearch();
-            }
-          } else if (event.key === 'Escape') {
-            this.closeResults();
-          } else if (
-            event.key === 'ArrowDown' &&
-            results.classList.contains('show')
-          ) {
-            event.preventDefault();
-            this.setActiveOption(this.activeIndex + 1);
-          } else if (
-            event.key === 'ArrowUp' &&
-            results.classList.contains('show')
-          ) {
-            event.preventDefault();
-            this.setActiveOption(this.activeIndex - 1);
+          if (this.activeIndex >= 0 && options[this.activeIndex]) {
+            this.selectPatientById(
+              options[this.activeIndex].dataset['id'] || ''
+            );
+          } else {
+            this.runSearch();
           }
-        }) as EventListener
-      );
-    });
+        } else if (keyboardEvent.key === 'Escape') {
+          this.closeResults();
+        } else if (
+          keyboardEvent.key === 'ArrowDown' &&
+          results.classList.contains('show')
+        ) {
+          keyboardEvent.preventDefault();
+          this.setActiveOption(this.activeIndex + 1);
+        } else if (
+          keyboardEvent.key === 'ArrowUp' &&
+          results.classList.contains('show')
+        ) {
+          keyboardEvent.preventDefault();
+          this.setActiveOption(this.activeIndex - 1);
+        }
+      }) as EventListener
+    );
 
+    // Select patient from results
     this.listen(
       results,
       'click',
@@ -853,6 +845,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy {
       }) as EventListener
     );
 
+    // Close results when clicking outside
     this.listen(
       this.root,
       'click',
