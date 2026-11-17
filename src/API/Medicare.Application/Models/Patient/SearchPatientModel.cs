@@ -8,7 +8,7 @@ namespace Medicare.Application.Models.Patient
         public DateTime? DOB { get; set; }
         [JsonIgnore]
         public int? AssociateId { get; set; }
-        public int? MobileNo { get; set; }
+        public string? MobileNo { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
     }
