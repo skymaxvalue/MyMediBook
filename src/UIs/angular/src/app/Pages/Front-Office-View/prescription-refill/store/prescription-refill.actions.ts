@@ -7,13 +7,13 @@ import {
   Physician,
   RefillRequestPayload,
   RefillResult,
-} from "../prescription-refill.models/Model";
+} from "../model/prescription-refill.model";
 
 export const PrescriptionRefillActions = createActionGroup({
   source: "Prescription Refill",
   events: {
     "Search Patients": props<{ criteria: PatientSearchCriteria }>(),
-    "Search Patients Success": props<{ patients: Patient[] }>(),
+    "Search Patients Success": props<{ patients: any[] }>(),
     "Search Patients Failure": props<{ error: string }>(),
     "Clear Search": emptyProps(),
 
