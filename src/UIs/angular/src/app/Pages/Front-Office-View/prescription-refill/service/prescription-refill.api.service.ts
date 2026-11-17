@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Observable, delay, map, of, throwError } from "rxjs";
 import {
   DraftResult,
@@ -8,7 +8,11 @@ import {
   Physician,
   RefillRequestPayload,
   RefillResult,
-} from "../prescription-refill.models/Model";
+} from "../model/prescription-refill.model";
+import { ISearchPatientRequestModel, ISearchPatientResponseModel } from "src/app/core/Models/common/search-patient.model";
+import { PatientApiEndPoint } from "src/app/utils/API/ApiEndPoints";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 
 /**
  * Mock API. Swap the bodies for HttpClient calls; the effects don't change.
@@ -122,19 +126,48 @@ const digits = (v: string) => v.replace(/\D/g, "");
 
 @Injectable({ providedIn: "root" })
 export class PrescriptionRefillApiService {
-  searchPatients(c: PatientSearchCriteria): Observable<Patient[]> {
-    const last = c.lastName.trim().toLowerCase();
-    const mobile = digits(c.mobile);
-    const matches = PATIENTS.filter((p) => {
-      const byName = !last || p.lastName.toLowerCase().includes(last);
-      const byMobile = !mobile || digits(p.mobile).includes(mobile);
-      const byDob = !c.dob || p.dob === c.dob;
-      // "OR" semantics between last name and mobile; DOB narrows either.
-      const identity = last && mobile ? byName || byMobile : byName && byMobile;
-      return identity && byDob;
-    });
-    return of(matches).pipe(delay(350));
+  private http = inject(HttpClient);
+  private apiUrl = environment.OpenIdConnect.apiUrl;
+
+  // searchPatients(payload: ISearchPatientRequestModel): Observable<any> {
+  //   const url = `${this.apiUrl}${PatientApiEndPoint.SEARCH_PATIENT_REQUEST}`;
+
+  //   console.log('Patient Search API URL:', url);
+  //   console.log('Patient Search API Payload:', payload);
+  //   return this.http
+  //     .post<any>(`${this.apiUrl}${PatientApiEndPoint.SEARCH_PATIENT_REQUEST}`, payload)
+  //     .pipe(
+  //       map((resp) => {
+  //         return resp.data;
+  //       })
+  //     );
+  // }
+
+  searchPatients(
+    requestData: ISearchPatientRequestModel
+  ): Observable<ISearchPatientResponseModel[]> {
+    return this.http
+      .post<{ data: ISearchPatientResponseModel[] }>(
+        `${this.apiUrl}${PatientApiEndPoint.SEARCH_PATIENT_REQUEST}`,
+        requestData
+      )
+      .pipe(
+        map((res) => res.data || [])
+      );
   }
+  // searchPatients(c: PatientSearchCriteria): Observable<Patient[]> {
+  //   const last = c.lastName.trim().toLowerCase();
+  //   const mobile = digits(c.mobile);
+  //   const matches = PATIENTS.filter((p) => {
+  //     const byName = !last || p.lastName.toLowerCase().includes(last);
+  //     const byMobile = !mobile || digits(p.mobile).includes(mobile);
+  //     const byDob = !c.dob || p.dob === c.dob;
+  //     // "OR" semantics between last name and mobile; DOB narrows either.
+  //     const identity = last && mobile ? byName || byMobile : byName && byMobile;
+  //     return identity && byDob;
+  //   });
+  //   return of(matches).pipe(delay(350));
+  // }
 
   getPatientDetails(patientId: string): Observable<PatientDetails> {
     const patient = PATIENTS.find((p) => p.id === patientId);

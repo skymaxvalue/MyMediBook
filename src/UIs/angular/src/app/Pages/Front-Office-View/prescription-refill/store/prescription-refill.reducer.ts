@@ -5,7 +5,7 @@ import {
   PatientDetails,
   Physician,
   RefillResult,
-} from '../prescription-refill.models/Model';
+} from '../model/prescription-refill.model';
 import { PrescriptionRefillActions as A } from './prescription-refill.actions';
 
 export const prescriptionRefillFeatureKey = 'prescriptionRefill';

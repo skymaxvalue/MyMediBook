@@ -50,7 +50,7 @@ import { AssociateEffects } from "./app/Store/Associate/associate.effect";
 import { paymentReducer } from "./app/Store/Payment/payment.reducer";
 import { PaymentEffects } from "./app/Store/Payment/payment.effects";
 import { FrontOfficeEffects } from "./app/Store/Front-Office/front-office.effect";
-import { FrontOfficeReducer } from "./app/Store/Front-Office/front-office.reducer";
+import { PrescriptionRefillEffects } from "./app/Pages/Front-Office-View/prescription-refill/store/prescription-refill.effects";
 
 if (environment.production) {
   enableProdMode();
@@ -103,6 +103,7 @@ bootstrapApplication(AppComponent, {
       associate: AssociateReducer,
       payment: paymentReducer,
       frontoffice: FrontOfficeReducer,
+      prescriptionRefill: prescriptionRefillReducer,
     }),
     provideEffects([
       AuthEffects,
@@ -119,6 +120,7 @@ bootstrapApplication(AppComponent, {
       AssociateEffects,
       PaymentEffects,
       FrontOfficeEffects,
+      PrescriptionRefillEffects,
     ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

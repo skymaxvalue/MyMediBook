@@ -26,4 +26,5 @@ export const BREADCRUMB_MAP: Record<string, Breadcrumb[]> = {
   "physician-consultation": [{ label: "Physician Consultation" }],
   "payment-gateway": [{ label: "Payment" }],
   "next-in-queue": [{ label: "Next in Queue" }],
+  "prescription-refill": [{ label: "Prescription Refill Request" }],
 };
