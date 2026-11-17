@@ -43,5 +43,29 @@ namespace Medicare.DAL.Persistence.Repositories
             }
             return returnData;
         }
+        public async Task<PaymentRecordModel?> GetPaymentRecordByIdAsync(int paymentRecordId, int hospitalId)
+        {
+            string procName = "USP_GetPaymentRecordById";
+            PaymentRecordModel? returnData = null;
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("PaymentRecordId", paymentRecordId);
+                param.Add("HospitalId", hospitalId);
+
+                returnData = await _context.QuerySingleStoredProcAsync<PaymentRecordModel>(procName, param);
+            }
+            catch (Exception ex)
+            {
+                await _errorLog.InsertErrorLog(new ErrorLogModel()
+                {
+                    IsDBError = false,
+                    Error_Message = ex.Message,
+                    Error_Procedure = procName,
+                    Error_Trace = ex.StackTrace
+                });
+            }
+            return returnData;
+        }
     }
 }

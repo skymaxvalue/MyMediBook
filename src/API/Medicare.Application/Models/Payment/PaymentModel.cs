@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Medicare.Application.Interfaces.IErrorHandling;
+using System.Text.Json.Serialization;
 
 namespace Medicare.Application.Models.Payments
 {
@@ -10,7 +11,7 @@ namespace Medicare.Application.Models.Payments
         public string? Status { get; set; }   // optional filter
     }
 
-    public class PaymentRecordModel
+    public class PaymentRecordModel : IErrorHandling
     {
         public int PaymentRecordId { get; set; }
         public string PatientName { get; set; } = string.Empty;
@@ -24,7 +25,8 @@ namespace Medicare.Application.Models.Payments
         public decimal AmountPaid { get; set; }
         public decimal BalanceDue { get; set; }
         public string Status { get; set; } = string.Empty;
-
         public bool IsPayable => Status != "Paid" && BalanceDue > 0;
+        public string ResponseMessage { get; set; }
+        public int IsSuccess { get; set; }
     }
 }
