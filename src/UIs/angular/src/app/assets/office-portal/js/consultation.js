@@ -5,6 +5,7 @@ const PATIENTS_KEY = 'savedPatients_v5';
 let allPatients = [];
 let selectedPatient = null;
 let currentStep = 1;
+const completedSteps = new Set();
 
 
 let currentPatientType = 'existing';
@@ -278,11 +279,7 @@ const MED_STATUSES = ['Currently Taking', 'Not Taking', 'Recently Stopped'];
 
 const TRIAGE_HTML = `
     <strong>Immediate clinical attention required</strong>
-    <p>
-        This consultation has been flagged for immediate clinical / triage attention.
-        If this is a life-threatening emergency, call your local emergency number
-        (112 in India) now. You can continue completing this form.
-    </p>`;
+   `;
 
 const VITAL_LIMITS = [
     ['vitalHr', 'Heart rate', 20, 250],
@@ -995,8 +992,14 @@ function restorePatientAccountState(c) {
 function initPatientType() {
     document.querySelectorAll('input[name="patientType"]').forEach(radio => {
         radio.addEventListener('change', () => {
-            if (radio.checked) {
-                applyPatientType(radio.value);
+                if (radio.checked) {
+                // Keep New Patient registration consistent with the Booking page:
+                // send the user to the dedicated registration form immediately.
+                if (radio.value === 'new') {
+                    window.location.href = 'patient-registration.html';
+                    return;
+                }
+                applyPatientType('existing');
             }
         });
     });
@@ -1846,112 +1849,75 @@ function applyModalSearch() {
 
 
 
-function setStep(step, force = false) {
+function setStep(step) {
+    currentStep = Math.max(1, Math.min(6, step));
 
-    currentStep =
-        Math.max(
-            1,
-            Math.min(5, step)
-        );
-
-
-
-    document
-        .querySelectorAll(
-            '.consultation-step-panel'
-        )
-        .forEach(panel => {
-
-            panel.classList.toggle(
-                'active',
-                Number(panel.dataset.step) ===
-                currentStep
-            );
-        });
-
-
-
-    document
-        .querySelectorAll('.step-item')
-        .forEach(item => {
-
-            const number =
-                Number(
-                    item.dataset.stepTarget
-                );
-
-
-            item.classList.toggle(
-                'active',
-                number === currentStep
-            );
-
-
-            item.classList.toggle(
-                'completed',
-                number < currentStep
-            );
-        });
-
-
-
-    const stepCounter =
-        el('stepCounter');
-
-    if (stepCounter) {
-
-        stepCounter.textContent =
-            `Step ${currentStep} of 5`;
+    const consultationCard = document.querySelector('.consultation-card');
+    if (consultationCard) {
+        consultationCard.classList.toggle('vitals-entry-mode', currentStep === 4);
     }
 
+    document.querySelectorAll('.consultation-step-panel').forEach(panel => {
+        panel.classList.toggle('active', Number(panel.dataset.step) === currentStep);
+    });
 
-    const backButton =
-        el('backBtn');
+    document.querySelectorAll('.step-item').forEach(item => {
+        const number = Number(item.dataset.stepTarget);
+        item.classList.toggle('active', number === currentStep);
+        item.classList.toggle('completed', completedSteps.has(number));
+        item.classList.toggle('upcoming', number > currentStep && !completedSteps.has(number));
+        item.setAttribute('aria-current', number === currentStep ? 'step' : 'false');
+    });
 
-    if (backButton) {
-        backButton.hidden =
-            currentStep === 1;
-    }
+    const stepCounter = el('stepCounter');
+    if (stepCounter) stepCounter.textContent = `Step ${currentStep} of 6`;
 
+    const backButton = el('backBtn');
+    if (backButton) backButton.hidden = currentStep === 1;
 
-    const continueButton =
-        el('continueBtn');
-
-
+    const continueButton = el('continueBtn');
     if (continueButton) {
-
-        continueButton.innerHTML =
-            currentStep === 5
-                ? `
-                    Confirm Consultation
-                    <img
-                        src="images/check-white.png"
-                        alt=""
-                    >
-                  `
-                : `
-                    Continue
-                    <img
-                        src="images/arrow-right.png"
-                        alt=""
-                    >
-                  `;
+        continueButton.innerHTML = currentStep === 6
+            ? `Confirm Consultation <img src="images/check-white.png" alt="">`
+            : `Continue <img src="images/arrow-right.png" alt="">`;
     }
 
-
-    if (currentStep === 5) {
-        updateReview();
-    }
-
+    if (currentStep === 6) updateReview();
     refreshUi();
 
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// TEMPORARY: Free step navigation is enabled while the form is being configured.
+// Restore the validation-gated block below when you are ready to enforce
+// sequential completion again.
+function navigateToStep(target) {
+    const nextStep = Math.max(1, Math.min(6, Number(target)));
+    if (!Number.isInteger(nextStep) || nextStep === currentStep) return;
+
+    if (nextStep < currentStep) {
+        [...completedSteps].forEach(step => {
+            if (step >= nextStep) completedSteps.delete(step);
+        });
+        setStep(nextStep);
+        return;
+    }
+
+    // TEMPORARY BYPASS: allows direct navigation to any later step.
+    setStep(nextStep);
+
+    /* ORIGINAL SEQUENTIAL VALIDATION — UNCOMMENT TO RESTORE
+    if (nextStep !== currentStep + 1) {
+        showValidationModal('Please complete the current step before moving ahead.');
+        return;
+    }
+
+    if (!validateStep(currentStep)) return;
+
+    completedSteps.add(currentStep);
+    setStep(nextStep);
+    */
+}
 
 function stepError(step) {
     const c = snapshot();
@@ -2000,6 +1966,22 @@ function stepError(step) {
 
  
     if (step === 4) {
+        if (f.vitalBp && !/^\d{2,3}\s*\/\s*\d{2,3}$/.test(f.vitalBp)) {
+            return 'Please enter blood pressure as systolic/diastolic, e.g. 120/80.';
+        }
+
+        const outOfRange = VITAL_LIMITS.find(([id, , min, max]) => {
+            const value = parseFloat(f[id]);
+
+            return f[id] && !(value >= min && value <= max);
+        });
+
+        if (outOfRange) {
+            return `${outOfRange[1]} looks out of range. Please check the value.`;
+        }
+    }
+
+    if (step === 5) {
         if (!c.allergyStatus) {
             return 'Please select an allergy status.';
         }
@@ -2024,24 +2006,9 @@ function stepError(step) {
                 return 'Please select the taking status for each medication.';
             }
         }
-
-        if (f.vitalBp && !/^\d{2,3}\s*\/\s*\d{2,3}$/.test(f.vitalBp)) {
-            return 'Please enter blood pressure as systolic/diastolic, e.g. 120/80.';
-        }
-
-        const outOfRange = VITAL_LIMITS.find(([id, , min, max]) => {
-            const value = parseFloat(f[id]);
-
-            return f[id] && !(value >= min && value <= max);
-        });
-
-        if (outOfRange) {
-            return `${outOfRange[1]} looks out of range. Please check the value.`;
-        }
     }
 
-    
-    if (step === 5 && !consentsComplete(c)) {
+    if (step === 6 && !consentsComplete(c)) {
         return 'Please complete all required consent confirmations.';
     }
 
@@ -2366,20 +2333,23 @@ function newConsultationId(existing) {
 }
 
 function confirmConsultation() {
-  
-    for (let step = 1; step <= 5; step++) {
+    for (let step = 1; step <= 6; step++) {
         const message = stepError(step);
 
         if (message) {
-            if (step < 5) {
-                setStep(step, true);
-            }
-
+            [...completedSteps].forEach(doneStep => {
+                if (doneStep >= step) completedSteps.delete(doneStep);
+            });
+            setStep(step);
             showValidationModal(message);
-
             return;
         }
+
+        completedSteps.add(step);
     }
+
+    // All six steps have passed validation.
+    setStep(6);
 
     let saved = [];
 
@@ -2882,37 +2852,21 @@ document.addEventListener(
       
 
         el('backBtn')
-            ?.addEventListener(
-                'click',
-                () => {
-
-                    setStep(
-                        currentStep - 1,
-                        true
-                    );
-                }
-            );
+            ?.addEventListener('click', () => {
+                navigateToStep(currentStep - 1);
+            });
 
 
        
 
         el('continueBtn')
-            ?.addEventListener(
-                'click',
-                () => {
-
-                    if (currentStep === 5) {
-
-                        confirmConsultation();
-
-                    } else {
-
-                        setStep(
-                            currentStep + 1
-                        );
-                    }
+            ?.addEventListener('click', () => {
+                if (currentStep === 6) {
+                    confirmConsultation();
+                } else {
+                    navigateToStep(currentStep + 1);
                 }
-            );
+            });
 
 
 
@@ -2935,15 +2889,8 @@ document.addEventListener(
 
                       
 
-                        if (
-                            target >= 1 &&
-                            target <= 5
-                        ) {
-
-                            setStep(
-                                target,
-                                true
-                            );
+                        if (target >= 1 && target <= 6) {
+                            navigateToStep(target);
                         }
                     }
                 );
@@ -2961,12 +2908,7 @@ document.addEventListener(
                     'click',
                     () => {
 
-                        setStep(
-                            Number(
-                                button.dataset.goto
-                            ),
-                            true
-                        );
+                        navigateToStep(Number(button.dataset.goto));
                     }
                 );
             });
@@ -3030,9 +2972,7 @@ document.addEventListener(
             });
 
 
-        setStep(
-            1,
-            true
-        );
+        completedSteps.clear();
+        setStep(1);
     }
 );

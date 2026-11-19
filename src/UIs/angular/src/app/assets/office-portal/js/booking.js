@@ -1,3 +1,24 @@
+// Dedicated New Patient redirect (capture phase).
+// This is intentionally delegated so it still works if the patient-type
+// controls are rendered/replaced after the page's initial setup.
+document.addEventListener("change", function (event) {
+    const target = event.target;
+    if (
+        target &&
+        target.matches('input[name="patientType"]') &&
+        target.value === "new"
+    ) {
+        try {
+            sessionStorage.setItem("patientRegistrationReturnTo", "booking");
+        } catch (error) {
+            console.warn("Unable to save booking return context:", error);
+        }
+
+        const registrationUrl = new URL("patient-registration.html", window.location.href);
+        window.location.assign(registrationUrl.href);
+    }
+}, true);
+
 let insuranceData = null;
 let paymentData = null;
 let insuranceChoice = null;
@@ -14,6 +35,14 @@ let currentPatientType = "existing";
 
 let selectedAccountHolder = null;
 let isExistingAccount = false;
+
+// Id of the New Patient record already written to storage for this
+// booking (so a retried Confirm never saves the same person twice), and
+// whether the Contact / Address fields currently hold values copied from
+// a saved patient record (so they can be cleared again on switch/reset
+// without wiping anything the person typed themselves).
+let persistedNewPatientId = null;
+let contactAutofilled = false;
 
 // Responsible Party OTP is a 4-digit code, entered across 4 segmented
 // boxes (rp-otp-input). Kept as a constant since the digit-count shows
@@ -50,23 +79,29 @@ function seedPatients() {
     return [
         { id: "p1", firstName: "Rajesh", lastName: "Sharma", relation: "Self", dob: "1990-05-12", age: "35", ageType: "years", gender: "Male",
           accountId: "ACC100240", accountHolderName: "Rajesh Sharma", accountHolderMobile: "9998887770", accountHolderEmail: "rajesh@email.com",
+          phone: "9998887770", email: "rajesh@email.com", address: "204 MG Road", city: "Bengaluru", state: "Karnataka", pinCode: "560001",
           savedInsurance: { provider: "Star Health", policy: "SH-778215", groupId: "GRP-1042", holderName: "Rajesh Sharma", insuranceAddress: "204 MG Road, Bengaluru" } },
 
         { id: "p2", firstName: "Harshit", lastName: "Bhardwaj", relation: "Sibling", dob: "1997-02-10", age: "28", ageType: "years", gender: "Male",
           accountId: "ACC100246", accountHolderName: "Aditi Bhardwaj", accountHolderMobile: "9123456780", accountHolderEmail: "aditi@email.com",
+          phone: "9123456780", email: "harshit@email.com", address: "MG Road", city: "Delhi", state: "Delhi", pinCode: "110001",
           savedPayment: { paymentType: "Credit Card", cardHolder: "Harshit Bhardwaj", cardNumber: "**** **** **** 4821", expiry: "09/28", cvv: "***" } },
 
         { id: "p3", firstName: "K", lastName: "Bhardwaj", relation: "Sibling", dob: "2000-07-21", age: "25", ageType: "years", gender: "Female",
-          accountId: "ACC100246", accountHolderName: "Aditi Bhardwaj", accountHolderMobile: "9123456780", accountHolderEmail: "aditi@email.com" },
+          accountId: "ACC100246", accountHolderName: "Aditi Bhardwaj", accountHolderMobile: "9123456780", accountHolderEmail: "aditi@email.com",
+          phone: "9123456780", email: "k@email.com", address: "MG Road", city: "Delhi", state: "Delhi", pinCode: "110001" },
 
         { id: "p4", firstName: "Meera", lastName: "Sharma", relation: "Daughter", dob: "2016-11-04", age: "9", ageType: "years", gender: "Female",
-          accountId: "ACC100245", accountHolderName: "Priya Sharma", accountHolderMobile: "9876543210", accountHolderEmail: "priya@email.com" },
+          accountId: "ACC100245", accountHolderName: "Priya Sharma", accountHolderMobile: "9876543210", accountHolderEmail: "priya@email.com",
+          phone: "9876543210", email: "priya@email.com", address: "Park Street", city: "Kolkata", state: "West Bengal", pinCode: "700016" },
 
         { id: "p5", firstName: "Kabir", lastName: "Sharma", relation: "Son", dob: "2012-01-19", age: "13", ageType: "years", gender: "Male",
-          accountId: "ACC100245", accountHolderName: "Priya Sharma", accountHolderMobile: "9876543210", accountHolderEmail: "priya@email.com" },
+          accountId: "ACC100245", accountHolderName: "Priya Sharma", accountHolderMobile: "9876543210", accountHolderEmail: "priya@email.com",
+          phone: "9876543210", email: "priya@email.com", address: "Park Street", city: "Kolkata", state: "West Bengal", pinCode: "700016" },
 
         { id: "p6", firstName: "Priya", lastName: "Sharma", relation: "Self", dob: "1985-03-22", age: "41", ageType: "years", gender: "Female",
-          accountId: "ACC100245", accountHolderName: "Priya Sharma", accountHolderMobile: "9876543210", accountHolderEmail: "priya@email.com" }
+          accountId: "ACC100245", accountHolderName: "Priya Sharma", accountHolderMobile: "9876543210", accountHolderEmail: "priya@email.com",
+          phone: "9876543210", email: "priya@email.com", address: "Park Street", city: "Kolkata", state: "West Bengal", pinCode: "700016" }
     ];
 }
 
@@ -81,10 +116,41 @@ function loadPatients() {
 
     try {
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : seedPatients();
+        return Array.isArray(parsed) ? migratePatients(parsed) : seedPatients();
     } catch (e) {
         return seedPatients();
     }
+}
+
+// savedPatients_v5 is shared with the Physician Consultation page, so a
+// record may have been written by either page. Fill in anything a seeded
+// record is missing (contact details written only by Consultation, or
+// age / saved insurance written only by Booking) without overwriting
+// values that already exist.
+function migratePatients(list) {
+    const seeds = {};
+    seedPatients().forEach(item => { seeds[item.id] = item; });
+    const fillKeys = ["phone", "email", "address", "city", "state", "pinCode",
+                      "age", "ageType", "savedInsurance", "savedPayment"];
+    let changed = false;
+
+    list.forEach(patient => {
+        const seed = seeds[patient.id];
+        if (!seed) return;
+
+        fillKeys.forEach(key => {
+            if (patient[key] === undefined && seed[key] !== undefined) {
+                patient[key] = seed[key];
+                changed = true;
+            }
+        });
+    });
+
+    if (changed) {
+        try { savePatients(list); } catch (e) { console.warn("Unable to update saved patients:", e); }
+    }
+
+    return list;
 }
 
 function savePatients(list) {
@@ -859,6 +925,469 @@ function setupResponsiblePartySearch() {
     setupRpOtpInputs();
 }
 
+// ---- Patient search / selection / New Patient (mirrors Physician Consultation) ----
+
+// Short DOM helpers. Prefixed so they can't collide with globals defined by
+// the shared navbar.js / footer.js scripts loaded before this file.
+function bkEl(id) {
+    return document.getElementById(id);
+}
+
+function bkValue(id) {
+    const node = bkEl(id);
+    return node && node.value ? node.value.trim() : "";
+}
+
+function bkSetValue(id, value) {
+    const node = bkEl(id);
+    if (node) node.value = value === undefined || value === null ? "" : value;
+}
+
+function bkEscape(value) {
+    return String(value === undefined || value === null ? "" : value).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[ch]));
+}
+
+function bkFormatDob(iso) {
+    if (!iso) return "unknown";
+    const parts = iso.split("-");
+    return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : iso;
+}
+
+function bkTodayIso() {
+    const now = new Date();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    return `${now.getFullYear()}-${mm}-${dd}`;
+}
+
+const PATIENT_SEARCH_LIMIT = 6;
+
+function setPatientSearchError(message) {
+    const box = bkEl("patientSearchError");
+    if (!box) return;
+    box.textContent = message || "";
+    box.hidden = !message;
+}
+
+function setPatientFormError(message) {
+    const box = bkEl("patientFormError");
+    if (!box) return;
+    box.textContent = message || "";
+    box.hidden = !message;
+}
+
+// Renders the inline search results. A click (or Enter / Space) on a row
+// selects that patient — exactly like clicking a result on the Physician
+// Consultation page.
+function renderSearchResults(list) {
+    const box = bkEl("patientSearchResults");
+    if (!box) return;
+
+    box.innerHTML = "";
+
+    if (!list.length) {
+        box.innerHTML = '<div class="patient-search-empty">No matching patients found. Check the name, date of birth or mobile number, or choose New Patient to register.</div>';
+        return;
+    }
+
+    list.slice(0, PATIENT_SEARCH_LIMIT).forEach(patient => {
+        const row = document.createElement("div");
+        row.className = "patient-search-result";
+        row.tabIndex = 0;
+        row.setAttribute("role", "button");
+        row.dataset.id = patient.id;
+
+        row.innerHTML = `
+            <div class="patient-search-result-main">
+                <span class="patient-item-avatar" aria-hidden="true">&#128100;</span>
+                <div>
+                    <small>Patient${patient.relation ? " &middot; " + bkEscape(patient.relation) : ""}</small>
+                    <strong>${bkEscape(patient.firstName)} ${bkEscape(patient.lastName)}</strong>
+                </div>
+            </div>
+            <div class="patient-search-result-meta">
+                <small>DOB ${bkEscape(bkFormatDob(patient.dob))}</small>
+                <strong>${bkEscape(patient.phone || "")}</strong>
+            </div>`;
+
+        const choose = () => selectPatientRecord(patient);
+        row.addEventListener("click", choose);
+        row.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                choose();
+            }
+        });
+
+        box.appendChild(row);
+    });
+
+    if (list.length > PATIENT_SEARCH_LIMIT) {
+        const more = document.createElement("div");
+        more.className = "patient-search-empty";
+        more.textContent = `Showing the first ${PATIENT_SEARCH_LIMIT} of ${list.length} matches. Add more details to narrow the search.`;
+        box.appendChild(more);
+    }
+}
+
+// Last name + date of birth, OR mobile number. A mobile number takes
+// priority when both are filled in (same rule as Physician Consultation).
+function searchPatients() {
+    const box = bkEl("patientSearchResults");
+    const lastName = bkValue("patientLastNameSearch").toLowerCase();
+    const mobileRaw = bkValue("patientMobileSearch");
+    const dob = bkValue("patientDobSearch");
+
+    setPatientSearchError("");
+    if (box) box.innerHTML = "";
+
+    if (!lastName && !mobileRaw && !dob) {
+        setPatientSearchError("Enter a last name and date of birth, or a mobile number, to search.");
+        const first = bkEl("patientLastNameSearch");
+        if (first) first.focus();
+        return;
+    }
+
+    let list;
+
+    if (mobileRaw) {
+        const digits = mobileRaw.replace(/\D/g, "");
+
+        if (digits.length !== 10) {
+            setPatientSearchError("Enter a valid 10-digit mobile number.");
+            const mobile = bkEl("patientMobileSearch");
+            if (mobile) mobile.focus();
+            return;
+        }
+
+        list = allPatients.filter(p => normalizeMobile(p.phone) === digits);
+    } else {
+        if (dob && dob > bkTodayIso()) {
+            setPatientSearchError("Date of birth cannot be in the future.");
+            return;
+        }
+
+        list = allPatients.filter(p =>
+            (!lastName || String(p.lastName || "").toLowerCase().includes(lastName)) &&
+            (!dob || p.dob === dob)
+        );
+    }
+
+    renderSearchResults(list);
+}
+
+function clearPatientSearch() {
+    ["patientLastNameSearch", "patientMobileSearch", "patientDobSearch"].forEach(id => bkSetValue(id, ""));
+    const box = bkEl("patientSearchResults");
+    if (box) box.innerHTML = "";
+    setPatientSearchError("");
+}
+
+function setSelectedPatientBar(patient) {
+    const bar = bkEl("selectedPatientBar");
+    const name = bkEl("selectedPatientName");
+    const phone = bkEl("selectedPatientPhone");
+
+    if (name) name.textContent = patient ? `${patient.firstName} ${patient.lastName}`.trim() : "\u2014";
+    if (phone) phone.textContent = patient && patient.phone ? `+91 ${normalizeMobile(patient.phone)}` : "\u2014";
+    if (bar) bar.hidden = !patient;
+}
+
+// ---- Contact / address auto-fill from a saved patient record ----
+const CONTACT_AUTOFILL_IDS = [
+    "phone", "email", "address", "city", "state", "pinCode",
+    "permanentAddress", "permanentCity", "permanentState", "permanentPinCode"
+];
+
+function setPhoneField(digits) {
+    const phoneInput = bkEl("phone");
+    if (!phoneInput) return;
+
+    if (phoneIti && digits) {
+        phoneIti.setNumber("+91" + digits);
+    } else {
+        phoneInput.value = digits || "";
+        if (phoneIti) phoneIti.setNumber("");
+    }
+}
+
+function clearAutofilledContact() {
+    if (!contactAutofilled) return;
+
+    CONTACT_AUTOFILL_IDS.forEach(id => {
+        if (id === "phone") {
+            setPhoneField("");
+        } else {
+            bkSetValue(id, "");
+        }
+    });
+
+    const sameAs = bkEl("sameAsPresentAddress");
+    if (sameAs && sameAs.checked) {
+        sameAs.checked = false;
+        sameAs.dispatchEvent(new Event("change"));
+    }
+
+    contactAutofilled = false;
+}
+
+function populateContactFromPatient(patient) {
+    clearAutofilledContact();
+
+    setPhoneField(normalizeMobile(patient.phone));
+    ["email", "address", "city", "state", "pinCode"].forEach(id => bkSetValue(id, patient[id]));
+
+    // Permanent address is only written by Booking itself; older / seeded
+    // records simply don't have one, so it stays blank for the person to fill.
+    ["permanentAddress", "permanentCity", "permanentState", "permanentPinCode"].forEach(id => {
+        if (patient[id]) bkSetValue(id, patient[id]);
+    });
+
+    const sameAs = bkEl("sameAsPresentAddress");
+    if (sameAs && patient.sameAsPresentAddress) {
+        sameAs.checked = true;
+        sameAs.dispatchEvent(new Event("change"));
+    }
+
+    contactAutofilled = true;
+}
+
+// Picks an existing patient (from an inline search result or from the
+// "Switch Profile" modal) and fills the form from that saved record.
+function selectPatientRecord(p) {
+    if (!p) return;
+
+    selectedPatientId = p.id;
+    persistedNewPatientId = null;
+    resetInsuranceSelection();
+
+    // Picking a profile IS choosing an existing patient — keep
+    // currentPatientType in sync even if the "Existing Patient" radio
+    // was never explicitly clicked, otherwise getSelectedPatientRecord()
+    // can't find saved insurance/payment.
+    currentPatientType = "existing";
+    const existingRadio = document.querySelector('input[name="patientType"][value="existing"]');
+    if (existingRadio) existingRadio.checked = true;
+    applyPatientTypeLocks("existing");
+    updateAccountHolderUI("existing");
+
+    bkSetValue("firstName", p.firstName);
+    bkSetValue("lastName", p.lastName);
+    bkSetValue("dateOfBirth", p.dob);
+
+    const ageTypeRadio = document.querySelector(`input[name="ageType"][value="${p.ageType || "years"}"]`);
+    if (ageTypeRadio) ageTypeRadio.checked = true;
+
+    bkSetValue("age", p.age);
+    bkSetValue("gender", p.gender);
+
+    populateContactFromPatient(p);
+
+    setSelectedPatientBar(p);
+    setPatientSearchError("");
+    setPatientFormError("");
+    const results = bkEl("patientSearchResults");
+    if (results) results.innerHTML = "";
+
+    updateAgeFromDob();
+}
+
+// ---- Booking-form validation, New Patient persistence ----
+
+// 10 national digits for Indian numbers. intl-tel-input's getNumber()
+// returns "" unless its utils script is loaded, so fall back to the
+// visible input value rather than trusting it.
+function bookingPhoneDigits() {
+    const typed = bkValue("phone");
+    const full = phoneIti ? phoneIti.getNumber() : "";
+    return normalizeMobile(full || typed);
+}
+
+function bookingPhoneE164() {
+    const typed = bkValue("phone");
+    if (phoneIti) {
+        const full = phoneIti.getNumber();
+        if (full) return full;
+
+        const country = phoneIti.getSelectedCountryData();
+        const dial = country && country.dialCode ? country.dialCode : "91";
+        const digits = typed.replace(/\D/g, "").replace(/^0+/, "");
+        return digits ? `+${dial}${digits}` : "";
+    }
+    return typed;
+}
+
+function bookingPhoneIsIndian() {
+    if (!phoneIti) return true;
+    const country = phoneIti.getSelectedCountryData();
+    return !country || !country.iso2 || country.iso2 === "in";
+}
+
+// Returns a message for the first problem found, or "" when the patient
+// part of the form is good to go.
+function getPatientFormError(type) {
+    if (type !== "new") {
+        if (!getSelectedPatientRecord()) {
+            return "Please search for and select a patient profile before continuing.";
+        }
+        return "";
+    }
+
+    const dob = bkValue("dateOfBirth");
+
+    if (dob && new Date(dob + "T00:00:00") > new Date()) {
+        return "Date of birth cannot be in the future.";
+    }
+
+    const digits = bookingPhoneDigits();
+
+    if (bookingPhoneIsIndian() ? digits.length < 10 : digits.length < 6) {
+        return bookingPhoneIsIndian()
+            ? "Please enter a valid 10-digit mobile number."
+            : "Please enter a valid mobile number.";
+    }
+
+    const choice = (document.querySelector('input[name="accountHolder"]:checked') || {}).value || "self";
+
+    if (choice === "other") {
+        if (!(isExistingAccount && selectedAccountHolder)) {
+            return 'Please search and verify the responsible party, or select "The Patient".';
+        }
+        if (!bkValue("relationToPatient")) {
+            return "Please select the responsible party's relationship to the patient.";
+        }
+    }
+
+    return "";
+}
+
+function buildNewPatientRecord() {
+    const stamp = Date.now();
+    const ageTypeChecked = document.querySelector('input[name="ageType"]:checked');
+    const choice = (document.querySelector('input[name="accountHolder"]:checked') || {}).value || "self";
+    const other = choice === "other" && isExistingAccount && !!selectedAccountHolder;
+
+    const firstName = bkValue("firstName");
+    const lastName = bkValue("lastName");
+    const phone = bookingPhoneDigits();
+    const email = bkValue("email");
+
+    // Option A (self): the patient is their own account holder. Option B:
+    // link to the account found + verified by search — never mint a second
+    // accountId for an account that already exists.
+    const record = {
+        id: "p" + stamp,
+        firstName,
+        lastName,
+        relation: other ? bkValue("relationToPatient") : "Self",
+        accountHolder: other ? "other" : "self",
+        accountId: other ? selectedAccountHolder.accountId : "ACC" + stamp,
+        accountHolderName: other ? selectedAccountHolder.accountHolderName : `${firstName} ${lastName}`.trim(),
+        accountHolderMobile: other ? (selectedAccountHolder.phone || null) : (phone || null),
+        accountHolderEmail: other ? (selectedAccountHolder.email || null) : (email || null),
+        dob: bkValue("dateOfBirth"),
+        age: bkEl("age") ? bkEl("age").value : "",
+        ageType: ageTypeChecked ? ageTypeChecked.value : "years",
+        gender: bkValue("gender"),
+        phone,
+        email,
+        address: bkValue("address"),
+        city: bkValue("city"),
+        state: bkValue("state"),
+        pinCode: bkValue("pinCode"),
+        permanentAddress: bkValue("permanentAddress"),
+        permanentCity: bkValue("permanentCity"),
+        permanentState: bkValue("permanentState"),
+        permanentPinCode: bkValue("permanentPinCode"),
+        sameAsPresentAddress: !!(bkEl("sameAsPresentAddress") && bkEl("sameAsPresentAddress").checked)
+    };
+
+    return record;
+}
+
+// Same person (name + date of birth, and mobile when both records have
+// one) already on file → reuse that record instead of saving a copy.
+function findDuplicatePatient(record) {
+    const first = String(record.firstName || "").trim().toLowerCase();
+    const last = String(record.lastName || "").trim().toLowerCase();
+
+    return allPatients.find(p =>
+        String(p.firstName || "").trim().toLowerCase() === first &&
+        String(p.lastName || "").trim().toLowerCase() === last &&
+        p.dob === record.dob &&
+        (!record.phone || !p.phone || normalizeMobile(p.phone) === normalizeMobile(record.phone))
+    ) || null;
+}
+
+// Writes the New Patient to the shared savedPatients_v5 list (once) and
+// returns the stored record. Called only after the insurance / payment
+// checks pass, so a Confirm that bounces back for missing insurance info
+// never leaves an orphaned patient behind.
+function persistNewPatientIfNeeded() {
+    if (currentPatientType !== "new") return null;
+
+    const stored = persistedNewPatientId
+        ? allPatients.find(p => p.id === persistedNewPatientId)
+        : null;
+    if (stored) return stored;
+
+    const record = buildNewPatientRecord();
+    const duplicate = findDuplicatePatient(record);
+
+    if (duplicate) {
+        // Keep the existing record (and its account link) as the source of
+        // truth; only fill in contact details it was missing.
+        let changed = false;
+        ["phone", "email", "address", "city", "state", "pinCode",
+         "permanentAddress", "permanentCity", "permanentState", "permanentPinCode"].forEach(key => {
+            if (!duplicate[key] && record[key]) {
+                duplicate[key] = record[key];
+                changed = true;
+            }
+        });
+        if (changed) savePatients(allPatients);
+
+        persistedNewPatientId = duplicate.id;
+        selectedPatientId = duplicate.id;
+        return duplicate;
+    }
+
+    allPatients.push(record);
+    try {
+        savePatients(allPatients);
+    } catch (e) {
+        allPatients.pop();
+        throw e;
+    }
+
+    persistedNewPatientId = record.id;
+    selectedPatientId = record.id;
+    return record;
+}
+
+// Which Responsible Party / relationship goes with the patient being
+// booked. Always read from the stored patient record, so an existing
+// patient keeps their real account holder and relation instead of
+// defaulting to "Self".
+function resolveAppointmentAccount(record, fullName) {
+    if (!record) {
+        return { accountHolder: "self", accountHolderName: fullName, relationToPatient: "Self", accountId: "" };
+    }
+
+    const isSelf = record.accountHolder
+        ? record.accountHolder === "self"
+        : (record.relation || "Self") === "Self";
+
+    return {
+        accountHolder: isSelf ? "self" : "other",
+        accountHolderName: record.accountHolderName || fullName,
+        relationToPatient: isSelf ? "Self" : (record.relation || ""),
+        accountId: record.accountId || ""
+    };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("bookingForm");
@@ -866,27 +1395,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     allPatients = loadPatients();
 
-    // ---- Patient profile picker (modal) ----
-    const patientDropdown = document.getElementById("patientDropdown");
-    const trigger = document.getElementById("patientDropdownTrigger");
+    // ---- Patient profile picker ----
+    // Inline search (last name + DOB, or mobile) is the primary path; the
+    // modal below is kept as the "Switch Profile" picker.
+    const existingSection = document.getElementById("existingPatientSection");
     const modal = document.getElementById("selectPatientModal");
-    const label = document.getElementById("patientDropdownLabel");
     const searchInput = document.getElementById("patientSearchInput");
     const dobFilter = document.getElementById("patientDobFilter");
     const listEl = document.getElementById("patientList");
     const confirmBtn = document.getElementById("selectPatientConfirmBtn");
-    const profileRow = [
-        document.getElementById("patientProfileLabel"),
-        patientDropdown
-    ];
     let highlightedPatient = null;
 
     function setPatientTypeUI(type) {
-        if (type === "new") {
-            profileRow.forEach(el => el.style.display = "none");
-        } else {
-            profileRow.forEach(el => el.style.display = "");
-        }
+        if (existingSection) existingSection.hidden = (type === "new");
     }
 
     setPatientTypeUI(currentPatientType);
@@ -994,45 +1515,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function selectPatient(p) {
-        selectedPatientId = p.id;
-        resetInsuranceSelection();
-
-        // Picking a profile from this dropdown IS choosing an existing
-        // patient — keep currentPatientType in sync even if the "Select
-        // Existing Patient" radio was never explicitly clicked, otherwise
-        // getSelectedPatientRecord() can't find saved insurance/payment.
-        currentPatientType = "existing";
-        const existingRadio = document.querySelector('input[name="patientType"][value="existing"]');
-        if (existingRadio) existingRadio.checked = true;
-        applyPatientTypeLocks("existing");
-        updateAccountHolderUI("existing");
-
-        document.getElementById("firstName").value = p.firstName;
-        document.getElementById("lastName").value = p.lastName;
-        document.getElementById("dateOfBirth").value = p.dob;
-
-        const ageTypeRadio = document.querySelector(`input[name="ageType"][value="${p.ageType}"]`);
-        if (ageTypeRadio) ageTypeRadio.checked = true;
-
-        document.getElementById("age").value = p.age;
-        document.getElementById("gender").value = p.gender;
-
-        label.textContent = `${p.firstName} ${p.lastName}`;
-        label.classList.add("filled");
-
         modal.style.display = "none";
-        updateAgeFromDob();
+        selectPatientRecord(p);
     }
 
-    trigger.addEventListener("click", openPatientModal);
+    const switchProfileBtn = document.getElementById("switchProfileBtn");
+    if (switchProfileBtn) {
+        switchProfileBtn.addEventListener("click", openPatientModal);
+    }
 
     searchInput.addEventListener("input", applyFilters);
     dobFilter.addEventListener("change", applyFilters);
 
-    const searchBtn = document.getElementById("patientSearchBtn");
-    if (searchBtn) {
-        searchBtn.addEventListener("click", applyFilters);
+    const modalSearchBtn = document.getElementById("modalPatientSearchBtn");
+    if (modalSearchBtn) {
+        modalSearchBtn.addEventListener("click", applyFilters);
     }
+
+    // ---- Inline patient search ----
+    const inlineSearchBtn = document.getElementById("patientSearchBtn");
+    if (inlineSearchBtn) {
+        inlineSearchBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            searchPatients();
+        });
+    }
+
+    const inlineClearBtn = document.getElementById("patientClearBtn");
+    if (inlineClearBtn) {
+        inlineClearBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            clearPatientSearch();
+        });
+    }
+
+    ["patientLastNameSearch", "patientDobSearch", "patientMobileSearch"].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (!field) return;
+
+        field.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchPatients();
+            }
+        });
+
+        field.addEventListener("input", function () {
+            if (id === "patientMobileSearch") this.value = this.value.replace(/\D/g, "");
+            setPatientSearchError("");
+        });
+    });
 
     confirmBtn.addEventListener("click", () => {
         if (highlightedPatient) {
@@ -1043,7 +1575,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // ---- Patient Type: existing vs new ----
     function clearPatientDetailFields() {
         selectedPatientId = null;
+        persistedNewPatientId = null;
         resetInsuranceSelection();
+
+        clearAutofilledContact();
+        clearPatientSearch();
+        setSelectedPatientBar(null);
+        setPatientFormError("");
 
         document.getElementById("firstName").value = "";
         document.getElementById("lastName").value = "";
@@ -1061,9 +1599,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('input[name="accountHolder"]').forEach(r => r.checked = false);
         document.getElementById("accountHolderName").value = "";
         document.getElementById("relationToPatient").value = "";
-
-        label.textContent = "Select Patient";
-        label.classList.remove("filled");
     }
 
     document.querySelectorAll('input[name="patientType"]').forEach(radio => {
@@ -1099,65 +1634,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const patientType = (document.querySelector('input[name="patientType"]:checked') || {}).value || "existing";
 
-        if (patientType === "new") {
-            const ageTypeChecked = document.querySelector('input[name="ageType"]:checked');
+        const patientError = getPatientFormError(patientType);
 
-            const accountHolderChoice = (document.querySelector('input[name="accountHolder"]:checked') || {}).value || "self";
-            const isOtherHolder = accountHolderChoice === "other";
+        if (patientError) {
+            setPatientFormError(patientError);
 
-            const firstName = document.getElementById("firstName").value;
-            const lastName = document.getElementById("lastName").value;
-
-            const relationToPatient = isOtherHolder
-                ? document.getElementById("relationToPatient").value
-                : "Self";
-
-            // Resolve which Responsible Party this new patient belongs to:
-            //  - Option A (self): the patient becomes their own new account holder.
-            //  - Option B, existing account: link to the account found by search
-            //    (never mint a new accountId — that would duplicate the account).
-            //  - Option B, new account: mint a fresh accountId, holder details
-            //    come from the "Create New Account" fields + the searched mobile.
-            let accountId;
-            let accountHolderName;
-            let accountHolderMobile = null;
-            let accountHolderEmail = null;
-
-            if (isOtherHolder && isExistingAccount && selectedAccountHolder) {
-                accountId = selectedAccountHolder.accountId;
-                accountHolderName = selectedAccountHolder.accountHolderName;
-                accountHolderMobile = selectedAccountHolder.phone;
-                accountHolderEmail = selectedAccountHolder.email;
-            } else if (isOtherHolder) {
-                accountId = "ACC" + Date.now();
-                accountHolderName = document.getElementById("accountHolderName").value;
-                const searchedMobile = document.getElementById("responsiblePartyMobile");
-                accountHolderMobile = searchedMobile ? searchedMobile.value : null;
-            } else {
-                accountId = "ACC" + Date.now();
-                accountHolderName = `${firstName} ${lastName}`.trim();
-            }
-
-            const newPatient = {
-                id: "p" + Date.now(),
-                firstName,
-                lastName,
-                relation: relationToPatient,
-                accountHolder: accountHolderChoice,
-                accountId,
-                accountHolderName,
-                accountHolderMobile,
-                accountHolderEmail,
-                dob: document.getElementById("dateOfBirth").value,
-                age: document.getElementById("age").value,
-                ageType: ageTypeChecked ? ageTypeChecked.value : "years",
-                gender: document.getElementById("gender").value
-            };
-
-            allPatients.push(newPatient);
-            savePatients(allPatients);
-            selectedPatientId = newPatient.id;
+            const target = patientType === "new"
+                ? document.getElementById("patientFormError")
+                : existingSection;
+            if (target && target.scrollIntoView) target.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
         }
+
+        setPatientFormError("");
 
         confirmBooking();
 
@@ -1165,6 +1654,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+    // Native reset puts every field (and the Patient Type radio) back to
+    // its default; bring the JS state and the visible sections back in
+    // line with it, once the reset has finished.
+    form.addEventListener("reset", function () {
+        setTimeout(function () {
+            currentPatientType = "existing";
+            modal.style.display = "none";
+            clearPatientDetailFields();
+            setPatientTypeUI("existing");
+            applyPatientTypeLocks("existing");
+            updateAccountHolderUI("existing");
+        }, 0);
+    });
 
     const radios =
     document.querySelectorAll('input[name="insurance"]');
@@ -1228,6 +1731,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "change",
         updateAgeFromDob
     );
+
+    // Dates of birth can't be in the future (same guard as Physician Consultation).
+    ["dateOfBirth", "patientDobSearch"].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (field) field.max = bkTodayIso();
+    });
 
     setupPermanentAddress();
     phoneIti = initializePhoneInput();
@@ -1524,6 +2033,23 @@ function confirmBooking() {
         return;
     }
 
+    let patientRecord = null;
+
+    try {
+        patientRecord = currentPatientType === "new"
+            ? persistNewPatientIfNeeded()
+            : getSelectedPatientRecord();
+    } catch (e) {
+        console.warn("Unable to save patient:", e);
+        setPatientFormError("Unable to save the patient on this device. Please try again.");
+        return;
+    }
+
+    const bookingFullName =
+        `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim();
+    const account = resolveAppointmentAccount(patientRecord, bookingFullName);
+    const ageTypeChecked = document.querySelector('input[name="ageType"]:checked');
+
     const appointment = {
 
         firstName:
@@ -1537,9 +2063,7 @@ function confirmBooking() {
         ).value,
 
         phone:
-        phoneIti
-            ? phoneIti.getNumber()
-            : document.getElementById("phone").value,
+        bookingPhoneE164(),
 
         address:
         document.getElementById(
@@ -1587,17 +2111,37 @@ function confirmBooking() {
         ).value,
 
         accountHolder:
-        (document.querySelector('input[name="accountHolder"]:checked') || {}).value || "self",
+        account.accountHolder,
 
         accountHolderName:
-        (document.querySelector('input[name="accountHolder"]:checked') || {}).value === "other"
-            ? document.getElementById("accountHolderName").value
-            : `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim(),
+        account.accountHolderName,
 
         relationToPatient:
-        (document.querySelector('input[name="accountHolder"]:checked') || {}).value === "other"
-            ? document.getElementById("relationToPatient").value
-            : "Self",
+        account.relationToPatient,
+
+        accountId:
+        account.accountId,
+
+        patientId:
+        patientRecord ? patientRecord.id : null,
+
+        patientType:
+        currentPatientType,
+
+        dob:
+        document.getElementById("dateOfBirth").value,
+
+        gender:
+        document.getElementById("gender").value,
+
+        email:
+        document.getElementById("email").value,
+
+        age:
+        document.getElementById("age").value,
+
+        ageType:
+        ageTypeChecked ? ageTypeChecked.value : "years",
 
         date:
         localStorage.getItem(

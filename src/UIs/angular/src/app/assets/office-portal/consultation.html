@@ -137,7 +137,7 @@
                     data-step-target="4"
                 >
                     <span>04</span>
-                    <strong>History</strong>
+                    <strong>Vitals</strong>
                 </button>
 
 
@@ -147,6 +147,16 @@
                     data-step-target="5"
                 >
                     <span>05</span>
+                    <strong>Medications</strong>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="step-item"
+                    data-step-target="6"
+                >
+                    <span>06</span>
                     <strong>Review</strong>
                 </button>
 
@@ -2223,12 +2233,90 @@
                 </div>
 
 
-
                 
+
+                <div class="consultation-step-panel" data-step="4">
+                    
+
+                    <section class="consultation-section vitals-section">
+                        <div class="section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h2>Patient Vitals</h2>
+                        </div>
+                        <p class="section-helper">Enter the measurements taken during the visit. Leave a field blank if it was not measured.</p>
+                        <div class="detail-grid four-col vitals-fields-grid">
+                            <div class="field-pair">
+                                <label for="vitalBp">Blood Pressure (mmHg)</label>
+                                <input type="text" id="vitalBp" placeholder="e.g. 120/80" inputmode="numeric" maxlength="7">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalHr">Heart Rate (bpm)</label>
+                                <input type="number" id="vitalHr" placeholder="e.g. 72" min="20" max="250" step="any" inputmode="decimal">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalTemp">Temperature (°C)</label>
+                                <input type="number" id="vitalTemp" placeholder="e.g. 36.8" min="30" max="45" step="any" inputmode="decimal">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalRr">Respiratory Rate (/min)</label>
+                                <input type="number" id="vitalRr" placeholder="e.g. 16" min="4" max="80" step="any" inputmode="decimal">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalSpo2">SpO2 (%)</label>
+                                <input type="number" id="vitalSpo2" placeholder="e.g. 98" min="50" max="100" step="any" inputmode="decimal">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalHeight">Height (cm)</label>
+                                <input type="number" id="vitalHeight" placeholder="e.g. 170" min="30" max="250" step="any" inputmode="decimal">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalWeight">Weight (kg)</label>
+                                <input type="number" id="vitalWeight" placeholder="e.g. 65" min="1" max="500" step="any" inputmode="decimal">
+                            </div>
+                            <div class="field-pair">
+                                <label for="vitalBmi">BMI (kg/m²)</label>
+                                <input type="text" id="vitalBmi" placeholder="Auto-calculated" readonly>
+                                <small class="vitals-field-hint">Calculated from height and weight</small>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="consultation-section screening-section">
+                        <div class="section-header">
+                            <img src="images/medical-icon-blue.png" alt="">
+                            <h2>Screening &amp; Safety Checks</h2>
+                        </div>
+                        <p class="section-helper">Complete these checks as part of the initial nursing assessment.</p>
+                        <div class="detail-grid two-col screening-fields-grid">
+                            <div class="field-pair">
+                                <label for="redFlags">Emergency Symptoms / Red Flags</label>
+                                <select id="redFlags"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                            </div>
+                            <div class="field-pair">
+                                <label for="fallRisk">Fall Risk</label>
+                                <select id="fallRisk"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                            </div>
+                            <div class="field-pair">
+                                <label for="mobilityAssist">Mobility Assistance Required</label>
+                                <select id="mobilityAssist"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                            </div>
+                            <div class="field-pair">
+                                <label for="interpreterRequired">Interpreter Required</label>
+                                <select id="interpreterRequired"><option value="">Select</option><option>No</option><option>Yes</option></select>
+                            </div>
+                            <div class="field-pair conditional" id="pregnancyField" hidden>
+                                <label for="pregnancyStatus">Pregnancy Status</label>
+                                <select id="pregnancyStatus"><option value="">Select</option><option>Not pregnant</option><option>Pregnant</option><option>Unsure</option></select>
+                            </div>
+                        </div>
+                        <div class="triage-alert conditional" role="alert" hidden></div>
+                    </section>
+                </div>
+
 
                 <div
                     class="consultation-step-panel"
-                    data-step="4"
+                    data-step="5"
                 >
 
 
@@ -2438,71 +2526,7 @@
                     </section>
 
                     
-                    <section class="consultation-section">
-                        <div class="section-header">
-                            <img src="images/medical-icon-blue.png" alt="">
-                            <h2>Vitals &amp; Screening</h2>
-                        </div>
-                        <p class="section-helper">Vitals &mdash; enter any you know; the rest can be recorded at the visit.</p>
-                        <div class="detail-grid four-col">
-                            <div class="field-pair">
-                        <label for="vitalBp">Blood Pressure (mmHg)</label>
-                        <input type="text" id="vitalBp" placeholder="120/80" inputmode="numeric" maxlength="7">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalHr">Heart Rate (bpm)</label>
-                        <input type="number" id="vitalHr" placeholder="e.g. 72" min="20" max="250" step="any" inputmode="decimal">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalTemp">Temperature (&deg;C)</label>
-                        <input type="number" id="vitalTemp" placeholder="e.g. 36.8" min="30" max="45" step="any" inputmode="decimal">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalRr">Respiratory Rate (/min)</label>
-                        <input type="number" id="vitalRr" placeholder="e.g. 16" min="4" max="80" step="any" inputmode="decimal">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalSpo2">SpO2 (%)</label>
-                        <input type="number" id="vitalSpo2" placeholder="e.g. 98" min="50" max="100" step="any" inputmode="decimal">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalHeight">Height (cm)</label>
-                        <input type="number" id="vitalHeight" placeholder="e.g. 170" min="30" max="250" step="any" inputmode="decimal">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalWeight">Weight (kg)</label>
-                        <input type="number" id="vitalWeight" placeholder="e.g. 65" min="1" max="500" step="any" inputmode="decimal">
-                    </div>
-                            <div class="field-pair">
-                        <label for="vitalBmi">BMI (kg/m&sup2;)</label>
-                        <input type="text" id="vitalBmi" placeholder="Auto-calculated" readonly>
-                    </div>
-                        </div>
-                        <p class="section-helper section-gap">Screening</p>
-                        <div class="detail-grid four-col">
-                            <div class="field-pair">
-                        <label for="redFlags">Emergency Symptoms / Red Flags</label>
-                        <select id="redFlags"><option value="">Select</option><option>No</option><option>Yes</option></select>
-                    </div>
-                            <div class="field-pair">
-                        <label for="fallRisk">Fall Risk</label>
-                        <select id="fallRisk"><option value="">Select</option><option>No</option><option>Yes</option></select>
-                    </div>
-                            <div class="field-pair">
-                        <label for="mobilityAssist">Mobility Assistance Required</label>
-                        <select id="mobilityAssist"><option value="">Select</option><option>No</option><option>Yes</option></select>
-                    </div>
-                            <div class="field-pair">
-                        <label for="interpreterRequired">Interpreter Required</label>
-                        <select id="interpreterRequired"><option value="">Select</option><option>No</option><option>Yes</option></select>
-                    </div>
-                            <div class="field-pair conditional" id="pregnancyField" hidden>
-                                <label for="pregnancyStatus">Pregnancy Status</label>
-                                <select id="pregnancyStatus"><option value="">Select</option><option>Not pregnant</option><option>Pregnant</option><option>Unsure</option></select>
-                            </div>
-                        </div>
-                        <div class="triage-alert conditional" role="alert" hidden></div>
-                    </section>
+                    
 
 
 
@@ -2804,7 +2828,7 @@
 
                 <div
                     class="consultation-step-panel"
-                    data-step="5"
+                    data-step="6"
                 >
 
 
@@ -2857,7 +2881,7 @@
                         <section class="review-card">
                             <div class="review-card-head">
                                 <h3>Medical History Summary</h3>
-                                <button type="button" class="review-edit" data-goto="4">Edit</button>
+                                <button type="button" class="review-edit" data-goto="5">Edit</button>
                             </div>
                             <dl id="reviewHistory"></dl>
                         </section>

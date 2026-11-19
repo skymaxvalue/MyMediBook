@@ -151,7 +151,7 @@ body {
 
 .consultation-stepper {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     border: 1px solid #d6e2f3;
     border-radius: 8px;
     overflow: hidden;
@@ -193,11 +193,17 @@ body {
 .step-item.active {
     background: #eaf2ff;
     color: #1454dc;
+    font-weight: 700;
 }
 
 .step-item.completed {
-    background: #f7faff;
-    color: #2563eb;
+    background: #e8f5ec;
+    color: #1e7a46;
+}
+
+.step-item.upcoming {
+    background: #f8fafc;
+    color: #64748b;
 }
 
 
@@ -1419,10 +1425,13 @@ select:disabled {
     }
 
     .consultation-stepper {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, minmax(76px, 1fr));
+        overflow-x: auto;
+        overflow-y: hidden;
     }
 
     .step-item {
+        min-width: 76px;
         height: 52px;
     }
 
@@ -1937,6 +1946,124 @@ select:disabled {
 
 @media (max-width: 640px) {
     .next-actions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+@media (max-width: 640px) {
+    .consultation-stepper {
+        scrollbar-width: thin;
+        scrollbar-color: #b8c9e4 #f4f7fc;
+    }
+}
+
+
+
+
+.vitals-workflow-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 2px 0 18px;
+    padding: 16px 18px;
+    border: 1px solid #cfe0fb;
+    border-radius: 10px;
+    background: #f4f8ff;
+}
+
+.vitals-note-icon {
+    display: inline-flex;
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e1edff;
+    color: #1e5acb;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.vitals-workflow-note strong {
+    display: block;
+    margin: 0 0 3px;
+    color: #1e3a8a;
+    font-size: 14px;
+}
+
+.vitals-workflow-note p {
+    margin: 0;
+    color: #52627e;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.consultation-card.vitals-entry-mode .consultation-section {
+    padding: 0 18px 20px;
+    margin-bottom: 18px;
+}
+
+.consultation-card.vitals-entry-mode .section-header {
+    height: 46px;
+    margin-bottom: 16px;
+}
+
+.consultation-card.vitals-entry-mode .detail-grid {
+    gap: 24px 28px;
+}
+
+.consultation-card.vitals-entry-mode .field-pair {
+    gap: 8px;
+}
+
+.consultation-card.vitals-entry-mode .field-pair label {
+    font-size: 13px;
+}
+
+.consultation-card.vitals-entry-mode input:not([type="checkbox"]):not([type="radio"]),
+.consultation-card.vitals-entry-mode select {
+    height: 50px;
+    font-size: 15px;
+}
+
+.vitals-field-hint {
+    color: #718096;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.screening-fields-grid {
+    max-width: 900px;
+}
+
+@media (max-width: 900px) {
+    .consultation-card.vitals-entry-mode {
+        max-width: 100%;
+        padding: 28px 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .consultation-card.vitals-entry-mode {
+        padding: 20px 14px;
+    }
+
+    .vitals-workflow-note {
+        padding: 12px;
+    }
+
+    .consultation-card.vitals-entry-mode .consultation-section {
+        padding: 0 10px 14px;
+    }
+
+    .consultation-card.vitals-entry-mode .detail-grid {
+        gap: 16px;
+    }
+
+    .screening-fields-grid {
         grid-template-columns: 1fr;
     }
 }
