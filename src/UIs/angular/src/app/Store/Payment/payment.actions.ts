@@ -18,3 +18,18 @@ export const searchPatientsFailure = createAction(
     '[Payment] Search Patients Failure',
     props<{ error: any }>()
 );
+
+export const getPaymentListByPatientId = createAction(
+    '[Payment] Get Payment List By Patient Id',
+    props<{ patientId: string }>()
+);
+
+export const getPaymentListByPatientIdSuccess = createAction(
+    '[Payment] Get Payment List By Patient Id Success',
+    props<{ paymentList: any[] }>()
+);
+
+export const getPaymentListByPatientIdFailure = createAction(
+    '[Payment] Get Payment List By Patient Id Failure',
+    props<{ error: any }>()
+);

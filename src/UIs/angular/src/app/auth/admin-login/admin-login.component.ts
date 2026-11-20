@@ -58,19 +58,7 @@ export class AdminLoginComponent implements OnInit {
         localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("user", JSON.stringify(response.data));
 
-        switch (response.data.roleName) {
-          case "Patient":
-            this.router.navigate(["/patient/dashboard"]);
-            break;
-
-          case "Associate":
-            this.router.navigate(["/associate/dashboard"]);
-            break;
-
-          case "Admin":
-            this.router.navigate(["/admin/associate-list"]);
-            break;
-        }
+        this.router.navigate(['/associate/dashboard']);
       });
   }
 
@@ -124,41 +112,51 @@ export class AdminLoginComponent implements OnInit {
           role: this.loginRole,
         })
       );
+      // await this.store.select(state => state.auth.loginUser).subscribe((patient: any) => {
+      //   console.log(patient, "----------")
+      //   if (patient) {
+      //     localStorage.setItem('loginTime', new Date().getTime().toString());
+      //     localStorage.setItem('token', patient.tokenKey)
+      //     localStorage.setItem('user', JSON.stringify(patient.data))
+
+      //     this.router.navigate(['/associate/dashboard']);
+      //   }
+      // });
     } else {
       this.loginForm.markAllAsTouched();
     }
 
-    // if (this.isShowAdminLogin) {
-    //   if (this.loginForm.valid) {
-    //     // Process login form value here
-    //     // if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
-    //     //   localStorage.setItem("token", "userToken");
-    //     //   this.router.navigate(["/dashboard"]);
-    //     // }
 
-    //     const patient =
-    //       this.store.dispatch(
-    //         AuthActions.login({
-    //           username: this.loginForm.value.username,
-    //           password: this.loginForm.value.password,
-    //           role: this.loginRole
-    //         })
-    //       );
-    //     // await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
-    //     //   console.log(patient, "----------")
-    //     //   if (patient) {
-    //     //     localStorage.setItem('loginTime', new Date().getTime().toString());
-    //     //     localStorage.setItem('token', patient.tokenKey)
-    //     //     localStorage.setItem('user', JSON.stringify(patient.data))
+    if (this.loginForm.valid) {
+      // Process login form value here
+      // if (this.loginForm.value.username === "admin" && this.loginForm.value.password === "1234") {
+      //   localStorage.setItem("token", "userToken");
+      //   this.router.navigate(["/dashboard"]);
+      // }
 
-    //     //     this.router.navigate(['/associate/dashboard']);
-    //     //   }
-    //     // });
+      // const patient =
+      //   this.store.dispatch(
+      //     AuthActions.login({
+      //       username: this.loginForm.value.username,
+      //       password: this.loginForm.value.password,
+      //       role: this.loginRole
+      //     })
+      //   );
+      // await this.store.select(state => state.auth.loginPatient).subscribe((patient: any) => {
+      //   console.log(patient, "----------")
+      //   if (patient) {
+      //     localStorage.setItem('loginTime', new Date().getTime().toString());
+      //     localStorage.setItem('token', patient.tokenKey)
+      //     localStorage.setItem('user', JSON.stringify(patient.data))
 
-    //   } else {
-    //     this.loginForm.markAllAsTouched();
-    //   }
-    // }
+      //     this.router.navigate(['/associate/dashboard']);
+      //   }
+      // });
+
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
+
   }
   get f() {
     return this.loginForm.controls;

@@ -51,6 +51,8 @@ import { paymentReducer } from "./app/Store/Payment/payment.reducer";
 import { PaymentEffects } from "./app/Store/Payment/payment.effects";
 import { FrontOfficeEffects } from "./app/Store/Front-Office/front-office.effect";
 import { PrescriptionRefillEffects } from "./app/Pages/Front-Office-View/prescription-refill/store/prescription-refill.effects";
+import { FrontOfficeReducer } from "./app/Store/Front-Office/front-office.reducer";
+import { prescriptionRefillReducer } from "./app/Pages/Front-Office-View/prescription-refill/store/prescription-refill.reducer";
 
 if (environment.production) {
   enableProdMode();

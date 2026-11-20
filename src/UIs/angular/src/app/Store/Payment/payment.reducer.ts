@@ -26,5 +26,26 @@ export const paymentReducer = createReducer(
         patients: [],
         loading: false,
         error
+    })),
+
+    on(PaymentActions.getPaymentListByPatientId, (state, { patientId }) => ({
+        ...state,
+        loading: true,
+        error: null,
+        paymentList: []
+    })),
+
+    on(PaymentActions.getPaymentListByPatientIdSuccess, (state, { paymentList }) => ({
+        ...state,
+        paymentList,
+        loading: false,
+        error: null
+    })),
+
+    on(PaymentActions.getPaymentListByPatientIdFailure, (state, { error }) => ({
+        ...state,
+        paymentList: [],
+        loading: false,
+        error
     }))
 );
