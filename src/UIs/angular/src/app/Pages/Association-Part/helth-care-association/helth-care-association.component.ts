@@ -148,7 +148,7 @@ export class HelthCareAssociationComponent {
       .select((state) => state.auth.getStates)
       .subscribe((states: any) => {
         if (states) {
-          this.states = states.data;
+          this.states = states;
           const stateControl = this.associateForm.get("personalInfo.stateId");
           stateControl?.enable();
           stateControl?.reset();
@@ -162,7 +162,7 @@ export class HelthCareAssociationComponent {
       .select((state) => state.auth.getCities)
       .subscribe((cities: any) => {
         if (cities) {
-          this.cities = cities.data;
+          this.cities = cities;
           const cityControl = this.associateForm.get("personalInfo.cityId");
 
           cityControl?.enable();
@@ -225,8 +225,8 @@ export class HelthCareAssociationComponent {
     this.store
       .select((state) => state.auth.getCountries)
       .subscribe((countries: any) => {
-        if (countries.data) {
-          this.countries = countries.data;
+        if (countries) {
+          this.countries = countries;
           this.associateForm
             .get("personalInfo.phoneCountryCode")
             ?.setValue(this.countries[0].phoneCode);

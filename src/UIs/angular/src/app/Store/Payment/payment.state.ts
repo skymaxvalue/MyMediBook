@@ -8,11 +8,13 @@ export interface PaymentState {
     loading: boolean;
     error: string | null;
     searchRequest: ISearchPatientRequestModel | null;
+    paymentList: any[];
 }
 
 export const initialPaymentState: PaymentState = {
     patients: [],
     loading: false,
     error: null,
-    searchRequest: null
+    searchRequest: null,
+    paymentList: []
 };

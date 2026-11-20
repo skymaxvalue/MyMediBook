@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { map, Observable } from "rxjs";
 
 import { environment } from "../../../../environments/environment";
-import { PatientApiEndPoint } from "../../../utils/API/ApiEndPoints";
+import { PatientApiEndPoint, PaymentEndPoints } from "../../../utils/API/ApiEndPoints";
 import { ISearchPatientRequestModel, ISearchPatientResponseModel } from "../../Models/common/search-patient.model";
 
 @Injectable({
@@ -20,6 +20,21 @@ export class PaymentService {
             .post<{ data: ISearchPatientResponseModel[] }>(
                 `${this.apiUrl}${PatientApiEndPoint.SEARCH_PATIENT_REQUEST}`,
                 requestData
+            )
+            .pipe(
+                map((res) => res.data || [])
+            );
+    }
+
+    getPaymentListByPatientId(
+        patientId: string
+    ): Observable<any[]> {
+        return this.http
+            .post<{ data: any[] }>(
+                `${this.apiUrl}${PaymentEndPoints.GET_PAYMENT_LIST_BY_PATIENT_ID}`.replace('{patientId}', patientId), {
+                patientId: patientId,
+                status: "1"
+            }
             )
             .pipe(
                 map((res) => res.data || [])

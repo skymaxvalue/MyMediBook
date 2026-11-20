@@ -48,4 +48,27 @@ export class PaymentEffects {
             )
         )
     );
+
+    getPaymentListByPatientId$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PaymentActions.getPaymentListByPatientId),
+            switchMap(({ patientId }) =>
+                this.paymentService.getPaymentListByPatientId(patientId).pipe(
+                    map((paymentList) =>
+                        PaymentActions.getPaymentListByPatientIdSuccess({ paymentList })
+                    ),
+                    catchError((error) =>
+                        of(
+                            PaymentActions.getPaymentListByPatientIdFailure({
+                                error:
+                                    error?.error?.message ||
+                                    error?.message ||
+                                    'Unable to get payment list.'
+                            })
+                        )
+                    )
+                )
+            )
+        )
+    );
 }
