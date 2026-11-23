@@ -38,8 +38,7 @@ export class SharedPatientSearchComponent {
     return {
       name: this.lastName.trim() || null,
       dob: this.dob || null,
-      mobileNo: this.mobileNo.trim()
-        ? Number(this.mobileNo.trim())
+      mobileNo: this.mobileNo ? this.mobileNo.trim()
         : null,
       fromDate: null,
       toDate: null,

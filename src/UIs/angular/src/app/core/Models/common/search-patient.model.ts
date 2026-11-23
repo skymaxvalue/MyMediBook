@@ -1,7 +1,7 @@
 export interface ISearchPatientRequestModel {
   name: string | null;
   dob: string | null;
-  mobileNo: number | null;
+  mobileNo: string | null;
   fromDate: string | null;
   toDate: string | null;
 }

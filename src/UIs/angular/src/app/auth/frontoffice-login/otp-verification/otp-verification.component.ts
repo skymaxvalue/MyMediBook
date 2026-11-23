@@ -1,3 +1,4 @@
+
 import {
   Component,
   OnDestroy,
@@ -8,18 +9,35 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
 } from "@angular/core";
+
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-
 import { Router, ActivatedRoute } from "@angular/router";
-import { AppState } from "src/app/Store/app.state";
 import { Store } from "@ngrx/store";
-import { register_by_reseptionist, requestOTP, verifyOTP } from "src/app/Store/Auth/auth.actions";
+
+import { firstValueFrom } from "rxjs";
+import { filter, skip, take } from "rxjs/operators";
+
+import { AppState } from "src/app/Store/app.state";
+
+import {
+  register_by_reseptionist,
+  requestOTP,
+  verifyOTP,
+} from "src/app/Store/Auth/auth.actions";
+
 import {
   selectRegisteredPatientByReceptionist,
   selectVerifyOTP,
 } from "src/app/Store/Auth/auth.selectors";
-import { interval, Subscription } from "rxjs";
+
+type OTPFlow =
+  | "login"
+  | "registration"
+  | "appointment"
+  | "reset-password"
+  | "";
+
 @Component({
   selector: "app-otp-verification",
   imports: [CommonModule, FormsModule],
@@ -28,12 +46,13 @@ import { interval, Subscription } from "rxjs";
   styleUrl: "./otp-verification.component.css",
 })
 export class OtpVerificationComponent implements OnInit, OnDestroy {
-  flow: "login" | "registration" | "appointment" | "reset-password" = "login";
+
+  flow: OTPFlow = "";
 
   registrationData: any = null;
   appointmentData: any = null;
 
-  emailId: string = "";
+  emailId = "";
 
   isLoading = false;
   errorMessage = "";
@@ -42,20 +61,22 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   timerText = "05:00";
   isExpired = false;
 
-  private timerSubscription?: Subscription;
+  private countdown: ReturnType<typeof setInterval> | null = null;
 
-  private countdown: any;
   currentUrl = "";
+
   @ViewChildren("otpInput")
   otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
   otp: string[] = ["", "", "", ""];
   otpArray = [1, 2, 3, 4];
 
   pendingUser: any = null;
 
   resetPasswordToken: any;
-  isLoginFlow: boolean = false;
-  isBookAppointmentFlow: boolean = false;
+
+  isLoginFlow = false;
+  isBookAppointmentFlow = false;
 
   constructor(
     private router: Router,
@@ -67,84 +88,108 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     console.log("Current URL:", this.currentUrl);
   }
 
+  // ==========================================
+  // INITIALIZATION
+  // ==========================================
+
   ngOnInit(): void {
+
     console.log("history.state:", history.state);
 
     const state = history.state;
 
-    this.flow = state.flow || "login";
+    // LOGIN FLOW
+    if (state.flow === "login" || state.isLoginFollow) {
 
-    // LOGIN
-    if (this.flow === "login") {
-      this.emailId = state.emailId;
+      this.flow = "login";
+      this.isLoginFlow = true;
 
-      console.log("Login OTP flow");
-      console.log("Email:", this.emailId);
+      this.emailId = state.emailId || "";
+
+      console.log("Login OTP Flow:", this.emailId);
     }
 
-    // REGISTRATION
-    else if (this.flow === "registration") {
+    // PATIENT REGISTRATION FLOW
+    else if (state.isRegisterPatient) {
+
+      this.flow = "registration";
+
       this.registrationData = state.registrationData;
 
-      this.emailId = this.registrationData?.contactInformation?.email || "";
+      this.emailId =
+        this.registrationData?.contactInformation?.email || "";
 
-      console.log("Registration OTP flow");
+      console.log("Patient Registration OTP Flow");
+      console.log("Email:", this.emailId);
       console.log("Registration Data:", this.registrationData);
     }
 
-    // APPOINTMENT
-    else if (this.flow === "appointment") {
-      this.appointmentData = state.appointmentData;
+    // APPOINTMENT FLOW
+    else if (state.isBookAppointment || state.flow === "appointment") {
 
-      this.emailId = this.appointmentData?.email || "";
+      this.flow = "appointment";
+      this.isBookAppointmentFlow = true;
 
-      console.log("Appointment OTP flow");
-      console.log("Appointment Data:", this.appointmentData);
+      this.appointmentData = state.appointmentData || null;
+
+      // Existing appointment flow sends registrationData
+      this.registrationData = state.registrationData || null;
+
+      this.emailId =
+        this.registrationData?.contactInformation?.email ||
+        this.appointmentData?.email ||
+        "";
+
+      console.log("Appointment OTP Flow:", this.emailId);
+    }
+
+    // RESET PASSWORD FLOW
+    else {
+
+      this.flow = "reset-password";
+      this.emailId = state.emailId || "";
+
+      console.log("Reset Password OTP Flow:", this.emailId);
+    }
+
+    if (!this.emailId) {
+      console.warn("Email ID is missing in OTP navigation state.");
     }
 
     this.startTimer();
   }
-  // ngOnInit(): void {
 
-  //   console.log('history.state:', history.state);
+  // ==========================================
+  // OTP INPUT HANDLING
+  // ==========================================
 
-  //   console.log('isLoginFlow:', this.isLoginFlow);
-  //   console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
-  //   console.log('registrationData:', this.registrationData);
-  //   this.emailId = history.state.emailId;
-  //   this.isLoginFlow = history.state.isLoginFollow;
-  //   if (this.isLoginFlow) {
-  //     this.emailId = history.state.emailId;
-  //   }
-  //   this.isBookAppointmentFlow = history.state.isBookAppointment;
-  //   console.log('isBookAppointmentFlow:', this.isBookAppointmentFlow);
-  //   if (this.isBookAppointmentFlow) {
-  //     this.emailId = history.state.registrationData.contactInformation.email;
-  //     this.registrationData = history.state.registrationData,
-  //       console.log('Form Data:', this.registrationData);
-  //     console.log('Email ID:', this.emailId);
-  //   }
-
-  //   this.startTimer();
-
-  // }
   moveNext(event: Event, index: number): void {
+
     const input = event.target as HTMLInputElement;
 
-    if (input.value.length === 1 && index < this.otpInputs.length - 1) {
+    if (
+      input.value.length === 1 &&
+      index < this.otpInputs.length - 1
+    ) {
       this.otpInputs.toArray()[index + 1].nativeElement.focus();
     }
   }
 
   movePrevious(event: KeyboardEvent, index: number): void {
+
     const input = event.target as HTMLInputElement;
 
-    if (event.key === "Backspace" && input.value === "" && index > 0) {
+    if (
+      event.key === "Backspace" &&
+      input.value === "" &&
+      index > 0
+    ) {
       this.otpInputs.toArray()[index - 1].nativeElement.focus();
     }
   }
 
   onOtpInput(event: Event, index: number): void {
+
     const input = event.target as HTMLInputElement;
 
     const value = input.value.replace(/\D/g, "");
@@ -154,26 +199,33 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     input.value = this.otp[index];
 
     if (this.otp[index] && index < this.otp.length - 1) {
+
       setTimeout(() => {
         this.otpInputs.toArray()[index + 1]?.nativeElement.focus();
       });
+
     }
   }
 
   onKeyDown(event: KeyboardEvent, index: number): void {
+
     if (event.key === "Backspace" && !this.otp[index] && index > 0) {
+
       event.preventDefault();
 
       setTimeout(() => {
         this.otpInputs.toArray()[index - 1]?.nativeElement.focus();
       });
+
     }
   }
 
   onPaste(event: ClipboardEvent): void {
+
     event.preventDefault();
 
-    const pastedData = event.clipboardData?.getData("text").replace(/\D/g, "") || "";
+    const pastedData =
+      event.clipboardData?.getData("text").replace(/\D/g, "") || "";
 
     if (!pastedData) {
       return;
@@ -189,15 +241,22 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
       });
 
     setTimeout(() => {
+
       const lastIndex = Math.min(pastedData.length, 4) - 1;
 
       if (lastIndex >= 0) {
         this.otpInputs.toArray()[lastIndex]?.nativeElement.focus();
       }
+
     });
   }
 
+  // ==========================================
+  // TIMER
+  // ==========================================
+
   startTimer(): void {
+
     this.clearTimer();
 
     this.time = 300;
@@ -206,35 +265,51 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.updateTimerText();
 
     this.countdown = setInterval(() => {
-      this.time--;
 
-      // console.log("Timer:", this.time);
+      this.time--;
 
       this.updateTimerText();
 
-      // Force Angular UI update
-      this.cdr.detectChanges();
-
       if (this.time <= 0) {
+
         this.clearTimer();
 
         this.isExpired = true;
         this.timerText = "Expired";
 
-        this.cdr.detectChanges();
       }
+
+      this.cdr.detectChanges();
+
     }, 1000);
   }
 
   updateTimerText(): void {
+
     const minutes = Math.floor(this.time / 60);
     const seconds = this.time % 60;
 
-    this.timerText = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    this.timerText =
+      `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   }
 
-  async resendOtp(): Promise<void> {
-    if (!this.isExpired) {
+  clearTimer(): void {
+
+    if (this.countdown) {
+
+      clearInterval(this.countdown);
+      this.countdown = null;
+
+    }
+  }
+
+  // ==========================================
+  // RESEND OTP
+  // ==========================================
+
+  resendOtp(): void {
+
+    if (!this.isExpired || !this.emailId) {
       return;
     }
 
@@ -242,171 +317,294 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
     this.otp = ["", "", "", ""];
 
-    try {
-      // Same OTP API for all flows
-      await this.store.dispatch(
-        requestOTP({
-          email: this.emailId,
-        })
-      );
+    this.store.dispatch(
+      requestOTP({
+        email: this.emailId,
+      })
+    );
 
-      // Restart 5 minute timer
-      this.startTimer();
+    this.startTimer();
 
-      console.log("OTP resent successfully");
-    } catch (error) {
-      console.error("Resend OTP Error:", error);
-
-      this.errorMessage = "Unable to resend OTP. Please try again.";
-    }
+    console.log("OTP resend request dispatched:", this.emailId);
   }
 
-  async verifyOtp() {
+  // ==========================================
+  // VERIFY OTP
+  // ==========================================
+
+  async verifyOtp(): Promise<void> {
+
     this.errorMessage = "";
 
     const enteredOtp = this.otp.join("");
 
-    if (enteredOtp.length !== 4) {
-      this.errorMessage = "Please enter the complete OTP.";
-
+    if (this.isExpired) {
+      this.errorMessage = "OTP has expired. Please resend OTP.";
       return;
     }
 
-    // this.isLoading = true;
+    if (!this.emailId) {
+      this.errorMessage = "Email ID is missing. Please try again.";
+      return;
+    }
 
-    await this.store.dispatch(verifyOTP({ email: this.emailId, otpCode: enteredOtp }));
+    if (enteredOtp.length !== 4) {
 
-    await this.store.select(selectVerifyOTP).subscribe(async (res: any) => {
-      if (res) {
-        this.resetPasswordToken = res.token;
-        if (this.isLoginFlow) {
-          this.router.navigate([]);
-          this.router.navigate(["/front-office/dashboard"]).then(() => {
-            window.history.replaceState(null, "", window.location.pathname);
-          });
-        } else if (this.isBookAppointmentFlow && this.registrationData) {
-          const formData = { ...this.registrationData };
-          const payload: any = {
-            firstName: formData.personalDetails.firstName,
-            middleName: "", // Your form doesn't currently have middleName
-            lastName: formData.personalDetails.lastName,
+      this.errorMessage = "Please enter the complete OTP.";
+      return;
+    }
 
-            dateOfBirth: formData.personalDetails.dateOfBirth,
+    if (this.isLoading) {
+      return;
+    }
 
-            phoneCountryCode: formData.contactInformation.phoneCode,
+    this.isLoading = true;
 
-            phoneNumber: formData.contactInformation.phone,
+    try {
 
-            emailId: formData.contactInformation.email,
+      // Subscribe before dispatch to receive the new API response.
+      const verificationPromise = firstValueFrom(
+        this.store.select(selectVerifyOTP).pipe(
+          skip(1),
+          filter((res: any) => !!res),
+          take(1)
+        )
+      );
 
-            gender: formData.personalDetails.gender,
+      this.store.dispatch(
+        verifyOTP({
+          email: this.emailId,
+          otpCode: enteredOtp
+        })
+      );
 
-            // =========================
-            // CURRENT / PRESENT ADDRESS
-            // =========================
+      const res: any = await verificationPromise;
 
-            address: formData.contactInformation.presentAddress.address,
+      console.log("OTP Verification Response:", res);
 
-            cityId: Number(formData.contactInformation.presentAddress.cityId),
+      this.resetPasswordToken = res.token;
 
-            zipCode: formData.contactInformation.presentAddress.pinCode,
+      // ==========================================
+      // LOGIN FLOW
+      // ==========================================
 
-            stateId: Number(formData.contactInformation.presentAddress.stateId),
+      if (this.flow === "login") {
 
-            countryId: Number(formData.contactInformation.presentAddress.countryId),
+        this.clearTimer();
 
-            // =========================
-            // BILLING ADDRESS
-            // =========================
+        await this.router.navigate(["/front-office/dashboard"]);
 
-            billingAddress: formData.contactInformation.permanentAddress.address,
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname
+        );
 
-            billingCityId: Number(formData.contactInformation.permanentAddress.cityId),
+      }
 
-            billingZipCode: formData.contactInformation.permanentAddress.pinCode,
+      // ==========================================
+      // PATIENT REGISTRATION / APPOINTMENT FLOW
+      // ==========================================
 
-            billingStateId: Number(formData.contactInformation.permanentAddress.stateId),
+      else if (
+        (this.flow === "registration" ||
+          this.flow === "appointment") &&
+        this.registrationData
+      ) {
 
-            billingCountryId: Number(formData.contactInformation.permanentAddress.countryId),
+        await this.registerPatient();
 
-            // =========================
-            // INSURANCE
-            // =========================
+      }
 
-            insurance: formData.personalDetails.insuranceChoice === "yes" ? 1 : 0,
+      // ==========================================
+      // RESET PASSWORD FLOW
+      // ==========================================
 
-            insuranceData:
-              formData.personalDetails.insuranceChoice === "yes"
-                ? {
-                    provider: formData.insuranceDetails.provider,
+      else {
 
-                    policy: formData.insuranceDetails.policy,
+        this.clearTimer();
 
-                    groupId: formData.insuranceDetails.groupId,
-
-                    holderName: formData.insuranceDetails.holderName,
-
-                    address: formData.insuranceDetails.insuranceAddress,
-                  }
-                : null,
-
-            // =========================
-            // PAYMENT
-            // =========================
-
-            paymentData: {
-              paymentType: formData?.paymentData?.paymentType
-                ? formData?.paymentData?.paymentType
-                : null,
-
-              cardHolder: formData?.paymentData?.cardHolder
-                ? formData?.paymentData?.cardHolder
-                : null,
-
-              cardNumber: formData?.paymentData?.cardNumber
-                ? formData?.paymentData?.cardNumber
-                : null,
-
-              expiry: formData?.paymentData?.expiry ? formData?.paymentData?.expiry : null,
-            },
-            isActive: true,
-
-            createdBy: "Front Office",
-
-            createdDate: new Date().toISOString(),
-
-            updatedBy: "Front Office",
-
-            updatedDate: new Date().toISOString(),
-          };
-
-          await this.store.dispatch(register_by_reseptionist({ patient: { ...payload } }));
-          await this.store.select(selectRegisteredPatientByReceptionist).subscribe((res: any) => {
-            if (res) {
-              this.router.navigate(["/front-office/appointment-success"], {
-                state: {
-                  successData: {
-                    h1: "Patient Registered Successfully!",
-                    span: "The patient has been registered successfully.",
-                    p: "You can now view their details and manage their appointments.",
-                    buttonText: "Go to Dashboard",
-                    route: "/front-office/dashboard",
-                  },
-                },
-              });
-            }
-          });
-        } else {
-          this.router.navigate(["/front-office/reset-password"], {
+        await this.router.navigate(
+          ["/front-office/reset-password"],
+          {
             state: {
               token: this.resetPasswordToken,
             },
-          });
-        }
+          }
+        );
 
-        console.log("OTP verified successfully.");
       }
-    });
+
+      console.log("OTP verified successfully.");
+
+    } catch (error) {
+
+      console.error("OTP Verification Error:", error);
+
+      this.errorMessage =
+        "Invalid OTP or verification failed. Please try again.";
+
+    } finally {
+
+      this.isLoading = false;
+      this.cdr.detectChanges();
+
+    }
+  }
+
+  // ==========================================
+  // REGISTER PATIENT API
+  // ==========================================
+
+  private async registerPatient(): Promise<void> {
+
+    const formData = this.registrationData;
+
+    const presentAddress =
+      formData.contactInformation.presentAddress;
+
+    const permanentAddress =
+      formData.contactInformation.permanentAddress;
+
+    const hasInsurance =
+      formData.personalDetails.insuranceChoice === "yes";
+
+    const paymentDetails =
+      formData.paymentDetails || {};
+
+    const payload: any = {
+
+      firstName: formData.personalDetails.firstName,
+
+      middleName: "",
+
+      lastName: formData.personalDetails.lastName,
+
+      dateOfBirth: formData.personalDetails.dateOfBirth,
+
+      phoneCountryCode: formData.contactInformation.phoneCode,
+
+      phoneNumber: formData.contactInformation.phone,
+
+      email: formData.contactInformation.email,
+
+      gender: formData.personalDetails.gender,
+
+      // PRESENT ADDRESS
+
+      addressLine1: presentAddress.address,
+
+      cityId: Number(presentAddress.cityId),
+
+      zipCode: presentAddress.pinCode,
+
+      stateId: Number(presentAddress.stateId),
+
+      countryId: Number(presentAddress.countryId),
+
+      // BILLING / PERMANENT ADDRESS
+
+      addressLine2: permanentAddress.address,
+      billingAddress: permanentAddress.address,
+
+      billingCityId: Number(permanentAddress.cityId),
+
+      billingZipCode: permanentAddress.pinCode,
+
+      billingStateId: Number(permanentAddress.stateId),
+
+      billingCountryId: Number(permanentAddress.countryId),
+
+      // INSURANCE
+
+      insurance: hasInsurance ? 1 : 0,
+
+      insuranceData: hasInsurance
+        ? {
+          provider: formData.insuranceDetails.provider,
+
+          policy: formData.insuranceDetails.policy,
+
+          groupId: formData.insuranceDetails.groupId,
+
+          holderName: formData.insuranceDetails.holderName,
+
+          address: formData.insuranceDetails.insuranceAddress,
+        }
+        : null,
+
+      // PAYMENT
+      // Insurance = Yes: Payment is not required.
+      // Insurance = No: Use the payment details entered in the payment modal.
+
+      paymentData: !hasInsurance
+        ? {
+          paymentType: paymentDetails.paymentType || null,
+
+          cardHolder: paymentDetails.cardHolder || null,
+
+          cardNumber: paymentDetails.cardNumber || null,
+
+          expiry: paymentDetails.expiry || null,
+        }
+        : null,
+
+      isActive: true,
+
+      createdBy: "Front Office",
+
+      createdDate: new Date().toISOString(),
+
+      updatedBy: "Front Office",
+
+      updatedDate: new Date().toISOString(),
+
+    };
+
+    console.log("Patient Registration API Payload:", payload);
+
+    // Subscribe before dispatch to receive the new registration response.
+    const registrationPromise = firstValueFrom(
+      this.store.select(selectRegisteredPatientByReceptionist).pipe(
+        skip(1),
+        filter((res: any) => !!res),
+        take(1)
+      )
+    );
+
+    this.store.dispatch(
+      register_by_reseptionist({
+        patient: payload
+      })
+    );
+
+    const registrationResponse: any = await registrationPromise;
+
+    console.log(
+      "Patient Registration Response:",
+      registrationResponse
+    );
+
+    this.clearTimer();
+
+    await this.router.navigate(
+      ["/front-office/appointment-success"],
+      {
+        state: {
+          successData: {
+            h1: "Patient Registered Successfully!",
+
+            span: "The patient has been registered successfully.",
+
+            p: "You can now view their details and manage their appointments.",
+
+            buttonText: "Go to Dashboard",
+
+            route: "/front-office/dashboard",
+          },
+        },
+      }
+    );
   }
 
   // ==========================================
@@ -414,50 +612,39 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   // ==========================================
 
   cancel(): void {
-    // Stop OTP timer
+
     this.clearTimer();
 
-    // =========================
-    // LOGIN FLOW
-    // =========================
     if (this.flow === "login") {
+
       this.router.navigate(["/front-office/login"]);
-
       return;
+
     }
 
-    // =========================
-    // REGISTRATION FLOW
-    // =========================
     if (this.flow === "registration") {
-      this.router.navigate(["/front-office/patient-registration"]);
 
+      this.router.navigate(
+        ["/front-office/patient-registration"],
+        {
+          state: {
+            registrationData: this.registrationData,
+            restoreRegistration: true
+          }
+        }
+      );
       return;
+
     }
 
-    // =========================
-    // APPOINTMENT FLOW
-    // =========================
     if (this.flow === "appointment") {
-      this.router.navigate(["/front-office/booking-patient-information"]);
 
+      this.router.navigate(["/front-office/booking-patient-information"]);
       return;
+
     }
 
-    // =========================
-    // FALLBACK
-    // =========================
     this.router.navigate(["/front-office/login"]);
-    this.clearTimer();
-  }
-
-  // ==========================================
-  // CLEAR TIMER
-  // ==========================================
-
-  clearTimer(): void {
-    this.timerSubscription?.unsubscribe();
-    this.timerSubscription = undefined;
   }
 
   // ==========================================
@@ -465,6 +652,8 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   // ==========================================
 
   ngOnDestroy(): void {
+
     this.clearTimer();
+
   }
 }

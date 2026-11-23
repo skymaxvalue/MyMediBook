@@ -24,7 +24,7 @@ export class NavigationEffects {
   constructor(
     private actions$: Actions,
     private router: Router
-  ) {}
+  ) { }
 
   ROUTE_BY_ACTION: Record<string, string> = {
     [NavActions.NavigateToPatientHospitalSelectionPage.type]: "/select-hospital",

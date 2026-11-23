@@ -646,7 +646,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     const payload: ISearchPatientRequestModel = {
       name: hasNameDob ? lastName : null,
       dob: hasNameDob ? dob : null,
-      mobileNo: hasMobile && phone ? Number(phone) : null,
+      mobileNo: hasMobile ? phone : null,
       fromDate: null,
       toDate: null
     };

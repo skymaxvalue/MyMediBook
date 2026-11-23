@@ -92,7 +92,7 @@ export const AuthEndPoints = {
   RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
   doLOGIN: "Auth/doLogin",
   LOG_OUT: "Auth/Logout",
-  CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount",
+  CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "ReceptionistAuth/Receptionist/CreatePatientAccount",
 };
 export const ConsultationEndPoints = {
   SAVE_CONSULTATION: "Consultation/CreateConsultation",

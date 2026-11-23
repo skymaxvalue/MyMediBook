@@ -36,7 +36,7 @@ export class PrescriptionRefillEffects {
         const payload: ISearchPatientRequestModel = {
           name: criteria.lastName?.trim() || null,
           dob: dob || null,
-          mobileNo: mobile ? Number(mobile) : null,
+          mobileNo: mobile ? mobile : null,
           fromDate: null,
           toDate: null
         };

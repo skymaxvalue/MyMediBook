@@ -25,13 +25,13 @@ export const ADMIN_ROUTES: Routes = [
 
             {
                 path: '',
-                redirectTo: 'associate-list',
+                redirectTo: 'dashboard',
                 pathMatch: 'full'
             },
 
             // Association List
             {
-                path: 'associate-list',
+                path: 'dashboard',
                 loadComponent: () =>
                     import('../Pages/Association-Part/association-list/association-list.component')
                         .then(m => m.AssociationListComponent)
