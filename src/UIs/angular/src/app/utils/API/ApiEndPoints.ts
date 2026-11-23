@@ -5,6 +5,11 @@ export const DoctorEndPoints = {
   GET_DOCTOR_AVAILABILITIES_BY_DOCTOR_ID: "Doctor/GetDoctorAvailabilities/",
 };
 
+export const PaymentEndPoints = {
+  GET_PAYMENT_LIST_BY_PATIENT_ID: "Payment/GetPaymentRecordsByPatientId/{patientId}",
+  GET_PAYMENT_GATEWAY_BY_ID: "Payment/GetPaymentRecordById/{paymentRecordId}",
+};
+
 export const DashboardEndPoints = {
   GET_DASHBOARD_SUMMARY: "Dashboard/Receptionist/GetDashboardSummary",
   GET_DOCTOR_RECENT_PATIENT_LIST: "Dashboard/Receptionist/GetRecentPatientList",
@@ -82,12 +87,12 @@ export const AuthEndPoints = {
   REQUEST_OTP: "Auth/RequestOtp",
   VERIFY_OTP: "Auth/VerifyForgotPasswordOtp",
   REFRESH_TOKEN: "Auth/RefreshToken",
-  REGISTER_ASSOCIATION: "Auth/RegisterAssociate",
+  REGISTER_ASSOCIATION: "AssociateAuth/RegisterAssociate",
   FORGET_PASSWORD_RESETL: "Auth/ResetForgotPassword",
   RESET_PASS_FOR_ASSOCIATE: "Auth/ResetAssociatePassword",
   doLOGIN: "Auth/doLogin",
   LOG_OUT: "Auth/Logout",
-  CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "Auth/Receptionist/CreatePatientAccount",
+  CREATE_PATIENT_PROFILE_BY_RECEPTIONIST: "ReceptionistAuth/Receptionist/CreatePatientAccount",
 };
 export const ConsultationEndPoints = {
   SAVE_CONSULTATION: "Consultation/CreateConsultation",

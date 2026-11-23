@@ -20,6 +20,7 @@ interface Patient {
   mrn: string;
   firstName: string;
   lastName: string;
+  fullName?: string;
   dob: string;
   gender: string;
   phone: string;
@@ -78,6 +79,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   readonly patients$ = this.store.select(PaymentSelectors.selectPatients);
   readonly loading$ = this.store.select(PaymentSelectors.selectPaymentLoading);
   readonly error$ = this.store.select(PaymentSelectors.selectPaymentError);
+  readonly paymentList$ = this.store.select(PaymentSelectors.selectPaymentList);
   private destroy$ = new Subject<void>();
   private readonly STEP_LABELS = [
     'Select Patient',
@@ -166,6 +168,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   private modalKeyHandler?: (event: KeyboardEvent) => void;
   private hasSearched = false;
   searchResults: Patient[] = [];
+  paymentRecords: PaymentRecord[] = [];
 
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
@@ -180,7 +183,8 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
 
         this.searchResults = (patients || []).map(patient => ({
           id: String(patient.patientId),
-          firstName: patient.firstName || '',
+          name: patient.fullName || '',
+          firstName: patient.fullName || '',
           lastName: patient.lastName || '',
           dob: patient.dateOfBirth || '',
           gender: patient.gender || '',
@@ -188,9 +192,22 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
           mrn: '',
           address: ''
         }));
+        console.log(this.searchResults, "searchResults")
 
         if (this.hasSearched) {
           this.renderResults(this.searchResults);
+        }
+      });
+
+    this.paymentList$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((paymentList: PaymentRecord[]) => {
+        console.log('Payment list updated:', paymentList);
+
+        this.paymentRecords = paymentList || [];
+
+        if (this.state.patient) {
+          this.renderRecords();
         }
       });
   }
@@ -309,7 +326,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   private fullName(patient: Patient): string {
-    return `${patient.firstName} ${patient.lastName}`;
+    return `${patient.firstName} ${patient.lastName}  `;
   }
 
   private digitsOf(value: string): string {
@@ -718,6 +735,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
 
     results.innerHTML = patients.map(patient => {
       const name = this.escape(this.fullName(patient));
+      console.log(name, "name")
       const id = this.escape(patient.id);
 
       return `
@@ -756,6 +774,29 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
         </div>
       `;
     }).join('');
+  }
+
+
+  private toDateInputFormat(value: string): string {
+    if (!value) return '';
+
+    // API format: MM/DD/YYYY HH:mm:ss
+    const match = value.match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})/
+    );
+
+    if (match) {
+      const [, month, day, year] = match;
+
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    // ISO format: YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss
+    if (/^\d{4}-\d{2}-\d{2}/.test(value)) {
+      return value.substring(0, 10);
+    }
+
+    return '';
   }
 
   private initializeSearch(): void {
@@ -837,11 +878,27 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
       'click',
       ((event: Event) => {
         const target = event.target as HTMLElement;
-        const item = target.closest<HTMLElement>('.pay-result-item');
 
-        if (item?.dataset['id']) {
-          this.selectPatientById(item.dataset['id']);
-        }
+        const button = target.closest<HTMLButtonElement>(
+          '.pay-result-select'
+        );
+
+        if (!button) return;
+
+        const patientId = button.dataset['id'];
+
+        if (!patientId) return;
+
+        // API call
+        this.store.dispatch(
+          PaymentActions.getPaymentListByPatientId({
+            patientId
+          })
+        );
+
+        // Select patient
+        this.selectPatientById(patientId);
+
       }) as EventListener
     );
 
@@ -884,7 +941,9 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   private selectPatientById(id: string): void {
-    const patient = this.loadPatients().find(item => item.id === id);
+    const patient = this.searchResults.find(
+      item => item.id === id
+    );
 
     if (!patient) return;
 
@@ -898,7 +957,8 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     this.state.patient = patient;
 
     this.input('patientLastNameSearch').value = patient.lastName;
-    this.input('patientDobSearch').value = patient.dob;
+    this.input('patientDobSearch').value =
+      this.toDateInputFormat(patient.dob);
     this.input('patientMobileSearch').value = patient.phone;
 
     this.closeResults();
@@ -911,16 +971,6 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     this.$('paySelectedPatient').hidden = false;
 
     this.renderRecords();
-
-    const firstRadio = this.root.querySelector<HTMLInputElement>(
-      '#payRecordsBody input[type="radio"]:not(:disabled)'
-    );
-
-    firstRadio?.focus();
-
-    this.announce(
-      `${this.fullName(patient)} selected. ${this.patientRecords().length} payment record(s) found.`
-    );
   }
 
   private clearPatient(): void {
@@ -941,9 +991,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   private patientRecords(): PaymentRecord[] {
     if (!this.state.patient) return [];
 
-    return this.getRecords().filter(
-      record => record.patientId === this.state.patient!.id
-    );
+    return this.paymentRecords;
   }
 
   // -------------------------------------------------------

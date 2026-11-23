@@ -77,7 +77,9 @@ export class PatientRegistrationFOComponent implements OnInit {
     this.setMaxDateOfBirth();
     this.createForm();
 
+
     this.initialAPICalls();
+    this.restoreRegistrationData();
     this.store
       .select((state) => state.auth.getStates)
       .subscribe((response: any) => {
@@ -233,14 +235,14 @@ export class PatientRegistrationFOComponent implements OnInit {
       // =========================
 
       paymentDetails: this.fb.group({
-        paymentType: ['', Validators.required],
+        paymentType: [''],
 
-        cardHolder: ['', Validators.required],
+        cardHolder: [''],
 
         cardNumber: [
           '',
           [
-            Validators.required,
+
             Validators.pattern(/^(\d{4} ){3}\d{4}$/)
           ]
         ],
@@ -248,7 +250,7 @@ export class PatientRegistrationFOComponent implements OnInit {
         expiry: [
           '',
           [
-            Validators.required,
+
             Validators.pattern(/^(0[1-9]|1[0-2]) \/ \d{2}$/)
           ]
         ],
@@ -256,7 +258,7 @@ export class PatientRegistrationFOComponent implements OnInit {
         cvv: [
           '',
           [
-            Validators.required,
+
             Validators.pattern(/^[0-9]{3}$/)
           ]
         ]
@@ -345,6 +347,52 @@ export class PatientRegistrationFOComponent implements OnInit {
     );
   }
 
+  restoreRegistrationData(): void {
+    const state = history.state;
+
+    if (!state?.restoreRegistration || !state?.registrationData) {
+      return;
+    }
+
+    const savedData = state.registrationData;
+
+    this.registrationForm.patchValue(savedData);
+
+    // Present Address
+    const presentAddress = this.registrationForm.get(
+      "contactInformation.presentAddress"
+    ) as FormGroup;
+
+    // Permanent Address
+    const permanentAddress = this.registrationForm.get(
+      "contactInformation.permanentAddress"
+    ) as FormGroup;
+
+    if (presentAddress.get("stateId")?.value) {
+      presentAddress.get("stateId")?.enable();
+    }
+
+    if (presentAddress.get("cityId")?.value) {
+      presentAddress.get("cityId")?.enable();
+    }
+
+    if (permanentAddress.get("stateId")?.value) {
+      permanentAddress.get("stateId")?.enable();
+    }
+
+    if (permanentAddress.get("cityId")?.value) {
+      permanentAddress.get("cityId")?.enable();
+    }
+
+
+    this.updateAgeFromDob();
+
+    this.addressType = "present";
+    history.replaceState(
+      { ...state, restoreRegistration: false, registrationData: null },
+      ""
+    );
+  }
   onStateChange(event: Event): void {
     const stateId = Number((event.target as HTMLSelectElement).value);
 
@@ -398,6 +446,29 @@ export class PatientRegistrationFOComponent implements OnInit {
         stateId,
       })
     );
+  }
+
+  logInvalidControls(formGroup: FormGroup, parentKey = ''): void {
+
+    Object.keys(formGroup.controls).forEach(key => {
+
+      const control = formGroup.get(key);
+      const controlName = parentKey ? `${parentKey}.${key}` : key;
+
+      if (control instanceof FormGroup) {
+
+        this.logInvalidControls(control, controlName);
+
+      } else if (control?.invalid) {
+
+        console.log('Invalid Field:', controlName);
+        console.log('Errors:', control.errors);
+        console.log('Value:', control.value);
+
+      }
+
+    });
+
   }
 
   updateAgeFromDob(): void {
@@ -454,6 +525,7 @@ export class PatientRegistrationFOComponent implements OnInit {
     ageUnitControl?.setValue(years === 1 ? "Year" : "Years");
   }
   onInsuranceChange(): void {
+
     const insuranceChoice = this.registrationForm.get(
       'personalDetails.insuranceChoice'
     )?.value;
@@ -469,54 +541,87 @@ export class PatientRegistrationFOComponent implements OnInit {
       'insuranceAddress'
     ];
 
-    // Close both modals first
     this.showInsuranceModal = false;
     this.showPaymentModal = false;
 
     if (insuranceChoice === 'yes') {
 
-      // Insurance fields required
+      this.updatePaymentValidators(false);
+
       requiredFields.forEach(field => {
         insuranceGroup.get(field)?.setValidators([
           Validators.required
         ]);
-
         insuranceGroup.get(field)?.updateValueAndValidity();
       });
 
       this.insuranceError = '';
-
-      // Open Insurance Modal
       this.showInsuranceModal = true;
 
     } else if (insuranceChoice === 'no') {
 
-      // Insurance fields optional
       requiredFields.forEach(field => {
         insuranceGroup.get(field)?.clearValidators();
         insuranceGroup.get(field)?.updateValueAndValidity();
       });
 
-      // Reset insurance values
-      insuranceGroup.reset({
-        provider: '',
-        policy: '',
-        groupId: '',
-        holderName: '',
-        insuranceAddress: ''
-      });
+      insuranceGroup.reset();
 
       this.insuranceError = '';
 
-      // Open Payment Modal directly
+      this.updatePaymentValidators(true);
+
       this.showPaymentModal = true;
+
     }
 
-    insuranceGroup.updateValueAndValidity();
+  }
 
-    console.log('Insurance Choice:', insuranceChoice);
-    console.log('Insurance Modal:', this.showInsuranceModal);
-    console.log('Payment Modal:', this.showPaymentModal);
+  updatePaymentValidators(isRequired: boolean): void {
+
+    const paymentGroup = this.registrationForm.get(
+      'paymentDetails'
+    ) as FormGroup;
+
+    Object.keys(paymentGroup.controls).forEach(field => {
+
+      const control = paymentGroup.get(field);
+
+      if (isRequired) {
+
+        if (field === 'cardNumber') {
+          control?.setValidators([
+            Validators.required,
+            Validators.pattern(/^(\d{4} ){3}\d{4}$/)
+          ]);
+        }
+        else if (field === 'expiry') {
+          control?.setValidators([
+            Validators.required,
+            Validators.pattern(/^(0[1-9]|1[0-2]) \/ \d{2}$/)
+          ]);
+        }
+        else if (field === 'cvv') {
+          control?.setValidators([
+            Validators.required,
+            Validators.pattern(/^[0-9]{3}$/)
+          ]);
+        }
+        else {
+          control?.setValidators([Validators.required]);
+        }
+
+      } else {
+
+        control?.clearValidators();
+        control?.setErrors(null);
+
+      }
+
+      control?.updateValueAndValidity();
+
+    });
+
   }
 
   confirmInsurance(): void {
@@ -590,11 +695,12 @@ export class PatientRegistrationFOComponent implements OnInit {
 
   async submitRegistration(): Promise<void> {
     if (this.registrationForm.invalid) {
-      console.log("Form is invalid");
+      // console.log("Form is invalid");
 
-      console.log("Form Errors:", this.registrationForm.errors);
+      // console.log("Form Errors:", this.registrationForm.errors);
 
-      console.log("Form Values:", this.registrationForm.getRawValue());
+      // console.log("Form Values:", this.registrationForm.getRawValue());
+      this.logInvalidControls(this.registrationForm);
 
       this.registrationForm.markAllAsTouched();
       return;
@@ -602,7 +708,7 @@ export class PatientRegistrationFOComponent implements OnInit {
 
     const formData = this.registrationForm.getRawValue();
 
-    console.log("Registration Data:", formData);
+    // console.log("Registration Data:", formData);
     await this.store.dispatch(AuthActions.requestOTP({ email: formData.contactInformation.email }));
     await this.store.select(selectRequestedOTP).subscribe((res: any) => {
       if (res?.data) {
@@ -667,7 +773,7 @@ export class PatientRegistrationFOComponent implements OnInit {
     if (checked) {
       const presentValue = presentAddress.getRawValue();
 
-      console.log("Present Address:", presentValue);
+      // console.log("Present Address:", presentValue);
 
       permanentAddress.patchValue({
         address: presentValue.address,
@@ -685,7 +791,7 @@ export class PatientRegistrationFOComponent implements OnInit {
       this.permanentStates = [...this.states];
       this.permanentCities = [...this.cities];
 
-      console.log("Permanent Address After Patch:", permanentAddress.getRawValue());
+      // console.log("Permanent Address After Patch:", permanentAddress.getRawValue());
     } else {
       permanentAddress.patchValue({
         address: "",

@@ -22,3 +22,8 @@ export const selectPaymentError = createSelector(
     selectPaymentState,
     state => state.error
 );
+
+export const selectPaymentList = createSelector(
+    selectPaymentState,
+    state => state.paymentList
+);
