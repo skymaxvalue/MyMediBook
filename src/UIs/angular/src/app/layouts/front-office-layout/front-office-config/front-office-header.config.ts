@@ -1,6 +1,6 @@
 export interface NavItem {
-  key: string;          // value of activePage, so your template keeps working
-  path: string;         // first segment after /front-office
+  key: string; // value of activePage, so your template keeps working
+  path: string; // first segment after /front-office
   alsoActiveFor?: string[]; // child pages that should highlight this item
   state?: Record<string, unknown>;
 }

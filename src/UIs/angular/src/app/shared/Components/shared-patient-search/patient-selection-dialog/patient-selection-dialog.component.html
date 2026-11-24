@@ -1,4 +1,10 @@
-<div class="patient-dialog">
+<div
+  class="patient-dialog"
+  *ngIf="{
+    patients: (patients$ | async) ?? [],
+    loading: (loading$ | async) ?? LoadStatus.NotLoaded,
+  } as vm"
+>
   <!-- Header -->
   <div class="dialog-header">
     <div class="dialog-title-icon">
@@ -22,26 +28,20 @@
       name="dialogPatientName"
       placeholder="Search by full name"
       [(ngModel)]="searchName"
+      (ngModelChange)="onFilterChange()"
     />
-
-    <input type="date" name="dialogPatientDob" [(ngModel)]="searchDob" />
-
-    <button
-      type="button"
-      class="btn-primary"
-      [disabled]="loading === LoadStatus.Loading"
-      (click)="searchPatients()"
-    >
-      <span class="search-icon">&#9906;</span>
-      {{ loading === LoadStatus.Loading ? "Searching..." : "Search" }}
-    </button>
+    <input
+      type="date"
+      name="dialogPatientDob"
+      [(ngModel)]="searchDob"
+      (ngModelChange)="onFilterChange()"
+    />
   </div>
 
-  <!-- Patient Results -->
-  <div class="dialog-patient-list">
+  <div class="dialog-patient-list" *ngIf="filterPatients(vm.patients) as filtered">
     <div
       class="patient-option"
-      *ngFor="let patient of patients"
+      *ngFor="let patient of filtered"
       [class.selected]="selectedPatient?.profileId === patient.profileId"
       (click)="selectPatient(patient)"
       tabindex="0"
@@ -58,9 +58,11 @@
       </div>
     </div>
 
-    <div class="dialog-message" *ngIf="loading === LoadStatus.Loading">Searching patients...</div>
+    <div class="dialog-message" *ngIf="vm.loading === LoadStatus.Loading">
+      Searching patients...
+    </div>
 
-    <div class="dialog-message" *ngIf="loading === LoadStatus.Loaded && patients.length === 0">
+    <div class="dialog-message" *ngIf="filtered.length === 0">
       No patients found. Try different search criteria.
     </div>
   </div>

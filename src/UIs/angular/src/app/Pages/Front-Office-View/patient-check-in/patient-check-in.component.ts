@@ -236,45 +236,6 @@ export class PatientCheckInComponent implements OnInit, OnDestroy {
     }
   }
 
-  // confirmCheckIn(): void {
-  //   if (this.selectedAppointment) {
-  //     AppointmentActions.openPatientCheckInDialog()
-  //   }
-
-  //   this.selectedAppointment.checkedIn = true;
-  //   console.log("Check-in confirmed for:", this.selectedAppointment);
-
-  // //   const checkInData = {
-  //     patientId: this.selectedAppointment.id,
-
-  //     patientName: this.selectedAppointment.fullName,
-
-  //     uhid: this.selectedAppointment.uhid,
-
-  //     doctor: this.selectedAppointment.doctorProfile.name
-  //       ? this.selectedAppointment?.doctorProfile.name
-  //       : this.selectedDoctor.name,
-
-  //     department: this.selectedAppointment.department
-  //       ? this.selectedAppointment.department
-  //       : this.selectedDoctor.department,
-
-  //     room: this.selectedAppointment.room ? this.selectedAppointment.room : 2,
-
-  //     appointmentTime: this.selectedAppointment.appointmentTime,
-
-  //     checkInTime: this.getCurrentTime(),
-
-  //     checkInDate: this.getCurrentDate(),
-  //   };
-
-  //   localStorage.setItem("currentCheckIn", JSON.stringify(checkInData));
-
-  //   this.showConfirmModal = false;
-
-  //   this.showSuccessModal = true;
-  // }
-
   done(): void {
     this.showSuccessModal = false;
 
@@ -304,6 +265,7 @@ export class PatientCheckInComponent implements OnInit, OnDestroy {
   trackById(index: number, appointment: any): number {
     return appointment.id;
   }
+  
 
   ngOnDestroy(): void {
     this.destroy$.next();

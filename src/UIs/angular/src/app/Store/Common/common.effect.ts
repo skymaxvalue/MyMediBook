@@ -3,11 +3,12 @@ import * as S from "./common.selectors";
 import { Injectable } from "@angular/core";
 import * as A from "./common.actions";
 import { Dialog } from "@angular/cdk/dialog";
-import { switchMap, map, catchError, of, tap } from "rxjs";
+import { switchMap, map, catchError, of, tap, filter, exhaustMap } from "rxjs";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { CommonService } from "../../core/Services/common/common.service";
-import { PatientSelectionDialogComponent } from "../../Pages/Front-Office-View/physician-consultation/patient-selection-dialog/patient-selection-dialog.component";
+import { PatientSelectionDialogComponent } from "../../shared/Components/shared-patient-search/patient-selection-dialog/patient-selection-dialog.component";
 import { ISearchPatientResponseModel } from "../../core/Models/common/search-patient.model";
+
 @Injectable()
 export class CommonEffects {
   constructor(
@@ -29,29 +30,26 @@ export class CommonEffects {
     )
   );
 
-  openPatientSwitchDialog$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(A.openPatientSwitchDialog),
-        tap(() => {
-          const patients = this.store.selectSignal(S.selectSearchedPatientList)();
-          const dialogRef = this.dialog.open(PatientSelectionDialogComponent, {
+  openPatientSwitchDialog$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(A.openPatientSwitchDialog),
+      exhaustMap(
+        () =>
+          this.dialog.open<ISearchPatientResponseModel | null>(PatientSelectionDialogComponent, {
             width: "600px",
             maxWidth: "95vw",
             height: "auto",
             maxHeight: "85vh",
-            data: patients,
-          });
-          console.log("Patients from store:", patients);
-          console.log("Patients count:", patients?.length);
-
-          dialogRef.closed.subscribe((patient: any) => {
-            if (patient) {
-              this.store.dispatch(A.patientSelectedFromSearch({ patient }));
-            }
-          });
-        })
+            // no `data`: the dialog reads the store itself
+          }).closed
       ),
-    { dispatch: false }
+      filter((patient): patient is ISearchPatientResponseModel => !!patient),
+      map((patient) => A.patientSelectedFromSearch({ patient }))
+    )
+  );
+
+  patientSelectedFromSearch$ = this.actions$.pipe(
+    ofType(A.patientSelectedFromSearch),
+    map((a) => a.patient)
   );
 }

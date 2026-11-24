@@ -7,6 +7,8 @@ import { CommonModule, DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { LoadStatus } from "../../../utils/enum/load-status.enum";
 import { CommonFacade } from "../../../Store/Common/common.facade";
+import { Dialog } from "@angular/cdk/dialog";
+import { PatientSelectionDialogComponent } from "./patient-selection-dialog/patient-selection-dialog.component";
 @Component({
   standalone: true,
   imports: [CommonModule, FormsModule, DatePipe],
@@ -17,29 +19,27 @@ import { CommonFacade } from "../../../Store/Common/common.facade";
 export class SharedPatientSearchComponent {
   @Input() patients: ISearchPatientResponseModel[] = [];
   @Input() loading: LoadStatus = LoadStatus.NotLoaded;
+  @Input() layout: "default" | "inline" = "default";
+  @Input() title = "Select Patient Profile";
 
   @Output() searchRequested = new EventEmitter<ISearchPatientRequestModel>();
-
   @Output() clearRequested = new EventEmitter<void>();
-
   @Output() patientSelected = new EventEmitter<ISearchPatientResponseModel>();
-
   @Output() switchProfile = new EventEmitter<void>();
+
   LoadStatus = LoadStatus;
   lastName = "";
   dob = "";
   mobileNo = "";
-
   selectedPatient: ISearchPatientResponseModel | null = null;
-  showPatientModal = false;
 
-  constructor(private commonFacade: CommonFacade) { }
+  constructor(private dialog: Dialog) {}
+
   get searchPayload(): ISearchPatientRequestModel {
     return {
       name: this.lastName.trim() || null,
       dob: this.dob || null,
-      mobileNo: this.mobileNo ? this.mobileNo.trim()
-        : null,
+      mobileNo: this.mobileNo.trim(),
       fromDate: null,
       toDate: null,
     };
@@ -68,18 +68,18 @@ export class SharedPatientSearchComponent {
   selectPatient(patient: ISearchPatientResponseModel): void {
     this.selectedPatient = patient;
     this.patientSelected.emit(patient);
-    this.showPatientModal = false;
-  }
-
-  openPatientModal(): void {
-    this.showPatientModal = true;
-  }
-
-  closePatientModal(): void {
-    this.showPatientModal = false;
   }
 
   switchPatientProfile(): void {
-    this.commonFacade.openPatientSwitchDialog();
+    this.dialog
+      .open<ISearchPatientResponseModel | null>(PatientSelectionDialogComponent, {
+        width: "600px",
+        maxWidth: "95vw",
+        height: "auto",
+        maxHeight: "85vh",
+      })
+      .closed.subscribe((patient) => {
+        if (patient) this.selectPatient(patient);
+      });
   }
 }

@@ -1,7 +1,12 @@
-<div class="shared-patient-search">
+<div class="shared-patient-search" [class.layout-inline]="layout === 'inline'">
+  <div class="section-header" *ngIf="layout === 'inline'">
+    <img src="/assets/images/front-office/images/search-blue.png" alt="" />
+    <h2>{{ title }}</h2>
+  </div>
+
   <div class="patient-search-grid">
     <div class="patient-search-column">
-      <div class="field-pair">
+      <div class="field-pair field-last-name">
         <label for="patientLastNameSearch">Patient Last Name</label>
 
         <div class="input-with-icon">
@@ -16,7 +21,7 @@
         </div>
       </div>
 
-      <div class="field-pair">
+      <div class="field-pair field-dob">
         <label for="patientDobSearch">Date of Birth</label>
         <input type="date" id="patientDobSearch" name="patientDobSearch" [(ngModel)]="dob" />
       </div>
@@ -27,7 +32,7 @@
     </div>
 
     <div class="patient-search-column">
-      <div class="field-pair">
+      <div class="field-pair field-mobile">
         <label for="patientMobileSearch">Mobile Number</label>
 
         <div class="input-with-icon">
@@ -95,7 +100,11 @@
 
     <ng-template #noPatientsFound>
       <p class="no-patients-message">
-        No patients found. Please check your search details and try again.
+        {{
+          layout === "inline"
+            ? "No Matching Record Found"
+            : "No patients found. Please check your search details and try again."
+        }}
       </p>
     </ng-template>
   </div>

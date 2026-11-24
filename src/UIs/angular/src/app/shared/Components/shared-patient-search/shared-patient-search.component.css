@@ -17,6 +17,19 @@
   font-family: inherit;
 }
 
+.shared-patient-search {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 26px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* =====================================================
+   Section header / helper
+   ===================================================== */
+
 .consultation-section {
   margin: 0 0 14px;
   padding: 0 12px 12px;
@@ -55,6 +68,10 @@
   font-size: 12px;
   line-height: 1.35;
 }
+
+/* =====================================================
+   Search grid (default layout)
+   ===================================================== */
 
 .patient-search-grid {
   display: grid;
@@ -127,6 +144,7 @@ input:focus {
   padding-left: 38px;
 }
 
+/* OR divider */
 .search-or {
   position: relative;
   display: flex;
@@ -150,6 +168,10 @@ input:focus {
   font-size: 12px;
   font-weight: 700;
 }
+
+/* =====================================================
+   Buttons
+   ===================================================== */
 
 .search-actions {
   display: flex;
@@ -209,6 +231,64 @@ input:focus {
   object-fit: contain;
 }
 
+/* Search button */
+.search-btn {
+  min-width: 100px;
+  height: 36px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background-color: #0d6efd;
+  color: #ffffff;
+  border: 1px solid #0d6efd;
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-btn:hover:not(:disabled) {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+}
+
+.search-btn:disabled {
+  background-color: #a5c8f9;
+  border-color: #a5c8f9;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.search-btn:focus-visible {
+  outline: 2px solid #80bdff;
+  outline-offset: 2px;
+}
+
+/* Loading spinner */
+.search-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: search-spin 0.7s linear infinite;
+}
+
+@keyframes search-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   Search results
+   ===================================================== */
+
 .patient-search-results {
   display: grid;
   gap: 8px;
@@ -216,14 +296,15 @@ input:focus {
 }
 
 .patient-result {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--hh-border);
-  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid #cbdcfb;
+  border-radius: 10px;
   background: #fff;
   color: var(--hh-text);
   text-align: left;
@@ -231,18 +312,80 @@ input:focus {
 }
 
 .patient-result:hover {
-  border-color: var(--hh-blue);
   background: #f5f8ff;
+  border-color: #8bb5ff;
 }
 
-.patient-result strong {
-  font-size: 14px;
+.patient-result:focus-visible {
+  outline: 2px solid #367cff;
+  outline-offset: 2px;
 }
 
 .patient-result span {
   color: var(--hh-muted);
   font-size: 12px;
 }
+
+.patient-result-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.patient-result-name img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.patient-result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.patient-result-info small {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.patient-result-info strong {
+  font-size: 14px;
+  color: #172b4d;
+  font-weight: 600;
+}
+
+.patient-result-details {
+  display: grid;
+  grid-template-columns: 140px 110px;
+  align-items: center;
+  gap: 20px;
+  text-align: right;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.patient-result-mobile {
+  font-weight: 700;
+  color: #334155;
+}
+
+.patient-result-dob {
+  white-space: nowrap;
+}
+
+.no-patients-message {
+  margin: 0;
+  color: var(--hh-muted);
+  font-size: 13px;
+}
+
+/* =====================================================
+   Selected patient bar
+   ===================================================== */
 
 .selected-patient-bar {
   display: grid;
@@ -283,6 +426,10 @@ input:focus {
   overflow-wrap: anywhere;
 }
 
+/* =====================================================
+   Responsive (default layout)
+   ===================================================== */
+
 @media (max-width: 900px) {
   .patient-search-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -322,168 +469,140 @@ input:focus {
     flex-direction: column;
   }
 }
-.shared-patient-search {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  border: none;
-  box-shadow: none;
-  background: transparent;
+
+/* =====================================================
+   INLINE LAYOUT  (layout="inline")
+   Last name | OR | Mobile | DOB | Clear | Search
+   ===================================================== */
+
+.layout-inline .section-header {
+  border: 1px solid var(--hh-border);
+  margin-bottom: 14px;
 }
 
-/* Search button */
-.search-btn {
-  min-width: 100px;
-  height: 36px;
-  padding: 0 18px;
-  display: inline-flex;
+.layout-inline .patient-search-grid {
+  grid-template-columns: minmax(0, 1.1fr) 50px minmax(0, 1.1fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+}
+
+/* flatten the two columns so every field is a direct grid item */
+.layout-inline .patient-search-column {
+  display: contents;
+}
+
+.layout-inline .field-last-name {
+  order: 1;
+}
+
+.layout-inline .search-or {
+  order: 2;
+}
+
+.layout-inline .field-mobile {
+  order: 3;
+}
+
+.layout-inline .field-dob {
+  order: 4;
+}
+
+.layout-inline .search-actions {
+  order: 5;
+  gap: 12px;
+}
+
+/* OR divider: centered vertical line with the circle on top */
+.layout-inline .search-or {
+  position: relative;
+  align-self: center;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-
-  background-color: #0d6efd;
-  color: #ffffff;
-  border: 1px solid #0d6efd;
-  border-radius: 8px;
-
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  height: 56px;
+  min-height: 56px;
+  border-left: 0;
 }
 
-/* Hover */
-.search-btn:hover:not(:disabled) {
-  background-color: #0b5ed7;
-  border-color: #0b5ed7;
+.layout-inline .search-or::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--hh-border);
+  transform: translateX(-50%);
 }
 
-/* Disabled */
-.search-btn:disabled {
-  background-color: #a5c8f9;
-  border-color: #a5c8f9;
-  cursor: not-allowed;
-  opacity: 0.8;
+.layout-inline .search-or span {
+  z-index: 1;
 }
 
-/* Keyboard focus */
-.search-btn:focus-visible {
-  outline: 2px solid #80bdff;
-  outline-offset: 2px;
+/* Buttons */
+.layout-inline .btn-outline,
+.layout-inline .search-btn {
+  height: 46px;
+  min-height: 46px;
 }
 
-/* Loading spinner */
-.search-spinner {
-  width: 13px;
-  height: 13px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: search-spin 0.7s linear infinite;
+.layout-inline .btn-outline {
+  min-width: 124px;
+  border-color: #f87171;
+  color: #ef4444;
 }
 
-@keyframes search-spin {
-  to {
-    transform: rotate(360deg);
-  }
+.layout-inline .btn-outline:hover {
+  background: #fef2f2;
 }
 
-.patient-result-name {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.layout-inline .search-btn {
+  background-color: var(--hh-blue);
+  border-color: var(--hh-blue);
 }
 
-.patient-result-name img {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  flex-shrink: 0;
+.layout-inline .search-btn:hover:not(:disabled) {
+  background-color: #255dcc;
+  border-color: #255dcc;
 }
 
-.patient-result-name strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.patient-result {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  padding: 12px 16px;
-  text-align: left;
-  background: #fff;
-  border: 1px solid #cbdcfb;
+/* Empty-state card */
+.layout-inline .no-patients-message {
+  padding: 18px 16px;
+  border: 1px solid var(--hh-border);
   border-radius: 10px;
-  cursor: pointer;
-}
-
-.patient-result-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.patient-result-name img {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.patient-result-name strong {
-  color: #172b4d;
-  font-size: 14px;
+  background: #fff;
   font-weight: 600;
+  text-align: center;
 }
 
-.patient-result-details {
-  display: grid;
-  grid-template-columns: 140px 110px;
-  align-items: center;
-  gap: 20px;
-  text-align: right;
-  font-size: 12px;
-  color: #64748b;
-}
+/* Inline layout: stacked on smaller screens */
+@media (max-width: 1000px) {
+  .layout-inline .patient-search-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-.patient-result-mobile {
-  font-weight: 700;
-  color: #334155;
-}
+  .layout-inline .field-last-name,
+  .layout-inline .search-or,
+  .layout-inline .field-mobile,
+  .layout-inline .field-dob,
+  .layout-inline .search-actions {
+    order: 0;
+  }
 
-.patient-result-dob {
-  white-space: nowrap;
-}
+  .layout-inline .search-or {
+    height: 32px;
+    min-height: 32px;
+    border-top: 0;
+  }
 
-.patient-result:hover {
-  background: #f5f8ff;
-  border-color: #8bb5ff;
-}
-
-.patient-result:focus-visible {
-  outline: 2px solid #367cff;
-  outline-offset: 2px;
-}
-
-.patient-result-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.patient-result-info small {
-  font-size: 11px;
-  color: #64748b;
-  font-weight: 400;
-}
-
-.patient-result-info strong {
-  font-size: 14px;
-  color: #172b4d;
-  font-weight: 600;
+  .layout-inline .search-or::before {
+    top: 50%;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 1px;
+    transform: none;
+  }
 }
