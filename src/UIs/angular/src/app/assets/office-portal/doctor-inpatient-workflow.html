@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>In-Patient Care Workflow | Doctor Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/navbar.css"><link rel="stylesheet" href="css/dashboard.css"><link rel="stylesheet" href="css/doctor-dashboard.css"><link rel="stylesheet" href="css/navbar-doctor.css"><link rel="stylesheet" href="css/doctor-inpatient.css"><link rel="stylesheet" href="css/doctor-inpatient-workflow.css">
+</head>
+<body class="auth-pending"><div id="navbar-container"></div>
+<main class="dashboard-container dc-container"><section class="dashboard-card dc-panel">
+<div class="card-header"><div><h3>IN-PATIENT CARE WORKFLOW</h3><p class="dc-ip-subtitle">Daily rounds, care coordination, team review, discharge readiness and discharge</p></div></div>
+<div id="workflowNotice" class="dc-notice" role="status" aria-live="polite" hidden></div>
+<div class="ipw-patient" id="patientBanner"></div>
+<div class="ipw-layout"><nav class="ipw-nav" id="workflowNav" aria-label="In-patient care stages"></nav><section class="ipw-content"><div id="workflowPanel"></div><div class="ipw-actions"><button type="button" class="dc-ip-btn" id="backToPatients">Back to patient list</button><div class="ipw-action-group"><button type="button" class="dc-ip-btn" id="saveDraftBtn" hidden>Save as Draft</button> <button type="button" class="dc-ip-btn primary" id="saveBtn" hidden>Save</button> <button type="button" class="dc-ip-btn primary" id="finalizeBtn" hidden>Finalise Discharge</button> <button type="button" class="dc-ip-btn" id="previousStep">Previous</button> <button type="button" class="dc-ip-btn" id="nextStep">Next stage</button></div></div></section></div>
+</section></main><div id="footer-container"></div>
+<div class="dc-ip-modal" id="roundTypeModal" hidden><div class="dc-ip-dialog" role="dialog" aria-modal="true" aria-labelledby="roundTypeTitle" tabindex="-1"><button type="button" class="dc-ip-close" data-round-modal-close aria-label="Close">&times;</button><h3 id="roundTypeTitle">Which type of round would you like to add?</h3><p class="dc-ip-dialog-sub" id="roundTypeCounts"></p><div class="ipw-type-options" id="roundTypeOptions"></div><div class="dc-ip-dialog-actions"><button type="button" class="dc-ip-btn" data-round-modal-close>Cancel</button></div></div></div>
+<div class="modal-overlay" id="dcLogoutModal"><div class="logout-modal" role="dialog" aria-modal="true"><button type="button" class="modal-close" data-close="dcLogoutModal">&times;</button><h2>Log out?</h2><p>You will need to sign in again to open the Doctor Dashboard.</p><div class="modal-actions"><button type="button" class="btn-outline" data-close="dcLogoutModal">Stay signed in</button><button type="button" class="btn-danger" id="dcLogoutConfirm">Log out</button></div></div></div>
+<div class="modal-overlay" id="dcProfileModal"><div class="logout-modal" role="dialog" aria-modal="true"><button type="button" class="modal-close" data-close="dcProfileModal">&times;</button><div class="logout-icon dc-profile-icon" id="dcProfileInitials"></div><h2 id="dcProfileTitle"></h2><p id="dcProfileMeta"></p><div class="modal-actions"><button type="button" class="btn-outline" data-close="dcProfileModal">Close</button></div></div></div>
+<script src="js/auth.js"></script><script src="js/footer.js"></script><script src="js/navbar-doctor.js"></script><script src="js/doctor-data.js"></script><script src="js/doctor-common.js"></script><script src="js/doctor-inpatient-data.js"></script><script src="js/doctor-inpatient-workflow.js"></script>
+</body></html>

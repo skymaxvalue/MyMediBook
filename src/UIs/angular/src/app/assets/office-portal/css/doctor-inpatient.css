@@ -146,8 +146,35 @@
     padding:6px 12px;
 }
 
+.dc-ip-wrap{
+    overflow-x:auto;
+}
+
 .dc-ip-table{
-    min-width:1180px;
+    min-width:1000px;
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+.dc-ip-table th:last-child,
+.dc-ip-table td:last-child{
+    min-width:215px;
+}
+
+/* Only pin the Actions column when the table is narrow enough to scroll sideways. */
+@media (max-width:1280px){
+    .dc-ip-table th:last-child,
+    .dc-ip-table td:last-child{
+        position:sticky;
+        right:0;
+        z-index:1;
+        background:#fff;
+        border-left:1px solid var(--border);
+    }
+
+    .dc-ip-table thead th:last-child{
+        background:#EDF4FF;
+    }
 }
 
 .dc-ip-name{
@@ -165,7 +192,16 @@
 
 .dc-ip-actions{
     display:flex;
+    flex-wrap:nowrap;
+    align-items:center;
     gap:8px;
+}
+
+.dc-ip-actions .dc-ip-btn{
+    flex:0 0 auto;
+    min-width:72px;
+    padding-left:16px;
+    padding-right:16px;
 }
 
 .dc-ip-pill{
@@ -475,3 +511,5 @@ body.dc-ip-modal-open{
     .dc-ip-dialog-actions{flex-direction:column-reverse;}
     .dc-ip-dialog-actions .dc-ip-btn{width:100%;}
 }
+
+.dc-ip-pill.grey{background:#F1F4F9;color:var(--text-light);}

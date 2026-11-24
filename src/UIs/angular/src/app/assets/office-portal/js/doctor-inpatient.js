@@ -136,7 +136,7 @@
         if (!pageRows.length) {
             const row = document.createElement("tr");
             const cell = el("td", "dc-empty");
-            cell.colSpan = 11;
+            cell.colSpan = 9;
             cell.appendChild(el("span", "dc-ip-empty-title", "No in-patients match your search or filters."));
             cell.appendChild(document.createTextNode("Try a different search term or reset the filters."));
             row.appendChild(cell);
@@ -154,25 +154,18 @@
             row.appendChild(textCell(lengthOfStay(patient.admittedOn)));
             row.appendChild(textCell(patient.diagnosis, "dc-ip-diagnosis"));
             row.appendChild(textCell(patient.attending));
-            const acuityCell = document.createElement("td");
-            acuityCell.appendChild(pill(patient.acuity, ACUITY_TONE[patient.acuity] || "blue"));
-            row.appendChild(acuityCell);
-            const statusCell = document.createElement("td");
-            statusCell.appendChild(pill(patient.status, STATUS_TONE[patient.status] || "blue"));
-            row.appendChild(statusCell);
-
             const actionCell = document.createElement("td");
             const actions = el("div", "dc-ip-actions");
             const view = el("button", "dc-ip-btn small", "View");
             view.type = "button";
             view.dataset.action = "view";
             view.setAttribute("aria-label", "View details for " + patient.name);
-            const note = el("button", "dc-ip-btn small", "Add Note");
-            note.type = "button";
-            note.dataset.action = "note";
-            note.setAttribute("aria-label", "Add note for " + patient.name);
+            const manage = el("button", "dc-ip-btn small primary", "Manage Care");
+            manage.type = "button";
+            manage.dataset.action = "manage";
+            manage.setAttribute("aria-label", "Manage inpatient care for " + patient.name);
             actions.appendChild(view);
-            actions.appendChild(note);
+            actions.appendChild(manage);
             actionCell.appendChild(actions);
             row.appendChild(actionCell);
             body.appendChild(row);
@@ -308,14 +301,15 @@
 
     function renderDetail(patient) {
         byId("ipDetailTitle").textContent = patient.name;
-        byId("ipDetailSub").textContent = patient.id + " · Demo data, not a live medical record";
+        byId("ipDetailSub").textContent = patient.id + " · " + patient.ward + " · " + roomBed(patient);
         const body = byId("ipDetailBody");
         body.textContent = "";
 
         const info = section("Patient Information");
         info.body.appendChild(definitionGrid([
             ["Patient name", patient.name],
-            ["Patient ID", patient.id],
+            ["Patient ID / MRN", patient.mrn],
+            ["Encounter ID", patient.encounterId],
             ["Age / Gender", patient.age + " years / " + patient.gender],
             ["Admitted on", formatDate(patient.admittedOn) + " (" + lengthOfStay(patient.admittedOn) + ")"],
             ["Ward", patient.ward],
@@ -336,7 +330,7 @@
 
         const vitals = section("Latest Observations");
         vitals.body.appendChild(vitalsGrid(patient.observations));
-        vitals.body.appendChild(el("p", "dc-ip-caption", "Recorded " + formatDateTime(patient.observations.recordedAt) + " · Demo values"));
+        vitals.body.appendChild(el("p", "dc-ip-caption", "Recorded " + formatDateTime(patient.observations.recordedAt)));
         body.appendChild(vitals.wrapper);
 
         const care = section("Care Overview");
@@ -344,6 +338,18 @@
         care.body.appendChild(textBlock("Current care plan", patient.carePlan));
         care.body.appendChild(textBlock("Important observations", patient.keyObservations));
         body.appendChild(care.wrapper);
+
+        const cs = repo.getCareSummary(patient.id);
+        const careSec = section("Inpatient Care Activity");
+        careSec.body.appendChild(definitionGrid([
+            ["Physician rounds", cs.roundCounts.physician.count + " / " + cs.roundCounts.physician.max],
+            ["Nursing rounds", cs.roundCounts.nursing.count + " / " + cs.roundCounts.nursing.max],
+            ["Team reviews", String(cs.reviews)],
+            ["Open team actions", String(cs.openActions)],
+            ["Readiness assessments", String(cs.assessments)],
+            ["Discharge record", { none: "Not started", draft: "Draft", final: "Finalised" }[cs.discharge]]
+        ]));
+        body.appendChild(careSec.wrapper);
 
         const notes = section("Recent Progress Notes");
         notes.body.appendChild(notesList(patient.notes));
@@ -519,7 +525,7 @@
             const row = button.closest("tr");
             if (!row || !row.dataset.patientId) return;
             if (button.dataset.action === "view") openDetail(row.dataset.patientId, button);
-            else openNoteForm(row.dataset.patientId, button, false);
+            else if (button.dataset.action === "manage") window.location.href = "doctor-inpatient-workflow.html?patient=" + encodeURIComponent(row.dataset.patientId);
         });
 
         byId("ipPager").addEventListener("click", event => {
@@ -529,10 +535,9 @@
             renderTable();
         });
 
-        byId("ipDetailAddNote").addEventListener("click", event => {
+        byId("ipOpenWorkflow").addEventListener("click", () => {
             if (!detailPatientId) return;
-            const opener = modalOpener;
-            openNoteForm(detailPatientId, opener || event.currentTarget, true);
+            window.location.href = "doctor-inpatient-workflow.html?patient=" + encodeURIComponent(detailPatientId);
         });
         byId("ipDetailBody").addEventListener("click", event => {
             if (event.target.id === "ipStatusSave") submitStatus();

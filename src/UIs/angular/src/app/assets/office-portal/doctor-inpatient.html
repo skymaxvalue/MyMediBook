@@ -53,10 +53,9 @@
                     <img class="dc-ip-title-icon" src="images/medical-icon-blue.png" alt="">
                     <div>
                         <h3>IN-PATIENT CARE</h3>
-                        <p class="dc-ip-subtitle">Review admitted patients, monitor care status and record progress notes.</p>
+                        <p class="dc-ip-subtitle">Review admitted patients, monitor care status, record progress notes and manage inpatient care.</p>
                     </div>
                 </div>
-                <span class="dc-demo-tag">Demo data</span>
             </div>
 
             <p class="dc-notice" id="ipNotice" role="status" hidden></p>
@@ -93,7 +92,7 @@
 
             </div>
 
-            <div class="dc-table-wrap">
+            <div class="dc-table-wrap dc-ip-wrap">
                 <table class="dc-table dc-ip-table">
                     <caption class="dc-ip-sr">Admitted in-patients</caption>
                     <thead>
@@ -106,8 +105,6 @@
                             <th scope="col">Length of Stay</th>
                             <th scope="col">Diagnosis</th>
                             <th scope="col">Attending Doctor</th>
-                            <th scope="col">Acuity</th>
-                            <th scope="col">Clinical Status</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -134,7 +131,7 @@
             <div id="ipDetailBody"></div>
             <div class="dc-ip-dialog-actions">
                 <button type="button" class="dc-ip-btn" data-ip-close>Close</button>
-                <button type="button" class="dc-ip-btn primary" id="ipDetailAddNote">Add Note</button>
+                <button type="button" class="dc-ip-btn primary" id="ipOpenWorkflow">Manage Inpatient Care</button>
             </div>
         </div>
     </div>
