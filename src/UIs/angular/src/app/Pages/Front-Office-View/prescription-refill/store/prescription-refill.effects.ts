@@ -25,37 +25,34 @@ export class PrescriptionRefillEffects {
   // );
 
 
-  searchPatients$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(A.searchPatients),
-      switchMap(({ criteria }) => {
+  // searchPatients$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(A.searchPatients),
+  //     switchMap(({ criteria }) => {
 
-        const mobile = criteria.mobile?.trim();
-        const dob = criteria.dob?.trim();
+  //       const mobile = criteria.mobile?.trim();
+  //       const dob = criteria.dob?.trim();
 
-        const payload: ISearchPatientRequestModel = {
-          name: criteria.lastName?.trim() || null,
-          dob: dob || null,
-          mobileNo: mobile ? mobile : null,
-          fromDate: null,
-          toDate: null
-        };
-
-        console.log('Patient Search API Payload:', payload);
-
-        return this.api.searchPatients(payload).pipe(
-          map((patients) =>
-            A.searchPatientsSuccess({ patients })
-          ),
-          catchError((e) =>
-            of(A.searchPatientsFailure({
-              error: message(e, 'Patient search failed')
-            }))
-          )
-        );
-      })
-    )
-  );
+  //       const payload: ISearchPatientRequestModel = {
+  //         name: criteria.lastName?.trim() || null,
+  //         dob: dob || null,
+  //         mobileNo: mobile ? Number(mobile) : null,
+  //         fromDate: null,
+  //         toDate: null
+  //       };
+  //       return this.api.searchPatients(payload).pipe(
+  //         map((patients) =>
+  //           A.searchPatientsSuccess({ patients })
+  //         ),
+  //         catchError((e) =>
+  //           of(A.searchPatientsFailure({
+  //             error: message(e, 'Patient search failed')
+  //           }))
+  //         )
+  //       );
+  //     })
+  //   )
+  // );
 
 
   selectPatient$ = createEffect(() =>

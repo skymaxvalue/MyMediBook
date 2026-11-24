@@ -1,134 +1,68 @@
 <main class="dashboard-container">
   <section class="pr-page-card">
-
     <!-- HEADER -->
     <div class="pr-page-header">
       <div class="pr-icon-circle">
-        <img src="/assets/images/front-office/images/prescription.png" alt="">
+        <img src="/assets/images/front-office/images/prescription.png" alt="" />
       </div>
       <div>
         <h2>Prescription Refill Request</h2>
-        <p>Request a refill for current medications. The request will be sent to the prescribing care team for review
-          and authorization.</p>
+        <p>
+          Request a refill for current medications. The request will be sent to the prescribing care
+          team for review and authorization.
+        </p>
       </div>
     </div>
 
     <form novalidate (ngSubmit)="submitRequest()">
-
       <!-- PATIENT SEARCH -->
-      <section class="pr-section">
-
-        <div class="pr-section-header">
-          <img src="/assets/images/front-office/images/search-blue.png" alt="">
-          <h3>Select Patient Profile</h3>
-        </div>
-
-        <div class="pr-search-grid" (keydown.enter)="$event.preventDefault(); searchPatients()">
-
-          <div class="pr-field">
-            <label>Patient Last Name</label>
-            <div class="pr-input-icon">
-              <img src="/assets/images/front-office/images/profile-outline.png" alt="">
-              <input class="pr-input" type="text" placeholder="Enter last name" [(ngModel)]="search.lastName"
-                name="lastName">
-            </div>
-          </div>
-
-          <div class="pr-search-divider">
-            <span>OR</span>
-          </div>
-
-          <div class="pr-field">
-            <label>Mobile Number</label>
-            <div class="pr-input-icon">
-              <img src="/assets/images/front-office/images/phone-blue.png" alt="">
-              <input class="pr-input" type="tel" placeholder="Enter mobile number" [(ngModel)]="search.mobile"
-                name="mobile">
-            </div>
-          </div>
-
-          <div class="pr-field">
-            <label>Date of Birth</label>
-            <input class="pr-input" type="date" [(ngModel)]="search.dob" name="dob" [max]="currentDate">
-          </div>
-
-          <div class="pr-search-actions">
-            <button type="button" class="pr-btn pr-btn--danger-outline" (click)="clearSearch()">
-              Clear
-            </button>
-
-            <button type="button" class="pr-btn pr-btn--primary" (click)="searchPatients()">
-              Search
-            </button>
-          </div>
-
-        </div>
-
-        <!-- SEARCH RESULTS -->
-        <div class="pr-search-results" [class.show]="showSearchResults" role="listbox">
-
-          <div *ngIf="showSearchResults && filteredPatients.length === 0" class="pr-empty-result">
-            No Matching Record Found
-          </div>
-
-          <div class="pr-result-item" *ngFor="let p of filteredPatients">
-
-            <div class="pr-result-left">
-              <div class="pr-result-avatar">
-                <img src="/assets/images/front-office/images/profile-outline.png" alt="">
-              </div>
-
-              <div>
-                <div class="pr-result-name">
-                  {{p.firstName}} {{p.lastName}}
-                </div>
-                <div class="pr-result-meta">
-                  {{p.mobile}} &bull; {{p.mrn}}
-                </div>
-              </div>
-            </div>
-
-            <button type="button" class="pr-btn pr-btn--outline pr-btn--sm" (click)="selectPatient(p)">
-              Select Patient
-            </button>
-
-          </div>
-        </div>
-
-        <p class="pr-error" *ngIf="errors['patient']">
-          {{errors['patient']}}
-        </p>
-
-      </section>
+      <app-shared-patient-search
+        layout="inline"
+        [patients]="(patients$ | async) ?? []"
+        [loading]="(isSearching$ | async) ?? LoadStatus.NotLoaded"
+        (searchRequested)="searchPatientRequest($event)"
+        (clearRequested)="clearPatientSearch()"
+        (patientSelected)="onPatientSelected($event)"
+        (switchProfile)="onSwitchPatientProfile()"
+      ></app-shared-patient-search>
 
       <!-- PATIENT INFORMATION -->
       <section class="pr-section">
-
         <div class="pr-section-header">
-          <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="">
+          <img src="/assets/images/front-office/images/patient-icon-blue.png" alt="" />
           <h3>Patient Information</h3>
         </div>
 
         <div class="pr-grid">
-
           <div class="pr-field pr-span-2">
             <label>First Name *</label>
-            <input class="pr-input" [(ngModel)]="patientForm.firstName" name="firstName" readonly>
+            <input class="pr-input" [(ngModel)]="patientForm.firstName" name="firstName" readonly />
           </div>
 
           <div class="pr-field pr-span-2">
             <label>Last Name *</label>
-            <input class="pr-input" [(ngModel)]="patientForm.lastName" name="patientLastName" readonly>
+            <input
+              class="pr-input"
+              [(ngModel)]="patientForm.lastName"
+              name="patientLastName"
+              readonly
+            />
           </div>
 
           <div class="pr-field pr-span-2">
             <label>Date of Birth *</label>
-            <input class="pr-input" type="date" [(ngModel)]="patientForm.dob" name="patientDob" readonly>
+            <input
+              class="pr-input"
+              type="date"
+              [(ngModel)]="patientForm.dob"
+              name="patientDob"
+              readonly
+            />
           </div>
 
           <div class="pr-field pr-span-2">
             <label>Age</label>
-            <input class="pr-input" [(ngModel)]="patientForm.age" name="age" readonly>
+            <input class="pr-input" [(ngModel)]="patientForm.age" name="age" readonly />
           </div>
 
           <div class="pr-field pr-span-2">
@@ -143,43 +77,43 @@
 
           <div class="pr-field pr-span-2">
             <label>Medical Record # (MRN)</label>
-            <input class="pr-input" [(ngModel)]="patientForm.mrn" name="mrn" readonly>
+            <input class="pr-input" [(ngModel)]="patientForm.mrn" name="mrn" readonly />
           </div>
 
           <div class="pr-field pr-span-3">
             <label>Phone Number *</label>
-            <input class="pr-input" [(ngModel)]="patientForm.phone" name="phone">
+            <input class="pr-input" [(ngModel)]="patientForm.phone" name="phone" />
             <p class="pr-error" *ngIf="errors['phone']">
-              {{errors['phone']}}
+              {{ errors["phone"] }}
             </p>
           </div>
 
           <div class="pr-field pr-span-3">
             <label>Email Address</label>
-            <input class="pr-input" type="email" [(ngModel)]="patientForm.email" name="email">
+            <input class="pr-input" type="email" [(ngModel)]="patientForm.email" name="email" />
             <p class="pr-error" *ngIf="errors['email']">
-              {{errors['email']}}
+              {{ errors["email"] }}
             </p>
           </div>
 
           <div class="pr-field pr-span-3">
             <label>Address Line 1 *</label>
-            <input class="pr-input" [(ngModel)]="patientForm.address1" name="address1">
+            <input class="pr-input" [(ngModel)]="patientForm.address1" name="address1" />
             <p class="pr-error" *ngIf="errors['address1']">
-              {{errors['address1']}}
+              {{ errors["address1"] }}
             </p>
           </div>
 
           <div class="pr-field pr-span-3">
             <label>Address Line 2</label>
-            <input class="pr-input" [(ngModel)]="patientForm.address2" name="address2">
+            <input class="pr-input" [(ngModel)]="patientForm.address2" name="address2" />
           </div>
 
           <div class="pr-field pr-span-4">
             <label>City *</label>
-            <input class="pr-input" [(ngModel)]="patientForm.city" name="city">
+            <input class="pr-input" [(ngModel)]="patientForm.city" name="city" />
             <p class="pr-error" *ngIf="errors['city']">
-              {{errors['city']}}
+              {{ errors["city"] }}
             </p>
           </div>
 
@@ -188,48 +122,53 @@
             <select class="pr-select" [(ngModel)]="patientForm.state" name="state">
               <option value="">Select</option>
               <option *ngFor="let s of states" [value]="s">
-                {{s}}
+                {{ s }}
               </option>
             </select>
           </div>
 
           <div class="pr-field pr-span-4">
             <label>Postal / Zip Code</label>
-            <input class="pr-input" [(ngModel)]="patientForm.postal" name="postal" maxlength="10">
+            <input class="pr-input" [(ngModel)]="patientForm.postal" name="postal" maxlength="10" />
             <p class="pr-error" *ngIf="errors['postal']">
-              {{errors['postal']}}
+              {{ errors["postal"] }}
             </p>
           </div>
-
         </div>
       </section>
 
       <!-- MEDICATIONS -->
       <section class="pr-section">
-
         <div class="pr-section-header">
-          <img src="/assets/images/front-office/images/medicine-icon.png" alt="">
+          <img src="/assets/images/front-office/images/medicine-icon.png" alt="" />
           <h3>Current Medications</h3>
 
           <span class="pr-section-hint">
-            Select the medications you need a refill for.
-            Only active medications are shown.
+            Select the medications you need a refill for. Only active medications are shown.
           </span>
 
-          <button type="button" class="pr-btn pr-btn--outline pr-btn--sm pr-push" (click)="openHistory()">
-            <img src="/assets/images/front-office/images/view.png" alt="">
+          <button
+            type="button"
+            class="pr-btn pr-btn--outline pr-btn--sm pr-push"
+            (click)="openHistory()"
+          >
+            <img src="/assets/images/front-office/images/view.png" alt="" />
             View Full Medication History
           </button>
         </div>
 
         <div class="pr-table-wrap">
           <table class="pr-table">
-
             <thead>
               <tr>
                 <th class="pr-col-check">
-                  <input type="checkbox" class="pr-checkbox" [checked]="allSelected" [indeterminate]="someSelected"
-                    (change)="toggleAllMedications($any($event.target).checked)">
+                  <input
+                    type="checkbox"
+                    class="pr-checkbox"
+                    [checked]="allSelected"
+                    [indeterminate]="someSelected"
+                    (change)="toggleAllMedications($any($event.target).checked)"
+                  />
                 </th>
                 <th class="pr-left">Medication</th>
                 <th>Strength</th>
@@ -249,81 +188,101 @@
                 </td>
               </tr>
 
-              <tr *ngFor="let med of medications" [class.is-selected]="selectedMedicationIds.has(med.id)">
-
+              <tr
+                *ngFor="let med of medications"
+                [class.is-selected]="selectedMedicationIds.has(med.id)"
+              >
                 <td class="pr-col-check">
-                  <input type="checkbox" class="pr-checkbox" [checked]="selectedMedicationIds.has(med.id)"
-                    (change)="toggleMedication(med.id, $any($event.target).checked)" [disabled]="!patient">
+                  <input
+                    type="checkbox"
+                    class="pr-checkbox"
+                    [checked]="selectedMedicationIds.has(med.id)"
+                    (change)="toggleMedication(med.id, $any($event.target).checked)"
+                    [disabled]="!patient"
+                  />
                 </td>
 
                 <td class="pr-left">
-                  <span class="pr-med-name">{{med.name}}</span>
-                  <span class="pr-med-class">{{med.drugClass}}</span>
+                  <span class="pr-med-name">{{ med.name }}</span>
+                  <span class="pr-med-class">{{ med.drugClass }}</span>
                 </td>
 
                 <td class="pr-strength">
-                  <strong>{{med.strength}}</strong>
-                  <span>{{med.form}}</span>
+                  <strong>{{ med.strength }}</strong>
+                  <span>{{ med.form }}</span>
                 </td>
 
-                <td class="pr-left">{{med.directions}}</td>
+                <td class="pr-left">{{ med.directions }}</td>
 
-                <td>{{formatDate(med.lastFilled)}}</td>
+                <td>{{ formatDate(med.lastFilled) }}</td>
 
                 <td>
                   <span [class.pr-refills-zero]="med.refillsRemaining === 0">
-                    {{med.refillsRemaining}}
+                    {{ med.refillsRemaining }}
                   </span>
                 </td>
 
-                <td class="pr-pill" [class.pr-pill--active]="med.status === 'Active'"
-                  [class.pr-pill--inactive]="med.status === 'Inactive'">
-                  <span>{{med.status}}</span>
+                <td
+                  class="pr-pill"
+                  [class.pr-pill--active]="med.status === 'Active'"
+                  [class.pr-pill--inactive]="med.status === 'Inactive'"
+                >
+                  <span>{{ med.status }}</span>
                 </td>
 
-                <td class="pr-pharmacy-link">{{med.pharmacy}}</td>
+                <td class="pr-pharmacy-link">{{ med.pharmacy }}</td>
 
                 <td>
-                  <input type="checkbox" class="pr-checkbox" [checked]="selectedMedicationIds.has(med.id)"
-                    (change)="toggleMedication(med.id, $any($event.target).checked)" [disabled]="!patient">
+                  <input
+                    type="checkbox"
+                    class="pr-checkbox"
+                    [checked]="selectedMedicationIds.has(med.id)"
+                    (change)="toggleMedication(med.id, $any($event.target).checked)"
+                    [disabled]="!patient"
+                  />
                 </td>
-
               </tr>
             </tbody>
-
           </table>
         </div>
 
         <p class="pr-med-count">
-          {{selectedCount}} of {{patient ? medications.length : 0}}
+          {{ selectedCount }} of {{ patient ? medications.length : 0 }}
           medications selected
         </p>
 
         <p class="pr-error" *ngIf="errors['medications']">
-          {{errors['medications']}}
+          {{ errors["medications"] }}
         </p>
-
       </section>
 
       <!-- PHARMACY -->
       <section class="pr-section">
-
         <div class="pr-section-header">
           <h3>Pharmacy Information</h3>
 
           <label class="pr-inline-check pr-push">
-            <input type="checkbox" class="pr-checkbox" [(ngModel)]="usePreferred" name="usePreferred"
-              (change)="onPreferredChange()">
+            <input
+              type="checkbox"
+              class="pr-checkbox"
+              [(ngModel)]="usePreferred"
+              name="usePreferred"
+              (change)="onPreferredChange()"
+            />
             <span>Use patient's preferred pharmacy</span>
           </label>
         </div>
 
         <div class="pr-grid">
-
           <div class="pr-field pr-span-4">
             <label>Preferred Pharmacy *</label>
-            <select class="pr-select" [(ngModel)]="pharmacyKey" name="pharmacyKey" [disabled]="usePreferred"
-              (change)="onPharmacyChange()">
+            <select
+              class="pr-select"
+              [(ngModel)]="pharmacyKey"
+              name="pharmacyKey"
+              [disabled]="usePreferred"
+              (change)="onPharmacyChange()"
+            >
               <option value="hhp">Health Haven Pharmacy</option>
               <option value="other">Other pharmacy</option>
             </select>
@@ -331,95 +290,105 @@
 
           <div class="pr-field pr-span-3">
             <label>Pharmacy Phone</label>
-            <input class="pr-input" [(ngModel)]="pharmacyForm.phone" name="pharmacyPhone"
-              [readonly]="pharmacyKey !== 'other'">
+            <input
+              class="pr-input"
+              [(ngModel)]="pharmacyForm.phone"
+              name="pharmacyPhone"
+              [readonly]="pharmacyKey !== 'other'"
+            />
           </div>
 
           <div class="pr-field pr-span-5">
             <label>Pharmacy Address</label>
-            <input class="pr-input" [(ngModel)]="pharmacyForm.address" name="pharmacyAddress"
-              [readonly]="pharmacyKey !== 'other'">
+            <input
+              class="pr-input"
+              [(ngModel)]="pharmacyForm.address"
+              name="pharmacyAddress"
+              [readonly]="pharmacyKey !== 'other'"
+            />
           </div>
-
         </div>
 
         <p class="pr-error" *ngIf="errors['pharmacy']">
-          {{errors['pharmacy']}}
+          {{ errors["pharmacy"] }}
         </p>
-
       </section>
 
       <!-- REASON -->
       <section class="pr-section">
-
         <div class="pr-section-header">
           <h3>Reason for Refill</h3>
         </div>
 
         <div class="pr-reason">
-
           <div>
-            <p class="pr-lead">
-              Please let us know why you are requesting a refill.
-            </p>
+            <p class="pr-lead">Please let us know why you are requesting a refill.</p>
 
             <div class="pr-radio-row" role="radiogroup">
+              <label
+                class="pr-radio-label"
+                *ngFor="
+                  let reason of [
+                    'Refill remaining medication',
+                    'No refills remaining',
+                    'Medication lost / damaged',
+                    'Pharmacy change',
+                    'Other',
+                  ]
+                "
+              >
+                <input
+                  type="radio"
+                  class="pr-radio"
+                  name="refillReason"
+                  [value]="reason"
+                  [(ngModel)]="refillReason"
+                  (change)="onReasonChange()"
+                />
 
-              <label class="pr-radio-label" *ngFor="let reason of [
-                  'Refill remaining medication',
-                  'No refills remaining',
-                  'Medication lost / damaged',
-                  'Pharmacy change',
-                  'Other'
-                ]">
-
-                <input type="radio" class="pr-radio" name="refillReason" [value]="reason" [(ngModel)]="refillReason"
-                  (change)="onReasonChange()">
-
-                <span>{{reason}}</span>
+                <span>{{ reason }}</span>
               </label>
-
             </div>
 
             <p class="pr-error" *ngIf="errors['reason']">
-              {{errors['reason']}}
+              {{ errors["reason"] }}
             </p>
           </div>
 
           <div class="pr-field">
             <label>Additional Information (optional)</label>
 
-            <textarea class="pr-textarea" maxlength="500" [(ngModel)]="notes" name="notes"
-              placeholder="Add any additional details for the care team">
+            <textarea
+              class="pr-textarea"
+              maxlength="500"
+              [(ngModel)]="notes"
+              name="notes"
+              placeholder="Add any additional details for the care team"
+            >
             </textarea>
 
-            <div class="pr-count">
-              {{notes.length}}/500
-            </div>
+            <div class="pr-count">{{ notes.length }}/500</div>
 
             <p class="pr-error" *ngIf="errors['notes']">
-              {{errors['notes']}}
+              {{ errors["notes"] }}
             </p>
           </div>
-
         </div>
       </section>
 
       <!-- CLINICAL INFORMATION -->
       <section class="pr-section">
-
         <div class="pr-section-header">
           <h3>Clinical / Review Information</h3>
           <span class="pr-section-hint">(for reference)</span>
         </div>
 
         <div class="pr-clin">
-
           <div class="pr-field pr-span-2">
             <span class="pr-label">Last Visit</span>
             <div class="pr-info">
               <strong>
-                {{profile ? formatLongDate(profile.lastVisit) : '--'}}
+                {{ profile ? formatLongDate(profile.lastVisit) : "--" }}
               </strong>
             </div>
           </div>
@@ -428,30 +397,33 @@
             <label>Prescribing Physician *</label>
 
             <div class="pr-lookup">
-              <input class="pr-input pr-input--lookup"
-                [value]="physician ? physician.name + ', ' + physician.department : ''" readonly
-                placeholder="Select physician">
+              <input
+                class="pr-input pr-input--lookup"
+                [value]="physician ? physician.name + ', ' + physician.department : ''"
+                readonly
+                placeholder="Select physician"
+              />
 
               <button type="button" class="pr-lookup-btn" (click)="openPhysicianModal()">
-                <img src="/assets/images/front-office/images/search-blue.png" alt="">
+                <img src="/assets/images/front-office/images/search-blue.png" alt="" />
               </button>
             </div>
 
             <p class="pr-error" *ngIf="errors['physician']">
-              {{errors['physician']}}
+              {{ errors["physician"] }}
             </p>
           </div>
 
           <div class="pr-field pr-span-2">
             <label>Physician Phone Number</label>
-            <input class="pr-input" [(ngModel)]="physicianPhone" name="physicianPhone">
+            <input class="pr-input" [(ngModel)]="physicianPhone" name="physicianPhone" />
           </div>
 
           <div class="pr-field pr-span-2">
             <span class="pr-label">Diagnosis / Indication</span>
             <div class="pr-info pr-info-lines">
               <span *ngFor="let diagnosis of profile?.diagnoses">
-                {{diagnosis}}
+                {{ diagnosis }}
               </span>
               <span *ngIf="!profile">--</span>
             </div>
@@ -461,99 +433,85 @@
             <span class="pr-label">Relevant Monitoring</span>
             <div class="pr-info pr-info-lines">
               <span *ngFor="let item of profile?.monitoring">
-                {{item}}
+                {{ item }}
               </span>
               <span *ngIf="!profile">--</span>
             </div>
           </div>
-
         </div>
       </section>
 
       <!-- PHYSICIAN SIGNATURE -->
       <section class="pr-section">
-
         <div class="pr-section-header">
           <h3>Physician Confirmation</h3>
-          <span class="pr-section-hint">
-            Required for processing the refill request.
-          </span>
+          <span class="pr-section-hint"> Required for processing the refill request. </span>
         </div>
 
         <div class="pr-sign-grid">
-
           <div class="pr-field">
-            <span class="pr-label">
-              Physician Signature *
-            </span>
+            <span class="pr-label"> Physician Signature * </span>
 
             <div class="pr-sign-box">
-
               <div class="pr-sign-preview">
-                <span class="pr-sign-placeholder" *ngIf="!signature">
-                  Select the pen to sign
-                </span>
+                <span class="pr-sign-placeholder" *ngIf="!signature"> Select the pen to sign </span>
 
-                <img *ngIf="signature" [src]="signature" alt="Physician signature">
+                <img *ngIf="signature" [src]="signature" alt="Physician signature" />
               </div>
 
               <button type="button" class="pr-sign-btn" (click)="openSignature()">
-                <img src="/assets/images/front-office/images/edit-blue.png" alt="">
+                <img src="/assets/images/front-office/images/edit-blue.png" alt="" />
               </button>
-
             </div>
 
             <p class="pr-error" *ngIf="errors['signature']">
-              {{errors['signature']}}
+              {{ errors["signature"] }}
             </p>
           </div>
 
           <div class="pr-field">
             <label>Date Signed *</label>
-            <input class="pr-input" type="date" [(ngModel)]="signDate" name="signDate" [max]="currentDate">
+            <input
+              class="pr-input"
+              type="date"
+              [(ngModel)]="signDate"
+              name="signDate"
+              [max]="currentDate"
+            />
 
             <p class="pr-error" *ngIf="errors['signDate']">
-              {{errors['signDate']}}
+              {{ errors["signDate"] }}
             </p>
           </div>
-
         </div>
       </section>
 
       <!-- FOOTER -->
       <div class="pr-footer">
-
         <button type="button" class="pr-btn pr-btn--outline" (click)="cancelRequest()">
           Cancel
         </button>
 
         <div class="pr-footer-actions">
-
           <button type="button" class="pr-btn pr-btn--outline" (click)="saveDraft()">
-            <img src="/assets/images/front-office/images/save.png" alt="">
+            <img src="/assets/images/front-office/images/save.png" alt="" />
             Save Draft
           </button>
 
           <button type="submit" class="pr-btn pr-btn--primary" [disabled]="submitting">
-            <img src="/assets/images/front-office/images/send-white.png" alt="">
+            <img src="/assets/images/front-office/images/send-white.png" alt="" />
             Submit Refill Request
           </button>
-
         </div>
       </div>
-
     </form>
   </section>
 </main>
 
 <!-- HISTORY MODAL -->
 <div class="pr-modal" [class.show]="showHistoryModal">
-
   <div class="pr-modal-card pr-modal-card--wide" role="dialog" aria-modal="true">
-
-    <button type="button" class="pr-modal-close" (click)="closeModal('history')">
-      &times;
-    </button>
+    <button type="button" class="pr-modal-close" (click)="closeModal('history')">&times;</button>
 
     <h3 class="pr-modal-title">Medication History</h3>
 
@@ -572,14 +530,14 @@
 
         <tbody>
           <tr *ngFor="let med of historyMedications">
-            <td>{{med.name}}</td>
-            <td>{{med.strength}}</td>
-            <td>{{formatDate(med.lastFilled)}}</td>
-            <td>{{med.refillsRemaining}}</td>
+            <td>{{ med.name }}</td>
+            <td>{{ med.strength }}</td>
+            <td>{{ formatDate(med.lastFilled) }}</td>
+            <td>{{ med.refillsRemaining }}</td>
             <td>
-              <span class="pr-pill">{{med.status}}</span>
+              <span class="pr-pill">{{ med.status }}</span>
             </td>
-            <td>{{med.pharmacy}}</td>
+            <td>{{ med.pharmacy }}</td>
           </tr>
 
           <tr *ngIf="!patient">
@@ -601,33 +559,33 @@
 
 <!-- PHYSICIAN MODAL -->
 <div class="pr-modal" [class.show]="showPhysicianModal">
-
   <div class="pr-modal-card" role="dialog" aria-modal="true">
+    <button type="button" class="pr-modal-close" (click)="closeModal('physician')">&times;</button>
 
-    <button type="button" class="pr-modal-close" (click)="closeModal('physician')">
-      &times;
-    </button>
+    <h3 class="pr-modal-title">Select Prescribing Physician</h3>
 
-    <h3 class="pr-modal-title">
-      Select Prescribing Physician
-    </h3>
-
-    <input class="pr-input" [(ngModel)]="physicianSearch" [ngModelOptions]="{standalone: true}"
-      (input)="filterPhysicians()" placeholder="Search by name or department">
+    <input
+      class="pr-input"
+      [(ngModel)]="physicianSearch"
+      [ngModelOptions]="{ standalone: true }"
+      (input)="filterPhysicians()"
+      placeholder="Search by name or department"
+    />
 
     <div class="pr-person-list">
-
-      <button type="button" class="pr-person" *ngFor="let p of filteredPhysicians" (click)="selectPhysician(p)">
-
-        <strong>{{p.name}}</strong>
-        <span>{{p.department}}</span>
-
+      <button
+        type="button"
+        class="pr-person"
+        *ngFor="let p of filteredPhysicians"
+        (click)="selectPhysician(p)"
+      >
+        <strong>{{ p.name }}</strong>
+        <span>{{ p.department }}</span>
       </button>
 
       <div class="pr-empty-result" *ngIf="!filteredPhysicians.length">
         No matching physician found
       </div>
-
     </div>
 
     <div class="pr-modal-actions">
@@ -640,29 +598,26 @@
 
 <!-- SIGNATURE MODAL -->
 <div class="pr-modal" [class.show]="showSignatureModal">
-
   <div class="pr-modal-card pr-modal-card--sign" role="dialog" aria-modal="true">
-
-    <button type="button" class="pr-modal-close" (click)="closeModal('signature')">
-      &times;
-    </button>
+    <button type="button" class="pr-modal-close" (click)="closeModal('signature')">&times;</button>
 
     <h3 class="pr-modal-title">Physician Signature</h3>
 
-    <p class="pr-modal-note">
-      Sign in the box below using your mouse, finger, or stylus.
-    </p>
+    <p class="pr-modal-note">Sign in the box below using your mouse, finger, or stylus.</p>
 
-    <canvas #signatureCanvas class="pr-sign-canvas" (pointerdown)="onPointerDown($event)"
-      (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp()" (pointercancel)="onPointerUp()">
+    <canvas
+      #signatureCanvas
+      class="pr-sign-canvas"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp()"
+      (pointercancel)="onPointerUp()"
+    >
     </canvas>
 
-    <p class="pr-error" *ngIf="signatureModalError">
-      Please draw your signature before applying.
-    </p>
+    <p class="pr-error" *ngIf="signatureModalError">Please draw your signature before applying.</p>
 
     <div class="pr-modal-actions">
-
       <button type="button" class="pr-btn pr-btn--danger-outline" (click)="clearCanvas()">
         Clear
       </button>
@@ -674,26 +629,27 @@
       <button type="button" class="pr-btn pr-btn--primary" (click)="applySignature()">
         Apply Signature
       </button>
-
     </div>
   </div>
 </div>
 
 <!-- DRAFT MODAL -->
 <div class="pr-modal" [class.show]="showDraftModal">
-
   <div class="pr-modal-card pr-modal-card--sm">
-
     <h3 class="pr-modal-title">Draft Saved</h3>
 
     <dl class="pr-modal-details">
       <dt>Draft ID</dt>
-      <dd>{{draftId}}</dd>
+      <dd>{{ draftId }}</dd>
       <dt>Status</dt>
       <dd>Draft</dd>
     </dl>
 
-    <button type="button" class="pr-btn pr-btn--primary pr-btn--block" (click)="closeModal('draft')">
+    <button
+      type="button"
+      class="pr-btn pr-btn--primary pr-btn--block"
+      (click)="closeModal('draft')"
+    >
       OK
     </button>
   </div>
@@ -701,36 +657,42 @@
 
 <!-- SUCCESS MODAL -->
 <div class="pr-modal" [class.show]="showSuccessModal">
-
   <div class="pr-modal-card pr-modal-card--sm">
     <div class="pr-modal-icon">
       <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-        <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-          stroke-linejoin="round" />
+        <path
+          d="M4 10.5l3.5 3.5L16 5.5"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </div>
-    <h3 class="pr-modal-title">
-      Refill Request Submitted
-    </h3>
+    <h3 class="pr-modal-title">Refill Request Submitted</h3>
 
     <dl class="pr-modal-details">
       <dt>Request ID</dt>
-      <dd>{{requestId}}</dd>
+      <dd>{{ requestId }}</dd>
 
       <dt>Patient</dt>
-      <dd>{{successData.patient}}</dd>
+      <dd>{{ successData.patient }}</dd>
 
       <dt>Medications</dt>
-      <dd>{{successData.medications}}</dd>
+      <dd>{{ successData.medications }}</dd>
 
       <dt>Pharmacy</dt>
-      <dd>{{successData.pharmacy}}</dd>
+      <dd>{{ successData.pharmacy }}</dd>
 
       <dt>Status</dt>
-      <dd>{{successData.status}}</dd>
+      <dd>{{ successData.status }}</dd>
     </dl>
 
-    <button type="button" class="pr-btn pr-btn--primary pr-btn--block" (click)="closeModal('success')">
+    <button
+      type="button"
+      class="pr-btn pr-btn--primary pr-btn--block"
+      (click)="closeModal('success')"
+    >
       Done
     </button>
   </div>
@@ -738,19 +700,14 @@
 
 <!-- CANCEL MODAL -->
 <div class="pr-modal" [class.show]="showCancelModal">
-
   <div class="pr-modal-card pr-modal-card--sm">
-
-    <h3 class="pr-modal-title">
-      Discard this request?
-    </h3>
+    <h3 class="pr-modal-title">Discard this request?</h3>
 
     <p class="pr-modal-note pr-modal-note--center">
       Any information entered on this form will be lost.
     </p>
 
     <div class="pr-modal-actions pr-modal-actions--center">
-
       <button type="button" class="pr-btn pr-btn--outline" (click)="closeModal('cancel')">
         Keep Editing
       </button>
@@ -758,7 +715,6 @@
       <button type="button" class="pr-btn pr-btn--danger-outline" (click)="discardRequest()">
         Discard
       </button>
-
     </div>
   </div>
 </div>
