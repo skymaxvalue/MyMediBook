@@ -1,0 +1,31 @@
+<main class="dashboard-container cl-page" id="main">
+
+    <!-- Dynamic Heading -->
+    @if(showHeader){
+
+    <header class="cl-pagehead">
+        <div class="cl-pagehead__main">
+            <span class="cl-pagehead__icon" aria-hidden="true"><img src="./assets/images/front-office/images/claims.png"
+                    alt="" width="28" height="28"></span>
+            <div>
+                <h1>{{ pageTitle }}</h1>
+                <p>{{ pageDescription }}</p>
+            </div>
+        </div>
+        <div class="cl-pagehead__actions">
+            @if(showDashboardBackButton) {
+            <a class="cl-btn cl-btn--ghost" routerLink="/front-office/claims-dashboard" data-route="claimDashboard"
+                (click)="showDashboardBackButton = false">
+                ← Dashboard
+            </a>
+            }
+            <a class="cl-btn cl-btn--primary" routerLink="/front-office/claims-dashboard/new-claim"
+                data-route="newClaim">+ New Claim</a>
+        </div>
+    </header>
+    }
+
+    <!-- Child Component -->
+    <router-outlet></router-outlet>
+
+</main>

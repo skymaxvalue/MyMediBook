@@ -33,7 +33,7 @@ export class PaymentService {
             .post<{ data: any[] }>(
                 `${this.apiUrl}${PaymentEndPoints.GET_PAYMENT_LIST_BY_PATIENT_ID}`.replace('{patientId}', patientId), {
                 patientId: patientId,
-                status: "1"
+                status: null
             }
             )
             .pipe(

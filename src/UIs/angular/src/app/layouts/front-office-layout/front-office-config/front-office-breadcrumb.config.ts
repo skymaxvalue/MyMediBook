@@ -12,6 +12,7 @@ export const DASHBOARD_CRUMB: Breadcrumb = {
 
 const BOOK_APPOINTMENT: Breadcrumb = { label: "Book Appointment", url: `${BASE}/book-appointment` };
 const PATIENT_CHECK_IN: Breadcrumb = { label: "Patient Check-In", url: `${BASE}/patient-check-in` };
+const CLAIM: Breadcrumb = { label: "Claims", url: `${BASE}/claims-dashboard` }
 
 /** Key = first path segment after /front-office. Last item is the current page. */
 export const BREADCRUMB_MAP: Record<string, Breadcrumb[]> = {
@@ -27,4 +28,6 @@ export const BREADCRUMB_MAP: Record<string, Breadcrumb[]> = {
   "payment-gateway": [{ label: "Payment" }],
   "next-in-queue": [{ label: "Next in Queue" }],
   "prescription-refill": [{ label: "Prescription Refill Request" }],
+  "claims-dashboard": [CLAIM],
+
 };

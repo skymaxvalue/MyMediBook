@@ -1,0 +1,263 @@
+<main class="dashboard-container cl-page" id="main">
+
+
+
+    <!-- Notice -->
+    <div class="cl-notice" role="status">
+        <span>
+            This is a demo claims environment.
+            No real insurance data is being processed.
+        </span>
+    </div>
+
+    <!-- Header -->
+    <header class="cl-pagehead">
+
+        <div class="cl-pagehead__main">
+
+            <div class="cl-pagehead__icon">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+
+            <div>
+                <h1>{{ claim?.id || 'Claim Details' }}</h1>
+
+                <p>
+                    Review claim information, financial details,
+                    and workflow status.
+                </p>
+            </div>
+
+            <div *ngIf="claim">
+                <span [class]="statusClass(claim.status)">
+                    {{ claim.status }}
+                </span>
+            </div>
+
+        </div>
+
+        <div class="cl-pagehead__actions">
+
+            <a routerLink="/front-office/claims-dashboard/all" class="cl-btn cl-btn--secondary">
+
+                <i class="fa-solid fa-arrow-left"></i>
+                All Claims
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- Loading -->
+    <section *ngIf="loading" class="cl-state">
+
+        <div class="cl-spinner"></div>
+
+        <div class="cl-state__title">
+            Loading claim…
+        </div>
+
+    </section>
+
+    <!-- Error -->
+    <section *ngIf="!loading && errorMessage" class="cl-state cl-state--error">
+
+        <div class="cl-state__title">
+            {{ errorMessage }}
+        </div>
+
+        <button type="button" class="cl-btn cl-btn--ghost" (click)="loadClaim()">
+
+            Try again
+
+        </button>
+
+    </section>
+
+    <!-- Claim Details -->
+    <section *ngIf="!loading && claim && !errorMessage">
+
+        <div class="cl-detail-grid">
+
+            <!-- Claim -->
+            <section class="cl-card cl-detail">
+
+                <div class="cl-card__head">
+                    <h2>Claim</h2>
+                </div>
+
+                <dl>
+
+                    <div class="cl-kv">
+                        <dt>Claim ID</dt>
+                        <dd>{{ displayValue(claim.id) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Service date</dt>
+                        <dd>{{ formatDate(claim.submitedDate) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Submitted date</dt>
+                        <dd>{{ formatDate(claim.serviceDate ) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Last updated</dt>
+                        <dd>{{ formatDate(claim.lastUpdatedDate) }}</dd>
+                    </div>
+
+                </dl>
+
+            </section>
+
+            <!-- Patient -->
+            <section class="cl-card cl-detail">
+
+                <div class="cl-card__head">
+                    <h2>Patient</h2>
+                </div>
+
+                <dl>
+
+                    <div class="cl-kv">
+                        <dt>Patient name</dt>
+                        <dd>{{ displayValue(claim.patientName) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Patient ID (UHID)</dt>
+                        <dd>{{ displayValue(claim.patientId) }}</dd>
+                    </div>
+
+                </dl>
+
+            </section>
+
+            <!-- Payer -->
+            <section class="cl-card cl-detail">
+
+                <div class="cl-card__head">
+                    <h2>Payer / Insurance</h2>
+                </div>
+
+                <dl>
+
+                    <div class="cl-kv">
+                        <dt>Payer</dt>
+                        <dd>{{ displayValue(claim.payer) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Policy / Member ID</dt>
+                        <dd>{{ displayValue(claim.policyId) }}</dd>
+                    </div>
+
+                </dl>
+
+            </section>
+
+            <!-- Financial -->
+            <section class="cl-card cl-detail">
+
+                <div class="cl-card__head">
+                    <h2>Financial</h2>
+                </div>
+
+                <dl>
+
+                    <div class="cl-kv">
+                        <dt>Claim amount</dt>
+                        <dd>{{ formatMoney(claim.amount) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Approved amount</dt>
+                        <dd>{{ formatMoney(claim.approvedAmount) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Paid amount</dt>
+                        <dd>{{ formatMoney(claim.paidAmount) }}</dd>
+                    </div>
+
+                    <div class="cl-kv">
+                        <dt>Outstanding</dt>
+                        <dd>{{ formatMoney(outstandingAmount) }}</dd>
+                    </div>
+
+                </dl>
+
+            </section>
+
+            <!-- Workflow -->
+            <section class="cl-card cl-detail">
+
+                <div class="cl-card__head">
+                    <h2>Workflow</h2>
+                </div>
+
+                <dl>
+
+                    <div class="cl-kv" *ngFor="let item of workflowRows">
+
+                        <dt>{{ item.label }}</dt>
+
+                        <dd *ngIf="item.label !== 'Status'">
+                            {{ displayValue(item.value) }}
+                        </dd>
+
+                        <dd *ngIf="item.label === 'Status'">
+                            <span [class]="statusClass(item.value)">
+                                {{ item.value }}
+                            </span>
+                        </dd>
+
+                    </div>
+
+                </dl>
+
+            </section>
+
+            <!-- Notes & History -->
+            <section class="cl-card cl-detail cl-detail--full">
+
+                <div class="cl-card__head">
+                    <h2>Notes &amp; History</h2>
+                </div>
+
+                <ng-container *ngIf="claim.notes?.length; else noNotes">
+
+                    <ul class="cl-timeline">
+
+                        <li *ngFor="let note of claim.notes">
+
+                            <span class="cl-timeline__when">
+                                {{ formatDate(note.date) }}
+                            </span>
+
+                            <span>
+                                {{ displayValue(note.text) }}
+                            </span>
+
+                        </li>
+
+                    </ul>
+
+                </ng-container>
+
+                <ng-template #noNotes>
+                    <p class="cl-muted">
+                        No notes recorded.
+                    </p>
+                </ng-template>
+
+            </section>
+
+        </div>
+
+    </section>
+
+</main>

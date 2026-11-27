@@ -30,15 +30,67 @@ export class FrontOfficeLayoutComponent implements OnInit {
       .subscribe(() => (this.breadcrumbs = this.buildBreadcrumbs()));
   }
 
+
+
+
+
   private buildBreadcrumbs(): Breadcrumb[] {
-    const path = this.router.url.split(/[?#]/)[0];
-    const [, feature] = path.split("/").filter(Boolean);
+    const currentUrl = this.router.url;
+    const path = currentUrl.split(/[?#]/)[0];
+    const segments = path.split('/').filter(Boolean);
+
+    const feature = segments[1];
+    const childRoute = segments[2];
+
+    // Claims module breadcrumbs
+    if (feature === 'claims-dashboard') {
+      const breadcrumbs: Breadcrumb[] = [
+        DASHBOARD_CRUMB,
+        ...(BREADCRUMB_MAP['claims-dashboard'] ?? [])
+      ];
+
+      switch (childRoute) {
+        case 'all':
+          breadcrumbs.push({
+            label: 'All Claims',
+            url: path
+          });
+          break;
+
+        case 'new-claim':
+          breadcrumbs.push({
+            label: 'New Claim',
+            url: path
+          });
+          break;
+
+        case 'claim-details': {
+          const queryString = currentUrl.split('?')[1]?.split('#')[0] ?? '';
+          const claimId = new URLSearchParams(queryString).get('id');
+
+          breadcrumbs.push({
+            label: claimId || 'Claim Details'
+          });
+          break;
+        }
+      }
+
+      return breadcrumbs;
+    }
+
+    // Other Front Office pages
     const trail = BREADCRUMB_MAP[feature] ?? [];
 
-    // The current page links to the live URL, so params like :doctorId are preserved.
     return [
       DASHBOARD_CRUMB,
-      ...trail.map((crumb, i) => (i === trail.length - 1 ? { ...crumb, url: path } : crumb)),
+      ...trail.map((crumb, i) =>
+        i === trail.length - 1
+          ? { ...crumb, url: path }
+          : crumb
+      )
     ];
   }
+
+
+
 }

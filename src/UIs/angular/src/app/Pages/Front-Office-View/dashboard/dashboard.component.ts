@@ -362,6 +362,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   navigate(page: string): void {
     this.activePage = page;
+    console.log("Navigating to:", page);
 
     this.router.navigate([`/front-office/${page}`]);
   }

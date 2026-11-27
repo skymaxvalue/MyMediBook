@@ -121,7 +121,7 @@
       "description": "View claims overview",
       "icon": "claims.png",
       "color": "blue",
-      "route": "claims"
+      "route": "claims-dashboard"
     },
     {
       "title": "Credit Card Processing",
