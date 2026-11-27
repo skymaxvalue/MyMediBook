@@ -1,0 +1,318 @@
+<!-- Filters -->
+<section class="cl-card">
+    <div class="cl-card__head">
+        <div>
+            <h2>
+
+                Claims Records
+            </h2>
+            <p class="cl-caption" data-live="" aria-live="polite">22 claims found</p>
+
+        </div>
+
+        @if (showDashboardButton()) {
+        <a routerLink="/front-office/claims-dashboard/all" class="cl-viewall" (click)="navigate()">
+            View All Claims
+            &#x2192;
+        </a>
+
+        }
+    </div>
+    <div class="cl-toolbar">
+
+        <fieldset class="cl-field cl-field--search">
+            <legend class="cl-sr">Search claims</legend>
+
+            <span class="cl-search-icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+
+            <input type="search" placeholder="Search by Claim ID, patient name, or insurance…" [value]="searchTerm()"
+                (input)="onSearch($any($event.target).value)" />
+        </fieldset>
+
+        <fieldset class="cl-field">
+            <legend class="cl-sr">Filter by status</legend>
+
+            <select [value]="selectedStatus()" (change)="onStatusChange($any($event.target).value)">
+                <option value="All">All Status</option>
+                <option value="Approved">Approved</option>
+                <option value="Pending">Pending</option>
+                <option value="Denied">Denied</option>
+                <option value="Needs Action">Requires Attention</option>
+            </select>
+        </fieldset>
+
+        <fieldset class="cl-field">
+            <legend class="cl-sr">Filter by payer</legend>
+
+            <select [value]="selectedPayer()" (change)="onPayerChange($any($event.target).value)">
+
+                <option value="All">All Payers</option>
+
+                @for (payer of payers(); track payer) {
+                <option [value]="payer">{{ payer }}</option>
+                }
+            </select>
+        </fieldset>
+
+
+        <div class="cl-daterange">
+
+            <label class="cl-field">
+                <span class="cl-sr">From date</span>
+                <input type="date" data-from="" [value]="fromDate()"
+                    (change)="onFromDateChange($any($event.target).value)" aria-label="From service date">
+            </label>
+
+            <span class="cl-daterange__sep">-</span>
+
+            <label class="cl-field">
+                <span class="cl-sr">To date</span>
+                <input type="date" data-to="" [value]="toDate()" (change)="onToDateChange($any($event.target).value)"
+                    aria-label="To service date">
+            </label>
+
+        </div>
+
+        <button type="button" class="cl-btn cl-btn--ghost" (click)="clearFilters()">
+
+            Clear Filters
+        </button>
+
+    </div>
+
+    <!-- Table -->
+    <div class="cl-table-region">
+        <div class="cl-table-wrap">
+
+            <table class="cl-table">
+                <thead>
+                    <tr>
+
+                        <th data-key="id" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Claim ID
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="patientName" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Patient Name
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="payer" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Payer / Insurance
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="serviceDate" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Service Date
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="amount" class="cl-num" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Claim Amount
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="submittedDate" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Submitted Date
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="status" aria-sort="none">
+                            <button class="cl-sort" type="button">
+                                Status
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th data-key="lastUpdated" aria-sort="descending" class="sorted">
+                            <button class="cl-sort" type="button">
+                                Last Updated
+                                <span class="cl-sort__ind">▼</span>
+                            </button>
+                        </th>
+
+                        <th class="cl-actions-col">
+                            Actions
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <!-- <thead>
+                    <tr>
+                        <th>
+                            <button class="cl-sort" (click)="sortBy('id')">
+                                Claim ID
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th>
+                            <button class="cl-sort" (click)="sortBy('patientName')">
+                                Patient Name
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th>
+                            <button class="cl-sort" (click)="sortBy('payer')">
+                                Payer
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th>
+                            <button class="cl-sort" (click)="sortBy('claimDate')">
+                                Claim Date
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th class="cl-num">
+                            <button class="cl-sort" (click)="sortBy('amount')">
+                                Amount
+                                <span class="cl-sort__ind">↕</span>
+                            </button>
+                        </th>
+
+                        <th>Status</th>
+                        <th class="cl-actions-col">Action</th>
+                    </tr>
+                </thead> -->
+
+                <tbody>
+
+                    @for (claim of paginatedClaims(); track claim.id) {
+                    <tr>
+                        <td data-label="Claim ID">
+                            <a class="cl-idlink" [routerLink]="['/front-office/claim-details']"
+                                [queryParams]="{ id: claim.id }">
+                                {{ claim.id }}
+                            </a>
+                        </td>
+
+                        <td data-label="Patient Name">
+                            <strong>{{ claim.patientName }}</strong>
+                            <div class="cl-muted">{{ claim.patientId }}</div>
+                        </td>
+
+                        <td data-label="Payer">{{ claim.payer }}</td>
+
+                        <td data-label="Claim Date">
+                            {{ formatDate(claim.claimDate) }}
+                        </td>
+
+                        <td data-label="Amount" class="cl-num">
+                            {{ formatCurrency(claim.amount) }}
+                        </td>
+
+                        <td data-label="Submitted Date">
+                            {{ formatDate(claim.submitedDate) }}
+                        </td>
+
+
+
+                        <td data-label="Status">
+                            <span class="cl-badge" [ngClass]="getStatusClass(claim.status)">
+                                <span class="cl-badge__icon">
+                                    {{ getStatusIcon(claim.status) }}
+                                </span>
+
+                                {{ getStatusLabel(claim.status) }}
+                            </span>
+                        </td>
+                        <td data-label="Last Updated Date">
+                            {{ formatDate(claim.lastUpdatedDate) }}
+                        </td>
+
+                        <td data-label="Action" class="cl-actions-col">
+
+                            <a class="cl-iconbtn" [routerLink]="['/front-office/claims-dashboard/claim-details']"
+                                [queryParams]="{ id: claim.id }" title="View claim">
+
+                                View
+
+                            </a>
+                            <a class="cl-idlink" [routerLink]="['/front-office/claims-dashboard/claim-details']"
+                                [queryParams]="{ id: claim.id }">
+                                view
+                            </a>
+
+                        </td>
+                    </tr>
+                    }
+
+                    @if (paginatedClaims().length === 0) {
+                    <tr>
+                        <td colspan="7" class="cl-center">
+                            No claims found.
+                        </td>
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="cl-table-foot">
+
+        <div class="cl-showing">
+            Showing {{ showingStart() }} to {{ showingEnd() }}
+            of {{ filteredClaims().length }} records
+        </div>
+
+        <div class="cl-foot-right">
+
+            <label class="cl-pagesize">
+                Rows per page
+
+                <select [value]="pageSize()" (change)="onPageSizeChange($any($event.target).value)">
+
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+            </label>
+
+            <div class="cl-pagination">
+
+                <button class="cl-pg" [disabled]="currentPage() === 1" (click)="changePage(currentPage() - 1)">
+                    &lt;
+                </button>
+
+                @for (page of getPageNumbers(); track page) {
+                <button class="cl-pg" [class.is-current]="currentPage() === page" (click)="changePage(page)">
+                    {{ page }}
+                </button>
+                }
+
+                <button class="cl-pg" [disabled]="currentPage() === totalPages()"
+                    (click)="changePage(currentPage() + 1)">
+
+                    >
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</section>

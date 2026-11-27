@@ -64,8 +64,6 @@ export const FRONT_OFFICE_ROUTES: Routes = [
           import("../Pages/Front-Office-View/dashboard/dashboard.component").then(
             (m) => m.DashboardComponent
           ),
-
-        children: [],
       },
       {
         path: "patient-registration",
@@ -169,6 +167,49 @@ export const FRONT_OFFICE_ROUTES: Routes = [
             (m) => m.PrescriptionRefillComponent
           ),
       },
+
+      // Claims Module
+      {
+        path: "claims-dashboard",
+        loadComponent: () =>
+          import("../Pages/Front-Office-View/claim-layout/claim-layout.component").then(
+            (m) => m.ClaimLayoutComponent
+          ),
+
+        children: [
+
+          {
+            path: "",
+            loadComponent: () =>
+              import("../Pages/Front-Office-View/claim-layout/claim-dashboard/claim-dashboard.component").then(
+                (m) => m.ClaimDashboardComponent
+              ),
+          },
+
+          // All Claims Records
+          {
+            path: "all",
+            loadComponent: () =>
+              import("../Pages/Front-Office-View/claim-layout/claim-records/claim-records.component").then(
+                (m) => m.ClaimRecordsComponent
+              ),
+          },
+          {
+            path: "new-claim",
+            loadComponent: () =>
+              import("../Pages/Front-Office-View/claim-layout/new-claim/new-claim.component").then(
+                (m) => m.NewClaimComponent
+              )
+          },
+          {
+            path: 'claim-details',
+            loadComponent: () =>
+              import('../Pages/Front-Office-View/claim-layout/claim-details/claim-details.component')
+                .then(m => m.ClaimDetailsComponent)
+          }
+        ],
+      },
+
     ],
   },
 ];

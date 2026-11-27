@@ -1,3 +1,4 @@
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { enableProdMode, importProvidersFrom, inject } from "@angular/core";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { BrowserModule } from "@angular/platform-browser";
@@ -83,6 +84,7 @@ bootstrapApplication(AppComponent, {
       MatDialogModule
     ),
     provideRouter(routes),
+    provideCharts(withDefaultRegisterables()),
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
     authInterceptorProvider,
     loggingInterceptorProvider,

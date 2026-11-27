@@ -1,0 +1,342 @@
+<main class="dashboard-container cl-page" id="main">
+
+    <!-- Breadcrumb -->
+    <!-- <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+
+        <ol>
+            <li>
+                <a routerLink="/front-office/dashboard">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a routerLink="/front-office/claims">
+                    Claims
+                </a>
+            </li>
+
+            <li aria-current="page">
+                New Claim
+            </li>
+        </ol>
+
+    </nav> -->
+
+    <div id="clDemoNotice" [hidden]="!isDemo"></div>
+
+    <section class="cl-card cl-card--pad cl-new-claim-card">
+
+        <!-- Page Title -->
+        <div class="cl-new-claim-title">
+
+            <span class="cl-new-claim-title__icon">
+                <img src="./assets/images/billing.png" alt="">
+            </span>
+
+            <div>
+                <h1>New Claim</h1>
+
+                <p>
+                    Enter the claim details. New claims are submitted with status Pending.
+                </p>
+            </div>
+
+        </div>
+
+        <form [formGroup]="claimForm" (ngSubmit)="onSubmit()" class="cl-form" novalidate>
+
+            <!-- Form Error -->
+            <p id="clFormError" class="cl-form__error" role="alert" [hidden]="!formError">
+                {{ formError }}
+            </p>
+
+            <!-- Patient Information -->
+            <section class="cl-form-section">
+
+                <div class="cl-form-section__head">
+
+                    <span class="cl-form-section__icon">
+                        <img src="./assets/images/front-office/images/patient-icon-blue.png" alt="">
+                    </span>
+
+                    <div>
+                        <h2>Patient Information</h2>
+
+                        <p>
+                            Enter the patient and service details for this claim.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="cl-form__grid">
+
+                    <!-- Patient Name -->
+                    <!-- Patient Name -->
+                    <div class="cl-formfield patient-search-wrapper">
+
+                        <label for="fPatientName">
+                            Patient name <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fPatientName" type="text" formControlName="patientName"
+                            placeholder="Enter patient name" autocomplete="off"
+                            (input)="onPatientSearch($any($event.target).value)"
+                            [class.is-invalid]="isInvalid('patientName')">
+
+                        <!-- Patient Suggestions -->
+                        <div class="patient-suggestions" *ngIf="showPatientSuggestions">
+
+                            <button type="button" class="patient-suggestion" *ngFor="let patient of filteredPatients"
+                                (click)="selectPatient(patient)">
+
+                                <div>
+                                    <strong>{{ patient.patientName }}</strong>
+                                    <small>UHID: {{ patient.patientId }}</small>
+                                </div>
+
+                            </button>
+
+                        </div>
+
+                        <span class="cl-form__err" *ngIf="isInvalid('patientName')">
+                            {{ getError('patientName') }}
+                        </span>
+
+                    </div>
+
+                    <!-- <div class="cl-formfield">
+
+                        <label for="fPatientName">
+                            Patient name
+                            <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fPatientName" type="text" formControlName="patientName"
+                            placeholder="Enter patient name" autocomplete="off"
+                            [class.is-invalid]="isInvalid('patientName')">
+
+                        <span class="cl-form__err" *ngIf="isInvalid('patientName')">
+                            {{ getError('patientName') }}
+                        </span>
+
+                    </div> -->
+
+                    <!-- Patient ID -->
+                    <div class="cl-formfield">
+
+                        <label for="fPatientId">
+                            Patient ID (UHID)
+                            <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fPatientId" type="text" formControlName="patientId" placeholder="e.g. HH24567"
+                            autocomplete="off" [class.is-invalid]="isInvalid('patientId')">
+
+                        <span class="cl-form__err" *ngIf="isInvalid('patientId')">
+                            {{ getError('patientId') }}
+                        </span>
+
+                    </div>
+
+                    <!-- Service Date -->
+                    <div class="cl-formfield">
+
+                        <label for="fServiceDate">
+                            Service date
+                            <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fServiceDate" type="date" formControlName="serviceDate" [max]="todayString"
+                            [class.is-invalid]="isInvalid('serviceDate')">
+
+                        <span class="cl-form__err" *ngIf="isInvalid('serviceDate')">
+                            {{ f['serviceDate'].hasError('futureDate')
+                            ? 'Service date cannot be in the future.'
+                            : getError('serviceDate') }}
+                        </span>
+
+                    </div>
+
+                    <!-- Claim Amount -->
+                    <div class="cl-formfield">
+
+                        <label for="fAmount">
+                            Claim amount
+                            <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fAmount" type="number" formControlName="amount" inputmode="decimal" min="0.01"
+                            step="0.01" placeholder="Enter claim amount" [class.is-invalid]="isInvalid('amount')">
+
+                        <span class="cl-form__err" *ngIf="isInvalid('amount')">
+                            {{ getError('amount') }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- Patient Visit History -->
+                <div class="patient-visits" *ngIf="selectedPatient && patientVisits.length && showVisitHistory">
+
+                    <div class="patient-visits__head">
+                        <div>
+                            <h3>Patient Visit History</h3>
+                            <p> {{ patientVisits.length }} visits found</p>
+                        </div>
+                    </div>
+
+                    <div class="cl-table-wrap">
+                        <table class="cl-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Visit Date</th>
+                                    <th>Appointment Type</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let visit of patientVisits">
+                                    <td>{{ visit.visitDate | date:'dd-MMM-yyyy' }}</td>
+                                    <td>{{ visit.appointmentType }}</td>
+                                    <td>{{ visit.status }}</td>
+                                    <td>
+                                        <button type="button" class="cl-btn cl-btn--ghost" (click)="selectVisit(visit)">
+                                            Select
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Insurance Information -->
+            <section class="cl-form-section">
+
+                <div class="cl-form-section__head">
+
+                    <span class="cl-form-section__icon">
+                        <img src="./assets/images/front-office/images/insurance-icon-blue.png" alt="">
+                    </span>
+
+                    <div>
+                        <h2>Insurance Information</h2>
+
+                        <p>
+                            Enter the payer and policy information used for processing.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="cl-form__grid">
+
+                    <!-- Payer -->
+                    <div class="cl-formfield">
+
+                        <label for="fPayer">
+                            Payer / Insurance
+                            <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fPayer" type="text" formControlName="payer" list="clPayerList" autocomplete="off"
+                            placeholder="Select insurance provider" [class.is-invalid]="isInvalid('payer')">
+
+                        <datalist id="clPayerList">
+
+                            <option *ngFor="let payer of payers" [value]="payer"></option>
+
+                        </datalist>
+
+                        <span class="cl-form__err" *ngIf="isInvalid('payer')">
+                            {{ getError('payer') }}
+                        </span>
+
+                    </div>
+
+                    <!-- Policy ID -->
+                    <div class="cl-formfield">
+
+                        <label for="fPolicyId">
+                            Policy / Member ID
+                            <span class="cl-req">*</span>
+                        </label>
+
+                        <input id="fPolicyId" type="text" formControlName="policyId"
+                            placeholder="Enter policy or member ID" autocomplete="off"
+                            [class.is-invalid]="isInvalid('policyId')">
+
+                        <span class="cl-form__err" *ngIf="isInvalid('policyId')">
+                            {{ getError('policyId') }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Additional Information -->
+            <section class="cl-form-section">
+
+                <div class="cl-form-section__head">
+
+                    <span class="cl-form-section__icon">
+                        <img src="./assets/images/front-office/images/note-blue.png" alt="">
+                    </span>
+
+                    <div>
+                        <h2>Additional Information</h2>
+
+                        <p>
+                            Add any relevant notes for claim processing.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="cl-formfield">
+
+                    <label for="fNotes">
+                        Notes (optional)
+                    </label>
+
+                    <textarea id="fNotes" formControlName="notes" rows="3" maxlength="500"
+                        placeholder="Enter additional notes (optional)…"></textarea>
+
+                    <span class="cl-form__hint">
+                        Do not enter card numbers or other payment credentials.
+                    </span>
+
+                </div>
+
+            </section>
+
+            <!-- Actions -->
+            <div class="cl-form__actions">
+
+                <button type="submit" class="cl-btn cl-btn--primary" id="clSubmit" [disabled]="isSubmitting">
+                    {{ isSubmitting ? 'Submitting...' : 'Submit Claim' }}
+                </button>
+
+                <button type="button" class="cl-btn cl-btn--ghost" (click)="onCancel()" [disabled]="isSubmitting">
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
