@@ -2,7 +2,7 @@
 import { Component, computed, EventEmitter, inject, OnInit, Output, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
+import { ChartConfiguration, ChartType } from 'chart.js';
 import { RouterModule } from "@angular/router";
 import {
   Claim,
@@ -28,12 +28,19 @@ export class ClaimDashboardComponent implements OnInit {
 
   private claimsService = inject(ClaimService);
   // Claims Data chart line chart configuration
-  lineChartType: 'line' = 'line';
+  lineChartType: 'line' | 'bar' = 'line';
 
   lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
   };
+
+  barChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: [],
+    datasets: []
+  };
+
+
   chartLegend = [
     { label: 'Approved', color: '#1F9D55' },
     { label: 'Pending', color: '#E8A317' },
@@ -78,7 +85,8 @@ export class ClaimDashboardComponent implements OnInit {
       'Needs Action': '#7C3AED'
     };
 
-    const datasets = statuses.map(status => {
+
+    const chartValues = statuses.map(status => {
       const values = monthList.map(monthInfo => {
         return claims.filter(claim => {
           const date = new Date(claim.submitedDate);
@@ -92,25 +100,45 @@ export class ClaimDashboardComponent implements OnInit {
         }).length;
       });
 
-      return {
-        label: status,
-        data: values,
-        borderColor: statusColors[status],
-        backgroundColor: statusColors[status],
+      return { status, values };
+    });
+
+    const labels = monthList.map(month => month.label);
+
+    // Line Chart Data
+    this.lineChartData = {
+      labels,
+      datasets: chartValues.map(item => ({
+        label: item.status,
+        data: item.values,
+        borderColor: statusColors[item.status],
+        backgroundColor: statusColors[item.status],
         borderWidth: 3,
         fill: false,
         tension: 0.25,
         pointRadius: 4,
         pointHoverRadius: 6,
-        pointBackgroundColor: statusColors[status],
-        pointBorderColor: statusColors[status]
-      };
-    });
-
-    this.lineChartData = {
-      labels: monthList.map(month => month.label),
-      datasets
+        pointBackgroundColor: statusColors[item.status],
+        pointBorderColor: statusColors[item.status]
+      }))
     };
+
+    // Bar Chart Data
+    this.barChartData = {
+      labels,
+      datasets: chartValues.map(item => ({
+        label: item.status,
+        data: item.values,
+        backgroundColor: statusColors[item.status],
+        borderColor: statusColors[item.status],
+        borderWidth: 1,
+        borderRadius: 4
+      }))
+    };
+  }
+
+  changeTrendChart(type: 'line' | 'bar'): void {
+    this.lineChartType = type;
   }
   lineChartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
@@ -159,6 +187,55 @@ export class ClaimDashboardComponent implements OnInit {
         }
       },
 
+      y: {
+        beginAtZero: true,
+        suggestedMax: 50,
+        ticks: {
+          stepSize: 10,
+          color: '#666666'
+        },
+        grid: {
+          color: '#E5E7EB'
+        }
+      }
+    }
+  };
+
+  barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        align: 'start',
+        labels: {
+          boxWidth: 8,
+          boxHeight: 8,
+          padding: 12,
+          usePointStyle: true,
+          color: '#666666',
+          font: {
+            size: 14.5
+          }
+        }
+      },
+      tooltip: {
+        enabled: true
+      }
+    },
+
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          color: '#E5E7EB'
+        },
+        ticks: {
+          color: '#666666'
+        }
+      },
       y: {
         beginAtZero: true,
         suggestedMax: 50,

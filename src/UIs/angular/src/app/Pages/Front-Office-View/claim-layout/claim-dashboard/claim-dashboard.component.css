@@ -5,6 +5,59 @@
     gap: 28px;
     flex: 1;
 }
+
+
+/* Claims Trend Chart Toggle */
+
+.cl-trend-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cl-chart-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px;
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    gap: 3px;
+}
+
+.cl-chart-toggle button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #64748B;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cl-chart-toggle button:hover {
+    color: #2457E5;
+}
+
+.cl-chart-toggle button.active {
+    background: #fff;
+    color: #2457E5;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+}
+
+@media (max-width: 520px) {
+    .cl-trend-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
 .cl-sr {
     position: absolute !important;
     width: 1px;

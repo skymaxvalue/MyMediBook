@@ -82,27 +82,54 @@
                 <div>
                     <h2>Claims Trend</h2>
                     <p class="cl-caption">Submitted claims by status.</p>
-                </div><label class="cl-field--compact"><select id="trendRange"
-                        (change)="onTrendRangeChange($any($event.target).value)">
-                        <option value="6">Last 6 months</option>
-                        <option value="3">Last 3 months</option>
-                        <option value="12">Last 12 months</option>
-                    </select></label>
-            </div>
-            <div class="chart-container">
-                <canvas baseChart [type]="lineChartType" [data]="lineChartData" [options]="lineChartOptions">
-                </canvas>
-            </div>
-            <!-- <div class="chart-status-legend">
-                @for (status of chartLegend; track status.label) {
-                <div class="chart-status-item">
-                    <span class="chart-status-dot" [style.background]="status.color">
-                    </span>
-
-                    <span>{{ status.label }}</span>
                 </div>
+
+                <div class="cl-trend-controls">
+
+                    <!-- Chart Toggle -->
+                    <div class="cl-chart-toggle">
+                        <button type="button" [class.active]="lineChartType === 'line'"
+                            [attr.aria-pressed]="lineChartType === 'line'" (click)="changeTrendChart('line')">
+                            <i class="bi bi-graph-up"></i>
+                            Line
+                        </button>
+
+                        <button type="button" [class.active]="lineChartType === 'bar'"
+                            [attr.aria-pressed]="lineChartType === 'bar'" (click)="changeTrendChart('bar')">
+                            <i class="bi bi-bar-chart"></i>
+                            Bar
+                        </button>
+                    </div>
+
+                    <!-- Month Filter -->
+                    <label class="cl-field--compact">
+                        <select id="trendRange" [value]="trendMonths()"
+                            (change)="onTrendRangeChange($any($event.target).value)">
+
+                            <option value="6">Last 6 months</option>
+                            <option value="3">Last 3 months</option>
+                            <option value="12">Last 12 months</option>
+
+                        </select>
+                    </label>
+
+                </div>
+            </div>
+
+            <div class="chart-container">
+
+                @if (lineChartType === 'line') {
+                <canvas baseChart [type]="'line'" [data]="lineChartData" [options]="lineChartOptions">
+                </canvas>
                 }
-            </div> -->
+
+                @else {
+                <canvas baseChart [type]="'bar'" [data]="barChartData" [options]="barChartOptions">
+                </canvas>
+                }
+
+            </div>
+
         </div>
 
         <!-- Claims by Status -->
@@ -178,7 +205,6 @@
             </ul>
         </div>
 
-        <!-- Top Payers -->
         <!-- Top Payers -->
         <section class="cl-card cl-card--pad">
 
