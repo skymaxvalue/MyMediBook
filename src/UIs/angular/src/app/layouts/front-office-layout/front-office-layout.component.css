@@ -6,42 +6,17 @@
 .content {
   background-color: #f4f7fb;
 }
-.cl-breadcrumb {
-    background: #EEF3FA;
-    border: 1px solid var(--cl-line);
-    border-radius: 12px;
-    padding: 10px 16px;
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 42px 0px 42px;
 }
 
-.cl-breadcrumb ol {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-}
-
-.cl-breadcrumb li + li::before {
-    content: "›";
-    margin: 0 8px 0 4px;
-    color: var(--cl-muted);
-    font-size: 16px;
-}
-
-.cl-breadcrumb a {
-    color: var(--cl-blue);
-    font-weight: 600;
-}
-
-.cl-breadcrumb a:hover {
-    text-decoration: underline;
-    color: var(--cl-blue-dark);
-}
-
-.cl-breadcrumb [aria-current="page"] {
-    color: var(--cl-ink);
-    font-weight: 600;
+.breadcrumb a {
+  color: #2554df;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .breadcrumb-arrow {
